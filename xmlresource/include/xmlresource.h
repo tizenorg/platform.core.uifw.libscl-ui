@@ -1,0 +1,102 @@
+/*
+ * Copyright 2012-2013 Samsung Electronics Co., Ltd.
+ *
+ * Licensed under the Flora License, Version 1.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://floralicense.org/license/
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *
+ */
+
+#ifndef __XMLRESOURCE__
+#define __XMLRESOURCE__
+
+#include <libxml/parser.h>
+#include "main_entry_parser.h"
+#include "input_mode_configure_parser.h"
+#include "layout_parser.h"
+#include "modifier_decoration_parser.h"
+#include "label_properties_parser.h"
+#include "default_configure_parser.h"
+#include "autopopup_configure_parser.h"
+#include "magnifier_configure_parser.h"
+#include "nine_patch_file_list_parser.h"
+#include "sclres.h"
+
+namespace xmlresource{
+class XMLResource: public sclres::SclRes{
+    public:
+    ~XMLResource();
+    static XMLResource* get_instance();
+    void init(const char *entry_filepath);
+
+    /* These functions are for dynamic (lazy) loading layouts */
+    void load(int layout_id);
+    void unload();
+    bool loaded(int layout_id);
+
+    public:
+    XMLFiles& get_xml_files();
+    PSclInputModeConfigure get_input_mode_configure_table();
+    PSclLayout get_layout_table();
+    PSclLayoutKeyCoordinatePointerTable get_key_coordinate_pointer_frame();
+    PSclModifierDecoration get_modifier_decoration_table();
+    PSclLabelPropertiesTable get_label_properties_frame();
+    PSclDefaultConfigure get_default_configure();
+    PSclAutoPopupConfigure get_autopopup_configure();
+    PSclMagnifierWndConfigure get_magnifier_configure();
+    SclNinePatchInfo* get_nine_patch_list();
+    int get_inputmode_id(const char *name);
+    const char* get_inputmode_name(int id);
+    int get_inputmode_size();
+    int get_layout_id(const char* name);
+    int get_layout_size();
+    int get_labelproperty_size();
+    int get_modifier_decoration_id(const char *name);
+    bool get_nine_patch_info(const char *filename, SclNinePatchInfo *info);
+
+    const char* name() {
+        return "xmlparser";
+    }
+
+    void destroy();
+    private:
+    XMLResource();
+
+    private:
+    static XMLResource* m_instance;
+
+    Main_Entry_Parser *m_main_entry_parser;
+    Input_Mode_Configure_Parser *m_input_mode_configure_parser;
+    Layout_Parser *m_layout_parser;
+    Modifier_decoration_Parser *m_modifier_decoration_parser;
+    Label_properties_Parser *m_label_properties_parser;
+    Default_Configure_Parser *m_default_configure_parser;
+    AutoPopup_Configure_Parser *m_autopopup_configure_parser;
+    Magnifier_Configure_Parser *m_magnifier_configure_parser;
+    Nine_patch_file_list_Parser *m_nine_patch_file_list_parser;
+
+    private:
+    class DestructHelper {
+        public:
+        ~DestructHelper() {
+            if (XMLResource::m_instance != NULL)
+            {
+                delete m_instance;
+                m_instance = NULL;
+            }
+        }
+    };
+    static DestructHelper des;
+};
+}
+
+#endif
+
