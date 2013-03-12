@@ -1,0 +1,173 @@
+<!--Example of metadata.xml -->
+<!-- 1. the order of the field list in record is not sensitive -->
+
+<metadata version = "0.1">
+<metadata_type>
+    <type name = "string_id" width = "2"/>
+</metadata_type>
+<record name = "input_mode_configure">
+    <field name = "name" type = "string_id" />
+    <field name = "layout_portrait" type = "string_id" />
+    <field name = "layout_landscape" type = "string_id" />
+    <field name = "use_virtual_window" type = "int8" />
+    <field name = "use_dim_window" type = "int8" />
+    <field name = "timeout" type = "int32" />
+</record>
+<record name = "layout">
+    <field name = "name" type = "string_id"/>
+    <field name = "display_mode" type = "int8"/>
+    <field name = "style" type = "int8"/>
+    <field name = "width" type = "int16"/>
+    <field name = "height" type = "int16"/>
+    <field name = "use_sw_button" type = "int8"/>
+    <field name = "use_magnifier_window" type = "int8"/>
+    <field name = "extract_background" type = "int8"/>
+    <field name = "key_width" type = "int16"/>
+    <field name = "key_height" type = "int16"/>
+    <field name = "key_spacing" type = "int16"/>
+    <field name = "row_spacing" type = "int16"/>
+    <field name = "use_sw_background" type = "int8"/>
+    <field name = "bg_color" type = "int8"/>
+    <field name = "bg_line_width" type = "float32"/>
+    <field name = "bg_line_color" type = "int8"/>
+    <field name = "add_grab_left" type = "int16"/>
+    <field name = "add_grab_right" type = "int16"/>
+    <field name = "add_grab_top" type = "int16"/>
+    <field name = "add_grab_bottom" type = "int16"/>
+    <field name = "image_path" type = "string_id"/>
+    <field name = "key_background_image" type = "string_id"/>
+    <field name = "sound_style" type = "string_id"/>
+    <field name = "vibe_style" type = "string_id"/>
+    <field name = "label_type" type = "string_id"/>
+    <field name = "modifier_decorator" type = "string_id"/>
+</record>
+<record name = "key_coordinate_record">
+    <field name = "x" type = "int16"/>
+    <field name = "y" type = "int16"/>
+    <field name = "width" type = "int16"/>
+    <field name = "height" type = "int16"/>
+    <field name = "add_hit_left" type = "int16"/>
+    <field name = "add_hit_right" type = "int16"/>
+    <field name = "add_hit_top" type = "int16"/>
+    <field name = "add_hit_bottom" type = "int16"/>
+    <field name = "popup_relative_x" type = "int16"/>
+    <field name = "popup_relative_y" type = "int16"/>
+    <field name = "extract_offset_x" type = "int16"/>
+    <field name = "extract_offset_y" type = "int16"/>
+    <field name = "sub_layout" type = "string_id"/>
+    <field name = "magnifier_offset_x" type = "int16"/>
+    <field name = "magnifier_offset_y" type = "int16"/>
+    <field name = "custom_id" type = "string_id"/>
+    <field name = "button_type" type = "int8"/>
+    <field name = "key_type" type = "int8"/>
+    <field name = "popup_type" type = "int8"/>
+    <field name = "use_magnifier" type = "int8"/>
+    <field name = "use_long_key_magnifier" type = "int8"/>
+    <field name = "popup_input_mode" type = "string_id"/>
+    <field name = "sound_style" type = "string_id"/>
+    <field name = "vibe_style" type = "string_id"/>
+    <field name = "is_side_button" type = "int8"/>
+    <field name = "label_count" type = "int16"/>
+    <field name = "label" type = "int16"/>
+    <field name = "label_type" type = "int16"/>
+    <field name = "image_label_path" type = "int16"/>
+    <field name = "image_label_type" type = "int16"/>
+    <field name = "bg_image_path" type = "int16"/>
+    <field name = "key_value_count" type = "int16"/>
+    <field name = "key_value" type = "int16"/>
+    <field name = "key_event" type = "int32"/>
+    <field name = "long_key_type" type = "int8"/>
+    <field name = "long_key_value" type = "int16"/>
+    <field name = "long_key_event" type = "int32"/>
+    <field name = "use_repeat_key" type = "int8"/>
+    <field name = "autopopup_key_labels" type = "string_id"/>
+    <field name = "autopopup_key_values" type = "string_id"/>
+    <field name = "autopopup_key_events" type = "int32"/>
+    <field name = "dont_close_popup" type = "int8"/>
+    <field name = "extra_option" type = "int8"/>
+    <field name = "multitouch_type" type = "int8"/>
+    <field name = "modifier_decorator" type = "string_id"/>
+    <field name = "magnifier_label" type = "string_id"/>
+</record>
+<record name = "label_properties_record">
+    <field name = "label_type" type = "int16"/>
+    <field name = "font_name" type = "int16"/>
+    <field name = "font_size" type = "int16"/>
+    <field name = "font_color" type = "int8"/>
+    <field name = "alignment" type = "int8"/>
+    <field name = "padding_x" type = "int16"/>
+    <field name = "padding_y" type = "int16"/>
+    <field name = "inner_width" type = "int16"/>
+    <field name = "inner_height" type = "int16"/>
+    <field name = "shadow_distance" type = "int16"/>
+    <field name = "shadow_direction" type = "int8"/>
+    <field name = "shadow_color" type = "int8"/>
+</record>
+<record name = "default_configure">
+    <field name = "display_mode" type = "int8"/>
+    <field name = "input_mode" type = "string_id"/>
+    <field name = "image_file_base_path" type = "string_id"/>
+    <field name = "target_screen_width" type = "int16"/>
+    <field name = "target_screen_height" type = "int16"/>
+    <field name = "auto_detect_landscape" type = "int8"/>
+    <field name = "use_magnifier_window" type = "int8"/>
+    <field name = "use_auto_popup" type = "int8"/>
+    <field name = "use_zoom_window" type = "int8"/>
+    <field name = "on_error_noti_send" type = "int8"/>
+    <field name = "use_word_deletion" type = "int8"/>
+    <field name = "sw_button_style" type = "int8"/>
+    <field name = "touch_offset_level" type = "int16"/>
+    <field name = "touch_offset" type = "int16"/>
+    <field name = "default_sub_layout" type = "string_id"/>
+    <field name = "use_actual_dim_window" type = "int8"/>
+    <field name = "dim_color" type = "int8"/>
+    <field name = "use_lazy_loading" type = "int8"/>
+</record>
+<record name = "magnifier_configure">
+    <field name = "style" type = "int8"/>
+    <field name = "width" type = "int16"/>
+    <field name = "height" type = "int16"/>
+    <field name = "label_area_rect" type = "int16"/>
+    <field name = "bg_image_path" type = "string_id"/>
+    <field name = "bg_shift_image_path" type = "string_id"/>
+    <field name = "bg_shift_lock_image_path" type = "string_id"/>
+    <field name = "bg_long_key_image_path" type = "string_id"/>
+    <field name = "use_actual_window" type = "int8"/>
+    <field name = "label_type" type = "string_id"/>
+    <field name = "padding_x" type = "int16"/>
+    <field name = "padding_y" type = "int16"/>
+    <field name = "show_shift_label" type = "int8"/>
+</record>
+<record name = "autopopup_configure">
+    <field name = "bg_image_path" type = "string_id"/>
+    <field name = "bg_color" type = "int8"/>
+    <field name = "bg_line_width" type = "float32"/>
+    <field name = "bg_line_color" type = "int8"/>
+    <field name = "bg_padding" type = "int8"/>
+    <field name = "button_image_path" type = "string_id"/>
+    <field name = "sw_button_style" type = "int8"/>
+    <field name = "button_width" type = "int16"/>
+    <field name = "button_height" type = "int16"/>
+    <field name = "button_spacing" type = "int8"/>
+    <field name = "label_type" type = "string_id"/>
+    <field name = "decoration_image_path" type = "string_id"/>
+    <field name = "decoration_size" type = "int8"/>
+    <field name = "max_column" type = "int8"/>
+    <field name = "add_grab_left" type = "int16"/>
+    <field name = "add_grab_right" type = "int16"/>
+    <field name = "add_grab_top" type = "int16"/>
+    <field name = "add_grab_bottom" type = "int16"/>
+</record>
+<record name = "modifier_decoration">
+    <field name = "extract_background" type = "int8"/>
+    <field name = "name" type = "string_id"/>
+    <field name = "bg_image_path" type = "string_id"/>
+</record>
+<record name = "nine_patch">
+    <field name = "image_path" type = "string_id"/>
+    <field name = "left" type = "int16" />
+    <field name = "right" type = "int16" />
+    <field name = "top" type = "int16" />
+    <field name = "bottom" type = "int16" />
+</record>
+</metadata>

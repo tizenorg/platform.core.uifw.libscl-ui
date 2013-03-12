@@ -1,0 +1,13 @@
+# Package Information for pkg-config
+
+prefix=/usr
+exec_prefix=${prefix}
+libdir=${prefix}/lib
+includedir=${prefix}/include
+
+Name: libscl-ui
+Description: SCL UI - A library for developing XML-based software keyboards
+Version: 1.0
+Libs: -L${libdir} -lscl-ui
+Cflags: -I${includedir}/libscl-ui
+
