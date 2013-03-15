@@ -118,9 +118,6 @@ void Default_Configure_Bin_Parser::parsing_default_configure() {
     //dim_color
     decode_color(cur->dim_color, record_width.dim_color);
 
-    //use_lazy_loading
-    cur->use_lazy_loading = m_storage.get<sint_t>(record_width.use_lazy_loading);
-
 #ifdef __SCL_TXT_DEBUG
     put_default_configure(DECODE, m_default_configure);
 #endif

@@ -15,179 +15,14 @@
  *
  */
 
-#include "modifier_decoration_parser.h"
-#include "main_entry_parser.h"
 #include <memory.h>
+#include <libxml/parser.h>
+
+#include "modifier_decoration_parser.h"
 #include "xml_parser_utils.h"
-static int get_display_state_prop(const char*);
+#include "simple_debug.h"
+
 static int get_key_modifier_state_prop(const char*);
-
-Modifier_decoration_Parser* Modifier_decoration_Parser::m_instance = NULL;
-
-Modifier_decoration_Parser::Modifier_decoration_Parser() {
-    memset(m_modifier_decoration_table, 0x00, sizeof(SclModifierDecoration) * MAX_SCL_MODIFIER_DECORATION_NUM);
-}
-
-Modifier_decoration_Parser::~Modifier_decoration_Parser() {
-    for(int i = 0; i < MAX_SCL_MODIFIER_DECORATION_NUM; ++i) {
-        SclModifierDecoration& cur_rec = m_modifier_decoration_table[i];
-        for (int display_state = 0; display_state < DISPLAYMODE_MAX; ++display_state ) {
-            for( int key_modifier_state = 0; key_modifier_state < KEY_MODIFIER_MAX; ++key_modifier_state) {
-                if (cur_rec.bg_image_path[display_state][key_modifier_state])
-                    delete cur_rec.bg_image_path[display_state][key_modifier_state];
-                cur_rec.bg_image_path[display_state][key_modifier_state] = NULL;
-            }
-        }
-
-    }
-}
-
-Modifier_decoration_Parser* Modifier_decoration_Parser::get_instance() {
-    if (m_instance == NULL) {
-        m_instance = new Modifier_decoration_Parser();
-    }
-    return m_instance;
-}
-void Modifier_decoration_Parser::init() {
-    parsing_modifier_decoration_table();
-}
-
-/* recompute_layout will change the table */
-PSclModifierDecoration Modifier_decoration_Parser::get_modifier_decoration_table() {
-    return m_modifier_decoration_table;
-}
-
-void Modifier_decoration_Parser::parsing_modifier_decoration_table() {
-    xmlDocPtr doc;
-    xmlNodePtr cur_node;
-
-    char input_file[_POSIX_PATH_MAX] = {0};
-    Main_Entry_Parser::get_file_full_path(input_file, "modifier_decoration");
-
-    doc = xmlReadFile(input_file, NULL, 0);
-    if (doc == NULL) {
-        printf("Could not load file.");
-        exit(1);
-    }
-    cur_node = xmlDocGetRootElement(doc);
-    if (cur_node == NULL) {
-        printf("empty document.\n");
-        xmlFreeDoc(doc);
-        exit(1);
-    }
-    if (0 != xmlStrcmp(cur_node->name, (const xmlChar*)"modifier_decoration_table"))
-    {
-       printf("root name error!");
-       xmlFreeDoc(doc);
-       exit(1);
-    }
-
-    cur_node = cur_node->xmlChildrenNode;
-
-
-    SclModifierDecoration* cur_rec = m_modifier_decoration_table;
-    while (cur_node != NULL) {
-        if (0 == xmlStrcmp(cur_node->name, (const xmlChar *)"modifier_decoration_record")) {
-            parsing_modifier_decoration_record( cur_node, cur_rec);
-            cur_rec++;
-        }
-
-        cur_node = cur_node->next;
-    }
-    xmlFreeDoc(doc);
-}
-
-void
-Modifier_decoration_Parser::set_modifier_decoration_default_record(const PSclModifierDecoration cur_rec) {
-    cur_rec->valid = FALSE;
-    cur_rec->extract_background = false;
-    cur_rec->name = NULL;
-    for (int display_state = 0; display_state < DISPLAYMODE_MAX; ++display_state ) {
-        for( int key_modifier_state = 0; key_modifier_state < KEY_MODIFIER_MAX; ++key_modifier_state) {
-            cur_rec->bg_image_path[display_state][key_modifier_state] = NULL;
-        }
-    }
-}
-
-void
-Modifier_decoration_Parser::parsing_modifier_decoration_record(const xmlNodePtr cur_node, const PSclModifierDecoration cur_rec) {
-    assert(cur_node != NULL);
-    assert(cur_rec != NULL);
-
-   set_modifier_decoration_default_record(cur_rec);
-
-    xmlNodePtr child_node = cur_node->xmlChildrenNode;
-
-    while (child_node != NULL) {
-        if ( 0 == xmlStrcmp(child_node->name, (const xmlChar*)"name")) {
-            xmlChar* temp = xmlNodeGetContent(child_node);
-            cur_rec->name = (sclchar *)temp;
-            cur_rec->valid = TRUE;
-        }
-        else if ( 0 == xmlStrcmp(child_node->name, (const xmlChar*)"display_part_background")) {
-            cur_rec->extract_background = get_content_bool(child_node);
-            cur_rec->valid = TRUE;
-        }
-        else if ( 0 == xmlStrcmp(child_node->name, (const xmlChar*)"background_image_path")) {
-            parsing_background_image_record_node(child_node, cur_rec);
-            cur_rec->valid = TRUE;
-        }
-        child_node = child_node->next;
-    }
-}
-
-void
-Modifier_decoration_Parser::parsing_background_image_record_node(const xmlNodePtr cur_node, const PSclModifierDecoration cur_rec) {
-    assert(cur_node != NULL);
-    assert(cur_rec != NULL);
-    assert(0 == xmlStrcmp(cur_node->name, (const xmlChar*)"background_image_path"));
-    xmlNodePtr child_node = cur_node->xmlChildrenNode;
-
-    while (child_node != NULL) {
-        if (0 == xmlStrcmp(child_node->name, (const xmlChar*)"image") ) {
-            /* FIXME */
-            int display_state = DISPLAYMODE_PORTRAIT;
-            xmlChar* display_state_xml = xmlGetProp(child_node, (const xmlChar*)"display_state");
-            if (display_state_xml != NULL) {
-                if (0 == xmlStrcmp(display_state_xml, (const xmlChar*)"landscape")) {
-                    display_state = DISPLAYMODE_LANDSCAPE;
-                }
-                xmlFree(display_state_xml);
-            }
-
-            int key_modifier_state = KEY_MODIFIER_NONE;
-            xmlChar* key_modifier_state_xml = xmlGetProp(child_node, (const xmlChar*)"key_modifier_state");
-            if (key_modifier_state_xml != NULL) {
-                key_modifier_state = get_key_modifier_state_prop((const char*)key_modifier_state_xml);
-                xmlFree(key_modifier_state_xml);
-            }
-
-           if (display_state != -1 && key_modifier_state != -1 ) {
-                sclchar* key = (sclchar*)xmlNodeGetContent(child_node);
-                cur_rec->bg_image_path[display_state][key_modifier_state] = key;
-                //Warning:: Donot xmlFree key
-            }
-        }
-        child_node = child_node->next;
-    }
-}
-
-int
-Modifier_decoration_Parser::get_modifier_decoration_id( const char *name )
-{
-    if (name == NULL) return -1;
-
-    for(int i = 0; i < MAX_SCL_MODIFIER_DECORATION_NUM; ++i) {
-        if ( m_modifier_decoration_table[i].name) {
-            if ( 0 == strcmp(m_modifier_decoration_table[i].name, name) ) {
-                return i;
-            }
-        }
-    }
-
-    return -1;
-}
-
 //UTILS
 typedef struct _Modifier_decoration_state_match_table{
     int modifier_decoration_state;
@@ -254,3 +89,208 @@ get_key_modifier_state_prop(const char* key ) {
     }
     return key_modifier_state;
 }
+
+class ModifierDecorationParserImpl {
+    public:
+        ModifierDecorationParserImpl() {
+            memset(m_modifier_decoration_table, 0x00, sizeof(SclModifierDecoration) * MAX_SCL_MODIFIER_DECORATION_NUM);
+        }
+
+        ~ModifierDecorationParserImpl() {
+            for(int i = 0; i < MAX_SCL_MODIFIER_DECORATION_NUM; ++i) {
+                SclModifierDecoration& cur_rec = m_modifier_decoration_table[i];
+                for (int display_state = 0; display_state < DISPLAYMODE_MAX; ++display_state ) {
+                    for( int key_modifier_state = 0; key_modifier_state < KEY_MODIFIER_MAX; ++key_modifier_state) {
+                        if (cur_rec.bg_image_path[display_state][key_modifier_state])
+                            delete cur_rec.bg_image_path[display_state][key_modifier_state];
+                        cur_rec.bg_image_path[display_state][key_modifier_state] = NULL;
+                    }
+                }
+
+            }
+        }
+
+        int parsing_modifier_decoration_table(const char* input_file) {
+            xmlDocPtr doc;
+            xmlNodePtr cur_node;
+
+            doc = xmlReadFile(input_file, NULL, 0);
+            if (doc == NULL) {
+                SCLLOG(SclLog::DEBUG, "Could not load file: %s.", input_file);
+                return -1;
+            }
+            cur_node = xmlDocGetRootElement(doc);
+            if (cur_node == NULL) {
+                SCLLOG(SclLog::DEBUG, "Modifier_decoration_Parser: empty document.\n");
+                xmlFreeDoc(doc);
+                return -1;
+            }
+            if (0 != xmlStrcmp(cur_node->name, (const xmlChar*)"modifier_decoration_table"))
+            {
+                SCLLOG(SclLog::DEBUG, "Modifier_decoration_Parser: root name error: %s\n!", (char *)cur_node->name);
+                xmlFreeDoc(doc);
+                return -1;
+            }
+
+            cur_node = cur_node->xmlChildrenNode;
+
+
+            SclModifierDecoration* cur_rec = m_modifier_decoration_table;
+
+            int size = 0;
+            while (cur_node != NULL) {
+                if (0 == xmlStrcmp(cur_node->name, (const xmlChar *)"modifier_decoration_record")) {
+                    parsing_modifier_decoration_record( cur_node, cur_rec);
+                    size++;
+                    cur_rec++;
+                    if (size >= MAX_SCL_MODIFIER_DECORATION_NUM) {
+                        SCLLOG(SclLog::ERROR, "No Space for modifier decoration record.");
+                        break;
+                    }
+                }
+
+                cur_node = cur_node->next;
+            }
+            xmlFreeDoc(doc);
+
+            return 0;
+
+        }
+
+        void parsing_modifier_decoration_record(const xmlNodePtr cur_node, const PSclModifierDecoration cur_rec) {
+            assert(cur_node != NULL);
+            assert(cur_rec != NULL);
+
+            set_modifier_decoration_default_record(cur_rec);
+
+            xmlNodePtr child_node = cur_node->xmlChildrenNode;
+
+            while (child_node != NULL) {
+                if ( 0 == xmlStrcmp(child_node->name, (const xmlChar*)"name")) {
+                    xmlChar* temp = xmlNodeGetContent(child_node);
+                    cur_rec->name = (sclchar *)temp;
+                    cur_rec->valid = TRUE;
+                }
+                else if ( 0 == xmlStrcmp(child_node->name, (const xmlChar*)"display_part_background")) {
+                    cur_rec->extract_background = get_content_bool(child_node);
+                    cur_rec->valid = TRUE;
+                }
+                else if ( 0 == xmlStrcmp(child_node->name, (const xmlChar*)"background_image_path")) {
+                    parsing_background_image_record_node(child_node, cur_rec);
+                    cur_rec->valid = TRUE;
+                }
+                child_node = child_node->next;
+            }
+
+        }
+
+        void set_modifier_decoration_default_record(const PSclModifierDecoration cur_rec) {
+            cur_rec->valid = FALSE;
+            cur_rec->extract_background = false;
+            cur_rec->name = NULL;
+            for (int display_state = 0; display_state < DISPLAYMODE_MAX; ++display_state ) {
+                for( int key_modifier_state = 0; key_modifier_state < KEY_MODIFIER_MAX; ++key_modifier_state) {
+                    cur_rec->bg_image_path[display_state][key_modifier_state] = NULL;
+                }
+            }
+        }
+
+        void parsing_background_image_record_node(const xmlNodePtr cur_node, const PSclModifierDecoration cur_rec) {
+            assert(cur_node != NULL);
+            assert(cur_rec != NULL);
+            assert(0 == xmlStrcmp(cur_node->name, (const xmlChar*)"background_image_path"));
+            xmlNodePtr child_node = cur_node->xmlChildrenNode;
+
+            while (child_node != NULL) {
+                if (0 == xmlStrcmp(child_node->name, (const xmlChar*)"image") ) {
+                    /* FIXME */
+                    int display_state = DISPLAYMODE_PORTRAIT;
+                    xmlChar* display_state_xml = xmlGetProp(child_node, (const xmlChar*)"display_state");
+                    if (display_state_xml != NULL) {
+                        if (0 == xmlStrcmp(display_state_xml, (const xmlChar*)"landscape")) {
+                            display_state = DISPLAYMODE_LANDSCAPE;
+                        }
+                        xmlFree(display_state_xml);
+                    }
+
+                    int key_modifier_state = KEY_MODIFIER_NONE;
+                    xmlChar* key_modifier_state_xml = xmlGetProp(child_node, (const xmlChar*)"key_modifier_state");
+                    if (key_modifier_state_xml != NULL) {
+                        key_modifier_state = get_key_modifier_state_prop((const char*)key_modifier_state_xml);
+                        xmlFree(key_modifier_state_xml);
+                    }
+
+                    if (display_state != -1 && key_modifier_state != -1 ) {
+                        sclchar* key = (sclchar*)xmlNodeGetContent(child_node);
+                        cur_rec->bg_image_path[display_state][key_modifier_state] = key;
+                        //Warning:: Donot xmlFree key
+                    }
+                }
+                child_node = child_node->next;
+            }
+        }
+
+        SclModifierDecoration m_modifier_decoration_table[MAX_SCL_MODIFIER_DECORATION_NUM];
+};
+
+Modifier_decoration_Parser* Modifier_decoration_Parser::m_instance = NULL;
+
+Modifier_decoration_Parser*
+Modifier_decoration_Parser::get_instance() {
+    if (m_instance == NULL) {
+        m_instance = new Modifier_decoration_Parser();
+    }
+    return m_instance;
+}
+
+Modifier_decoration_Parser::Modifier_decoration_Parser() {
+    m_impl = new ModifierDecorationParserImpl;
+    if (m_impl == NULL) {
+        SCLLOG(SclLog::ERROR, "Create Modifier_decoration_Parser failed");
+    }
+}
+
+Modifier_decoration_Parser::~Modifier_decoration_Parser() {
+    if (m_impl) {
+        SCLLOG(SclLog::MESSAGE, "~Modifier_decoration_Parser() has called");
+        delete m_impl;
+        m_impl = NULL;
+    }
+}
+
+int
+Modifier_decoration_Parser::init(const char* file) {
+    return m_impl->parsing_modifier_decoration_table(file);
+}
+
+/* recompute_layout will change the table */
+PSclModifierDecoration
+Modifier_decoration_Parser::get_modifier_decoration_table() {
+    return m_impl->m_modifier_decoration_table;
+}
+
+int
+Modifier_decoration_Parser::get_modifier_decoration_id( const char *name )
+{
+    if (name == NULL) {
+        SCLLOG(SclLog::DEBUG, "get_modifier_decoration_id() has failed");
+        return -1;
+    }
+
+    PSclModifierDecoration modifier_decoration_table = get_modifier_decoration_table();
+    if (modifier_decoration_table == NULL) {
+        SCLLOG(SclLog::DEBUG, "get_modifier_decoration_id() has failed");
+        return -1;
+    }
+    for(int i = 0; i < MAX_SCL_MODIFIER_DECORATION_NUM; ++i) {
+        if ( modifier_decoration_table[i].name) {
+            if ( 0 == strcmp(modifier_decoration_table[i].name, name) ) {
+                return i;
+            }
+        }
+    }
+
+    SCLLOG(SclLog::DEBUG, "get_modifier_decoration_id() has failed");
+    return -1;
+}
+

@@ -16,6 +16,7 @@
  */
 
 #include <limits.h>
+#include <unistd.h>
 #include "xml2dat.h"
 #include "string_encoder.h"
 #include "metadata_handler.h"
@@ -29,26 +30,25 @@
 #include "encode_autopopup_configure.h"
 #include "encode_nine_patch.h"
 #include "xmlresource.h"
-
 using namespace xmlresource;
 using namespace std;
 
 String_Encoder actual_string_encoder;
 IString_Encoder& string_encoder = actual_string_encoder;
 
-static inline const char* Usage(){
+static inline void show_usage(){
     static const char* message = {  "xml2binary: missing folder operand\n"
                                     "-------------------------------------------------------\n"
                                     "|  Usage: xml2binary operand1 operand2                |\n"
                                     "|  operand1: the folder where xml text files located  |\n"
                                     "|  operand2: the folder you want to place the bin file|\n"
                                     "------------------------------------------------------- \n"};
-    return message;
+    printf("%s", message);
 }
 
 int main(const int argc, char* argv[]) {
     if (argc < 2) {
-        printf(Usage());
+        show_usage();
         return -1;
     }
 

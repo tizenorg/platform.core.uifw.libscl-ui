@@ -87,9 +87,6 @@ encode_default_configure_record(ResourceStorage& storage, const PSclDefaultConfi
 
     //dim_color
     _encode_color(storage, cur->dim_color, record_width.dim_color);
-
-    //use_lazy_loading
-    storage.put<sint_t>(cur->use_lazy_loading, record_width.use_lazy_loading);
 }
 
 int

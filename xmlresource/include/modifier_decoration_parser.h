@@ -17,35 +17,22 @@
 
 #ifndef __Modifier_decoration_Parser__H__
 #define __Modifier_decoration_Parser__H__
-#include <libxml/parser.h>
 #include "sclres_type.h"
 
+class ModifierDecorationParserImpl;
+
 class Modifier_decoration_Parser {
+    ModifierDecorationParserImpl *m_impl;
+    public:
+        int init(const char* file);
+        PSclModifierDecoration get_modifier_decoration_table();
+        int get_modifier_decoration_id(const char *name);
     public:
         ~Modifier_decoration_Parser();
         static Modifier_decoration_Parser *get_instance();
-        void init();
-        PSclModifierDecoration get_modifier_decoration_table();
-        int get_modifier_decoration_id(const char *name);
     private:
         Modifier_decoration_Parser();
-        void parsing_modifier_decoration_table();
-        void parsing_modifier_decoration_record(const xmlNodePtr, const PSclModifierDecoration);
-        void set_modifier_decoration_default_record(const PSclModifierDecoration);
-        void parsing_background_image_record_node(const xmlNodePtr cur_node, const PSclModifierDecoration cur_rec);
-
-    private:
         static Modifier_decoration_Parser *m_instance;
-        SclModifierDecoration m_modifier_decoration_table[MAX_SCL_MODIFIER_DECORATION_NUM];
-    private:
-        class DestructHelper {
-            public:
-                ~DestructHelper() {
-                    if (Modifier_decoration_Parser::m_instance != NULL)
-                        delete m_instance;
-                }
-        };
-        static DestructHelper des;
 };
 
 

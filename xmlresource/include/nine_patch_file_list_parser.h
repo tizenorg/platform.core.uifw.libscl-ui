@@ -17,34 +17,23 @@
 
 #ifndef __Nine_patch_file_list_Parser__H__
 #define __Nine_patch_file_list_Parser__H__
-#include <libxml/parser.h>
 #include "sclres_type.h"
 
 const int MAX_NINE_PATCH_FILE_LIST = 128;
+class NinePatchFileListParserImpl;
 
 class Nine_patch_file_list_Parser {
+    NinePatchFileListParserImpl *m_impl;
     public:
-        ~Nine_patch_file_list_Parser();
-        static Nine_patch_file_list_Parser *get_instance();
-    void init();
+    int init(const char* file);
     SclNinePatchInfo* get_nine_patch_list();
     bool get_nine_patch_info(const char *filename, SclNinePatchInfo *info);
+    public:
+    ~Nine_patch_file_list_Parser();
+    static Nine_patch_file_list_Parser *get_instance();
     private:
     Nine_patch_file_list_Parser();
-    void parsing_nine_patch_file_list();
-    private:
-        static Nine_patch_file_list_Parser *m_instance;
-        SclNinePatchInfo m_nine_patch_file_list[MAX_NINE_PATCH_FILE_LIST];
-        int m_size;
-    private:
-    class DestructHelper {
-        public:
-        ~DestructHelper() {
-            if (Nine_patch_file_list_Parser::m_instance != NULL)
-                delete m_instance;
-        }
-    };
-    static DestructHelper des;
+    static Nine_patch_file_list_Parser *m_instance;
 };
 
 

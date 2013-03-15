@@ -18,7 +18,6 @@
 #ifndef __XMLRESOURCE__
 #define __XMLRESOURCE__
 
-#include <libxml/parser.h>
 #include "main_entry_parser.h"
 #include "input_mode_configure_parser.h"
 #include "layout_parser.h"

@@ -17,13 +17,31 @@
 
 #ifndef __SIMPLE_DEBUG_H__
 #define __SIMPLE_DEBUG_H__
-#define _PRINT(label, ...)\
-    do{\
-        fprintf(stderr, "[%s] %s at %s:", label, __FILE__, __FUNCTION__); \
-        fprintf(stderr, __VA_ARGS__);\
-        fprintf(stderr, "\n");\
-    }while (0);
+#include <stdio.h>
 
-#define LOG(...) _PRINT("log", __VA_ARGS__)
-#define DEBUG(...) _PRINT("debug", __VA_ARGS__)
+class SclLog {
+    public:
+        enum LOG_LEVEL {
+            MESSAGE = 0,
+            WARNING,
+            DEBUG,
+            ERROR,
+            MAX_LOG_LEVEL
+        };
+
+        static SclLog* get_instance();
+        void log(enum LOG_LEVEL, char* fmt, ...);
+        ~SclLog();
+    private:
+        SclLog();
+        static SclLog* m_instance;
+
+        FILE *m_flog;
+};
+
+
+void SCLLOG(enum SclLog::LOG_LEVEL level, char* fmt, ...);
+
+void SCLLOG_TIME_BEGIN();
+void SCLLOG_TIME_END(char *msg);
 #endif

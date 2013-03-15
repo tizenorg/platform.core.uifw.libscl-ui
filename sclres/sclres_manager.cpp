@@ -19,6 +19,7 @@
 #include "xmlresource.h"
 #include "binary_xmlresource.h"
 #include <assert.h>
+#include "simple_debug.h"
 using namespace xmlresource;
 using namespace binary_xmlresource;
 using namespace sclres;
@@ -46,11 +47,11 @@ SclResParserManager::SclResParserManager() {
 void
 SclResParserManager::init(const SCLParserType parser_type, const char *entry_filepath) {
     if (parser_type == SCL_PARSER_TYPE_XML) {
-        printf("Use text xml\n");
+        SCLLOG(SclLog::MESSAGE, "Use text xml\n");
         m_cur = XMLResource::get_instance();
     }
     else if (parser_type == SCL_PARSER_TYPE_BINARY_XML) {
-        printf("Use binary xml\n");
+        SCLLOG(SclLog::MESSAGE, "Use binary xml\n");
         m_cur = BinXmlResource::get_instance();
     }
 

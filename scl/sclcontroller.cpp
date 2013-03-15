@@ -135,8 +135,8 @@ typedef enum {
         sclint width;
         sclint height;
         SCLLabelAlignment align;
-        sclbyte padding_x;
-        sclbyte padding_y;
+        sclshort padding_x;
+        sclshort padding_y;
         sclbyte inner_width;
         sclbyte inner_height;
     } TextCache;
@@ -258,12 +258,14 @@ CSCLController::process_rotation_change(const SCLRotation rotation)
         /* FIXME : NEWXML temporary commenting out */
         //context->set_base_layout(sclres_input_mode_configure[context->get_input_mode()].layouts[context->get_display()]);
 
-        /* Make sure to set window's rotation degree before sending engine signal, which adjusts the size of main window */
-        windows->set_window_rotation(NULL, rotation);
-
         sclwindow window = windows->get_base_window();
         handle_engine_signal(SCL_SIG_DISP_CHANGE, window);
         windows->update_window(window);
+
+        /* Moved to here since the new WMSync requires the rotation call be invoked as the
+           last step of display change process */
+        /* Make sure to set window's rotation degree before sending engine signal, which adjusts the size of main window */
+        windows->set_window_rotation(NULL, rotation);
     }
     return TRUE;
 }
@@ -3149,7 +3151,7 @@ void CSCLController::handle_engine_signal( SclInternalSignal signal, sclwindow t
         // SIGACTION_CLOSE_MAGNIFIER
         {	TRUE,	TRUE,	TRUE,	TRUE,		TRUE,		0,			0,			0,			0,			0,			0,		TRUE	},
         // SIGACTION_UNSET_SHIFT
-        {	TRUE,	0	,	0	,	TRUE,		TRUE,		0,			0,			0,			0,			0,			0,		TRUE	},
+        {	TRUE,	0	,	0	,	TRUE,		0,			0,			0,			0,			0,			0,			0,		TRUE	},
         // SIGACTION_UNPRESS_KEYS
         {	TRUE,	TRUE,	TRUE,	TRUE,		TRUE,		0,			0,			0,			0,			0,			0,		TRUE	},
         // SIGACTION_INIT_DISPLAY

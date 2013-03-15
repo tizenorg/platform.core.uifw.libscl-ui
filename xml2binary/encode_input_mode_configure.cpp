@@ -19,7 +19,6 @@
 #include "encode_input_mode_configure.h"
 #include <string>
 #include <libxml/parser.h>
-#include "timer.h"
 #include "xmlresource.h"
 #include "imetadata_helper.h"
 #include "put_record.h"

@@ -208,8 +208,8 @@ typedef struct _SclLabelProperties {
     /* Font color depending on the button and shift state */
     SclColor font_color[SCL_SHIFT_STATE_MAX][SCL_BUTTON_STATE_MAX];
     SCLLabelAlignment alignment;			/* Alignment option for this label property */
-    sclbyte padding_x;						/* X padding value for alignment option above */
-    sclbyte padding_y;						/* Y padding value for alignment option above */
+    sclshort padding_x;						/* X padding value for alignment option above */
+    sclshort padding_y;						/* Y padding value for alignment option above */
     sclbyte inner_width;					/* Inner width value for making a inner rect padded in above values */
     sclbyte inner_height;					/* Inner height value for making a inner rect padded in above values */
     sclbyte shadow_distance;				/* A distance value for drawing shadow */
@@ -345,7 +345,6 @@ typedef struct _SclDefaultConfigure {
     sclchar *default_sub_layout;			/* Initial sub_layout_name */
     sclboolean use_actual_dim_window;		/* Whether to use a new window or make a dim window as a layer of existing base window */
     SclColor dim_color;						/* Color setting for dim window */
-    sclboolean use_lazy_loading;			/* Whether to load layout files when needed */
 }SclDefaultConfigure;
 
 /**

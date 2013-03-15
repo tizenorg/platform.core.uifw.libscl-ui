@@ -224,7 +224,6 @@ put_default_configure_record(FILE* fp, const SclDefaultConfigure& record) {
     put_str(fp, record.default_sub_layout);
     put_int(fp, record.use_actual_dim_window);
     put_color(fp, record.dim_color);
-    put_int(fp, record.use_lazy_loading);
 }
 
 static void put_label_properties_record(FILE* fp, const SclLabelProperties& record) {

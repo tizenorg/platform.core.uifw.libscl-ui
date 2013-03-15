@@ -294,14 +294,33 @@ CSCLUI::get_scale_y(scl16 y)
 }
 
 /**
- * Returns the scl base window size
+ * Returns the scl main window size
  */
-void
-CSCLUI::get_window_rect(SclRectangle *rect)
+SclRectangle
+CSCLUI::get_main_window_rect()
 {
+    SclRectangle ret = {0};
+
     if (m_impl) {
-        m_impl->get_window_rect(rect);
+        ret = m_impl->get_main_window_rect();
     }
+
+    return ret;
+}
+
+/**
+ * Returns the size of given input mode
+ */
+SclSize
+CSCLUI::get_input_mode_size(const sclchar *input_mode, SCLDisplayMode display_mode)
+{
+    SclSize ret = {0};
+
+    if (m_impl) {
+        ret = m_impl->get_input_mode_size(input_mode, display_mode);
+    }
+
+    return ret;
 }
 
 /**

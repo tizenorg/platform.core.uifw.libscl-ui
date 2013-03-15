@@ -76,7 +76,8 @@ public:
     void reset_popup_timeout();
     void close_all_popups();
 
-    void get_window_rect(SclRectangle *rect);
+    SclRectangle get_main_window_rect();
+    SclSize get_input_mode_size(const sclchar *input_mode, SCLDisplayMode display_mode);
     void get_screen_resolution(sclint *width, sclint *height);
 
     scl16 get_scale_x(scl16 x);

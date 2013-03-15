@@ -112,8 +112,7 @@ CSCLUIImpl::show()
                 /* Let's relocate our base window - bottomed center aligned */
                 sclint width, height;
                 //get_layout_size(&width, &height);
-                SclRectangle rect;
-                get_window_rect(&rect);
+                SclRectangle rect = get_main_window_rect();
 
                 sclint scrx, scry;
                 utils->get_screen_resolution(&scrx, &scry);
@@ -231,8 +230,7 @@ CSCLUIImpl::set_rotation(SCLRotation rotation)
                 /* Let's relocate our base window - bottomed center aligned */
                 sclint width, height;
                 //get_layout_size(&width, &height);
-                SclRectangle rect;
-                get_window_rect(&rect);
+                SclRectangle rect = get_main_window_rect();
 
                 sclint scrx, scry;
                 utils->get_screen_resolution(&scrx, &scry);
@@ -530,10 +528,10 @@ CSCLUIImpl::get_scale_y(scl16 y)
 /**
  * Returns the scl base window size
  */
-void
-CSCLUIImpl::get_window_rect(SclRectangle *rect)
+SclRectangle
+CSCLUIImpl::get_main_window_rect()
 {
-    sclboolean ret = FALSE;
+    SclRectangle ret = {0};
 
     if (m_initialized) {
         CSCLResourceCache *cache = CSCLResourceCache::get_instance();
@@ -542,15 +540,41 @@ CSCLUIImpl::get_window_rect(SclRectangle *rect)
             //const SclLayout *layout  = cache->get_cur_layout(windows->get_base_window());
             SclWindowContext *winctx = windows->get_window_context(windows->get_base_window());
             if (winctx) {
-                if (rect) {
-                    rect->x = winctx->geometry.x;
-                    rect->y = winctx->geometry.y;
-                    rect->width = winctx->geometry.width;
-                    rect->height = winctx->geometry.height;
-                }
+                ret.x = winctx->geometry.x;
+                ret.y = winctx->geometry.y;
+                ret.width = winctx->geometry.width;
+                ret.height = winctx->geometry.height;
             }
         }
     }
+
+    return ret;
+}
+
+/**
+ * Returns the scl base window size
+ */
+SclSize
+CSCLUIImpl::get_input_mode_size(const sclchar *input_mode, SCLDisplayMode display_mode)
+{
+    SclSize ret = {0};
+
+    if (m_initialized) {
+        CSCLUtils *utils = CSCLUtils::get_instance();
+        SclResParserManager *sclres_manager = SclResParserManager::get_instance();
+        if (utils && sclres_manager) {
+            const PSclInputModeConfigure sclres_input_mode_configure = sclres_manager->get_input_mode_configure_table();
+            const PSclLayout sclres_layout = sclres_manager->get_layout_table();
+            sclint inputmode = sclres_manager->get_inputmode_id(input_mode);
+            sclint layout = sclres_manager->get_layout_id(
+                sclres_input_mode_configure[inputmode].layouts[display_mode]);
+
+            ret.width = sclres_layout[layout].width;
+            ret.height = sclres_layout[layout].height;
+        }
+    }
+
+    return ret;
 }
 
 /**

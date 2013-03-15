@@ -17,44 +17,23 @@
 
 #ifndef __DEFAULT_CONFIGURE_PARSER__H__
 #define __DEFAULT_CONFIGURE_PARSER__H__
-#include <libxml/parser.h>
 #include "sclres_type.h"
 
 typedef SclDefaultConfigure *PSclDefaultConfigure;
 
+class DefaultConfigureParserImpl;
+
 class Default_Configure_Parser {
+    DefaultConfigureParserImpl *m_impl;
+public:
+    int init(const char* file);
+    PSclDefaultConfigure get_default_configure();
 public:
     ~Default_Configure_Parser();
     static Default_Configure_Parser *get_instance();
-    void init();
-
-    PSclDefaultConfigure get_default_configure();
-
-    //just for debug
-    void print_default_configure_table();
-
-    //These private methods for parsing
 private:
     Default_Configure_Parser();
-    void parsing_default_configure();
-    void parsing_touch_offset(const xmlNodePtr);
-    void parsing_dim_color(const xmlNodePtr);
-
-    SCLDisplayMode get_content_display_mode(const xmlNodePtr cur_node);
-
-private:
     static Default_Configure_Parser *m_instance;
-    SclDefaultConfigure m_default_configure;
-
-private:
-    class DestructHelper {
-    public:
-        ~DestructHelper() {
-            if (Default_Configure_Parser::m_instance != NULL)
-                delete m_instance;
-        }
-    };
-    static DestructHelper des;
 };
 
 

@@ -15,12 +15,20 @@
  *
  */
 
-#include "timer.h"
+/*
+ * Use `g++ -I. simple_debug.cpp simple_debug_test.cpp` to compiler it
+ */
+#include <simple_debug.h>
 #include <stdio.h>
-void
-printTime(struct timeval* tBegin, const char* note) {
-    struct timeval tEnd;
-    gettimeofday(&tEnd, 0);
-    long diff = (tEnd.tv_sec - tBegin->tv_sec) * 1000000 + tEnd.tv_usec - tBegin->tv_usec;
-    printf("%s use %ld usec\n", note, diff);
+
+int main() {
+    /* Test SclLog */
+    SclLog *log = SclLog::get_instance();
+    if (log) {
+        log->log(SclLog::WARNING, "Test %d\n", 100);
+    }
+
+    /* Test SCLLOG */
+    SCLLOG(SclLog::ERROR, "%s/%d", "SCLLOG", 100);
+    return 0;
 }

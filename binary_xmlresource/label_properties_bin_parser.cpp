@@ -16,7 +16,7 @@
  */
 
 #include "label_properties_bin_parser.h"
-
+#include "simple_debug.h"
 #include "put_record.h"
 Label_properties_bin_Parser* Label_properties_bin_Parser::m_instance = NULL;
 
@@ -59,7 +59,7 @@ void Label_properties_bin_Parser::parsing_label_properties_frame() {
     int maxj = m_storage.get<sint_t>(4);
 
     if (parser_info_provider == NULL) {
-        printf("Error parser_info_provider is NULL\n");
+        SCLLOG(SclLog::ERROR, "Error parser_info_provider is NULL\n");
         return;
     }
 

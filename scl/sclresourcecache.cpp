@@ -138,19 +138,19 @@ CSCLResourceCache::resize_layout_by_resolution(sclbyte layout_index, sclboolean 
             }
         }
 
-        /* FIXME : We should apply this contraint to other scaling routines also! */
-        /* If the current screen resolution Y is bigger than our target height */
-        if (scale_value_y > 1.0f) {
-            /* And if we have to scale Y-axis more than the X-axis, limit the scale value to X-axis rate */
-            if (scale_value_y > scale_value_x) {
-                scale_value_y = scale_value_x;
-            }
-        } else if (scale_value_y < 1.0f) { /* Or current screen is smaller than our target resolution */
-            /* And if we have to scale Y-axis more than the X-axis, limit the scale value to X-axis rate */
-            if (scale_value_y < scale_value_x) {
-                scale_value_y = scale_value_x;
-            }
-        }
+        ///* FIXME : We should apply this contraint to other scaling routines also! */
+        ///* If the current screen resolution Y is bigger than our target height */
+        //if (scale_value_y > 1.0f) {
+        //    /* And if we have to scale Y-axis more than the X-axis, limit the scale value to X-axis rate */
+        //    if (scale_value_y > scale_value_x) {
+        //        scale_value_y = scale_value_x;
+        //    }
+        //} else if (scale_value_y < 1.0f) { /* Or current screen is smaller than our target resolution */
+        //    /* And if we have to scale Y-axis more than the X-axis, limit the scale value to X-axis rate */
+        //    if (scale_value_y < scale_value_x) {
+        //        scale_value_y = scale_value_x;
+        //    }
+        //}
 
         if (!resize_key_only) {
             sclres_layout[layout_index].width *= scale_value_x;
@@ -842,15 +842,15 @@ CSCLResourceCache::recompute_layout(sclwindow window)
         sclbyte inputmode = context->get_input_mode();
 
         if (windows->is_base_window(window)) {
-            layout = sclres_manager->get_layout_id(sclres_input_mode_configure[inputmode].layouts[context->get_display_mode()]);
-            if (default_configure->use_lazy_loading) {
-                if (layout != context->get_base_layout()) {
-                    sclres_manager->unload();
-                }
-                if (!(sclres_manager->loaded(layout))) {
-                    sclres_manager->load(layout);
-                    resize_layout_by_resolution(layout, TRUE);
-                }
+            SCLDisplayMode display_mode = context->get_display_mode();
+            layout = sclres_manager->get_layout_id(
+                    sclres_input_mode_configure[inputmode].layouts[display_mode]);
+            if (layout != context->get_base_layout()) {
+                sclres_manager->unload();
+            }
+            if (!(sclres_manager->loaded(layout))) {
+                sclres_manager->load(layout);
+                resize_layout_by_resolution(layout, TRUE);
             }
             context->set_base_layout(layout);
 
@@ -864,11 +864,9 @@ CSCLResourceCache::recompute_layout(sclwindow window)
 
             layout = context->get_popup_layout(window);
 
-            if (default_configure->use_lazy_loading) {
-                if (!(sclres_manager->loaded(layout))) {
-                    sclres_manager->load(layout);
-                    resize_layout_by_resolution(layout, TRUE);
-                }
+            if (!(sclres_manager->loaded(layout))) {
+                sclres_manager->load(layout);
+                resize_layout_by_resolution(layout, TRUE);
             }
             context->set_base_layout(layout);
 
@@ -946,10 +944,10 @@ CSCLResourceCache::recompute_layout(sclwindow window)
             }
 
             /* Resize window */
-            if (windows->is_base_window(window)) {
+            /*if (windows->is_base_window(window)) {
                 windows->resize_window(window, mCurBaseLayout.width, mCurBaseLayout.height);
                 windows->resize_window(windows->get_dim_window(), mCurBaseLayout.width, mCurBaseLayout.height);
-            }
+            }*/
 
             /* EFL testing */
             windows->update_window(window);

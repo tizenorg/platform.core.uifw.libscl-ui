@@ -22,11 +22,7 @@
 #include "string_provider.h"
 #include "metadata_provider.h"
 #include <assert.h>
-
-//for debug begin
 #include "simple_debug.h"
-#include "timer.h"
-//for debug end
 
 using namespace binary_xmlresource;
 
@@ -86,10 +82,7 @@ BinXmlResource* BinXmlResource::get_instance() {
 }
 
 void BinXmlResource::init(const char *entry_filepath) {
-    //for cal time begin
-    struct timeval tBegin;
-    gettimeofday(&tBegin, 0);
-    //for cal time end
+    SCLLOG_TIME_BEGIN();
 
     char path[_POSIX_PATH_MAX] = {0};
 
@@ -165,10 +158,8 @@ void BinXmlResource::init(const char *entry_filepath) {
         m_nine_patch_file_list_parser = Nine_patch_file_list_bin_Parser::get_instance();
         m_nine_patch_file_list_parser->init(storageAllData, info[NINE_PATCH].offset, info[NINE_PATCH].size, &parser_info_provider);
     }
-    //for cal time begin
-    printTime(&tBegin, "parsing binary xmlfiles");
-    //for cal time end
 
+    SCLLOG_TIME_END("Parsing binary XML files");
 }
 
 void BinXmlResource::load(int layout_id) {

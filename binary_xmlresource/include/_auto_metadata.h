@@ -141,7 +141,6 @@ typedef struct _Default_configure_width {
 	int default_sub_layout;
 	int use_actual_dim_window;
 	int dim_color;
-	int use_lazy_loading;
 }Default_configure_width;
 
 typedef struct _Magnifier_configure_width {
@@ -340,7 +339,6 @@ void set_default_configure_width(T& md_helper,
 	record_width.default_sub_layout = md_helper.get_width("default_sub_layout");
 	record_width.use_actual_dim_window = md_helper.get_width("use_actual_dim_window");
 	record_width.dim_color = md_helper.get_width("dim_color");
-	record_width.use_lazy_loading = md_helper.get_width("use_lazy_loading");
 }
 
 template <class T>

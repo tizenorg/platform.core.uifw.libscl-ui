@@ -18,7 +18,7 @@
 #ifndef __SCL_VERSION_H__
 #define __SCL_VERSION_H__
 
-#define SCL_VERSION "0.2.0-1"
+#define SCL_VERSION "0.2.3-1"
 
 #endif //__SCL_VERSION_H
 
@@ -40,4 +40,6 @@ Version History
         - Minor changes for tizen 2.0 open
     0.1.8-1
         - Modified the EFL backend to call elm_win_raise() for popup windows as well
+    0.2.2-1
+        - Implemented synchronization feature with window manager
 */

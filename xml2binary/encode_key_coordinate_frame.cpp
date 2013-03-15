@@ -216,18 +216,10 @@ encode_key_coordinate_frame_file(ResourceStorage& storage, IMetaData_Helper& md_
     SclLayoutKeyCoordinatePointer _key_coordinate_pointer_frame[MAX_SCL_LAYOUT][MAX_KEY];
     memset(_key_coordinate_pointer_frame, 0x00, MAX_KEY * MAX_SCL_LAYOUT * sizeof(SclLayoutKeyCoordinatePointer));
 
-    if (xmlresource->get_default_configure()->use_lazy_loading == FALSE) {
-        for (int i = 0; i < layout_num; ++i) {
-            for (int j = 0; j < MAX_KEY; ++j) {
-                _key_coordinate_pointer_frame[i][j] = xmlresource->get_key_coordinate_pointer_frame()[i][j];
-            }
-        }
-    }else {
-        for (int i = 0; i < layout_num; ++i) {
-            xmlresource->load(i);
-            for (int j = 0; j < MAX_KEY; ++j) {
-                _key_coordinate_pointer_frame[i][j] = xmlresource->get_key_coordinate_pointer_frame()[i][j];
-            }
+    for (int i = 0; i < layout_num; ++i) {
+        xmlresource->load(i);
+        for (int j = 0; j < MAX_KEY; ++j) {
+            _key_coordinate_pointer_frame[i][j] = xmlresource->get_key_coordinate_pointer_frame()[i][j];
         }
     }
     // 4 byte (range[0-4,294,967,295))

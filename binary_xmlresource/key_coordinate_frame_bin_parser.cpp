@@ -27,6 +27,7 @@
 #include "put_record.h"
 #include <malloc.h>
 #include "binary_xmlresource.h"
+#include "simple_debug.h"
 using namespace binary_xmlresource;
 
 using namespace std;
@@ -108,7 +109,7 @@ load(int layout_id)
             for (int j = 0; j < pKey_num_array[i]; ++j) {
                 SclLayoutKeyCoordinatePointer curPointer = (SclLayoutKeyCoordinatePointer)malloc(sizeof(SclLayoutKeyCoordinate));
                 if (curPointer == NULL) {
-                    printf("Memory malloc error.\n");
+                    SCLLOG(SclLog::ERROR, "Memory malloc error.\n");
                     assert(0);
                 }
                 memset(curPointer, 0x00, sizeof(SclLayoutKeyCoordinate));
@@ -148,71 +149,18 @@ unload()
         }
     }
 }
-void Key_coordinate_frame_bin_Parser::init(const FileStorage& storage, int offset, int size, IParserInfo_Provider* parser_info_provider) {
+void
+Key_coordinate_frame_bin_Parser::init(const FileStorage& storage, int offset, int size, IParserInfo_Provider* parser_info_provider) {
     m_storage.set_str_provider(parser_info_provider);
     m_storage.get_storage(storage, offset, size);
     this->parser_info_provider = parser_info_provider;
-    parsing_key_coordinate_frame();
 }
 
-PSclLayoutKeyCoordinatePointerTable Key_coordinate_frame_bin_Parser::get_key_coordinate_pointer_frame() {
+PSclLayoutKeyCoordinatePointerTable
+Key_coordinate_frame_bin_Parser::get_key_coordinate_pointer_frame() {
     return m_key_coordinate_pointer_frame;
 }
-void Key_coordinate_frame_bin_Parser::parsing_key_coordinate_frame() {
-    sclboolean use_lazy_loading = FALSE;
-    Default_Configure_Bin_Parser *defalut_configure_parser = Default_Configure_Bin_Parser::get_instance();
-    if (defalut_configure_parser) {
-        PSclDefaultConfigure default_configure = defalut_configure_parser->get_default_configure();
-        if (default_configure) {
-            use_lazy_loading = default_configure->use_lazy_loading;
-        }
-    }
-    if (use_lazy_loading) {
-        return;
-    }
-    // 4 byte (range[0-4,294,967,295))
-    const int DATA_SIZE_BYTES = 4;
-    // 1 byte (range[0-128))
-    const int REC_NUM_BYTES = 1;
-    const int KEY_NUM_BYTES = 1;
-    // 2 byte (range[0-65536))
-    const int KEY_COORDIANTE_REC_DATA_SIZE_BYTES = 2;
 
-    // skip data_size
-    m_storage.advance(DATA_SIZE_BYTES);
-
-    // rec_num
-    int layout_num = m_storage.get<uint_t>(REC_NUM_BYTES);
-    int *pKey_num_array = new int[layout_num];
-    memset(pKey_num_array, 0x00, layout_num * sizeof(int));
-    for (int i = 0; i < layout_num; ++i) {
-        pKey_num_array[i] = m_storage.get<uint_t>(KEY_NUM_BYTES);
-    }
-
-    // key_coordinate_rec_data_size
-    int key_coordinate_rec_data_size = m_storage.get<uint_t>(KEY_COORDIANTE_REC_DATA_SIZE_BYTES);
-    Key_coordinate_record_width record_width;
-    set_key_coordinate_record_width(*parser_info_provider, record_width);
-
-    for (int i = 0; i < layout_num; ++i) {
-        for (int j = 0; j < pKey_num_array[i]; ++j) {
-            SclLayoutKeyCoordinatePointer curPointer = (SclLayoutKeyCoordinatePointer)malloc(sizeof(SclLayoutKeyCoordinate));
-            if (curPointer == NULL) {
-                printf("Memory malloc error.\n");
-                assert(0);
-            }
-
-            memset(curPointer, 0x00, sizeof(SclLayoutKeyCoordinate));
-            decode_key_coordinate_record(m_storage, curPointer, record_width);
-            m_key_coordinate_pointer_frame[i][j] = curPointer;
-        }
-    }
-
-    delete []pKey_num_array;
-#ifdef __SCL_TXT_DEBUG
-    put_key_coordinate_frame(DECODE, m_key_coordinate_pointer_frame);
-#endif
-}
 void
 Key_coordinate_frame_bin_Parser::decode_key_coordinate_record(FileStorage& storage, const PSclLayoutKeyCoordinate cur, const Key_coordinate_record_width& record_width) {
     int width = 0;

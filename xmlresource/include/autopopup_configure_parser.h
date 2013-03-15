@@ -17,49 +17,23 @@
 
 #ifndef __AutoPopup_Configure_Parser__H__
 #define __AutoPopup_Configure_Parser__H__
-#include <libxml/parser.h>
 #include "sclres_type.h"
 
 typedef SclAutoPopupConfigure *PSclAutoPopupConfigure;
 
+class AutoPopupConfigureParserImpl;
+
 class AutoPopup_Configure_Parser {
-public:
-    ~AutoPopup_Configure_Parser();
-    static AutoPopup_Configure_Parser *get_instance();
-    void init();
-
-    PSclAutoPopupConfigure get_autopopup_configure();
-
-    //just for debug
-    void print_default_configure_table();
-
-    //These private methods for parsing
-private:
-    AutoPopup_Configure_Parser();
-    void parsing_autopopup_configure();
-    void parsing_background_color(const xmlNodePtr);
-    void parsing_background_line_color(const xmlNodePtr);
-    void parsing_button_image_path(const xmlNodePtr);
-    void parsing_button_size(const xmlNodePtr);
-    void parsing_window_decorator_iamge_path(const xmlNodePtr);
-    void parsing_grab_area(const xmlNodePtr);
-
-    int get_button_state_prop(const xmlNodePtr cur_node);
-    SCLDisplayMode get_content_displaymode(const xmlNodePtr cur_node);
-
-private:
-    static AutoPopup_Configure_Parser *m_instance;
-    SclAutoPopupConfigure m_autopopup_configure;
-
-private:
-    class DestructHelper {
+    AutoPopupConfigureParserImpl *m_impl;
     public:
-        ~DestructHelper() {
-            if (AutoPopup_Configure_Parser::m_instance != NULL)
-                delete m_instance;
-        }
-    };
-    static DestructHelper des;
+        int init(const char* file);
+        PSclAutoPopupConfigure get_autopopup_configure();
+    public:
+        ~AutoPopup_Configure_Parser();
+        static AutoPopup_Configure_Parser *get_instance();
+    private:
+        AutoPopup_Configure_Parser();
+        static AutoPopup_Configure_Parser *m_instance;
 };
 
 

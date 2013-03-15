@@ -17,42 +17,21 @@
 
 #ifndef __Label_properties_Parser__H__
 #define __Label_properties_Parser__H__
-#include <libxml/parser.h>
 #include "sclres_type.h"
+class LabelPropertiesParserImpl;
 
 class Label_properties_Parser {
+    LabelPropertiesParserImpl *m_impl;
     public:
-        ~Label_properties_Parser();
-        static Label_properties_Parser *get_instance();
-    void init();
+    int init(const char* file);
     PSclLabelPropertiesTable get_label_properties_frame();
-    const int get_size();
-
+    int get_size();
+    public:
+    ~Label_properties_Parser();
+    static Label_properties_Parser *get_instance();
     private:
     Label_properties_Parser();
-    void parsing_label_properties_frame();
-    void parsing_label_properties_table(const xmlNodePtr, const PSclLabelPropertiesTable);
-    void parsing_label_properties_record(const xmlNodePtr, const PSclLabelProperties);
-    void set_label_properties_default_record(const PSclLabelProperties);
-    void parsing_font_color_record(const xmlNodePtr cur_node, const PSclLabelProperties cur_rec);
-    void parsing_shadow_color_record(const xmlNodePtr cur_node, const PSclLabelProperties cur_rec);
-    void parsing_rgb(const xmlNodePtr, SclColor&);
-    int get_shift_state_prop(const xmlNodePtr cur_node);
-    int get_button_state_prop(const xmlNodePtr cur_node);
-
-    private:
-        static Label_properties_Parser *m_instance;
-        SclLabelProperties m_label_properties_frame[MAX_SCL_LABEL_PROPERTIES][MAX_SIZE_OF_LABEL_FOR_ONE];
-        int m_size;
-    private:
-    class DestructHelper {
-        public:
-        ~DestructHelper() {
-            if (Label_properties_Parser::m_instance != NULL)
-                delete m_instance;
-        }
-    };
-    static DestructHelper des;
+    static Label_properties_Parser *m_instance;
 };
 
 

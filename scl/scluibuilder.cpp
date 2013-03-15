@@ -441,8 +441,8 @@ CSCLUIBuilder::draw_button_label(const sclwindow window, const scldrawctx draw_c
                 const SclLabelProperties *labelproperties = cache->get_label_properties(coordination->image_label_type, 0);
                 if (labelproperties) {
                     SCLLabelAlignment align = labelproperties->alignment;
-                    sclbyte padding_x = labelproperties->padding_x;
-                    sclbyte padding_y = labelproperties->padding_y;
+                    sclshort padding_x = labelproperties->padding_x;
+                    sclshort padding_y = labelproperties->padding_y;
                     if (align == LABEL_ALIGN_LEFT_MIDDLE ||
                         align == LABEL_ALIGN_CENTER_MIDDLE ||
                         align == LABEL_ALIGN_RIGHT_MIDDLE) {

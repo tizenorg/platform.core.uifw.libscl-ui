@@ -220,7 +220,8 @@ Eina_Bool mouse_press(void *data, int type, void *event_info)
             if (window) {
                 // Update the position of the target window
                 //windows->get_window_context(window, TRUE);
-                windows->get_window_context(window);
+                SclWindowContext *winctx = windows->get_window_context(window);
+                windows->get_window_rect(window, &(winctx->geometry));
                 if (get_window_rect(window, &rect)) {
                     int adjustx = ev->root.x;
                     int adjusty = ev->root.y;
@@ -327,6 +328,8 @@ Eina_Bool mouse_release (void *data, int type, void *event_info)
             do {
                 window = windows->get_nth_window_in_Z_order_list(index);
                 if (window) {
+                    SclWindowContext *winctx = windows->get_window_context(window);
+                    windows->get_window_rect(window, &(winctx->geometry));
                     if (get_window_rect(window, &rect)) {
                         int adjustx = ev->root.x;
                         int adjusty = ev->root.y;
@@ -434,6 +437,8 @@ Eina_Bool mouse_move (void *data, int type, void *event_info)
             do {
                 window = windows->get_nth_window_in_Z_order_list(index);
                 if (window) {
+                    SclWindowContext *winctx = windows->get_window_context(window);
+                    windows->get_window_rect(window, &(winctx->geometry));
                     if (get_window_rect(window, &rect)) {
                         int adjustx = ev->root.x;
                         int adjusty = ev->root.y;

@@ -32,6 +32,13 @@ using namespace scl;
 
 Ecore_X_Atom ATOM_WM_CLASS = 0;
 
+const sclint rotation_values_EFL[ROTATION_MAX] = {
+    0, // ROTATION_0
+    90, // ROTATION_90_CW
+    180, // ROTATION_180
+    270, // ROTATION_90_CCW
+};
+
 void release_all(Evas_Object *win);
 
 #include "sclgraphics-efl.h"
@@ -115,8 +122,29 @@ CSCLWindowsImplEfl::create_window(const sclwindow parent, SclWindowContext *winc
 
     elm_win_borderless_set(win, EINA_TRUE);
     elm_win_alpha_set(win, EINA_TRUE);
+
+    scl16 new_width;
+    scl16 new_height;
+    CSCLContext *context = CSCLContext::get_instance();
+    if(context->get_rotation() == ROTATION_90_CW || context->get_rotation() == ROTATION_90_CCW) {
+        new_width = height;
+        new_height = width;
+    } else {
+        new_width = width;
+        new_height = height;
+    }
+
+    ecore_x_e_window_rotation_geometry_set(elm_win_xwindow_get(win),
+        rotation_values_EFL[ROTATION_0], 0, 0, new_width, new_height);
+    ecore_x_e_window_rotation_geometry_set(elm_win_xwindow_get(win),
+        rotation_values_EFL[ROTATION_90_CW], 0, 0, new_width, new_height);
+    ecore_x_e_window_rotation_geometry_set(elm_win_xwindow_get(win),
+        rotation_values_EFL[ROTATION_180], 0, 0, new_width, new_height);
+    ecore_x_e_window_rotation_geometry_set(elm_win_xwindow_get(win),
+        rotation_values_EFL[ROTATION_90_CCW], 0, 0, new_width, new_height);
+
 #ifndef FULL_SCREEN_TEST
-    evas_object_resize(win, width, height);
+    //evas_object_resize(win, width, height);
 #endif
 
     const char *szProfile[] = {"mobile", ""};
@@ -134,10 +162,9 @@ CSCLWindowsImplEfl::create_window(const sclwindow parent, SclWindowContext *winc
     //utilx_set_window_effect_style((Display*)dpy, elm_win_xwindow_get(static_cast<Evas_Object*>(win)), UTILX_EFFECT_TYPE_MAP, UTILX_EFFECT_STYLE_NONE);
 #endif
 
-    CSCLContext *context = CSCLContext::get_instance();
     set_window_rotation(win, context->get_rotation());
 
-    elm_win_override_set(win, EINA_TRUE);
+    //elm_win_override_set(win, EINA_TRUE);
     CSCLUtils *utils = CSCLUtils::get_instance();
     if (utils) {
         utils->log("%p, %d %d\n", win, width, height);
@@ -166,7 +193,7 @@ CSCLWindowsImplEfl::create_magnifier_window(const sclwindow parent, SclWindowCon
     /*
      * FIXME set override to let window manager responds elm_win_raise request
      */
-    elm_win_override_set(win, EINA_TRUE);
+    //elm_win_override_set(win, EINA_TRUE);
 
 #ifdef DO_NOT_MOVE_MAGNIFIER_WINDOW
     CSCLUtils *utils = CSCLUtils::get_instance();
@@ -176,11 +203,20 @@ CSCLWindowsImplEfl::create_magnifier_window(const sclwindow parent, SclWindowCon
     SclWindowContext *winctx = windows->get_window_context(windows->get_base_window());
     evas_object_resize(win, scrx, height + winctx->height);
 #else
-    evas_object_resize(win, width, height);
+    //evas_object_resize(win, width, height);
 #endif
 
     const char *szProfile[] = {"mobile", ""};
     elm_win_profiles_set(win, szProfile, 1);
+
+    ecore_x_e_window_rotation_geometry_set(elm_win_xwindow_get(win),
+        rotation_values_EFL[ROTATION_0], 0, 0, width, height);
+    ecore_x_e_window_rotation_geometry_set(elm_win_xwindow_get(win),
+        rotation_values_EFL[ROTATION_90_CW], 0, 0, height, width);
+    ecore_x_e_window_rotation_geometry_set(elm_win_xwindow_get(win),
+        rotation_values_EFL[ROTATION_180], 0, 0, width, height);
+    ecore_x_e_window_rotation_geometry_set(elm_win_xwindow_get(win),
+        rotation_values_EFL[ROTATION_90_CCW], 0, 0, height, width);
 
 #ifndef APPLY_WINDOW_MANAGER_CHANGE
     ecore_x_icccm_name_class_set(elm_win_xwindow_get(static_cast<Evas_Object*>(win)), "Key Magnifier", "ISF");
@@ -255,7 +291,7 @@ CSCLWindowsImplEfl::create_dim_window(const sclwindow parent, SclWindowContext *
     evas_object_color_set(bg, color.r, color.g, color.b, color.a);
     evas_object_show(bg);*/
 
-    elm_win_override_set(win, EINA_TRUE);
+    //elm_win_override_set(win, EINA_TRUE);
     hide_window(win);
 
     CSCLUtils *utils = CSCLUtils::get_instance();
@@ -390,7 +426,7 @@ CSCLWindowsImplEfl::show_window(const sclwindow window, sclboolean queue)
          * N_SE-17689: magnifier window showing behind of candidate window
          */
         if (window != windows->get_base_window()) {
-            elm_win_raise((Evas_Object *)window);
+            //elm_win_raise((Evas_Object *)window);
         }
         utils->log("%p (basewin %p mag %p)\n", window,
             windows->get_base_window(), windows->get_magnifier_window());
@@ -590,7 +626,9 @@ CSCLWindowsImplEfl::move_window(const sclwindow window, const scl16 x, const scl
 
         Evas_Object *win = (Evas_Object*)window;
 #ifndef FULL_SCREEN_TEST
-        evas_object_move(win, rotatex, rotatey);
+        if (window != windows->get_base_window()) {
+            evas_object_move(win, rotatex, rotatey);
+        }
 #endif
         //Evas_Object *window_object = (Evas_Object*)window;
         //Evas *evas = evas_object_evas_get(window_object);
@@ -631,7 +669,6 @@ CSCLWindowsImplEfl::resize_window(const sclwindow window, const scl16 width, con
 
     Evas_Object *win = (Evas_Object*)window;
 #ifndef FULL_SCREEN_TEST
-    evas_object_resize(win, width, height);
     if (windows && utils) {
         utils->log("%p %d %d (basewin %p mag %p)\n", window, width, height,
             windows->get_base_window(), windows->get_magnifier_window());
@@ -645,6 +682,10 @@ CSCLWindowsImplEfl::resize_window(const sclwindow window, const scl16 width, con
     }*/
     //evas_render_idle_flush(evas);
     if (windows) {
+        if (window != windows->get_base_window()) {
+            evas_object_resize(win, width, height);
+        }
+
         if (window == windows->get_dim_window()) {
             hide_window(window);
         }
@@ -660,11 +701,13 @@ CSCLWindowsImplEfl::move_resize_window(const sclwindow window, const scl16 x, co
     SCL_DEBUG();
     Evas_Object *win = (Evas_Object*)window;
 #ifndef FULL_SCREEN_TEST
-    evas_object_move(win, x, y);
-    evas_object_resize(win, width, height);
     CSCLWindows *windows = CSCLWindows::get_instance();
     CSCLUtils *utils = CSCLUtils::get_instance();
     if (windows && utils) {
+        if (window != windows->get_base_window()) {
+            evas_object_move(win, x, y);
+            evas_object_resize(win, width, height);
+        }
         utils->log("%p %d %d %d %d (basewin %p mag %p)\n",
             window, x, y, width, height, windows->get_base_window());
     }
@@ -897,13 +940,6 @@ CSCLWindowsImplEfl::set_window_rotation(const sclwindow window, const SCLRotatio
 {
     SCL_DEBUG();
 
-    const sclint rotation_values_EFL[ROTATION_MAX] = {
-        0, // ROTATION_0
-        90, // ROTATION_90_CW
-        180, // ROTATION_180
-        270, // ROTATION_90_CCW
-    };
-
     CSCLWindows *windows = CSCLWindows::get_instance();
     SclWindowContext *winctx = NULL;
 
@@ -919,8 +955,7 @@ CSCLWindowsImplEfl::set_window_rotation(const sclwindow window, const SCLRotatio
     }
 
     if (scl_check_arrindex(rotation, ROTATION_MAX)) {
-        elm_win_rotation_set(static_cast<Evas_Object*>(window), rotation_values_EFL[rotation]);
-        //elm_win_rotation_with_resize_set(static_cast<Evas_Object*>(window),degree);
+        elm_win_rotation_with_resize_set(static_cast<Evas_Object*>(window), rotation_values_EFL[rotation]);
     }
 
     XSizeHints hint;

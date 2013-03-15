@@ -49,7 +49,7 @@ public:
      * @param[in] entry_filepath a file path to SCL's UI resource entry file
      * @return non-zero value is returned when successful
      */
-    sclboolean init(sclwindow main_window, SCLParserType parser_type, const char *entry_filepath);
+    sclboolean init(sclwindow main_window, SCLParserType parser_type, const sclchar *entry_filepath);
 
     /**
      * @brief This API requests SCL library to show the S/W keyboard on the screen
@@ -88,13 +88,13 @@ public:
 
     /**
      * @brief This API checks if the current display mode is portrait or landscape
-     * @return non-zero value is returned when successful
+     * @return current display mode
      */
     SCLDisplayMode get_display_mode();
 
     /**
      * @brief This API request SCL library to change to given input mode
-     * @param[in] name the name of the desired input mode
+     * @param[in] input_mode the name of the desired input mode
      * @return non-zero value is returned when successful
      */
     sclboolean set_input_mode(const sclchar *input_mode);
@@ -184,11 +184,19 @@ public:
      */
     void close_all_popups();
 
-    /**
-     * @brief This API acquires the size of base window
-     * @param[out] rect the geometry information of base window
+    /*
+     * @brief This API acquires the size of main window
+     * @param[out] rect the geometry information of main window
      */
-    void get_window_rect(SclRectangle *rect);
+    SclRectangle get_main_window_rect();
+
+    /**
+     * @brief This API retrieves the current input mode
+     * @param[in] input_mode the name of the desired input mode
+     * @param[in] display_mode desired display mode value
+     * @return a size struct contains the input_mode's size in given display_mode
+     */
+    SclSize get_input_mode_size(const sclchar *input_mode, SCLDisplayMode display_mode);
 
     /**
      * @brief This API acquires the screen size of current device

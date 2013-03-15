@@ -121,7 +121,6 @@
     <field name = "default_sub_layout" type = "string_id"/>
     <field name = "use_actual_dim_window" type = "int8"/>
     <field name = "dim_color" type = "int8"/>
-    <field name = "use_lazy_loading" type = "int8"/>
 </record>
 <record name = "magnifier_configure">
     <field name = "style" type = "int8"/>

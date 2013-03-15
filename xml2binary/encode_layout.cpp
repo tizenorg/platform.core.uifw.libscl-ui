@@ -19,7 +19,6 @@
 #include "encode_layout.h"
 #include <string>
 #include <libxml/parser.h>
-#include "timer.h"
 #include "xmlresource.h"
 #include "put_record.h"
 #include "_auto_metadata.h"
