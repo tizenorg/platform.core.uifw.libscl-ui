@@ -722,7 +722,7 @@ CSCLResourceCache::add_private_key(SclPrivateKeyProperties* privProperties, sclb
     ret = loop;
 
     sclboolean found = FALSE;
-    for (int loop = 0;loop < MAX_KEY; loop++) {
+    for (sclint loop = 0;loop < MAX_KEY; loop++) {
         if ((!(privProperties->custom_id.empty())) && mCurBaseLayoutKeyCoordination[loop].custom_id) {
             if (privProperties->custom_id.compare(mCurBaseLayoutKeyCoordination[loop].custom_id) == 0) {
                 /* sets the current properties to private key properties */
@@ -767,16 +767,22 @@ CSCLResourceCache::remove_private_key(sclint id)
     CSCLContext *context = CSCLContext::get_instance();
 
     /* resets the current properties to predefined properties */
-    sclbyte inputmode = context->get_input_mode();
     sclshort layout =  context->get_base_layout();
-    sclbyte keyidx = mPrivateKeyProperties[id].key_index;
-    clone_keyproperties(&(mPrivateKeyProperties[id]),
-        mPrivateKeyProperties[id].input_mode_index, mPrivateKeyProperties[id].layout_index, keyidx);
 
-    /* reset only if this property has the current inputmode and layout id */
-    if (mPrivateKeyProperties[id].input_mode_index == inputmode &&
-        mPrivateKeyProperties[id].layout_index == layout) {
-        copy_from_privatekeyproperties(&(mPrivateKeyProperties[id]), &mCurBaseLayoutKeyCoordination[keyidx]);
+    SclResParserManager *sclres_manager = SclResParserManager::get_instance();
+    PSclLayoutKeyCoordinatePointerTable sclres_layout_key_coordinate_pointer_frame =
+        sclres_manager->get_key_coordinate_pointer_frame();
+
+    if (scl_check_arrindex(layout, MAX_SCL_LAYOUT)) {
+        for (sclint loop = 0;loop < MAX_KEY; loop++) {
+            if ((!(mPrivateKeyProperties[id].custom_id.empty())) && mCurBaseLayoutKeyCoordination[loop].custom_id) {
+                if (mPrivateKeyProperties[id].custom_id.compare(mCurBaseLayoutKeyCoordination[loop].custom_id) == 0) {
+                    memcpy((SclLayoutKeyCoordinatePointer)(&mCurBaseLayoutKeyCoordination) + loop,
+                        sclres_layout_key_coordinate_pointer_frame[layout][loop], sizeof(SclLayoutKeyCoordinate));
+
+                }
+            }
+        }
     }
 
     /* Shift all the privatekey properties to the left by 1, starting from the item next to the id th element */
@@ -844,7 +850,7 @@ CSCLResourceCache::recompute_layout(sclwindow window)
         if (windows->is_base_window(window)) {
             SCLDisplayMode display_mode = context->get_display_mode();
             layout = sclres_manager->get_layout_id(
-                    sclres_input_mode_configure[inputmode].layouts[display_mode]);
+                sclres_input_mode_configure[inputmode].layouts[display_mode]);
             if (layout != context->get_base_layout()) {
                 sclres_manager->unload();
             }

@@ -191,9 +191,6 @@ InputModeConfigParser* InputModeConfigParser::m_instance = NULL;
 
 InputModeConfigParser::InputModeConfigParser() {
     m_impl = new InputModeConfigureParserImpl;
-    if (m_impl == NULL) {
-        SCLLOG(SclLog::ERROR, "Create InputModeConfigParser failed");
-    }
 }
 
 InputModeConfigParser::~InputModeConfigParser() {
