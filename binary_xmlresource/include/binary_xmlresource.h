@@ -52,10 +52,10 @@ enum{
     MAX_DATATYPE
 };
 namespace binary_xmlresource{
-class BinXmlResource: public sclres::SclRes{
+class BinResource: public sclres::SclRes{
     public:
-    ~BinXmlResource();
-    static BinXmlResource* get_instance();
+    ~BinResource();
+    static BinResource* get_instance();
     void init(const char *entry_filepath);
 
     /* These functions are for dynamic (lazy) loading layouts */
@@ -89,26 +89,26 @@ class BinXmlResource: public sclres::SclRes{
     void destroy();
     struct info_t info[MAX_DATATYPE];
     private:
-    BinXmlResource();
+    BinResource();
 
     private:
-    static BinXmlResource* m_instance;
+    static BinResource* m_instance;
 
-    Input_Mode_Configure_Bin_Parser *m_input_mode_configure_parser;
-    Layout_Bin_Parser *m_layout_parser;
-    Key_coordinate_frame_bin_Parser *m_key_coordinate_frame_parser;
-    Modifier_decoration_bin_Parser *m_modifier_decoration_parser;
-    Label_properties_bin_Parser *m_label_properties_parser;
-    Default_Configure_Bin_Parser *m_default_configure_parser;
-    AutoPopup_Configure_Bin_Parser *m_autopopup_configure_parser;
-    Magnifier_Configure_Bin_Parser *m_magnifier_configure_parser;
-    Nine_patch_file_list_bin_Parser *m_nine_patch_file_list_parser;
+    BinInputModeConfigParser *m_input_mode_configure_parser;
+    BinLayoutParser *m_layout_parser;
+    BinKeyCoordFrameParser *m_key_coordinate_frame_parser;
+    BinModifierDecorationParser *m_modifier_decoration_parser;
+    BinLabelPropertyParser *m_label_properties_parser;
+    BinDefaultConfigParser *m_default_configure_parser;
+    BinAutoPopupConfigParser *m_autopopup_configure_parser;
+    BinMagnifierConfigParser *m_magnifier_configure_parser;
+    BinNinePatchFileParser *m_nine_patch_file_list_parser;
 
     private:
     class DestructHelper {
         public:
         ~DestructHelper() {
-            if (BinXmlResource::m_instance != NULL)
+            if (BinResource::m_instance != NULL)
             {
                 delete m_instance;
                 m_instance = NULL;

@@ -23,9 +23,9 @@
 #include "string_collector.h"
 #include "file_storage_impl.h"
 #include "_auto_metadata.h"
-class Layout_Bin_Parser {
+class BinLayoutParser {
     public:
-        static Layout_Bin_Parser *get_instance();
+        static BinLayoutParser *get_instance();
     void init(const FileStorage& storage, int, int, IParserInfo_Provider*);
 
     int get_layout_index(const char *name);
@@ -33,15 +33,15 @@ class Layout_Bin_Parser {
     PSclLayout get_layout_table();
     PSclLayoutKeyCoordinatePointerTable get_key_coordinate_pointer_frame();
 
-    ~Layout_Bin_Parser();
+    ~BinLayoutParser();
     private:
-    Layout_Bin_Parser();
+    BinLayoutParser();
     void parsing_layout_table();
     void decode_layout_record(SclLayout& cur, const Layout_width&);
     void decode_color(SclColor&, int width);
 
     private:
-        static Layout_Bin_Parser *m_instance;
+        static BinLayoutParser *m_instance;
         int m_layout_size;
         SclLayout m_layout_table[MAX_SCL_LAYOUT];
 
@@ -52,7 +52,7 @@ class Layout_Bin_Parser {
     class DestructHelper {
         public:
         ~DestructHelper() {
-            if (Layout_Bin_Parser::m_instance != NULL)
+            if (BinLayoutParser::m_instance != NULL)
                 delete m_instance;
         }
     };

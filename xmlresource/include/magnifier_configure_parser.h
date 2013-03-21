@@ -15,25 +15,25 @@
  *
  */
 
-#ifndef __Magnifier_Configure_Parser__H__
-#define __Magnifier_Configure_Parser__H__
+#ifndef __MagnifierConfigParser__H__
+#define __MagnifierConfigParser__H__
 #include "sclres_type.h"
 
 typedef SclMagnifierWndConfigure *PSclMagnifierWndConfigure;
 
 class MagnifierConfigureParserImpl;
 
-class Magnifier_Configure_Parser {
+class MagnifierConfigParser {
     MagnifierConfigureParserImpl *m_impl;
 public:
     int init(const char* file);
     PSclMagnifierWndConfigure get_magnifier_configure();
 public:
-    ~Magnifier_Configure_Parser();
-    static Magnifier_Configure_Parser *get_instance();
+    ~MagnifierConfigParser();
+    static MagnifierConfigParser *get_instance();
 private:
-    Magnifier_Configure_Parser();
-    static Magnifier_Configure_Parser *m_instance;
+    MagnifierConfigParser();
+    static MagnifierConfigParser *m_instance;
 };
 
 

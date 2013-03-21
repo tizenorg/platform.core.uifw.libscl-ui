@@ -25,10 +25,10 @@
 #include "string_collector.h"
 #include "_auto_metadata.h"
 
-class Input_Mode_Configure_Bin_Parser {
+class BinInputModeConfigParser {
     public:
-        ~Input_Mode_Configure_Bin_Parser();
-        static Input_Mode_Configure_Bin_Parser *get_instance();
+        ~BinInputModeConfigParser();
+        static BinInputModeConfigParser *get_instance();
         void init(const FileStorage&, int, int, IParserInfo_Provider* parser_info_provider);
         PSclInputModeConfigure get_input_mode_configure_table();
         int get_inputmode_id(const char *name);
@@ -37,13 +37,13 @@ class Input_Mode_Configure_Bin_Parser {
 
         void decode_string(FileStorage &storage, char** p, int width);
     private:
-        Input_Mode_Configure_Bin_Parser();
+        BinInputModeConfigParser();
         void parsing_input_mode_configure_table();
         void set_input_mode_configure_default_record(const PSclInputModeConfigure);
 
         StringCollector m_string_collector;
     private:
-        static Input_Mode_Configure_Bin_Parser *m_instance;
+        static BinInputModeConfigParser *m_instance;
         int m_inputmode_size;
         SclInputModeConfigure m_input_mode_configure_table[MAX_SCL_INPUT_MODE];
 

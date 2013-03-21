@@ -133,10 +133,10 @@
 #define LAYOUT_ROW_KEY_AUTOPOPUP_KEYS_SHIFTMODE_ATTRIBUTE "shift_state"
 #define LAYOUT_ROW_KEY_MAGNIFIER_LABEL_TAG "magnifier_label"
 
-class Layout_Parser {
+class LayoutParser {
     public:
-        ~Layout_Parser();
-        static Layout_Parser *get_instance();
+        ~LayoutParser();
+        static LayoutParser *get_instance();
     int init(const char *dir, char **layout_files, int size);
 
     void load(int layout_id);
@@ -169,7 +169,7 @@ class Layout_Parser {
             sclchar *label_type;
             sclchar *bg_image_path[SCL_SHIFT_STATE_MAX][SCL_BUTTON_STATE_MAX];
         } Row;
-    Layout_Parser();
+    LayoutParser();
 
     int get_drag_state_prop(const xmlNodePtr cur_node);
     int get_shift_state_prop(const xmlNodePtr cur_node);
@@ -210,7 +210,7 @@ class Layout_Parser {
     void release_key_strings();
 
     private:
-        static Layout_Parser *m_instance;
+        static LayoutParser *m_instance;
         int m_layout_size;
         SclLayout m_layout_table[MAX_SCL_LAYOUT];
         sclchar *m_layout_files[MAX_SCL_LAYOUT];
@@ -223,7 +223,7 @@ class Layout_Parser {
     class DestructHelper {
         public:
         ~DestructHelper() {
-            if (Layout_Parser::m_instance != NULL)
+            if (LayoutParser::m_instance != NULL)
                 delete m_instance;
         }
     };

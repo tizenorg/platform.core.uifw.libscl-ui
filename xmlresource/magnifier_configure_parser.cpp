@@ -83,13 +83,13 @@ class MagnifierConfigureParserImpl {
 
         cur_node = xmlDocGetRootElement(doc);
         if (cur_node == NULL) {
-            SCLLOG(SclLog::DEBUG, "Magnifier_Configure_Parser: empty document.\n");
+            SCLLOG(SclLog::DEBUG, "MagnifierConfigParser: empty document.\n");
             xmlFreeDoc(doc);
             return -1;
         }
         if (0 != xmlStrcmp(cur_node->name, (const xmlChar*)"magnifier_configure"))
         {
-            SCLLOG(SclLog::DEBUG, "Magnifier_Configure_Parser: root name error: %s\n!", (char *)cur_node->name);
+            SCLLOG(SclLog::DEBUG, "MagnifierConfigParser: root name error: %s\n!", (char *)cur_node->name);
             xmlFreeDoc(doc);
             return -1;
         }
@@ -199,37 +199,37 @@ class MagnifierConfigureParserImpl {
     SclMagnifierWndConfigure m_magnifier_configure;
 };
 
-Magnifier_Configure_Parser* Magnifier_Configure_Parser::m_instance = NULL;
+MagnifierConfigParser* MagnifierConfigParser::m_instance = NULL;
 
-Magnifier_Configure_Parser::Magnifier_Configure_Parser() {
+MagnifierConfigParser::MagnifierConfigParser() {
     m_impl = new MagnifierConfigureParserImpl;
     if (m_impl == NULL) {
-        SCLLOG(SclLog::ERROR, "Create Magnifier_Configure_Parser failed");
+        SCLLOG(SclLog::ERROR, "Create MagnifierConfigParser failed");
     }
 }
 
-Magnifier_Configure_Parser::~Magnifier_Configure_Parser() {
+MagnifierConfigParser::~MagnifierConfigParser() {
     if (m_impl) {
-        SCLLOG(SclLog::MESSAGE, "~Magnifier_Configure_Parser() has called");
+        SCLLOG(SclLog::MESSAGE, "~MagnifierConfigParser() has called");
         delete m_impl;
         m_impl = NULL;
     }
 }
 
-Magnifier_Configure_Parser*
-Magnifier_Configure_Parser::get_instance() {
+MagnifierConfigParser*
+MagnifierConfigParser::get_instance() {
     if (m_instance == NULL) {
-        m_instance = new Magnifier_Configure_Parser();
+        m_instance = new MagnifierConfigParser();
     }
     return m_instance;
 }
 
 int
-Magnifier_Configure_Parser::init(const char* file) {
+MagnifierConfigParser::init(const char* file) {
     return m_impl->parsing_magnifier_configure(file);
 }
 
 PSclMagnifierWndConfigure
-Magnifier_Configure_Parser::get_magnifier_configure() {
+MagnifierConfigParser::get_magnifier_configure() {
     return &m_impl->m_magnifier_configure;
 }

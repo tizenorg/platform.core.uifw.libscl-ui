@@ -72,15 +72,15 @@ class XMLResource: public sclres::SclRes{
     private:
     static XMLResource* m_instance;
 
-    Main_Entry_Parser *m_main_entry_parser;
+    MainEntryParser *m_main_entry_parser;
     Input_Mode_Configure_Parser *m_input_mode_configure_parser;
-    Layout_Parser *m_layout_parser;
-    Modifier_decoration_Parser *m_modifier_decoration_parser;
-    Label_properties_Parser *m_label_properties_parser;
-    Default_Configure_Parser *m_default_configure_parser;
-    AutoPopup_Configure_Parser *m_autopopup_configure_parser;
-    Magnifier_Configure_Parser *m_magnifier_configure_parser;
-    Nine_patch_file_list_Parser *m_nine_patch_file_list_parser;
+    LayoutParser *m_layout_parser;
+    ModifierDecorationParser *m_modifier_decoration_parser;
+    LabelPropertyParser *m_label_properties_parser;
+    DefaultConfigParser *m_default_configure_parser;
+    AutoPopupConfigParser *m_autopopup_configure_parser;
+    MagnifierConfigParser *m_magnifier_configure_parser;
+    NinePatchFileParser_Parser *m_nine_patch_file_list_parser;
 
     private:
     class DestructHelper {

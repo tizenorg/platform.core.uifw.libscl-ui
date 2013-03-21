@@ -15,27 +15,27 @@
  *
  */
 
-#ifndef __Magnifier_Configure_Bin_Parser__H__
-#define __Magnifier_Configure_Bin_Parser__H__
+#ifndef __BinMagnifierConfigParser__H__
+#define __BinMagnifierConfigParser__H__
 #include "sclres_type.h"
 #include "string_collector.h"
 #include "iparserinfo_provider.h"
 #include "file_storage_impl.h"
 #include "_auto_metadata.h"
 
-class Magnifier_Configure_Bin_Parser {
+class BinMagnifierConfigParser {
 public:
-    ~Magnifier_Configure_Bin_Parser();
-    static Magnifier_Configure_Bin_Parser *get_instance();
+    ~BinMagnifierConfigParser();
+    static BinMagnifierConfigParser *get_instance();
     void init(const FileStorage& storage, int, int, IParserInfo_Provider*);
 
     PSclMagnifierWndConfigure get_magnifier_configure();
 private:
-    Magnifier_Configure_Bin_Parser();
+    BinMagnifierConfigParser();
     void parsing_magnifier_configure();
 
 private:
-    static Magnifier_Configure_Bin_Parser *m_instance;
+    static BinMagnifierConfigParser *m_instance;
     SclMagnifierWndConfigure m_magnifier_configure;
     StringCollector m_string_collector;
     FileStorage m_storage;
@@ -45,7 +45,7 @@ private:
     class DestructHelper {
     public:
         ~DestructHelper() {
-            if (Magnifier_Configure_Bin_Parser::m_instance != NULL)
+            if (BinMagnifierConfigParser::m_instance != NULL)
                 delete m_instance;
         }
     };

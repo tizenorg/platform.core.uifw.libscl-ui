@@ -20,24 +20,24 @@
 using namespace std;
 #include "put_record.h"
 
-AutoPopup_Configure_Bin_Parser* AutoPopup_Configure_Bin_Parser::m_instance = NULL;
+BinAutoPopupConfigParser* BinAutoPopupConfigParser::m_instance = NULL;
 
-AutoPopup_Configure_Bin_Parser::AutoPopup_Configure_Bin_Parser() {
+BinAutoPopupConfigParser::BinAutoPopupConfigParser() {
     memset((void*)&m_autopopup_configure, 0x00, sizeof(SclAutoPopupConfigure));
 }
 
-AutoPopup_Configure_Bin_Parser::~AutoPopup_Configure_Bin_Parser() {
+BinAutoPopupConfigParser::~BinAutoPopupConfigParser() {
 }
 
-AutoPopup_Configure_Bin_Parser* AutoPopup_Configure_Bin_Parser::get_instance() {
+BinAutoPopupConfigParser* BinAutoPopupConfigParser::get_instance() {
     if (m_instance == NULL) {
-        m_instance = new AutoPopup_Configure_Bin_Parser();
+        m_instance = new BinAutoPopupConfigParser();
     }
     return m_instance;
 }
 
 void
-AutoPopup_Configure_Bin_Parser::decode_color(SclColor& color, int width) {
+BinAutoPopupConfigParser::decode_color(SclColor& color, int width) {
     if (width <= 0) return;
 
     color.r = m_storage.get<sint_t>(width);
@@ -46,7 +46,7 @@ AutoPopup_Configure_Bin_Parser::decode_color(SclColor& color, int width) {
     color.a = m_storage.get<sint_t>(width);
 }
 
-void AutoPopup_Configure_Bin_Parser::init(const FileStorage& storage, int offset, int size, IParserInfo_Provider* parser_info_provider) {
+void BinAutoPopupConfigParser::init(const FileStorage& storage, int offset, int size, IParserInfo_Provider* parser_info_provider) {
     m_storage.set_str_provider(parser_info_provider);
     m_storage.get_storage(storage, offset, size);
     this->parser_info_provider = parser_info_provider;
@@ -54,7 +54,7 @@ void AutoPopup_Configure_Bin_Parser::init(const FileStorage& storage, int offset
     parsing_autopopup_configure();
 }
 
-void AutoPopup_Configure_Bin_Parser::parsing_autopopup_configure() {
+void BinAutoPopupConfigParser::parsing_autopopup_configure() {
     Autopopup_configure_width record_width;
     set_autopopup_configure_width(*parser_info_provider, record_width);
 
@@ -122,6 +122,6 @@ void AutoPopup_Configure_Bin_Parser::parsing_autopopup_configure() {
 #endif
 }
 
-PSclAutoPopupConfigure AutoPopup_Configure_Bin_Parser::get_autopopup_configure() {
+PSclAutoPopupConfigure BinAutoPopupConfigParser::get_autopopup_configure() {
     return &m_autopopup_configure;
 }

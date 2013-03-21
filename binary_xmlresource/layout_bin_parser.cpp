@@ -25,24 +25,24 @@
 using namespace std;
 using namespace scl;
 
-Layout_Bin_Parser* Layout_Bin_Parser::m_instance = NULL;
+BinLayoutParser* BinLayoutParser::m_instance = NULL;
 
-Layout_Bin_Parser::
-Layout_Bin_Parser() {
+BinLayoutParser::
+BinLayoutParser() {
     m_layout_size = 0;
     memset(m_layout_table, 0x00, sizeof(SclLayout) * MAX_SCL_LAYOUT);
 }
-Layout_Bin_Parser::
-~Layout_Bin_Parser() {
+BinLayoutParser::
+~BinLayoutParser() {
 }
-Layout_Bin_Parser* Layout_Bin_Parser::
+BinLayoutParser* BinLayoutParser::
 get_instance() {
     if (m_instance == NULL) {
-        m_instance = new Layout_Bin_Parser();
+        m_instance = new BinLayoutParser();
     }
     return m_instance;
 }
-void Layout_Bin_Parser::
+void BinLayoutParser::
 init(const FileStorage& storage, int offset, int size, IParserInfo_Provider* parser_info_provider) {
     m_storage.set_str_provider(parser_info_provider);
     m_storage.get_storage(storage, offset, size);
@@ -51,7 +51,7 @@ init(const FileStorage& storage, int offset, int size, IParserInfo_Provider* par
 
 }
 
-int Layout_Bin_Parser::
+int BinLayoutParser::
 get_layout_index(const char *name) {
     int ret = NOT_USED;
     if (name) {
@@ -67,23 +67,23 @@ get_layout_index(const char *name) {
     return ret;
 }
 
-PSclLayout Layout_Bin_Parser::
+PSclLayout BinLayoutParser::
 get_layout_table() {
     return m_layout_table;
 }
-int Layout_Bin_Parser::
+int BinLayoutParser::
 get_layout_size() {
     return m_layout_size;
 }
 
 
-PSclLayoutKeyCoordinatePointerTable Layout_Bin_Parser::
+PSclLayoutKeyCoordinatePointerTable BinLayoutParser::
 get_key_coordinate_pointer_frame() {
-    Key_coordinate_frame_bin_Parser *key_coordinate_frame_bin_parser = Key_coordinate_frame_bin_Parser::get_instance();
+    BinKeyCoordFrameParser *key_coordinate_frame_bin_parser = BinKeyCoordFrameParser::get_instance();
     return key_coordinate_frame_bin_parser->get_key_coordinate_pointer_frame();
 }
 
-void Layout_Bin_Parser::
+void BinLayoutParser::
 parsing_layout_table() {
     // 4 byte (range[0-4,294,967,295))
     const int DATA_SIZE_BYTES = 4;
@@ -116,7 +116,7 @@ parsing_layout_table() {
 }
 
 void
-Layout_Bin_Parser::
+BinLayoutParser::
 decode_color(SclColor& color, int width) {
     if (width <= 0) return;
 
@@ -125,7 +125,7 @@ decode_color(SclColor& color, int width) {
     color.b = m_storage.get<sint_t>(width);
     color.a = m_storage.get<sint_t>(width);
 }
-void Layout_Bin_Parser::
+void BinLayoutParser::
 decode_layout_record(SclLayout& cur, const Layout_width& record_width) {
     //name
     m_storage.get_str(&(cur.name), record_width.name, m_string_collector);

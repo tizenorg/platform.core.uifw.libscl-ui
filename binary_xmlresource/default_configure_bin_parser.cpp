@@ -20,30 +20,30 @@
 using namespace std;
 #include "put_record.h"
 
-Default_Configure_Bin_Parser* Default_Configure_Bin_Parser::m_instance = NULL;
+BinDefaultConfigParser* BinDefaultConfigParser::m_instance = NULL;
 
-Default_Configure_Bin_Parser::Default_Configure_Bin_Parser() {
+BinDefaultConfigParser::BinDefaultConfigParser() {
     memset((void*)&m_default_configure, 0x00, sizeof(SclDefaultConfigure));
 }
 
-Default_Configure_Bin_Parser::~Default_Configure_Bin_Parser() {
+BinDefaultConfigParser::~BinDefaultConfigParser() {
 }
 
-Default_Configure_Bin_Parser* Default_Configure_Bin_Parser::get_instance() {
+BinDefaultConfigParser* BinDefaultConfigParser::get_instance() {
     if (m_instance == NULL) {
-        m_instance = new Default_Configure_Bin_Parser();
+        m_instance = new BinDefaultConfigParser();
     }
     return m_instance;
 }
 
-void Default_Configure_Bin_Parser::init(const FileStorage& storage, int offset, int size,  IParserInfo_Provider* parser_info_provider) {
+void BinDefaultConfigParser::init(const FileStorage& storage, int offset, int size,  IParserInfo_Provider* parser_info_provider) {
     m_storage.set_str_provider(parser_info_provider);
     m_storage.get_storage(storage, offset, size);
     this->parser_info_provider = parser_info_provider;
     parsing_default_configure();
 }
 void
-Default_Configure_Bin_Parser::decode_color(SclColor& color, int width) {
+BinDefaultConfigParser::decode_color(SclColor& color, int width) {
     if (width <= 0) return;
 
     color.r = m_storage.get<sint_t>(width);
@@ -52,7 +52,7 @@ Default_Configure_Bin_Parser::decode_color(SclColor& color, int width) {
     color.a = m_storage.get<sint_t>(width);
 }
 
-void Default_Configure_Bin_Parser::parsing_default_configure() {
+void BinDefaultConfigParser::parsing_default_configure() {
 
     PSclDefaultConfigure cur = &m_default_configure;
 
@@ -123,7 +123,7 @@ void Default_Configure_Bin_Parser::parsing_default_configure() {
 #endif
 }
 
-PSclDefaultConfigure Default_Configure_Bin_Parser::get_default_configure() {
+PSclDefaultConfigure BinDefaultConfigParser::get_default_configure() {
     return &m_default_configure;
 }
 

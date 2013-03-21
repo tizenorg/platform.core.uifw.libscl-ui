@@ -15,27 +15,27 @@
  *
  */
 
-#ifndef __Nine_patch_file_list_bin_Parser__H__
-#define __Nine_patch_file_list_bin_Parser__H__
+#ifndef __BinNinePatchFileParser__H__
+#define __BinNinePatchFileParser__H__
 #include "iparserinfo_provider.h"
 #include "sclres_type.h"
 #include "string_collector.h"
 #include "file_storage_impl.h"
 #include "_auto_metadata.h"
 
-class Nine_patch_file_list_bin_Parser {
+class BinNinePatchFileParser {
     static const int MAX_NINE_PATCH_FILE_LIST = 128;
     public:
-        ~Nine_patch_file_list_bin_Parser();
-        static Nine_patch_file_list_bin_Parser *get_instance();
+        ~BinNinePatchFileParser();
+        static BinNinePatchFileParser *get_instance();
     void init(const FileStorage& storage, int, int, IParserInfo_Provider*);
     bool get_nine_patch_info(const char *filename, SclNinePatchInfo *info);
     SclNinePatchInfo* get_nine_patch_list();
     private:
-    Nine_patch_file_list_bin_Parser();
+    BinNinePatchFileParser();
     void parsing_nine_patch_file_list();
     private:
-        static Nine_patch_file_list_bin_Parser *m_instance;
+        static BinNinePatchFileParser *m_instance;
         SclNinePatchInfo m_nine_patch_file_list[MAX_NINE_PATCH_FILE_LIST];
         int m_size;
         StringCollector m_string_collector;
@@ -45,7 +45,7 @@ class Nine_patch_file_list_bin_Parser {
     class DestructHelper {
         public:
         ~DestructHelper() {
-            if (Nine_patch_file_list_bin_Parser::m_instance != NULL)
+            if (BinNinePatchFileParser::m_instance != NULL)
                 delete m_instance;
         }
     };

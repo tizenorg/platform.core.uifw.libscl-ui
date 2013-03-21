@@ -23,17 +23,17 @@ typedef SclDefaultConfigure *PSclDefaultConfigure;
 
 class DefaultConfigureParserImpl;
 
-class Default_Configure_Parser {
+class DefaultConfigParser {
     DefaultConfigureParserImpl *m_impl;
 public:
     int init(const char* file);
     PSclDefaultConfigure get_default_configure();
 public:
-    ~Default_Configure_Parser();
-    static Default_Configure_Parser *get_instance();
+    ~DefaultConfigParser();
+    static DefaultConfigParser *get_instance();
 private:
-    Default_Configure_Parser();
-    static Default_Configure_Parser *m_instance;
+    DefaultConfigParser();
+    static DefaultConfigParser *m_instance;
 };
 
 

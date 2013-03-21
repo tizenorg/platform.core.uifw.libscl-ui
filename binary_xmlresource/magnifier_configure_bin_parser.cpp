@@ -20,23 +20,23 @@
 #include <assert.h>
 using namespace std;
 #include "put_record.h"
-Magnifier_Configure_Bin_Parser* Magnifier_Configure_Bin_Parser::m_instance = NULL;
+BinMagnifierConfigParser* BinMagnifierConfigParser::m_instance = NULL;
 
-Magnifier_Configure_Bin_Parser::Magnifier_Configure_Bin_Parser() {
+BinMagnifierConfigParser::BinMagnifierConfigParser() {
     memset((void*)&m_magnifier_configure, 0x00, sizeof(SclMagnifierWndConfigure));
 }
 
-Magnifier_Configure_Bin_Parser::~Magnifier_Configure_Bin_Parser() {
+BinMagnifierConfigParser::~BinMagnifierConfigParser() {
 }
 
-Magnifier_Configure_Bin_Parser* Magnifier_Configure_Bin_Parser::get_instance() {
+BinMagnifierConfigParser* BinMagnifierConfigParser::get_instance() {
     if (m_instance == NULL) {
-        m_instance = new Magnifier_Configure_Bin_Parser();
+        m_instance = new BinMagnifierConfigParser();
     }
     return m_instance;
 }
 
-void Magnifier_Configure_Bin_Parser::init(const FileStorage& storage, int offset, int size, IParserInfo_Provider* parser_info_provider) {
+void BinMagnifierConfigParser::init(const FileStorage& storage, int offset, int size, IParserInfo_Provider* parser_info_provider) {
     m_storage.set_str_provider(parser_info_provider);
     m_storage.get_storage(storage, offset, size);
     this->parser_info_provider = parser_info_provider;
@@ -44,7 +44,7 @@ void Magnifier_Configure_Bin_Parser::init(const FileStorage& storage, int offset
 }
 
 
-void Magnifier_Configure_Bin_Parser::parsing_magnifier_configure() {
+void BinMagnifierConfigParser::parsing_magnifier_configure() {
     Magnifier_configure_width record_width;
     set_magnifier_configure_width(*parser_info_provider, record_width);
 
@@ -95,7 +95,7 @@ void Magnifier_Configure_Bin_Parser::parsing_magnifier_configure() {
 #endif
 }
 
-PSclMagnifierWndConfigure Magnifier_Configure_Bin_Parser::get_magnifier_configure() {
+PSclMagnifierWndConfigure BinMagnifierConfigParser::get_magnifier_configure() {
     return &m_magnifier_configure;
 }
 

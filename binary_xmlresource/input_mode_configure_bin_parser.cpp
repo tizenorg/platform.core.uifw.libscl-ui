@@ -19,26 +19,26 @@
 #include "simple_debug.h"
 #include "put_record.h"
 using namespace std;
-Input_Mode_Configure_Bin_Parser* Input_Mode_Configure_Bin_Parser::m_instance = NULL;
+BinInputModeConfigParser* BinInputModeConfigParser::m_instance = NULL;
 
-Input_Mode_Configure_Bin_Parser::Input_Mode_Configure_Bin_Parser() {
+BinInputModeConfigParser::BinInputModeConfigParser() {
     m_inputmode_size = 0;
     memset(m_input_mode_configure_table, 0x00, sizeof(SclInputModeConfigure) * MAX_SCL_INPUT_MODE);
 }
 
-Input_Mode_Configure_Bin_Parser::~Input_Mode_Configure_Bin_Parser() {
+BinInputModeConfigParser::~BinInputModeConfigParser() {
 }
 
-Input_Mode_Configure_Bin_Parser*
-Input_Mode_Configure_Bin_Parser::get_instance() {
+BinInputModeConfigParser*
+BinInputModeConfigParser::get_instance() {
     if (m_instance == NULL) {
-        m_instance = new Input_Mode_Configure_Bin_Parser();
+        m_instance = new BinInputModeConfigParser();
     }
     return m_instance;
 }
 
 void
-Input_Mode_Configure_Bin_Parser::init(const FileStorage& storage, int offset, int size, IParserInfo_Provider* parser_info_provider) {
+BinInputModeConfigParser::init(const FileStorage& storage, int offset, int size, IParserInfo_Provider* parser_info_provider) {
     m_storage.set_str_provider(parser_info_provider);
     m_storage.get_storage(storage, offset, size);
     this->parser_info_provider = parser_info_provider;
@@ -46,7 +46,7 @@ Input_Mode_Configure_Bin_Parser::init(const FileStorage& storage, int offset, in
 }
 
 int
-Input_Mode_Configure_Bin_Parser::get_inputmode_id(const char *name) {
+BinInputModeConfigParser::get_inputmode_id(const char *name) {
     if (name == NULL) return -1;
 
     for(int i = 0; i < MAX_SCL_INPUT_MODE; ++i) {
@@ -61,7 +61,7 @@ Input_Mode_Configure_Bin_Parser::get_inputmode_id(const char *name) {
 }
 
 const char*
-Input_Mode_Configure_Bin_Parser::get_inputmode_name(int id) {
+BinInputModeConfigParser::get_inputmode_name(int id) {
     if (id >= 0 && id < MAX_SCL_INPUT_MODE) {
         return m_input_mode_configure_table[id].name;
     }
@@ -70,12 +70,12 @@ Input_Mode_Configure_Bin_Parser::get_inputmode_name(int id) {
 }
 
 int
-Input_Mode_Configure_Bin_Parser::get_inputmode_size() {
+BinInputModeConfigParser::get_inputmode_size() {
     return m_inputmode_size;
 }
 
 void
-Input_Mode_Configure_Bin_Parser::parsing_input_mode_configure_table() {
+BinInputModeConfigParser::parsing_input_mode_configure_table() {
 
     // skip data_size
     m_storage.advance(8);
@@ -111,7 +111,7 @@ Input_Mode_Configure_Bin_Parser::parsing_input_mode_configure_table() {
 }
 
 PSclInputModeConfigure
-Input_Mode_Configure_Bin_Parser::get_input_mode_configure_table() {
+BinInputModeConfigParser::get_input_mode_configure_table() {
     return m_input_mode_configure_table;
 }
 

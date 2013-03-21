@@ -17,10 +17,7 @@
 
 #ifndef __SCLRES_MANAGER__
 #define __SCLRES_MANAGER__
-#include "sclres.h"
-#include <vector>
-#include <string>
-typedef std::vector<sclres::SclRes> SclResTable;
+#include "sclres_type.h"
 
 class SclResParserManager{
     public:
@@ -59,17 +56,6 @@ class SclResParserManager{
     private:
         SclResParserManager();
         static SclResParserManager* m_instance;
-        sclres::SclRes* m_cur;
-
-    private:
-        class DestructHelper {
-            public:
-                ~DestructHelper() {
-                    if (SclResParserManager::m_instance != NULL)
-                        delete m_instance;
-                }
-        };
-        static DestructHelper des;
 };
 
 #endif

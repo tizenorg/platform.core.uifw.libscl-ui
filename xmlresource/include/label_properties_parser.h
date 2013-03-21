@@ -15,23 +15,23 @@
  *
  */
 
-#ifndef __Label_properties_Parser__H__
-#define __Label_properties_Parser__H__
+#ifndef __LabelPropertyParser__H__
+#define __LabelPropertyParser__H__
 #include "sclres_type.h"
 class LabelPropertiesParserImpl;
 
-class Label_properties_Parser {
+class LabelPropertyParser {
     LabelPropertiesParserImpl *m_impl;
     public:
     int init(const char* file);
     PSclLabelPropertiesTable get_label_properties_frame();
     int get_size();
     public:
-    ~Label_properties_Parser();
-    static Label_properties_Parser *get_instance();
+    ~LabelPropertyParser();
+    static LabelPropertyParser *get_instance();
     private:
-    Label_properties_Parser();
-    static Label_properties_Parser *m_instance;
+    LabelPropertyParser();
+    static LabelPropertyParser *m_instance;
 };
 
 

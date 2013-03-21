@@ -22,10 +22,10 @@
 #include "iparserinfo_provider.h"
 #include "file_storage_impl.h"
 #include "_auto_metadata.h"
-class Default_Configure_Bin_Parser {
+class BinDefaultConfigParser {
 public:
-    ~Default_Configure_Bin_Parser();
-    static Default_Configure_Bin_Parser *get_instance();
+    ~BinDefaultConfigParser();
+    static BinDefaultConfigParser *get_instance();
     void init(const FileStorage& storage, int, int, IParserInfo_Provider*);
 
     PSclDefaultConfigure get_default_configure();
@@ -33,11 +33,11 @@ public:
 
     //These private methods for parsing
 private:
-    Default_Configure_Bin_Parser();
+    BinDefaultConfigParser();
     void parsing_default_configure();
     void decode_color(SclColor&, int width);
 private:
-    static Default_Configure_Bin_Parser *m_instance;
+    static BinDefaultConfigParser *m_instance;
     SclDefaultConfigure m_default_configure;
     StringCollector m_string_collector;
     IParserInfo_Provider* parser_info_provider;
@@ -46,7 +46,7 @@ private:
     class DestructHelper {
     public:
         ~DestructHelper() {
-            if (Default_Configure_Bin_Parser::m_instance != NULL)
+            if (BinDefaultConfigParser::m_instance != NULL)
                 delete m_instance;
         }
     };

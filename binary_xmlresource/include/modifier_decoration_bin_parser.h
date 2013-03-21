@@ -15,8 +15,8 @@
  *
  */
 
-#ifndef __Modifier_decoration_bin_Parser__H__
-#define __Modifier_decoration_bin_Parser__H__
+#ifndef __BinModifierDecorationParser__H__
+#define __BinModifierDecorationParser__H__
 #include <libxml/parser.h>
 #include "sclres_type.h"
 #include "iparserinfo_provider.h"
@@ -25,19 +25,19 @@
 #include "file_storage_impl.h"
 #include "_auto_metadata.h"
 
-class Modifier_decoration_bin_Parser {
+class BinModifierDecorationParser {
     public:
-        ~Modifier_decoration_bin_Parser();
-        static Modifier_decoration_bin_Parser *get_instance();
+        ~BinModifierDecorationParser();
+        static BinModifierDecorationParser *get_instance();
     void init(const FileStorage& storage, int, int, IParserInfo_Provider*);
     PSclModifierDecoration get_modifier_decoration_table();
     int get_modifier_decoration_id(const char *name);
     private:
-    Modifier_decoration_bin_Parser();
+    BinModifierDecorationParser();
     void parsing_modifier_decoration_table();
 
     private:
-        static Modifier_decoration_bin_Parser *m_instance;
+        static BinModifierDecorationParser *m_instance;
         SclModifierDecoration m_modifier_decoration_table[MAX_SCL_MODIFIER_DECORATION_NUM];
         IParserInfo_Provider *parser_info_provider;
 
@@ -47,7 +47,7 @@ class Modifier_decoration_bin_Parser {
     class DestructHelper {
         public:
         ~DestructHelper() {
-            if (Modifier_decoration_bin_Parser::m_instance != NULL)
+            if (BinModifierDecorationParser::m_instance != NULL)
                 delete m_instance;
         }
     };

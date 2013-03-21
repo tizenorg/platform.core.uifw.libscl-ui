@@ -15,25 +15,25 @@
  *
  */
 
-#ifndef __AutoPopup_Configure_Parser__H__
-#define __AutoPopup_Configure_Parser__H__
+#ifndef __AutoPopupConfigParser__H__
+#define __AutoPopupConfigParser__H__
 #include "sclres_type.h"
 
 typedef SclAutoPopupConfigure *PSclAutoPopupConfigure;
 
 class AutoPopupConfigureParserImpl;
 
-class AutoPopup_Configure_Parser {
+class AutoPopupConfigParser {
     AutoPopupConfigureParserImpl *m_impl;
     public:
         int init(const char* file);
         PSclAutoPopupConfigure get_autopopup_configure();
     public:
-        ~AutoPopup_Configure_Parser();
-        static AutoPopup_Configure_Parser *get_instance();
+        ~AutoPopupConfigParser();
+        static AutoPopupConfigParser *get_instance();
     private:
-        AutoPopup_Configure_Parser();
-        static AutoPopup_Configure_Parser *m_instance;
+        AutoPopupConfigParser();
+        static AutoPopupConfigParser *m_instance;
 };
 
 

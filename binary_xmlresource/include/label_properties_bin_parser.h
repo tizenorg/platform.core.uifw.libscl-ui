@@ -15,8 +15,8 @@
  *
  */
 
-#ifndef __Label_properties_bin_Parser__H__
-#define __Label_properties_bin_Parser__H__
+#ifndef __BinLabelPropertyParser__H__
+#define __BinLabelPropertyParser__H__
 #include "sclres_type.h"
 #include "iparserinfo_provider.h"
 #include <vector>
@@ -24,23 +24,23 @@
 #include "file_storage_impl.h"
 #include "_auto_metadata.h"
 
-class Label_properties_bin_Parser {
+class BinLabelPropertyParser {
     public:
-        ~Label_properties_bin_Parser();
-        static Label_properties_bin_Parser *get_instance();
+        ~BinLabelPropertyParser();
+        static BinLabelPropertyParser *get_instance();
     void init(const FileStorage& storage, int, int, IParserInfo_Provider*);
     PSclLabelPropertiesTable get_label_properties_frame();
     const int get_size();
 
     private:
-    Label_properties_bin_Parser();
+    BinLabelPropertyParser();
     void parsing_label_properties_frame();
     void decode_label_properties_record(const PSclLabelProperties cur, const Label_properties_record_width&);
 
     void decode_color(SclColor& color, int width);
 
     private:
-        static Label_properties_bin_Parser *m_instance;
+        static BinLabelPropertyParser *m_instance;
         SclLabelProperties m_label_properties_frame[MAX_SCL_LABEL_PROPERTIES][MAX_SIZE_OF_LABEL_FOR_ONE];
         int m_size;
         IParserInfo_Provider *parser_info_provider;
@@ -50,7 +50,7 @@ class Label_properties_bin_Parser {
     class DestructHelper {
         public:
         ~DestructHelper() {
-            if (Label_properties_bin_Parser::m_instance != NULL)
+            if (BinLabelPropertyParser::m_instance != NULL)
                 delete m_instance;
         }
     };

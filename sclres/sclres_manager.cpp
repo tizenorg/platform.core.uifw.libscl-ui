@@ -15,6 +15,7 @@
  *
  */
 
+#include "sclres.h"
 #include "sclres_manager.h"
 #include "xmlresource.h"
 #include "binary_xmlresource.h"
@@ -25,11 +26,13 @@ using namespace binary_xmlresource;
 using namespace sclres;
 #include "put_record.h"
 
+static sclres::SclRes *_current_parser = NULL;
+
 SclResParserManager* SclResParserManager::m_instance = NULL;
 SclResParserManager::~SclResParserManager() {
-    if (m_cur)
-        delete m_cur;
-    m_cur = NULL;
+    if (_current_parser)
+        delete _current_parser;
+    _current_parser = NULL;
 }
 
 SclResParserManager*
@@ -41,18 +44,18 @@ SclResParserManager::get_instance() {
 }
 
 SclResParserManager::SclResParserManager() {
-    m_cur = NULL;
+    _current_parser = NULL;
 }
 
 void
 SclResParserManager::init(const SCLParserType parser_type, const char *entry_filepath) {
     if (parser_type == SCL_PARSER_TYPE_XML) {
         SCLLOG(SclLog::MESSAGE, "Use text xml\n");
-        m_cur = XMLResource::get_instance();
+        _current_parser = XMLResource::get_instance();
     }
     else if (parser_type == SCL_PARSER_TYPE_BINARY_XML) {
         SCLLOG(SclLog::MESSAGE, "Use binary xml\n");
-        m_cur = BinXmlResource::get_instance();
+        _current_parser = BinResource::get_instance();
     }
 
     /* Let's acquire the directory information from filepath */
@@ -63,168 +66,168 @@ SclResParserManager::init(const SCLParserType parser_type, const char *entry_fil
     std::string filepath = str.substr(0, found);
     std::string filename = str.substr(found + 1);
 
-    //assert(m_cur != NULL);
-    if (m_cur != NULL) {
+    //assert(_current_parser != NULL);
+    if (_current_parser != NULL) {
         /* Assume the directory where the main entry file exists, is the default resource directory */
-        m_cur->set_resource_directory(filepath.c_str());
-        m_cur->init(filename.c_str());
+        _current_parser->set_resource_directory(filepath.c_str());
+        _current_parser->init(filename.c_str());
 #ifdef __SCL_TXT_DEBUG
-        put_autopopup_configure(PARSER, *(m_cur->get_autopopup_configure()));
-        put_default_configure(PARSER, *(m_cur->get_default_configure()));
-        put_input_mode_configure_table(PARSER, m_cur->get_input_mode_configure_table());
-        put_key_coordinate_frame(PARSER, m_cur->get_key_coordinate_pointer_frame());
-        put_label_properties_frame(PARSER, m_cur->get_label_properties_frame());
-        put_layout_table(PARSER, m_cur->get_layout_table());
-        put_magnifier_wnd_configure(PARSER, *(m_cur->get_magnifier_configure()));
-        put_modifier_decoration(PARSER, m_cur->get_modifier_decoration_table());
-        //put_nine_patch_info(PARSER, m_cur->get_nine_patch_file_list());
+        put_autopopup_configure(PARSER, *(_current_parser->get_autopopup_configure()));
+        put_default_configure(PARSER, *(_current_parser->get_default_configure()));
+        put_input_mode_configure_table(PARSER, _current_parser->get_input_mode_configure_table());
+        put_key_coordinate_frame(PARSER, _current_parser->get_key_coordinate_pointer_frame());
+        put_label_properties_frame(PARSER, _current_parser->get_label_properties_frame());
+        put_layout_table(PARSER, _current_parser->get_layout_table());
+        put_magnifier_wnd_configure(PARSER, *(_current_parser->get_magnifier_configure()));
+        put_modifier_decoration(PARSER, _current_parser->get_modifier_decoration_table());
+        //put_nine_patch_info(PARSER, _current_parser->get_nine_patch_file_list());
 #endif
     }
 }
 
 void
 SclResParserManager::load(int layout_id) {
-    if (m_cur) {
-        m_cur->load(layout_id);
+    if (_current_parser) {
+        _current_parser->load(layout_id);
     }
 }
 
 void
 SclResParserManager::unload() {
-    if (m_cur) {
-        m_cur->unload();
+    if (_current_parser) {
+        _current_parser->unload();
     }
 }
 
 bool
 SclResParserManager::loaded(int layout_id) {
-    if (m_cur == NULL) return false;
+    if (_current_parser == NULL) return false;
 
-    return m_cur->loaded(layout_id);
+    return _current_parser->loaded(layout_id);
 }
 
 PSclInputModeConfigure
 SclResParserManager::get_input_mode_configure_table() {
-    if (m_cur == NULL) return NULL;
+    if (_current_parser == NULL) return NULL;
 
-    return m_cur->get_input_mode_configure_table();
+    return _current_parser->get_input_mode_configure_table();
 }
 
 PSclLayout
 SclResParserManager::get_layout_table() {
-    if (m_cur == NULL) return NULL;
+    if (_current_parser == NULL) return NULL;
 
-    return m_cur->get_layout_table();
+    return _current_parser->get_layout_table();
 }
 
 PSclLayoutKeyCoordinatePointerTable
 SclResParserManager::get_key_coordinate_pointer_frame() {
-    if (m_cur == NULL) return NULL;
+    if (_current_parser == NULL) return NULL;
 
-    return m_cur->get_key_coordinate_pointer_frame();
+    return _current_parser->get_key_coordinate_pointer_frame();
 }
 
 PSclModifierDecoration
 SclResParserManager::get_modifier_decoration_table() {
-    if (m_cur == NULL) return NULL;
+    if (_current_parser == NULL) return NULL;
 
-    return m_cur->get_modifier_decoration_table();
+    return _current_parser->get_modifier_decoration_table();
 }
 
 PSclLabelPropertiesTable
 SclResParserManager::get_label_properties_frame() {
-    if (m_cur == NULL) return NULL;
+    if (_current_parser == NULL) return NULL;
 
-    return m_cur->get_label_properties_frame();
+    return _current_parser->get_label_properties_frame();
 }
 
 PSclDefaultConfigure
 SclResParserManager::get_default_configure() {
-    if (m_cur == NULL) return NULL;
+    if (_current_parser == NULL) return NULL;
 
-    return m_cur->get_default_configure();
+    return _current_parser->get_default_configure();
 }
 
 PSclAutoPopupConfigure
 SclResParserManager::get_autopopup_configure() {
-    if (m_cur == NULL) return NULL;
+    if (_current_parser == NULL) return NULL;
 
-    return m_cur->get_autopopup_configure();
+    return _current_parser->get_autopopup_configure();
 }
 
 PSclMagnifierWndConfigure
 SclResParserManager::get_magnifier_configure() {
-    if (m_cur == NULL) return NULL;
+    if (_current_parser == NULL) return NULL;
 
-    return m_cur->get_magnifier_configure();
+    return _current_parser->get_magnifier_configure();
 }
 
 const char*
 SclResParserManager::get_resource_directory() {
-    if (m_cur == NULL) return NULL;
+    if (_current_parser == NULL) return NULL;
 
-    return m_cur->get_resource_directory();
+    return _current_parser->get_resource_directory();
 }
 
 int
 SclResParserManager::get_inputmode_id(const char *name) {
-    if (m_cur == NULL) return -1;
+    if (_current_parser == NULL) return -1;
 
-    return m_cur->get_inputmode_id(name);
+    return _current_parser->get_inputmode_id(name);
 }
 
 const char*
 SclResParserManager::get_inputmode_name(int id) {
-    if (m_cur == NULL) return NULL;
+    if (_current_parser == NULL) return NULL;
 
-    return m_cur->get_inputmode_name(id);
+    return _current_parser->get_inputmode_name(id);
 }
 
 int
 SclResParserManager::get_inputmode_size() {
-    if (m_cur == NULL) return 0;
+    if (_current_parser == NULL) return 0;
 
-    return m_cur->get_inputmode_size();
+    return _current_parser->get_inputmode_size();
 }
 
 int
 SclResParserManager::get_layout_size() {
-    if (m_cur == NULL) return 0;
+    if (_current_parser == NULL) return 0;
 
-    return m_cur->get_layout_size();
+    return _current_parser->get_layout_size();
 }
 
 int
 SclResParserManager::get_layout_id(const char *name) {
-    if (m_cur == NULL) return -1;
+    if (_current_parser == NULL) return -1;
 
-    return m_cur->get_layout_id(name);
+    return _current_parser->get_layout_id(name);
 }
 
 int
 SclResParserManager::get_labelproperty_size() {
-    if (m_cur == NULL) return 0;
+    if (_current_parser == NULL) return 0;
 
-    return m_cur->get_labelproperty_size();
+    return _current_parser->get_labelproperty_size();
 }
 
 int
 SclResParserManager::get_modifier_decoration_id(const char *name) {
-    if (m_cur == NULL) return -1;
+    if (_current_parser == NULL) return -1;
 
-    return m_cur->get_modifier_decoration_id(name);
+    return _current_parser->get_modifier_decoration_id(name);
 }
 
 bool
 SclResParserManager::get_nine_patch_info(const char *filename, SclNinePatchInfo *info) {
-    if (m_cur == NULL) return false;
+    if (_current_parser == NULL) return false;
 
-    return m_cur->get_nine_patch_info(filename, info);
+    return _current_parser->get_nine_patch_info(filename, info);
 }
 
 const char*
 SclResParserManager::name() {
-    if (m_cur == NULL) return NULL;
+    if (_current_parser == NULL) return NULL;
 
-    return m_cur->name();
+    return _current_parser->name();
 }

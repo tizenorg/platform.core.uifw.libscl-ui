@@ -19,24 +19,24 @@
 #include <memory.h>
 #include "put_record.h"
 
-Modifier_decoration_bin_Parser* Modifier_decoration_bin_Parser::m_instance = NULL;
+BinModifierDecorationParser* BinModifierDecorationParser::m_instance = NULL;
 
-Modifier_decoration_bin_Parser::Modifier_decoration_bin_Parser() {
+BinModifierDecorationParser::BinModifierDecorationParser() {
     memset(m_modifier_decoration_table, 0x00, sizeof(SclModifierDecoration) * MAX_SCL_MODIFIER_DECORATION_NUM);
 }
 
-Modifier_decoration_bin_Parser::~Modifier_decoration_bin_Parser() {
+BinModifierDecorationParser::~BinModifierDecorationParser() {
 }
 
-Modifier_decoration_bin_Parser*
-Modifier_decoration_bin_Parser::get_instance() {
+BinModifierDecorationParser*
+BinModifierDecorationParser::get_instance() {
     if (m_instance == NULL) {
-        m_instance = new Modifier_decoration_bin_Parser();
+        m_instance = new BinModifierDecorationParser();
     }
     return m_instance;
 }
 void
-Modifier_decoration_bin_Parser::init(const FileStorage& storage, int offset, int size, IParserInfo_Provider* parser_info_provider) {
+BinModifierDecorationParser::init(const FileStorage& storage, int offset, int size, IParserInfo_Provider* parser_info_provider) {
     m_storage.set_str_provider(parser_info_provider);
     m_storage.get_storage(storage, offset, size);
     this->parser_info_provider = parser_info_provider;
@@ -45,12 +45,12 @@ Modifier_decoration_bin_Parser::init(const FileStorage& storage, int offset, int
 }
 
 /* recompute_layout will change the table */
-PSclModifierDecoration Modifier_decoration_bin_Parser::get_modifier_decoration_table() {
+PSclModifierDecoration BinModifierDecorationParser::get_modifier_decoration_table() {
     return m_modifier_decoration_table;
 }
 
 void
-Modifier_decoration_bin_Parser::parsing_modifier_decoration_table() {
+BinModifierDecorationParser::parsing_modifier_decoration_table() {
     PSclModifierDecoration cur = m_modifier_decoration_table;
 
     Modifier_decoration_width record_width;
@@ -78,7 +78,7 @@ Modifier_decoration_bin_Parser::parsing_modifier_decoration_table() {
 }
 
 int
-Modifier_decoration_bin_Parser::get_modifier_decoration_id( const char *name )
+BinModifierDecorationParser::get_modifier_decoration_id( const char *name )
 {
     if (name == NULL) return -1;
 

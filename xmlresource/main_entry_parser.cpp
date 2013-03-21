@@ -39,13 +39,13 @@ class MainEntryParserImpl {
 
             cur_node = xmlDocGetRootElement(doc);
             if (cur_node == NULL) {
-                SCLLOG(SclLog::DEBUG, "Main_Entry_Parser: empty document.\n");
+                SCLLOG(SclLog::DEBUG, "MainEntryParser: empty document.\n");
                 xmlFreeDoc(doc);
                 return -1;
             }
             if (0 != xmlStrcmp(cur_node->name, (const xmlChar*)"main-entry"))
             {
-                SCLLOG(SclLog::DEBUG, "Main_Entry_Parser: root name error: %s\n!", (char *)cur_node->name);
+                SCLLOG(SclLog::DEBUG, "MainEntryParser: root name error: %s\n!", (char *)cur_node->name);
                 xmlFreeDoc(doc);
                 return -1;
             }
@@ -105,9 +105,9 @@ class MainEntryParserImpl {
         XMLFiles m_xml_files;
 };
 
-Main_Entry_Parser* Main_Entry_Parser::m_instance = NULL;
+MainEntryParser* MainEntryParser::m_instance = NULL;
 
-Main_Entry_Parser::Main_Entry_Parser() {
+MainEntryParser::MainEntryParser() {
     m_impl = new MainEntryParserImpl;
     if (m_impl == NULL) {
         SCLLOG(SclLog::ERROR, "Create MainEntryParserImpl failed");
@@ -115,29 +115,29 @@ Main_Entry_Parser::Main_Entry_Parser() {
     }
 }
 
-Main_Entry_Parser::~Main_Entry_Parser() {
+MainEntryParser::~MainEntryParser() {
     if (m_impl) {
-        SCLLOG(SclLog::MESSAGE, "~Main_Entry_Parser() has called");
+        SCLLOG(SclLog::MESSAGE, "~MainEntryParser() has called");
         delete m_impl;
         m_impl = NULL;
     }
 }
 
-Main_Entry_Parser*
-Main_Entry_Parser::get_instance() {
+MainEntryParser*
+MainEntryParser::get_instance() {
     if (m_instance == NULL) {
-        m_instance = new Main_Entry_Parser();
+        m_instance = new MainEntryParser();
     }
     return m_instance;
 }
 
 int
-Main_Entry_Parser::init(const char* path) {
+MainEntryParser::init(const char* path) {
     return m_impl->parsing_main_entry(path);
 }
 
 
 XMLFiles&
-Main_Entry_Parser::get_xml_files() {
+MainEntryParser::get_xml_files() {
     return m_impl->m_xml_files;
 }

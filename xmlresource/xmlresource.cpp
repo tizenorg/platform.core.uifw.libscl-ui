@@ -134,7 +134,7 @@ get_layout_files(char **layout_files, int* size) {
 void
 XMLResource::init(const char *entry_filepath) {
     if (m_main_entry_parser == NULL) {
-        m_main_entry_parser = Main_Entry_Parser::get_instance();
+        m_main_entry_parser = MainEntryParser::get_instance();
         char input_file[_POSIX_PATH_MAX] = {0};
         snprintf(input_file, _POSIX_PATH_MAX, "%s/%s", get_resource_directory(), entry_filepath);
         if ( 0 != m_main_entry_parser->init(input_file)) {
@@ -159,7 +159,7 @@ XMLResource::init(const char *entry_filepath) {
 
     SCLLOG(SclLog::MESSAGE, "init default_configure\n\n");
     if (m_default_configure_parser == NULL) {
-        m_default_configure_parser = Default_Configure_Parser::get_instance();
+        m_default_configure_parser = DefaultConfigParser::get_instance();
         char input_file[_POSIX_PATH_MAX] = {0};
         snprintf(input_file, _POSIX_PATH_MAX, "%s/%s", get_resource_directory(), xml_files.default_configure);
 
@@ -171,7 +171,7 @@ XMLResource::init(const char *entry_filepath) {
 
     SCLLOG(SclLog::MESSAGE, "init modifier_decoration\n\n");
     if (m_modifier_decoration_parser == NULL) {
-        m_modifier_decoration_parser = Modifier_decoration_Parser::get_instance();
+        m_modifier_decoration_parser = ModifierDecorationParser::get_instance();
         char input_file[_POSIX_PATH_MAX] = {0};
         snprintf(input_file, _POSIX_PATH_MAX, "%s/%s", get_resource_directory(), xml_files.modifier_decoration);
 
@@ -182,7 +182,7 @@ XMLResource::init(const char *entry_filepath) {
     }
     SCLLOG(SclLog::MESSAGE, "init label_properties\n\n");
     if (m_label_properties_parser == NULL) {
-        m_label_properties_parser = Label_properties_Parser::get_instance();
+        m_label_properties_parser = LabelPropertyParser::get_instance();
         char input_file[_POSIX_PATH_MAX] = {0};
         snprintf(input_file, _POSIX_PATH_MAX, "%s/%s", get_resource_directory(), xml_files.key_label_property);
 
@@ -194,7 +194,7 @@ XMLResource::init(const char *entry_filepath) {
 
     SCLLOG(SclLog::MESSAGE, "init autopopup_configure\n\n");
     if (m_autopopup_configure_parser == NULL) {
-        m_autopopup_configure_parser = AutoPopup_Configure_Parser::get_instance();
+        m_autopopup_configure_parser = AutoPopupConfigParser::get_instance();
         char input_file[_POSIX_PATH_MAX] = {0};
         snprintf(input_file, _POSIX_PATH_MAX, "%s/%s", get_resource_directory(), xml_files.autopopup_configure);
         if (0 != m_autopopup_configure_parser->init(input_file)) {
@@ -204,7 +204,7 @@ XMLResource::init(const char *entry_filepath) {
     }
     SCLLOG(SclLog::MESSAGE, "init magnifier_configure\n\n");
     if (m_magnifier_configure_parser == NULL) {
-        m_magnifier_configure_parser = Magnifier_Configure_Parser::get_instance();
+        m_magnifier_configure_parser = MagnifierConfigParser::get_instance();
         char input_file[_POSIX_PATH_MAX] = {0};
         snprintf(input_file, _POSIX_PATH_MAX, "%s/%s", get_resource_directory(), xml_files.magnifier_configure);
 
@@ -216,7 +216,7 @@ XMLResource::init(const char *entry_filepath) {
 
     SCLLOG(SclLog::MESSAGE, "init nine_patch_file_list\n\n");
     if (m_nine_patch_file_list_parser == NULL) {
-        m_nine_patch_file_list_parser = Nine_patch_file_list_Parser::get_instance();
+        m_nine_patch_file_list_parser = NinePatchFileParser_Parser::get_instance();
         char input_file[_POSIX_PATH_MAX] = {0};
         snprintf(input_file, _POSIX_PATH_MAX, "%s/%s", get_resource_directory(), xml_files.nine_patch_file_list);
 
@@ -228,7 +228,7 @@ XMLResource::init(const char *entry_filepath) {
 
     SCLLOG(SclLog::MESSAGE, "init layout\n\n");
     if (m_layout_parser == NULL) {
-        m_layout_parser = Layout_Parser::get_instance();
+        m_layout_parser = LayoutParser::get_instance();
         char **layout_files = NULL;
         int layout_file_size = 0;
 

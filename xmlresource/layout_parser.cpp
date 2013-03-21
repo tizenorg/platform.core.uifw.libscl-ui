@@ -28,16 +28,16 @@
 
 using namespace std;
 
-Layout_Parser* Layout_Parser::m_instance = NULL;
+LayoutParser* LayoutParser::m_instance = NULL;
 
-Layout_Parser::Layout_Parser() {
+LayoutParser::LayoutParser() {
     m_layout_size = 0;
     memset(m_layout_files, 0x00, sizeof(char*) * MAX_SCL_LAYOUT);
     memset(m_layout_table, 0x00, sizeof(SclLayout) * MAX_SCL_LAYOUT);
     memset(m_key_coordinate_pointer_frame, 0x00, sizeof(SclLayoutKeyCoordinatePointer) * MAX_SCL_LAYOUT * MAX_KEY);
 }
 
-Layout_Parser::~Layout_Parser() {
+LayoutParser::~LayoutParser() {
     for (int i = 0; i < MAX_SCL_LAYOUT; ++i) {
         for (int j = 0; j < MAX_KEY; ++j) {
             free(m_key_coordinate_pointer_frame[i][j]);
@@ -54,16 +54,16 @@ Layout_Parser::~Layout_Parser() {
     release_key_strings();
 }
 
-Layout_Parser*
-Layout_Parser::get_instance() {
+LayoutParser*
+LayoutParser::get_instance() {
     if (m_instance == NULL) {
-        m_instance = new Layout_Parser();
+        m_instance = new LayoutParser();
     }
     return m_instance;
 }
 
 int
-Layout_Parser::init(const char* dir, char **layout_files, int size) {
+LayoutParser::init(const char* dir, char **layout_files, int size) {
     int ret = -1;
     if (dir && layout_files) {
         m_dir = string(dir);
@@ -74,7 +74,7 @@ Layout_Parser::init(const char* dir, char **layout_files, int size) {
 }
 
 void
-Layout_Parser::load(int layout_id) {
+LayoutParser::load(int layout_id) {
     if (layout_id >= 0 && layout_id < MAX_SCL_LAYOUT) {
         xmlDocPtr doc;
         xmlNodePtr cur_node;
@@ -90,13 +90,13 @@ Layout_Parser::load(int layout_id) {
 
         cur_node = xmlDocGetRootElement(doc);
         if (cur_node == NULL) {
-            SCLLOG(SclLog::ERROR, "Layout_Parser: empty document.\n");
+            SCLLOG(SclLog::ERROR, "LayoutParser: empty document.\n");
             xmlFreeDoc(doc);
             exit(1);
         }
         if (0 != xmlStrcmp(cur_node->name, (const xmlChar*)LAYOUT_TAG))
         {
-            SCLLOG(SclLog::ERROR, "Layout_Parser: root name error: %s\n!", (char *)cur_node->name);
+            SCLLOG(SclLog::ERROR, "LayoutParser: root name error: %s\n!", (char *)cur_node->name);
             xmlFreeDoc(doc);
             exit(1);
         }
@@ -108,7 +108,7 @@ Layout_Parser::load(int layout_id) {
     }
 }
 
-void Layout_Parser::unload() {
+void LayoutParser::unload() {
     for (int i = 0; i < MAX_SCL_LAYOUT; ++i) {
         for (int j = 0; j < MAX_KEY; ++j) {
             free(m_key_coordinate_pointer_frame[i][j]);
@@ -120,7 +120,7 @@ void Layout_Parser::unload() {
 }
 
 bool
-Layout_Parser::loaded(int layout_id) {
+LayoutParser::loaded(int layout_id) {
     bool ret = TRUE;
 
     if (layout_id >= 0 && layout_id < MAX_SCL_LAYOUT) {
@@ -133,14 +133,14 @@ Layout_Parser::loaded(int layout_id) {
 }
 
 void
-Layout_Parser::add_layout_string(xmlChar* newstr) {
+LayoutParser::add_layout_string(xmlChar* newstr) {
     if (newstr) {
         m_vec_layout_strings.push_back(newstr);
     }
 }
 
 void
-Layout_Parser::release_layout_strings() {
+LayoutParser::release_layout_strings() {
     for(int loop = 0;loop < m_vec_layout_strings.size();loop++) {
         if (m_vec_layout_strings[loop]) {
             xmlFree(m_vec_layout_strings[loop]);
@@ -150,14 +150,14 @@ Layout_Parser::release_layout_strings() {
 }
 
 void
-Layout_Parser::add_key_string(xmlChar* newstr) {
+LayoutParser::add_key_string(xmlChar* newstr) {
     if (newstr) {
         m_vec_key_strings.push_back(newstr);
     }
 }
 
 void
-Layout_Parser::release_key_strings() {
+LayoutParser::release_key_strings() {
     for(int loop = 0;loop < m_vec_key_strings.size();loop++) {
         if (m_vec_key_strings[loop]) {
             xmlFree(m_vec_key_strings[loop]);
@@ -167,7 +167,7 @@ Layout_Parser::release_key_strings() {
 }
 
 int
-Layout_Parser::get_layout_index(const char *name) {
+LayoutParser::get_layout_index(const char *name) {
     int ret = NOT_USED;
     if (name) {
         for(int loop = 0;loop < MAX_SCL_LAYOUT && ret == NOT_USED;loop++) {
@@ -183,22 +183,22 @@ Layout_Parser::get_layout_index(const char *name) {
 }
 
 PSclLayout
-Layout_Parser::get_layout_table() {
+LayoutParser::get_layout_table() {
     return m_layout_table;
 }
 
 int
-Layout_Parser::get_layout_size() {
+LayoutParser::get_layout_size() {
     return m_layout_size;
 }
 
 PSclLayoutKeyCoordinatePointerTable
-Layout_Parser::get_key_coordinate_pointer_frame() {
+LayoutParser::get_key_coordinate_pointer_frame() {
     return m_key_coordinate_pointer_frame;
 }
 
 int
-Layout_Parser::parsing_layout_table(const char* dir, char** file, int file_num) {
+LayoutParser::parsing_layout_table(const char* dir, char** file, int file_num) {
     m_layout_size = file_num;
     for (int index = 0; index < file_num; ++index) {
         m_layout_files[index] = strdup(file[index]);
@@ -216,13 +216,13 @@ Layout_Parser::parsing_layout_table(const char* dir, char** file, int file_num) 
 
         cur_node = xmlDocGetRootElement(doc);
         if (cur_node == NULL) {
-            SCLLOG(SclLog::DEBUG, "Layout_Parser: empty document.\n");
+            SCLLOG(SclLog::DEBUG, "LayoutParser: empty document.\n");
             xmlFreeDoc(doc);
             return -1;
         }
         if (0 != xmlStrcmp(cur_node->name, (const xmlChar*)LAYOUT_TAG))
         {
-            SCLLOG(SclLog::DEBUG, "Layout_Parser: root name error: %s\n!", (char *)cur_node->name);
+            SCLLOG(SclLog::DEBUG, "LayoutParser: root name error: %s\n!", (char *)cur_node->name);
             xmlFreeDoc(doc);
             return -1;
         }
@@ -237,7 +237,7 @@ Layout_Parser::parsing_layout_table(const char* dir, char** file, int file_num) 
 }
 
 void
-Layout_Parser::parsing_background(
+LayoutParser::parsing_background(
         const xmlNodePtr cur_node,
         PSclLayout cur_layout) {
     assert(cur_node != NULL);
@@ -266,7 +266,7 @@ Layout_Parser::parsing_background(
 }
 
 void
-Layout_Parser::parsing_key_background(
+LayoutParser::parsing_key_background(
         const xmlNodePtr cur_node,
         PSclLayout cur_layout) {
     assert(cur_node != NULL);
@@ -295,8 +295,8 @@ Layout_Parser::parsing_key_background(
 
 
 void
-Layout_Parser::set_default_layout_value(const PSclLayout cur_layout) {
-    Default_Configure_Parser *default_configure_parser = Default_Configure_Parser::get_instance();
+LayoutParser::set_default_layout_value(const PSclLayout cur_layout) {
+    DefaultConfigParser *default_configure_parser = DefaultConfigParser::get_instance();
     assert(default_configure_parser);
     const PSclDefaultConfigure sclres_default_configure = default_configure_parser->get_default_configure();
 
@@ -341,7 +341,7 @@ Layout_Parser::set_default_layout_value(const PSclLayout cur_layout) {
 }
 
 void
-Layout_Parser::set_default_row_value(
+LayoutParser::set_default_row_value(
         Row* row,
         const PSclLayout cur_rec_layout,
         int row_y) {
@@ -369,7 +369,7 @@ Layout_Parser::set_default_row_value(
 }
 
 void
-Layout_Parser::set_default_key_coordinate_value(
+LayoutParser::set_default_key_coordinate_value(
         const PSclLayoutKeyCoordinate cur_rec_coordinate,
         const Row* row) {
     assert(row != NULL);
@@ -456,7 +456,7 @@ Layout_Parser::set_default_key_coordinate_value(
 }
 
 void
-Layout_Parser::parsing_grab_area(
+LayoutParser::parsing_grab_area(
         const xmlNodePtr cur_node,
         const PSclLayout cur_rec_layout) {
     assert(cur_node != NULL);
@@ -480,7 +480,7 @@ Layout_Parser::parsing_grab_area(
 }
 
 void
-Layout_Parser::parsing_layout_node(
+LayoutParser::parsing_layout_node(
         const xmlNodePtr cur_node,
         const PSclLayout cur_rec_layout,
         int layout_no) {
@@ -566,7 +566,7 @@ Layout_Parser::parsing_layout_node(
 }
 
 void
-Layout_Parser::loading_coordinate_resources(
+LayoutParser::loading_coordinate_resources(
         const xmlNodePtr cur_node,
         const PSclLayout cur_rec_layout,
         int layout_no) {
@@ -590,7 +590,7 @@ Layout_Parser::loading_coordinate_resources(
 }
 
 void
-Layout_Parser::parsing_layout_row_node(
+LayoutParser::parsing_layout_row_node(
         const xmlNodePtr cur_node,
         const PSclLayout cur_rec_layout,
         int *row_y,
@@ -631,7 +631,7 @@ Layout_Parser::parsing_layout_row_node(
 }
 
 int
-Layout_Parser::get_drag_state_prop(const xmlNodePtr cur_node) {
+LayoutParser::get_drag_state_prop(const xmlNodePtr cur_node) {
     assert(cur_node != NULL);
     typedef struct _Match_Struct{
         int value;
@@ -665,7 +665,7 @@ Layout_Parser::get_drag_state_prop(const xmlNodePtr cur_node) {
 }
 
 int
-Layout_Parser::get_shift_state_prop(const xmlNodePtr cur_node) {
+LayoutParser::get_shift_state_prop(const xmlNodePtr cur_node) {
     assert(cur_node != NULL);
 
     int shift_state = -1;
@@ -681,7 +681,7 @@ Layout_Parser::get_shift_state_prop(const xmlNodePtr cur_node) {
     return shift_state;
 }
 int
-Layout_Parser::get_button_state_prop(const xmlNodePtr cur_node) {
+LayoutParser::get_button_state_prop(const xmlNodePtr cur_node) {
     assert(cur_node != NULL);
     int button_state = -1;
 
@@ -697,7 +697,7 @@ Layout_Parser::get_button_state_prop(const xmlNodePtr cur_node) {
 }
 
 int
-Layout_Parser::get_multitouch_type_prop(const xmlNodePtr cur_node) {
+LayoutParser::get_multitouch_type_prop(const xmlNodePtr cur_node) {
     assert(cur_node != NULL);
     typedef struct _Match_Struct{
         int value;
@@ -728,7 +728,7 @@ Layout_Parser::get_multitouch_type_prop(const xmlNodePtr cur_node) {
 }
 
 int
-Layout_Parser::get_extra_option_prop(
+LayoutParser::get_extra_option_prop(
         const xmlNodePtr cur_node) {
     assert(cur_node != NULL);
     typedef struct _Match_Struct{
@@ -764,7 +764,7 @@ Layout_Parser::get_extra_option_prop(
 
 
 void
-Layout_Parser::parsing_label_record_node(
+LayoutParser::parsing_label_record_node(
         const xmlNodePtr cur_node,
         const PSclLayoutKeyCoordinate cur_rec) {
     assert(cur_node != NULL);
@@ -812,7 +812,7 @@ Layout_Parser::parsing_label_record_node(
 }
 
 void
-Layout_Parser::parsing_magnifier_label_record_node(
+LayoutParser::parsing_magnifier_label_record_node(
         const xmlNodePtr cur_node,
         const PSclLayoutKeyCoordinate cur_rec) {
     assert(cur_node != NULL);
@@ -842,7 +842,7 @@ Layout_Parser::parsing_magnifier_label_record_node(
 }
 
 void
-Layout_Parser::parsing_label_image_record_node(
+LayoutParser::parsing_label_image_record_node(
         const xmlNodePtr cur_node,
         const PSclLayoutKeyCoordinate cur_rec) {
     assert(cur_node != NULL);
@@ -870,7 +870,7 @@ Layout_Parser::parsing_label_image_record_node(
 }
 
 void
-Layout_Parser::parsing_background_image_record_node(
+LayoutParser::parsing_background_image_record_node(
         const xmlNodePtr cur_node,
         const PSclLayoutKeyCoordinate cur_rec) {
     assert(cur_node != NULL);
@@ -898,7 +898,7 @@ Layout_Parser::parsing_background_image_record_node(
 }
 
 void
-Layout_Parser::parsing_key_value_record_node(
+LayoutParser::parsing_key_value_record_node(
         const xmlNodePtr cur_node,
         const PSclLayoutKeyCoordinate cur_rec) {
     assert(cur_node != NULL);
@@ -936,7 +936,7 @@ Layout_Parser::parsing_key_value_record_node(
 }
 
 void
-Layout_Parser::parsing_key_event_record_node(
+LayoutParser::parsing_key_event_record_node(
         const xmlNodePtr cur_node,
         const PSclLayoutKeyCoordinate cur_rec) {
     assert(cur_node != NULL);
@@ -963,7 +963,7 @@ Layout_Parser::parsing_key_event_record_node(
 }
 
 void
-Layout_Parser::parsing_auto_popup_keys_record_node(
+LayoutParser::parsing_auto_popup_keys_record_node(
         const xmlNodePtr cur_node,
         const PSclLayoutKeyCoordinate cur_rec) {
     assert(cur_node != NULL);
@@ -1009,7 +1009,7 @@ Layout_Parser::parsing_auto_popup_keys_record_node(
 }
 
 void
-Layout_Parser::parsing_key_coordinate_record_node(
+LayoutParser::parsing_key_coordinate_record_node(
         const xmlNodePtr cur_node, Row *row,
         SclLayoutKeyCoordinatePointer *cur_rec_coordinate) {
     assert(cur_node != NULL);
@@ -1017,7 +1017,7 @@ Layout_Parser::parsing_key_coordinate_record_node(
 
     *cur_rec_coordinate = (SclLayoutKeyCoordinatePointer)malloc(sizeof(SclLayoutKeyCoordinate));
     if (*cur_rec_coordinate == NULL) {
-        SCLLOG(SclLog::ERROR, "Layout_Parser: memory malloc eror.\n");
+        SCLLOG(SclLog::ERROR, "LayoutParser: memory malloc eror.\n");
         return;
     }
     memset(*cur_rec_coordinate, 0x00, sizeof(SclLayoutKeyCoordinate));
@@ -1183,7 +1183,7 @@ Layout_Parser::parsing_key_coordinate_record_node(
 }
 
 void
-Layout_Parser::parsing_popup_input_mode_record_node(
+LayoutParser::parsing_popup_input_mode_record_node(
         const xmlNodePtr cur_node,
         const PSclLayoutKeyCoordinate cur_rec) {
     assert(cur_node != NULL);

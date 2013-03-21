@@ -18,40 +18,40 @@
 #include "label_properties_bin_parser.h"
 #include "simple_debug.h"
 #include "put_record.h"
-Label_properties_bin_Parser* Label_properties_bin_Parser::m_instance = NULL;
+BinLabelPropertyParser* BinLabelPropertyParser::m_instance = NULL;
 
-Label_properties_bin_Parser::Label_properties_bin_Parser() {
+BinLabelPropertyParser::BinLabelPropertyParser() {
     m_size = 0;
     memset(m_label_properties_frame, 0, sizeof(SclLabelProperties) * MAX_SCL_LABEL_PROPERTIES * MAX_SIZE_OF_LABEL_FOR_ONE);
 }
 
-Label_properties_bin_Parser::~Label_properties_bin_Parser() {
+BinLabelPropertyParser::~BinLabelPropertyParser() {
     m_size = 0;
 }
 
-Label_properties_bin_Parser* Label_properties_bin_Parser::get_instance() {
+BinLabelPropertyParser* BinLabelPropertyParser::get_instance() {
     if (m_instance == NULL) {
-        m_instance = new Label_properties_bin_Parser();
+        m_instance = new BinLabelPropertyParser();
     }
     return m_instance;
 }
-void Label_properties_bin_Parser::init(const FileStorage& storage, int offset, int size, IParserInfo_Provider* parser_info_provider) {
+void BinLabelPropertyParser::init(const FileStorage& storage, int offset, int size, IParserInfo_Provider* parser_info_provider) {
     m_storage.set_str_provider(parser_info_provider);
     m_storage.get_storage(storage, offset, size);
     this->parser_info_provider = parser_info_provider;
     parsing_label_properties_frame();
 }
 const int
-Label_properties_bin_Parser::get_size() {
+BinLabelPropertyParser::get_size() {
     return m_size;
 }
 
 //recompute_layout will change the table
-PSclLabelPropertiesTable Label_properties_bin_Parser::get_label_properties_frame() {
+PSclLabelPropertiesTable BinLabelPropertyParser::get_label_properties_frame() {
     return m_label_properties_frame;
 }
 
-void Label_properties_bin_Parser::parsing_label_properties_frame() {
+void BinLabelPropertyParser::parsing_label_properties_frame() {
     // skip data_size
     m_storage.advance(8);
 
@@ -77,7 +77,7 @@ void Label_properties_bin_Parser::parsing_label_properties_frame() {
 }
 
 void
-Label_properties_bin_Parser::decode_color(SclColor& color, int width) {
+BinLabelPropertyParser::decode_color(SclColor& color, int width) {
     if (width <= 0) return;
 
     color.r = m_storage.get<sint_t>(width);
@@ -86,7 +86,7 @@ Label_properties_bin_Parser::decode_color(SclColor& color, int width) {
     color.a = m_storage.get<sint_t>(width);
 }
 void
-Label_properties_bin_Parser::decode_label_properties_record(const PSclLabelProperties cur, const Label_properties_record_width& record_width) {
+BinLabelPropertyParser::decode_label_properties_record(const PSclLabelProperties cur, const Label_properties_record_width& record_width) {
     cur->valid = (sclboolean)true;
 
     //label_name

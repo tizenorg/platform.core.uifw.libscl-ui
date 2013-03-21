@@ -15,24 +15,24 @@
  *
  */
 
-#ifndef __Modifier_decoration_Parser__H__
-#define __Modifier_decoration_Parser__H__
+#ifndef __ModifierDecorationParser__H__
+#define __ModifierDecorationParser__H__
 #include "sclres_type.h"
 
 class ModifierDecorationParserImpl;
 
-class Modifier_decoration_Parser {
+class ModifierDecorationParser {
     ModifierDecorationParserImpl *m_impl;
     public:
         int init(const char* file);
         PSclModifierDecoration get_modifier_decoration_table();
         int get_modifier_decoration_id(const char *name);
     public:
-        ~Modifier_decoration_Parser();
-        static Modifier_decoration_Parser *get_instance();
+        ~ModifierDecorationParser();
+        static ModifierDecorationParser *get_instance();
     private:
-        Modifier_decoration_Parser();
-        static Modifier_decoration_Parser *m_instance;
+        ModifierDecorationParser();
+        static ModifierDecorationParser *m_instance;
 };
 
 

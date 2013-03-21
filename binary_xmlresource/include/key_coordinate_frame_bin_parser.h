@@ -23,23 +23,23 @@
 #include "string_collector.h"
 #include "file_storage_impl.h"
 #include "_auto_metadata.h"
-class Key_coordinate_frame_bin_Parser {
+class BinKeyCoordFrameParser {
     public:
-        static Key_coordinate_frame_bin_Parser *get_instance();
+        static BinKeyCoordFrameParser *get_instance();
     void init(const FileStorage& storage, int, int, IParserInfo_Provider*);
-    ~Key_coordinate_frame_bin_Parser();
+    ~BinKeyCoordFrameParser();
 
     PSclLayoutKeyCoordinatePointerTable get_key_coordinate_pointer_frame();
     void load(int);
     bool loaded(int);
     void unload();
     private:
-    Key_coordinate_frame_bin_Parser();
+    BinKeyCoordFrameParser();
     void parsing_key_coordinate_frame();
     void decode_key_coordinate_record(FileStorage& storage, const PSclLayoutKeyCoordinate cur, const Key_coordinate_record_width&);
 
     private:
-        static Key_coordinate_frame_bin_Parser *m_instance;
+        static BinKeyCoordFrameParser *m_instance;
         SclLayoutKeyCoordinate* m_key_coordinate_pointer_frame[MAX_SCL_LAYOUT][MAX_KEY];
 
         IParserInfo_Provider *parser_info_provider;
@@ -49,7 +49,7 @@ class Key_coordinate_frame_bin_Parser {
     class DestructHelper {
         public:
         ~DestructHelper() {
-            if (Key_coordinate_frame_bin_Parser::m_instance != NULL)
+            if (BinKeyCoordFrameParser::m_instance != NULL)
                 delete m_instance;
         }
     };

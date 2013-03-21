@@ -15,25 +15,25 @@
  *
  */
 
-#ifndef __Nine_patch_file_list_Parser__H__
-#define __Nine_patch_file_list_Parser__H__
+#ifndef __NinePatchFileParser_Parser__H__
+#define __NinePatchFileParser_Parser__H__
 #include "sclres_type.h"
 
 const int MAX_NINE_PATCH_FILE_LIST = 128;
 class NinePatchFileListParserImpl;
 
-class Nine_patch_file_list_Parser {
+class NinePatchFileParser_Parser {
     NinePatchFileListParserImpl *m_impl;
     public:
     int init(const char* file);
     SclNinePatchInfo* get_nine_patch_list();
     bool get_nine_patch_info(const char *filename, SclNinePatchInfo *info);
     public:
-    ~Nine_patch_file_list_Parser();
-    static Nine_patch_file_list_Parser *get_instance();
+    ~NinePatchFileParser_Parser();
+    static NinePatchFileParser_Parser *get_instance();
     private:
-    Nine_patch_file_list_Parser();
-    static Nine_patch_file_list_Parser *m_instance;
+    NinePatchFileParser_Parser();
+    static NinePatchFileParser_Parser *m_instance;
 };
 
 

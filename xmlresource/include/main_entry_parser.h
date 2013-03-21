@@ -15,8 +15,8 @@
  *
  */
 
-#ifndef __Main_Entry_Parser__H__
-#define __Main_Entry_Parser__H__
+#ifndef __MainEntryParser__H__
+#define __MainEntryParser__H__
 class XMLFiles{
     public:
     char* input_mode_configure;
@@ -60,7 +60,7 @@ class XMLFiles{
 };
 
 class MainEntryParserImpl;
-class Main_Entry_Parser {
+class MainEntryParser {
     MainEntryParserImpl *m_impl;
     public:
     /* parsing xml file, path is assigned */
@@ -68,11 +68,11 @@ class Main_Entry_Parser {
 
     XMLFiles& get_xml_files();
     public:
-    ~Main_Entry_Parser();
-    static Main_Entry_Parser *get_instance();
+    ~MainEntryParser();
+    static MainEntryParser *get_instance();
     private:
-    Main_Entry_Parser();
-    static Main_Entry_Parser *m_instance;
+    MainEntryParser();
+    static MainEntryParser *m_instance;
 };
 
 #endif

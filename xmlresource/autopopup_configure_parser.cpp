@@ -69,7 +69,7 @@ class AutoPopupConfigureParserImpl {
 
             cur_node = xmlDocGetRootElement(doc);
             if (cur_node == NULL) {
-                SCLLOG(SclLog::WARNING, "AutoPopup_Configure_Parser: empty document.\n");
+                SCLLOG(SclLog::WARNING, "AutoPopupConfigParser: empty document.\n");
                 xmlFreeDoc(doc);
                 return -1;
             }
@@ -301,37 +301,37 @@ class AutoPopupConfigureParserImpl {
         SclAutoPopupConfigure m_autopopup_configure;
 };
 
-AutoPopup_Configure_Parser* AutoPopup_Configure_Parser::m_instance = NULL;
+AutoPopupConfigParser* AutoPopupConfigParser::m_instance = NULL;
 
-AutoPopup_Configure_Parser::AutoPopup_Configure_Parser() {
+AutoPopupConfigParser::AutoPopupConfigParser() {
     m_impl = new AutoPopupConfigureParserImpl;
     if (m_impl == NULL) {
-        SCLLOG(SclLog::ERROR, "Create AutoPopup_Configure_Parser failed");
+        SCLLOG(SclLog::ERROR, "Create AutoPopupConfigParser failed");
     }
 }
 
-AutoPopup_Configure_Parser::~AutoPopup_Configure_Parser() {
+AutoPopupConfigParser::~AutoPopupConfigParser() {
     if (m_impl) {
-        SCLLOG(SclLog::MESSAGE, "~AutoPopup_Configure_Parser() has called");
+        SCLLOG(SclLog::MESSAGE, "~AutoPopupConfigParser() has called");
         delete m_impl;
         m_impl = NULL;
     }
 }
 
-AutoPopup_Configure_Parser*
-AutoPopup_Configure_Parser::get_instance() {
+AutoPopupConfigParser*
+AutoPopupConfigParser::get_instance() {
     if (m_instance == NULL) {
-        m_instance = new AutoPopup_Configure_Parser();
+        m_instance = new AutoPopupConfigParser();
     }
     return m_instance;
 }
 
 int
-AutoPopup_Configure_Parser::init(const char* file) {
+AutoPopupConfigParser::init(const char* file) {
     return m_impl->parsing_autopopup_configure(file);
 }
 
 PSclAutoPopupConfigure
-AutoPopup_Configure_Parser::get_autopopup_configure() {
+AutoPopupConfigParser::get_autopopup_configure() {
     return &m_impl->m_autopopup_configure;
 }

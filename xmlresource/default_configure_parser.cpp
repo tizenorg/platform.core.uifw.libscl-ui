@@ -58,13 +58,13 @@ class DefaultConfigureParserImpl {
 
             cur_node = xmlDocGetRootElement(doc);
             if (cur_node == NULL) {
-                SCLLOG(SclLog::DEBUG, "Default_Configure_Parser: empty document.\n");
+                SCLLOG(SclLog::DEBUG, "DefaultConfigParser: empty document.\n");
                 xmlFreeDoc(doc);
                 return -1;
             }
             if (0 != xmlStrcmp(cur_node->name, (const xmlChar*)"default_configure"))
             {
-                SCLLOG(SclLog::DEBUG, "Default_Configure_Parser: root name error: %s\n!", (char *)cur_node->name);
+                SCLLOG(SclLog::DEBUG, "DefaultConfigParser: root name error: %s\n!", (char *)cur_node->name);
                 xmlFreeDoc(doc);
                 return -1;
             }
@@ -202,36 +202,36 @@ class DefaultConfigureParserImpl {
         SclDefaultConfigure m_default_configure;
 };
 
-Default_Configure_Parser* Default_Configure_Parser::m_instance = NULL;
+DefaultConfigParser* DefaultConfigParser::m_instance = NULL;
 
-Default_Configure_Parser*
-Default_Configure_Parser::get_instance() {
+DefaultConfigParser*
+DefaultConfigParser::get_instance() {
     if (m_instance == NULL) {
-        m_instance = new Default_Configure_Parser();
+        m_instance = new DefaultConfigParser();
     }
     return m_instance;
 }
-Default_Configure_Parser::Default_Configure_Parser() {
+DefaultConfigParser::DefaultConfigParser() {
     m_impl = new DefaultConfigureParserImpl;
     if (m_impl == NULL) {
         SCLLOG(SclLog::ERROR, "Create DefaultConfigureParserImpl failed");
     }
 }
 
-Default_Configure_Parser::~Default_Configure_Parser() {
+DefaultConfigParser::~DefaultConfigParser() {
     if (m_impl) {
-        SCLLOG(SclLog::MESSAGE, "~Default_Configure_Parser() has called");
+        SCLLOG(SclLog::MESSAGE, "~DefaultConfigParser() has called");
         delete m_impl;
         m_impl = NULL;
     }
 }
 
 int
-Default_Configure_Parser::init(const char* file) {
+DefaultConfigParser::init(const char* file) {
         return m_impl->parsing_default_configure(file);
 }
 
 PSclDefaultConfigure
-Default_Configure_Parser::get_default_configure() {
+DefaultConfigParser::get_default_configure() {
     return &m_impl->m_default_configure;
 }

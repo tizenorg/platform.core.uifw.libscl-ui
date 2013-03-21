@@ -380,43 +380,43 @@ class LabelPropertiesParserImpl {
     int m_size;
 };
 
-Label_properties_Parser* Label_properties_Parser::m_instance = NULL;
+LabelPropertyParser* LabelPropertyParser::m_instance = NULL;
 
-Label_properties_Parser::Label_properties_Parser() {
+LabelPropertyParser::LabelPropertyParser() {
     m_impl = new LabelPropertiesParserImpl;
     if (m_impl == NULL) {
-        SCLLOG(SclLog::ERROR, "Create Label_properties_Parser failed");
+        SCLLOG(SclLog::ERROR, "Create LabelPropertyParser failed");
     }
 }
 
-Label_properties_Parser::~Label_properties_Parser() {
+LabelPropertyParser::~LabelPropertyParser() {
     if (m_impl) {
-        SCLLOG(SclLog::MESSAGE, "~Label_properties_Parser() has called");
+        SCLLOG(SclLog::MESSAGE, "~LabelPropertyParser() has called");
         delete m_impl;
         m_impl = NULL;
     }
 }
 
-Label_properties_Parser*
-Label_properties_Parser::get_instance() {
+LabelPropertyParser*
+LabelPropertyParser::get_instance() {
     if (m_instance == NULL) {
-        m_instance = new Label_properties_Parser();
+        m_instance = new LabelPropertyParser();
     }
     return m_instance;
 }
 
 int
-Label_properties_Parser::init(const char* file) {
+LabelPropertyParser::init(const char* file) {
     return m_impl->parsing_label_properties_frame(file);
 }
 
 int
-Label_properties_Parser::get_size() {
+LabelPropertyParser::get_size() {
     return m_impl->m_size;
 }
 
 //recompute_layout will change the table
 PSclLabelPropertiesTable
-Label_properties_Parser::get_label_properties_frame() {
+LabelPropertyParser::get_label_properties_frame() {
     return m_impl->m_label_properties_frame;
 }

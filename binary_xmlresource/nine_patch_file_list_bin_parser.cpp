@@ -19,23 +19,23 @@
 #include <memory.h>
 #include <assert.h>
 #include "put_record.h"
-Nine_patch_file_list_bin_Parser* Nine_patch_file_list_bin_Parser::m_instance = NULL;
+BinNinePatchFileParser* BinNinePatchFileParser::m_instance = NULL;
 
-Nine_patch_file_list_bin_Parser::Nine_patch_file_list_bin_Parser() {
+BinNinePatchFileParser::BinNinePatchFileParser() {
     m_size = 0;
     memset(m_nine_patch_file_list, 0x00, sizeof(SclNinePatchInfo) * MAX_NINE_PATCH_FILE_LIST);
 }
 
-Nine_patch_file_list_bin_Parser::~Nine_patch_file_list_bin_Parser() {
+BinNinePatchFileParser::~BinNinePatchFileParser() {
     m_size = 0;
 }
-Nine_patch_file_list_bin_Parser* Nine_patch_file_list_bin_Parser::get_instance() {
+BinNinePatchFileParser* BinNinePatchFileParser::get_instance() {
     if (m_instance == NULL) {
-        m_instance = new Nine_patch_file_list_bin_Parser();
+        m_instance = new BinNinePatchFileParser();
     }
     return m_instance;
 }
-void Nine_patch_file_list_bin_Parser::init(const FileStorage& storage, int offset, int size, IParserInfo_Provider* parser_info_provider) {
+void BinNinePatchFileParser::init(const FileStorage& storage, int offset, int size, IParserInfo_Provider* parser_info_provider) {
     m_storage.set_str_provider(parser_info_provider);
     m_storage.get_storage(storage, offset, size);
     this->parser_info_provider = parser_info_provider;
@@ -43,7 +43,7 @@ void Nine_patch_file_list_bin_Parser::init(const FileStorage& storage, int offse
     parsing_nine_patch_file_list();
 }
 
-void Nine_patch_file_list_bin_Parser::parsing_nine_patch_file_list() {
+void BinNinePatchFileParser::parsing_nine_patch_file_list() {
 
     Nine_patch_width record_width;
     set_nine_patch_width(*parser_info_provider, record_width);
@@ -70,11 +70,11 @@ void Nine_patch_file_list_bin_Parser::parsing_nine_patch_file_list() {
 }
 
 SclNinePatchInfo*
-Nine_patch_file_list_bin_Parser::get_nine_patch_list() {
+BinNinePatchFileParser::get_nine_patch_list() {
     return m_nine_patch_file_list;
 }
 bool
-Nine_patch_file_list_bin_Parser::get_nine_patch_info(const char* filename, SclNinePatchInfo *info) {
+BinNinePatchFileParser::get_nine_patch_info(const char* filename, SclNinePatchInfo *info) {
     if (filename == NULL) return false;
 
     for(int i = 0; i < MAX_NINE_PATCH_FILE_LIST && i < m_size; ++i) {

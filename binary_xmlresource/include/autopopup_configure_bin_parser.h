@@ -15,28 +15,28 @@
  *
  */
 
-#ifndef __AutoPopup_Configure_Bin_Parser__H__
-#define __AutoPopup_Configure_Bin_Parser__H__
+#ifndef __BinAutoPopupConfigParser__H__
+#define __BinAutoPopupConfigParser__H__
 #include "sclres_type.h"
 #include "string_collector.h"
 #include "iparserinfo_provider.h"
 #include "file_storage_impl.h"
 #include "_auto_metadata.h"
 
-class AutoPopup_Configure_Bin_Parser {
+class BinAutoPopupConfigParser {
 public:
-    ~AutoPopup_Configure_Bin_Parser();
-    static AutoPopup_Configure_Bin_Parser *get_instance();
+    ~BinAutoPopupConfigParser();
+    static BinAutoPopupConfigParser *get_instance();
     void init(const FileStorage& storage, int, int, IParserInfo_Provider*);
 
     PSclAutoPopupConfigure get_autopopup_configure();
 
 private:
-    AutoPopup_Configure_Bin_Parser();
+    BinAutoPopupConfigParser();
     void parsing_autopopup_configure();
     void decode_color(SclColor&, int width);
 private:
-    static AutoPopup_Configure_Bin_Parser *m_instance;
+    static BinAutoPopupConfigParser *m_instance;
     SclAutoPopupConfigure m_autopopup_configure;
     StringCollector m_string_collector;
     FileStorage m_storage;
@@ -45,7 +45,7 @@ private:
     class DestructHelper {
     public:
         ~DestructHelper() {
-            if (AutoPopup_Configure_Bin_Parser::m_instance != NULL)
+            if (BinAutoPopupConfigParser::m_instance != NULL)
                 delete m_instance;
         }
     };

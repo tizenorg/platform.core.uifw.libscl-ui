@@ -32,12 +32,12 @@ using namespace binary_xmlresource;
 
 using namespace std;
 using namespace scl;
-Key_coordinate_frame_bin_Parser* Key_coordinate_frame_bin_Parser::m_instance = NULL;
+BinKeyCoordFrameParser* BinKeyCoordFrameParser::m_instance = NULL;
 
-Key_coordinate_frame_bin_Parser::Key_coordinate_frame_bin_Parser() {
+BinKeyCoordFrameParser::BinKeyCoordFrameParser() {
     memset(m_key_coordinate_pointer_frame, 0x00, sizeof(SclLayoutKeyCoordinatePointer) * MAX_SCL_LAYOUT * MAX_KEY);
 }
-Key_coordinate_frame_bin_Parser::~Key_coordinate_frame_bin_Parser() {
+BinKeyCoordFrameParser::~BinKeyCoordFrameParser() {
     for (int i = 0; i < MAX_SCL_LAYOUT; ++i) {
         for (int j = 0; j < MAX_KEY; ++j) {
             free(m_key_coordinate_pointer_frame[i][j]);
@@ -45,18 +45,18 @@ Key_coordinate_frame_bin_Parser::~Key_coordinate_frame_bin_Parser() {
         }
     }
 }
-Key_coordinate_frame_bin_Parser* Key_coordinate_frame_bin_Parser::get_instance() {
+BinKeyCoordFrameParser* BinKeyCoordFrameParser::get_instance() {
     if (m_instance == NULL) {
-        m_instance = new Key_coordinate_frame_bin_Parser();
+        m_instance = new BinKeyCoordFrameParser();
     }
     return m_instance;
 }
 
 void
-Key_coordinate_frame_bin_Parser::
+BinKeyCoordFrameParser::
 load(int layout_id)
 {
-    BinXmlResource *bin_xmlres = BinXmlResource::get_instance();
+    BinResource *bin_xmlres = BinResource::get_instance();
     int layout_data_offset = bin_xmlres->info[LAYOUT].offset;
 
     char path[_POSIX_PATH_MAX] = {0};
@@ -126,7 +126,7 @@ load(int layout_id)
 }
 
 bool
-Key_coordinate_frame_bin_Parser::
+BinKeyCoordFrameParser::
 loaded(int layout_id)
 {
     bool ret = TRUE;
@@ -139,7 +139,7 @@ loaded(int layout_id)
 }
 
 void
-Key_coordinate_frame_bin_Parser::
+BinKeyCoordFrameParser::
 unload()
 {
     for (int i = 0; i < MAX_SCL_LAYOUT; ++i) {
@@ -150,19 +150,19 @@ unload()
     }
 }
 void
-Key_coordinate_frame_bin_Parser::init(const FileStorage& storage, int offset, int size, IParserInfo_Provider* parser_info_provider) {
+BinKeyCoordFrameParser::init(const FileStorage& storage, int offset, int size, IParserInfo_Provider* parser_info_provider) {
     m_storage.set_str_provider(parser_info_provider);
     m_storage.get_storage(storage, offset, size);
     this->parser_info_provider = parser_info_provider;
 }
 
 PSclLayoutKeyCoordinatePointerTable
-Key_coordinate_frame_bin_Parser::get_key_coordinate_pointer_frame() {
+BinKeyCoordFrameParser::get_key_coordinate_pointer_frame() {
     return m_key_coordinate_pointer_frame;
 }
 
 void
-Key_coordinate_frame_bin_Parser::decode_key_coordinate_record(FileStorage& storage, const PSclLayoutKeyCoordinate cur, const Key_coordinate_record_width& record_width) {
+BinKeyCoordFrameParser::decode_key_coordinate_record(FileStorage& storage, const PSclLayoutKeyCoordinate cur, const Key_coordinate_record_width& record_width) {
     int width = 0;
 
     cur->valid = (sclboolean)true;

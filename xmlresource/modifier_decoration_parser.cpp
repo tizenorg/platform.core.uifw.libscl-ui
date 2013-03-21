@@ -121,13 +121,13 @@ class ModifierDecorationParserImpl {
             }
             cur_node = xmlDocGetRootElement(doc);
             if (cur_node == NULL) {
-                SCLLOG(SclLog::DEBUG, "Modifier_decoration_Parser: empty document.\n");
+                SCLLOG(SclLog::DEBUG, "ModifierDecorationParser: empty document.\n");
                 xmlFreeDoc(doc);
                 return -1;
             }
             if (0 != xmlStrcmp(cur_node->name, (const xmlChar*)"modifier_decoration_table"))
             {
-                SCLLOG(SclLog::DEBUG, "Modifier_decoration_Parser: root name error: %s\n!", (char *)cur_node->name);
+                SCLLOG(SclLog::DEBUG, "ModifierDecorationParser: root name error: %s\n!", (char *)cur_node->name);
                 xmlFreeDoc(doc);
                 return -1;
             }
@@ -233,44 +233,44 @@ class ModifierDecorationParserImpl {
         SclModifierDecoration m_modifier_decoration_table[MAX_SCL_MODIFIER_DECORATION_NUM];
 };
 
-Modifier_decoration_Parser* Modifier_decoration_Parser::m_instance = NULL;
+ModifierDecorationParser* ModifierDecorationParser::m_instance = NULL;
 
-Modifier_decoration_Parser*
-Modifier_decoration_Parser::get_instance() {
+ModifierDecorationParser*
+ModifierDecorationParser::get_instance() {
     if (m_instance == NULL) {
-        m_instance = new Modifier_decoration_Parser();
+        m_instance = new ModifierDecorationParser();
     }
     return m_instance;
 }
 
-Modifier_decoration_Parser::Modifier_decoration_Parser() {
+ModifierDecorationParser::ModifierDecorationParser() {
     m_impl = new ModifierDecorationParserImpl;
     if (m_impl == NULL) {
-        SCLLOG(SclLog::ERROR, "Create Modifier_decoration_Parser failed");
+        SCLLOG(SclLog::ERROR, "Create ModifierDecorationParser failed");
     }
 }
 
-Modifier_decoration_Parser::~Modifier_decoration_Parser() {
+ModifierDecorationParser::~ModifierDecorationParser() {
     if (m_impl) {
-        SCLLOG(SclLog::MESSAGE, "~Modifier_decoration_Parser() has called");
+        SCLLOG(SclLog::MESSAGE, "~ModifierDecorationParser() has called");
         delete m_impl;
         m_impl = NULL;
     }
 }
 
 int
-Modifier_decoration_Parser::init(const char* file) {
+ModifierDecorationParser::init(const char* file) {
     return m_impl->parsing_modifier_decoration_table(file);
 }
 
 /* recompute_layout will change the table */
 PSclModifierDecoration
-Modifier_decoration_Parser::get_modifier_decoration_table() {
+ModifierDecorationParser::get_modifier_decoration_table() {
     return m_impl->m_modifier_decoration_table;
 }
 
 int
-Modifier_decoration_Parser::get_modifier_decoration_id( const char *name )
+ModifierDecorationParser::get_modifier_decoration_id( const char *name )
 {
     if (name == NULL) {
         SCLLOG(SclLog::DEBUG, "get_modifier_decoration_id() has failed");
