@@ -305,9 +305,6 @@ AutoPopupConfigParser* AutoPopupConfigParser::m_instance = NULL;
 
 AutoPopupConfigParser::AutoPopupConfigParser() {
     m_impl = new AutoPopupConfigureParserImpl;
-    if (m_impl == NULL) {
-        SCLLOG(SclLog::ERROR, "Create AutoPopupConfigParser failed");
-    }
 }
 
 AutoPopupConfigParser::~AutoPopupConfigParser() {

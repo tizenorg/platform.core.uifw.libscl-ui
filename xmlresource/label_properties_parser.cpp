@@ -384,9 +384,6 @@ LabelPropertyParser* LabelPropertyParser::m_instance = NULL;
 
 LabelPropertyParser::LabelPropertyParser() {
     m_impl = new LabelPropertiesParserImpl;
-    if (m_impl == NULL) {
-        SCLLOG(SclLog::ERROR, "Create LabelPropertyParser failed");
-    }
 }
 
 LabelPropertyParser::~LabelPropertyParser() {

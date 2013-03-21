@@ -245,9 +245,6 @@ ModifierDecorationParser::get_instance() {
 
 ModifierDecorationParser::ModifierDecorationParser() {
     m_impl = new ModifierDecorationParserImpl;
-    if (m_impl == NULL) {
-        SCLLOG(SclLog::ERROR, "Create ModifierDecorationParser failed");
-    }
 }
 
 ModifierDecorationParser::~ModifierDecorationParser() {

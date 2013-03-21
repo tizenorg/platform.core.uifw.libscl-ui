@@ -203,9 +203,6 @@ MagnifierConfigParser* MagnifierConfigParser::m_instance = NULL;
 
 MagnifierConfigParser::MagnifierConfigParser() {
     m_impl = new MagnifierConfigureParserImpl;
-    if (m_impl == NULL) {
-        SCLLOG(SclLog::ERROR, "Create MagnifierConfigParser failed");
-    }
 }
 
 MagnifierConfigParser::~MagnifierConfigParser() {

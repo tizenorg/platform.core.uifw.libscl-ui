@@ -213,9 +213,6 @@ DefaultConfigParser::get_instance() {
 }
 DefaultConfigParser::DefaultConfigParser() {
     m_impl = new DefaultConfigureParserImpl;
-    if (m_impl == NULL) {
-        SCLLOG(SclLog::ERROR, "Create DefaultConfigureParserImpl failed");
-    }
 }
 
 DefaultConfigParser::~DefaultConfigParser() {

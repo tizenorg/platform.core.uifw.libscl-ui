@@ -109,10 +109,6 @@ MainEntryParser* MainEntryParser::m_instance = NULL;
 
 MainEntryParser::MainEntryParser() {
     m_impl = new MainEntryParserImpl;
-    if (m_impl == NULL) {
-        SCLLOG(SclLog::ERROR, "Create MainEntryParserImpl failed");
-        return;
-    }
 }
 
 MainEntryParser::~MainEntryParser() {
