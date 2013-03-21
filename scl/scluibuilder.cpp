@@ -389,13 +389,14 @@ CSCLUIBuilder::draw_button_label(const sclwindow window, const scldrawctx draw_c
     scl_assert_return_false(coordination);
 
     if (windows && graphics && cache && coordination) {
+        /*
         if (coordination->long_key_value) {
             if (strlen(coordination->long_key_value) > 0) {
                 if (strcmp(coordination->long_key_value, " ") != 0) {
                     //saved_longkey_str = coordination->long_key_value;
                 }
             }
-        }
+        }*/
 
         /* If the target window is virtual window, let's draw it on the base window */
         sclint targetaddx = 0;
