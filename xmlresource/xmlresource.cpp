@@ -85,7 +85,7 @@ get_layout_files(char **layout_files, int* size) {
     if (layout_files == NULL) return;
     int layout_file_size = 0;
 
-    Input_Mode_Configure_Parser *input_mode_configure_parser = Input_Mode_Configure_Parser::get_instance();
+    InputModeConfigParser *input_mode_configure_parser = InputModeConfigParser::get_instance();
     for(int inputmode = 0; inputmode < MAX_SCL_INPUT_MODE; inputmode++) {
         int empty_index;
         const sclchar* cur_layout_file;
@@ -148,7 +148,7 @@ XMLResource::init(const char *entry_filepath) {
 
     SCLLOG(SclLog::MESSAGE, "init inputmode configure\n\n");
     if (m_input_mode_configure_parser == NULL) {
-        m_input_mode_configure_parser = Input_Mode_Configure_Parser::get_instance();
+        m_input_mode_configure_parser = InputModeConfigParser::get_instance();
         char input_file[_POSIX_PATH_MAX] = {0};
         snprintf(input_file, _POSIX_PATH_MAX, "%s/%s", get_resource_directory(), xml_files.input_mode_configure);
         if (0 != m_input_mode_configure_parser->init(input_file)) {
@@ -216,7 +216,7 @@ XMLResource::init(const char *entry_filepath) {
 
     SCLLOG(SclLog::MESSAGE, "init nine_patch_file_list\n\n");
     if (m_nine_patch_file_list_parser == NULL) {
-        m_nine_patch_file_list_parser = NinePatchFileParser_Parser::get_instance();
+        m_nine_patch_file_list_parser = NinePatchFileParser::get_instance();
         char input_file[_POSIX_PATH_MAX] = {0};
         snprintf(input_file, _POSIX_PATH_MAX, "%s/%s", get_resource_directory(), xml_files.nine_patch_file_list);
 

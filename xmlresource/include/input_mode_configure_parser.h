@@ -21,7 +21,7 @@
 
 class InputModeConfigureParserImpl;
 
-class Input_Mode_Configure_Parser {
+class InputModeConfigParser {
     InputModeConfigureParserImpl *m_impl;
     public:
         int init(const char* file);
@@ -30,10 +30,10 @@ class Input_Mode_Configure_Parser {
         const char* get_inputmode_name(int id);
         int get_inputmode_size();
     public:
-        ~Input_Mode_Configure_Parser();
-        static Input_Mode_Configure_Parser *get_instance();
+        ~InputModeConfigParser();
+        static InputModeConfigParser *get_instance();
     private:
-        Input_Mode_Configure_Parser();
-        static Input_Mode_Configure_Parser *m_instance;
+        InputModeConfigParser();
+        static InputModeConfigParser *m_instance;
 };
 #endif

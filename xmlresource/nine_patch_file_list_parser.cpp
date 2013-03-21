@@ -72,7 +72,7 @@ class NinePatchFileListParserImpl {
                     get_prop_number(cur_node, "top", &(m_nine_patch_file_list[m_size].top));
                     get_prop_number(cur_node, "bottom", &(m_nine_patch_file_list[m_size].bottom));
                     if (m_nine_patch_file_list[m_size].image_path == NULL) {
-                        SCLLOG(SclLog::ERROR, "NinePatchFileParser_Parser: image_path should be not NULL");
+                        SCLLOG(SclLog::ERROR, "NinePatchFileParser: image_path should be not NULL");
                     }
                     m_size++;
                     if (m_size >= MAX_NINE_PATCH_FILE_LIST) {
@@ -92,37 +92,34 @@ class NinePatchFileListParserImpl {
 
 };
 
-NinePatchFileParser_Parser* NinePatchFileParser_Parser::m_instance = NULL;
+NinePatchFileParser* NinePatchFileParser::m_instance = NULL;
 
-NinePatchFileParser_Parser::NinePatchFileParser_Parser() {
+NinePatchFileParser::NinePatchFileParser() {
     m_impl = new NinePatchFileListParserImpl;
-    if (m_impl == NULL) {
-        SCLLOG(SclLog::ERROR, "Create NinePatchFileParser_Parser failed");
-    }
 }
 
-NinePatchFileParser_Parser::~NinePatchFileParser_Parser() {
+NinePatchFileParser::~NinePatchFileParser() {
     if (m_impl) {
-        SCLLOG(SclLog::MESSAGE, "~NinePatchFileParser_Parser() has called.");
+        SCLLOG(SclLog::MESSAGE, "~NinePatchFileParser() has called.");
         delete m_impl;
         m_impl = NULL;
     }
 }
-NinePatchFileParser_Parser*
-NinePatchFileParser_Parser::get_instance() {
+NinePatchFileParser*
+NinePatchFileParser::get_instance() {
     if (m_instance == NULL) {
-        m_instance = new NinePatchFileParser_Parser();
+        m_instance = new NinePatchFileParser();
     }
     return m_instance;
 }
 
 int
-NinePatchFileParser_Parser::init(const char* file) {
+NinePatchFileParser::init(const char* file) {
     return m_impl->parsing_nine_patch_file_list(file);
 }
 
 bool
-NinePatchFileParser_Parser::get_nine_patch_info(const char* filename, SclNinePatchInfo *info) {
+NinePatchFileParser::get_nine_patch_info(const char* filename, SclNinePatchInfo *info) {
     if (filename == NULL) {
         SCLLOG(SclLog::DEBUG, "get_nine_patch_info() has failed.");
         return false;
@@ -150,6 +147,6 @@ NinePatchFileParser_Parser::get_nine_patch_info(const char* filename, SclNinePat
 }
 
 SclNinePatchInfo*
-NinePatchFileParser_Parser::get_nine_patch_list() {
+NinePatchFileParser::get_nine_patch_list() {
     return m_impl->m_nine_patch_file_list;
 }

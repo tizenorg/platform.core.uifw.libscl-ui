@@ -86,13 +86,13 @@ class InputModeConfigureParserImpl {
 
             cur_node = xmlDocGetRootElement(doc);
             if (cur_node == NULL) {
-                SCLLOG(SclLog::DEBUG, "Input_Mode_Configure_Parser: empty document.\n");
+                SCLLOG(SclLog::DEBUG, "InputModeConfigParser: empty document.\n");
                 xmlFreeDoc(doc);
                 return -1;
             }
             if (0 != xmlStrcmp(cur_node->name, (const xmlChar*)INPUT_MODE_CONFIGURE_TABLE_TAG))
             {
-                SCLLOG(SclLog::DEBUG, "Input_Mode_Configure_Parser: root name error: %s\n!", (char *)cur_node->name);
+                SCLLOG(SclLog::DEBUG, "InputModeConfigParser: root name error: %s\n!", (char *)cur_node->name);
                 xmlFreeDoc(doc);
                 return -1;
             }
@@ -187,38 +187,38 @@ class InputModeConfigureParserImpl {
         SclInputModeConfigure m_input_mode_configure_table[MAX_SCL_INPUT_MODE];
 };
 
-Input_Mode_Configure_Parser* Input_Mode_Configure_Parser::m_instance = NULL;
+InputModeConfigParser* InputModeConfigParser::m_instance = NULL;
 
-Input_Mode_Configure_Parser::Input_Mode_Configure_Parser() {
+InputModeConfigParser::InputModeConfigParser() {
     m_impl = new InputModeConfigureParserImpl;
     if (m_impl == NULL) {
-        SCLLOG(SclLog::ERROR, "Create Input_Mode_Configure_Parser failed");
+        SCLLOG(SclLog::ERROR, "Create InputModeConfigParser failed");
     }
 }
 
-Input_Mode_Configure_Parser::~Input_Mode_Configure_Parser() {
+InputModeConfigParser::~InputModeConfigParser() {
     if (m_impl) {
-        SCLLOG(SclLog::MESSAGE, "~Input_Mode_Configure_Parser() has called");
+        SCLLOG(SclLog::MESSAGE, "~InputModeConfigParser() has called");
         delete m_impl;
         m_impl = NULL;
     }
 }
 
-Input_Mode_Configure_Parser*
-Input_Mode_Configure_Parser::get_instance() {
+InputModeConfigParser*
+InputModeConfigParser::get_instance() {
     if (m_instance == NULL) {
-        m_instance = new Input_Mode_Configure_Parser();
+        m_instance = new InputModeConfigParser();
     }
     return m_instance;
 }
 
 int
-Input_Mode_Configure_Parser::init(const char* file) {
+InputModeConfigParser::init(const char* file) {
     return m_impl->parsing_input_mode_configure_table(file);
 }
 
 int
-Input_Mode_Configure_Parser::get_inputmode_id(const char *name) {
+InputModeConfigParser::get_inputmode_id(const char *name) {
     if (name == NULL) {
         SCLLOG(SclLog::DEBUG, "get_inputmode_id failed");
         return -1;
@@ -244,7 +244,7 @@ Input_Mode_Configure_Parser::get_inputmode_id(const char *name) {
 }
 
 const char*
-Input_Mode_Configure_Parser::get_inputmode_name(int id) {
+InputModeConfigParser::get_inputmode_name(int id) {
     if (id >= 0 && id < MAX_SCL_INPUT_MODE) {
         PSclInputModeConfigure config_table = get_input_mode_configure_table();
         if (config_table) {
@@ -256,12 +256,12 @@ Input_Mode_Configure_Parser::get_inputmode_name(int id) {
 }
 
 int
-Input_Mode_Configure_Parser::get_inputmode_size() {
+InputModeConfigParser::get_inputmode_size() {
     return m_impl->m_inputmode_size;
 }
 
 PSclInputModeConfigure
-Input_Mode_Configure_Parser::get_input_mode_configure_table() {
+InputModeConfigParser::get_input_mode_configure_table() {
     return m_impl->m_input_mode_configure_table;
 }
 
