@@ -650,6 +650,12 @@ CSCLGraphicsImplEfl::draw_text(sclwindow window, const scldrawctx draw_ctx, cons
 
                     sclint calwidth, calheight;
                     evas_object_textblock_size_native_get(text_object, &calwidth, &calheight);
+                    // FIXME: float to int may loose precision
+                    if (calwidth > 0) {
+                        static float _SPACE_RATE = 0.1;
+                        calwidth  *= 1 + _SPACE_RATE;
+                    }
+
                     /* FIXME : The following 2 lines are workaround for problem that EFL does not return correct font size */
                     sclint hardcoded_width = find_hardcoded_width(str, font_info.font_size);
                     if (hardcoded_width != 0) calwidth = hardcoded_width;
@@ -826,7 +832,8 @@ CSCLGraphicsImplEfl::get_image_size(sclchar* image_path)
         evas_object_image_file_set(image_object, image_path, NULL);
         evas_object_image_size_get(image_object, &w, &h);
         evas_object_del(image_object);
-        ret.width = w;ret.height = h;
+        ret.width = w;
+        ret.height = h;
     }
 
     return ret;
