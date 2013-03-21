@@ -15,7 +15,6 @@
  *
  */
 
-#include "sclres.h"
 #include "sclres_manager.h"
 #include "xmlresource.h"
 #include "binary_xmlresource.h"
