@@ -660,11 +660,18 @@ CSCLGraphicsImplEfl::draw_text(sclwindow window, const scldrawctx draw_ctx, cons
                     sclint hardcoded_width = find_hardcoded_width(str, font_info.font_size);
                     if (hardcoded_width != 0) calwidth = hardcoded_width;
 
-                    if (calwidth > width) {
+                    if (calwidth > width || calheight > height) {
+                        sclfloat width_rate = (sclfloat)width / (sclfloat)calwidth;
+                        sclfloat height_rate = (sclfloat)height / (sclfloat)calheight;
+                        sclfloat resize_rate = height_rate;
+                        if (width_rate < height_rate) {
+                            resize_rate = width_rate;
+                        }
+
                         snprintf(strStyle, 128,
                             "DEFAULT='font=%s font_size=%d align=%s color=#%02X%02X%02X%02X wrap=word left_margin=%d right_margin=%d'",
                             font_info.font_name,
-                            (int)(SCL_LABEL_OVERLENGTH_TEXT_RESIZE_RATE * font_info.font_size * ((float)width / (float)calwidth)),
+                            (int)(SCL_LABEL_OVERLENGTH_TEXT_RESIZE_RATE * font_info.font_size * resize_rate),
                             (((int)align % 3) == 1 ) ? "center" : ((((int)align % 3) == 2 ) ? "right" : "left"),
                             color.r, color.g, color.b, color.a, padding_x, padding_x);
                         evas_textblock_style_set(st, strStyle);
