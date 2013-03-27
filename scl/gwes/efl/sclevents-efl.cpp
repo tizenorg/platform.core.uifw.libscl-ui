@@ -41,6 +41,8 @@ Eina_Bool mouse_press(void *data, int type, void *event_info);
 Eina_Bool mouse_move (void *data, int type, void *event_info);
 Eina_Bool mouse_release (void *data, int type, void *event_info);
 
+Eina_Bool client_message_cb(void *data, int type, void *event);
+
 /**
  * Constructor
  */
@@ -51,6 +53,8 @@ CSCLEventsImplEfl::CSCLEventsImplEfl()
     m_mouse_down_handler = ecore_event_handler_add(ECORE_EVENT_MOUSE_BUTTON_DOWN, mouse_press, NULL);
     m_mouse_move_handler = ecore_event_handler_add(ECORE_EVENT_MOUSE_MOVE, mouse_move, NULL);
     m_mouse_up_handler = ecore_event_handler_add(ECORE_EVENT_MOUSE_BUTTON_UP, mouse_release, NULL);
+
+    m_xclient_msg_handler = ecore_event_handler_add(ECORE_X_EVENT_CLIENT_MESSAGE, client_message_cb, NULL);
 }
 
 /**
@@ -63,6 +67,7 @@ CSCLEventsImplEfl::~CSCLEventsImplEfl()
     if (m_mouse_down_handler) ecore_event_handler_del(m_mouse_down_handler);
     if (m_mouse_move_handler) ecore_event_handler_del(m_mouse_move_handler);
     if (m_mouse_up_handler) ecore_event_handler_del(m_mouse_up_handler);
+    if (m_xclient_msg_handler) ecore_event_handler_del(m_xclient_msg_handler);
 }
 
 sclboolean get_window_rect(const sclwindow window, SclRectangle *rect)
@@ -163,7 +168,7 @@ Eina_Bool mouse_press(void *data, int type, void *event_info)
 
     //Evas_Event_Mouse_Down *ev = (Evas_Event_Mouse_Down*)event_info;
     //LOGD("mouse_press : %d %d\n", ev->output.x, ev->output.y);
-    
+
     CSCLController *controller = CSCLController::get_instance();
     CSCLWindows *windows = CSCLWindows::get_instance();
     CSCLContext *context = CSCLContext::get_instance();
@@ -285,7 +290,7 @@ Eina_Bool mouse_press(void *data, int type, void *event_info)
     }
 
     return TRUE;
-    
+
     /*CSCLContext *context = CSCLContext::get_instance();
     controller->mouse_press((sclwindow)data, ev->output.x, ev->output.y);
     mouse_pressed = TRUE;*/
@@ -527,6 +532,39 @@ CSCLEventsImplEfl::connect_window_events(const sclwindow wnd, const sclint evt)
     //evas_object_event_callback_add((Evas_Object*)wnd, EVAS_CALLBACK_MOUSE_DOWN, mouse_press, NULL);
     /*evas_object_event_callback_add((Evas_Object*)wnd, EVAS_CALLBACK_MOUSE_UP, mouse_release, NULL);
     evas_object_event_callback_add((Evas_Object*)wnd, EVAS_CALLBACK_MOUSE_MOVE, mouse_move, NULL);*/
+}
+
+Eina_Bool
+client_message_cb(void *data, int type, void *event)
+{
+    Ecore_X_Event_Client_Message *ev = (Ecore_X_Event_Client_Message *)event;
+    if (ev->message_type == ECORE_X_ATOM_E_ILLUME_ACCESS_CONTROL) {
+        CSCLWindows *windows = CSCLWindows::get_instance();
+        CSCLController *controller = CSCLController::get_instance();
+
+        static int last_pos_x = -10000;
+        static int last_pos_y = -10000;
+
+        if (windows && controller) {
+            Evas_Object *base_win = (Evas_Object *)windows->get_base_window();
+            if (base_win == NULL) return FALSE;
+
+            if ((unsigned int)ev->data.l[0] == elm_win_xwindow_get(base_win) ) {
+                if ((unsigned int)ev->data.l[1] == ECORE_X_ATOM_E_ILLUME_ACCESS_ACTION_ACTIVATE) {
+                // 1 finger double tap
+                controller->mouse_press(base_win, last_pos_x, last_pos_y);
+                controller->mouse_release(base_win, last_pos_x, last_pos_y);
+                } else if ((unsigned int)ev->data.l[1] == ECORE_X_ATOM_E_ILLUME_ACCESS_ACTION_READ) {
+                    // 1 finger tap
+                    // 1 finger touch & move
+                    last_pos_x = ev->data.l[2];
+                    last_pos_y = ev->data.l[3];
+                    controller->mouse_over(base_win, last_pos_x, last_pos_y);
+                }
+            }
+        }
+    }
+    return TRUE;
 }
 
 Eina_Bool timer_event(void *data)

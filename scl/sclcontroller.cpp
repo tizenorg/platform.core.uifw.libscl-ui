@@ -36,6 +36,45 @@
 
 using namespace scl;
 
+static sclboolean
+_play_tts_for_input_mode_name(int mode) {
+    SCL_DEBUG();
+
+    CSCLContext *context = CSCLContext::get_instance();
+    if (context->get_tts_enabled() == FALSE) {
+        return FALSE;
+    }
+
+    SclResParserManager *sclres_manager = SclResParserManager::get_instance();
+    const SclInputModeConfigure *pinput_mode_table = sclres_manager->get_input_mode_configure_table();
+    if (NULL == pinput_mode_table) {
+        return FALSE;
+    }
+
+    const char* name = pinput_mode_table[mode].name;
+    if (NULL == name) {
+        return FALSE;
+    }
+
+    CSCLUtils *utils = CSCLUtils::get_instance();
+    utils->play_tts(name);
+    return TRUE;
+}
+
+static sclboolean
+_play_tts_for_layout_autopopup_name() {
+    SCL_DEBUG();
+
+    CSCLContext *context = CSCLContext::get_instance();
+    if (context->get_tts_enabled() == FALSE) {
+        return FALSE;
+    }
+
+    CSCLUtils *utils = CSCLUtils::get_instance();
+    utils->play_tts(SCL_LAYOUT_AUTOPOPUP_NAME);
+    return TRUE;
+}
+
 CSCLController* CSCLController::m_instance = NULL; /* For singleton */
 
 
@@ -156,6 +195,7 @@ CSCLController::process_input_mode_change(const sclbyte mode)
 
     sclboolean ret = FALSE;
 
+    CSCLUtils *utils = CSCLUtils::get_instance();
     CSCLContext *context = CSCLContext::get_instance();
     CSCLWindows *windows = CSCLWindows::get_instance();
     CSCLResourceCache *cache = CSCLResourceCache::get_instance();
@@ -163,7 +203,7 @@ CSCLController::process_input_mode_change(const sclbyte mode)
     PSclInputModeConfigure sclres_input_mode_configure = sclres_manager->get_input_mode_configure_table();
     assert(sclres_input_mode_configure != NULL);
 
-    if (context && windows && cache) {
+    if (context && windows && cache && utils) {
         if (mode == context->get_input_mode() || mode == (sclbyte)NOT_USED) {
             /* BtnContext does not get initialized if we don't call here */
             cache->recompute_layout(windows->get_base_window());
@@ -173,6 +213,8 @@ CSCLController::process_input_mode_change(const sclbyte mode)
         context->set_input_mode(mode);
         /* FIXME : NEWXML temporary commenting out */
         //context->set_base_layout(sclres_input_mode_configure[mode].layouts[context->get_display()]);
+
+        _play_tts_for_input_mode_name(mode);
 
         sclwindow window = windows->get_base_window();
         handle_engine_signal(SCL_SIG_INPMODE_CHANGE, window);
@@ -282,20 +324,20 @@ CSCLController::check_magnifier_available(sclwindow window, sclbyte key_index, s
     CSCLResourceCache *cache = CSCLResourceCache::get_instance();
     const SclLayout *layout = NULL;
     SclButtonContext *btncontext = NULL;
-    const SclLayoutKeyCoordinate *coordination = NULL;
+    const SclLayoutKeyCoordinate *coordinate = NULL;
 
     if (context && cache) {
         layout = cache->get_cur_layout(window);
         btncontext = cache->get_cur_button_context(window, key_index);
-        coordination = cache->get_cur_layout_key_coordinate(window, key_index);
+        coordinate = cache->get_cur_layout_key_coordinate(window, key_index);
 
         SCLShiftState shiftidx = context->get_shift_state();
         if (shiftidx < 0 || shiftidx >= SCL_SHIFT_STATE_MAX) shiftidx = SCL_SHIFT_STATE_OFF;
 
-        if (layout && coordination && btncontext && context->get_magnifier_enabled() ) {
-            if (coordination->key_type != KEY_TYPE_CONTROL &&
-                coordination->key_type != KEY_TYPE_MODECHANGE &&
-                coordination->key_type != KEY_TYPE_NONE) {
+        if (layout && coordinate && btncontext && context->get_magnifier_enabled() ) {
+            if (coordinate->key_type != KEY_TYPE_CONTROL &&
+                coordinate->key_type != KEY_TYPE_MODECHANGE &&
+                coordinate->key_type != KEY_TYPE_NONE) {
 
                     ret = TRUE;
 
@@ -314,13 +356,13 @@ CSCLController::check_magnifier_available(sclwindow window, sclbyte key_index, s
                         }
                     }
                     if (!custom_label) {
-                        //if (coordination->key_value[shiftidx][btncontext->multikeyIdx] == NULL) {
-                        if (coordination->label[shiftidx][btncontext->multikeyIdx] == NULL) {
-                            //utils->log("show_magnifier coordination->key_value[shift][btncontext->multikeyIdx] == NULL \n");
+                        //if (coordinate->key_value[shiftidx][btncontext->multikeyIdx] == NULL) {
+                        if (coordinate->label[shiftidx][btncontext->multikeyIdx] == NULL) {
+                            //utils->log("show_magnifier coordinate->key_value[shift][btncontext->multikeyIdx] == NULL \n");
                             ret = FALSE;
-                            //} else if (strlen(coordination->key_value[shiftidx][btncontext->multikeyIdx]) == 0) {
-                        } else if (strlen(coordination->label[shiftidx][btncontext->multikeyIdx]) == 0) {
-                            //utils->log("show_magnifier coordination->key_value[shift][btncontext->multikeyIdx]) == 0 \n");
+                            //} else if (strlen(coordinate->key_value[shiftidx][btncontext->multikeyIdx]) == 0) {
+                        } else if (strlen(coordinate->label[shiftidx][btncontext->multikeyIdx]) == 0) {
+                            //utils->log("show_magnifier coordinate->key_value[shift][btncontext->multikeyIdx]) == 0 \n");
                             ret = FALSE;
                         }
                     }
@@ -358,36 +400,36 @@ CSCLController::process_button_pressed_event(sclwindow window, sclint x, sclint 
     assert(sclres_layout != NULL);
 
     SclButtonContext *btncontext = NULL;
-    const SclLayoutKeyCoordinate *coordination = NULL;
+    const SclLayoutKeyCoordinate *coordinate = NULL;
 
     if (context && cache) {
         btncontext = cache->get_cur_button_context(window, key_index);
-        coordination = cache->get_cur_layout_key_coordinate(window, key_index);
+        coordinate = cache->get_cur_layout_key_coordinate(window, key_index);
     }
 
     static sclwindow prevwin = SCLWINDOW_INVALID;
     static sclbyte prevkey = NOT_USED;
 
-    if (context && cache && windows && events && utils && feedback && handler && btncontext && coordination) {
+    if (context && cache && windows && events && utils && feedback && handler && btncontext && coordinate) {
         /* First check if this button is enabled in current active sublayout */
         sclboolean sub_layout_match = TRUE;
-        if (coordination->sub_layout && context->get_cur_sublayout()) {
-            if (strncmp(coordination->sub_layout, context->get_cur_sublayout(), MAX_SIZE_OF_SUBLAYOUT_STRING) != 0) {
+        if (coordinate->sub_layout && context->get_cur_sublayout()) {
+            if (strncmp(coordinate->sub_layout, context->get_cur_sublayout(), MAX_SIZE_OF_SUBLAYOUT_STRING) != 0) {
                 sub_layout_match = FALSE;
             }
         }
         /* If this button is pressed */
-        if ( x >= coordination->x - coordination->add_hit_left &&
-                x < coordination->x + coordination->width + coordination->add_hit_right &&
-                y >= coordination->y - coordination->add_hit_top &&
-                y < coordination->y + coordination->height + coordination->add_hit_bottom &&
+        if ( x >= coordinate->x - coordinate->add_hit_left &&
+                x < coordinate->x + coordinate->width + coordinate->add_hit_right &&
+                y >= coordinate->y - coordinate->add_hit_top &&
+                y < coordinate->y + coordinate->height + coordinate->add_hit_bottom &&
                 /* Process the event only if the this item's sublayout id is active one */
                 sub_layout_match ) {
             //utils->log("process_button_pressed_event___TRUE\n");
 
             /* If newly pressed key has type MULTI_TOUCH_TYPE_EXCLUSIVE, release all existing pressed events */
             if (actual_event) {
-                if (coordination->multitouch_type == SCL_MULTI_TOUCH_TYPE_EXCLUSIVE) {
+                if (coordinate->multitouch_type == SCL_MULTI_TOUCH_TYPE_EXCLUSIVE) {
                     /* When calling mouse_release, the seq order of current multitouch events will be changed,
                     so we put all the multitouch events into a vector and use them afterwards forreleasing */
                     sclint loop = 0;
@@ -437,7 +479,7 @@ CSCLController::process_button_pressed_event(sclwindow window, sclint x, sclint 
             feedback->button_pressed(window, key_index);
 
             /* Special routine for autopopup */
-            if (coordination->popup_type == POPUP_TYPE_AUTO_POPUP) {
+            if (coordinate->popup_type == POPUP_TYPE_AUTO_POPUP) {
                 events->create_timer(SCL_TIMER_AUTOPOPUP, m_autopopup_key_duration, uniqId);
             } else {
                 /* for long key & repeat key */
@@ -448,9 +490,9 @@ CSCLController::process_button_pressed_event(sclwindow window, sclint x, sclint 
             if (shiftidx < 0 || shiftidx >= SCL_SHIFT_STATE_MAX) shiftidx = SCL_SHIFT_STATE_OFF;
 
             SclUIEventDesc key_event_desc = {0};
-            key_event_desc.key_value = coordination->key_value[shiftidx][0];
-            key_event_desc.key_event = coordination->key_event[shiftidx][0];
-            key_event_desc.key_type = coordination->key_type;
+            key_event_desc.key_value = coordinate->key_value[shiftidx][0];
+            key_event_desc.key_event = coordinate->key_event[shiftidx][0];
+            key_event_desc.key_type = coordinate->key_type;
             key_event_desc.key_modifier = KEY_MODIFIER_NONE;
             key_event_desc.event_type = EVENT_TYPE_PRESS;
 
@@ -465,14 +507,14 @@ CSCLController::process_button_pressed_event(sclwindow window, sclint x, sclint 
             handler->on_event_drag_state_changed(key_event_desc);
 
             /* Now process normal behaviours of each button type */
-            switch (coordination->button_type) {
+            switch (coordinate->button_type) {
             case BUTTON_TYPE_NORMAL:
             case BUTTON_TYPE_GRAB:
             case BUTTON_TYPE_SELFISH:
             case BUTTON_TYPE_DIRECTION:
             case BUTTON_TYPE_RELATIVE_DIRECTION: {
                 /* Send click event right away if this button uses repeat key */
-                if (coordination->use_repeat_key) {
+                if (coordinate->use_repeat_key) {
                     handler->on_event_key_clicked(key_event_desc);
                 }
             }
@@ -491,9 +533,9 @@ CSCLController::process_button_pressed_event(sclwindow window, sclint x, sclint 
             }
 
 
-            switch (coordination->popup_type) {
+            switch (coordinate->popup_type) {
             case POPUP_TYPE_BTN_PRESS_POPUP_DRAG: {
-                sclint popup_input_mode = sclres_manager->get_inputmode_id(coordination->popup_input_mode[SCL_DRAG_STATE_NONE]);
+                sclint popup_input_mode = sclres_manager->get_inputmode_id(coordinate->popup_input_mode[SCL_DRAG_STATE_NONE]);
                 SCLDisplayMode display_mode = context->get_display_mode();
                 /* FIXME */
                 //if (scl_check_arrindex(popup_input_mode, MAX_INPUT_MODE_POPUP) &&
@@ -511,8 +553,8 @@ CSCLController::process_button_pressed_event(sclwindow window, sclint x, sclint 
                     }
                     if (layout) {
                         windows->get_window_rect(windows->get_base_window(), &baseWndRect);
-                        popupRect.x = coordination->x + coordination->popup_relative_x + baseWndRect.x;
-                        popupRect.y = coordination->y + coordination->popup_relative_y + baseWndRect.y;
+                        popupRect.x = coordinate->x + coordinate->popup_relative_x + baseWndRect.x;
+                        popupRect.y = coordinate->y + coordinate->popup_relative_y + baseWndRect.y;
                         //popupRect.width = utils->get_scale_x(layout->width);
                         //popupRect.height= utils->get_scale_y(layout->height);
                         popupRect.width = layout->width;
@@ -525,16 +567,17 @@ CSCLController::process_button_pressed_event(sclwindow window, sclint x, sclint 
                                             popupRect,
                                             popup_input_mode,
                                             popupLayoutId,
-                                            coordination->popup_type,
+                                            coordinate->popup_type,
                                             sclres_input_mode_configure[popup_input_mode].use_virtual_window,
                                             sclres_input_mode_configure[popup_input_mode].use_dim_window,
-                                            coordination->extract_offset_x,
-                                            coordination->extract_offset_y,
+                                            coordinate->extract_offset_x,
+                                            coordinate->extract_offset_y,
                                             sclres_input_mode_configure[popup_input_mode].timeout
                                            );
                         /* FIXME : The parent key should be turned back to NORMAL state when RELEASED,
                             in case of POPUP_TYPE_BTN_PRESS_POPUP_DRAG type. Temporariliy setting NORMAL here. */
                         btncontext->state = BUTTON_STATE_NORMAL;
+                        _play_tts_for_input_mode_name(popup_input_mode);
                     }
                 }
             }
@@ -551,7 +594,7 @@ CSCLController::process_button_pressed_event(sclwindow window, sclint x, sclint 
 
             /* Shows the magnifier window(the magnifier window will display when a kind of button type is character) */
             //if (windows->get_nth_window_in_Z_order_list(SCL_WINDOW_Z_TOP) == windows->get_base_window()) {
-            if (coordination->use_magnifier) {
+            if (coordinate->use_magnifier) {
                 sclboolean showMagnifier = check_magnifier_available(window, key_index, touch_id);
 
                 SclResParserManager *sclres_manager = SclResParserManager::get_instance();
@@ -562,13 +605,13 @@ CSCLController::process_button_pressed_event(sclwindow window, sclint x, sclint 
                 if (showMagnifier && magnifier_configure) {
                     SclPoint pos = {0,};
                     /* calculates x position to be set */
-                    pos.x = (coordination->x + (coordination->width / 2)) - (magnifier_configure->width / 2);
+                    pos.x = (coordinate->x + (coordinate->width / 2)) - (magnifier_configure->width / 2);
 
                     /* calculates y position to be set */
                     sclint scnWidth, scnHeight;
                     utils->get_screen_resolution(&scnWidth, &scnHeight);
 
-                    pos.y = coordination->y - magnifier_configure->height;
+                    pos.y = coordinate->y - magnifier_configure->height;
 
                     /* FIXME : Temporary way of clearing magnifier window */
                     /*SclWindowContext *winctx = windows->get_window_context(windows->get_magnifier_window(), FALSE);
@@ -613,8 +656,8 @@ CSCLController::process_button_pressed_event(sclwindow window, sclint x, sclint 
                         pos.x = scnWidth + magnifier_configure->padding_x - magnifier_configure->width;
                     }
                     pos.y += magnifier_configure->padding_y;
-                    pos.x += coordination->magnifier_offset_x;
-                    pos.y += coordination->magnifier_offset_y;
+                    pos.x += coordinate->magnifier_offset_x;
+                    pos.y += coordinate->magnifier_offset_y;
                     windows->move_window(windows->get_magnifier_window(), pos.x, pos.y);
                     //windows->resize_window(windows->get_magnifier_window(), utils->get_scale_x(scl_magnifier_configure.width), utils->get_scale_y(scl_magnifier_configure.height));
                     /*If we use transient_for them the ISE will occure some crash. It needs to check X11 */
@@ -650,7 +693,7 @@ CSCLController::process_button_pressed_event(sclwindow window, sclint x, sclint 
             //    redraw = TRUE;
             //}
             /* BUTTON_TYPE_MULTITAP type button should restore its multikey index when another button is clicked */
-            if (coordination->button_type & BUTTON_TYPE_MULTITAP) {
+            if (coordinate->button_type & BUTTON_TYPE_MULTITAP) {
                 btncontext->multikeyIdx = 0;
             }
         }
@@ -665,7 +708,7 @@ CSCLController::process_button_pressed_event(sclwindow window, sclint x, sclint 
 #else
             CSCLWindows *windows = CSCLWindows::get_instance();
             if (windows) {
-                windows->update_window(window, coordination->x, coordination->y, coordination->width, coordination->height);
+                windows->update_window(window, coordinate->x, coordinate->y, coordinate->width, coordinate->height);
             }
 #endif
         }
@@ -694,12 +737,12 @@ CSCLController::process_button_long_pressed_event(sclwindow window, sclbyte key_
     assert(sclres_input_mode_configure != NULL);
     assert(sclres_layout != NULL);
     if (context && cache && handler && windows && state) {
-        const SclLayoutKeyCoordinate* coordination = cache->get_cur_layout_key_coordinate(window, key_index);
+        const SclLayoutKeyCoordinate* coordinate = cache->get_cur_layout_key_coordinate(window, key_index);
 
         /* Should return FALSE if this key does not have any longkey related property */
-        if (coordination) {
+        if (coordinate) {
             if (actual_event) {
-                if (coordination->multitouch_type == SCL_MULTI_TOUCH_TYPE_SETTLE_PREVIOUS) {
+                if (coordinate->multitouch_type == SCL_MULTI_TOUCH_TYPE_SETTLE_PREVIOUS) {
                     /* When calling mouse_release, the seq order of current multitouch events will be ch anged,
                        so we put all the multitouch events into a vector and use them afterwards for rel easing */
                     sclboolean finished = FALSE;
@@ -716,10 +759,10 @@ CSCLController::process_button_long_pressed_event(sclwindow window, sclbyte key_
                         if (desc.touch_id != touch_id) {
                             sclwindow cur_pressed_window = context->get_cur_pressed_window(desc.touch_id);
                             scl8 cur_pressed_key = context->get_cur_pressed_key(desc.touch_id);
-                            const SclLayoutKeyCoordinate *cur_pressed_coordination =
+                            const SclLayoutKeyCoordinate *cur_pressed_coordinate =
                                 cache->get_cur_layout_key_coordinate(cur_pressed_window, cur_pressed_key);
-                            if (cur_pressed_coordination) {
-                                if (cur_pressed_coordination->multitouch_type == SCL_MULTI_TOUCH_TYPE_SETTLE_PREVIOUS) {
+                            if (cur_pressed_coordinate) {
+                                if (cur_pressed_coordinate->multitouch_type == SCL_MULTI_TOUCH_TYPE_SETTLE_PREVIOUS) {
                                     mouse_release(context->get_cur_move_window(desc.touch_id),
                                         context->get_cur_move_point(desc.touch_id).x,
                                         context->get_cur_move_point(desc.touch_id).y,
@@ -735,15 +778,15 @@ CSCLController::process_button_long_pressed_event(sclwindow window, sclbyte key_
         }
 
         /* Should return FALSE if this key does not have any longkey related property */
-        if (coordination) {
-            if (coordination->popup_type == POPUP_TYPE_BTN_LONGPRESS_POPUP ||
-                coordination->popup_type == POPUP_TYPE_BTN_LONGPRESS_POPUP_ONCE ) {
+        if (coordinate) {
+            if (coordinate->popup_type == POPUP_TYPE_BTN_LONGPRESS_POPUP ||
+                coordinate->popup_type == POPUP_TYPE_BTN_LONGPRESS_POPUP_ONCE ) {
                     SclRectangle popupRect;
                     SclRectangle baseWndRect;
                     windows->get_window_rect(windows->get_base_window(), &baseWndRect);
-                    popupRect.x = coordination->x + coordination->popup_relative_x + baseWndRect.x;
-                    popupRect.y = coordination->y + coordination->popup_relative_y + baseWndRect.y;
-                    sclint popup_input_mode = sclres_manager->get_inputmode_id(coordination->popup_input_mode[SCL_DRAG_STATE_NONE]);
+                    popupRect.x = coordinate->x + coordinate->popup_relative_x + baseWndRect.x;
+                    popupRect.y = coordinate->y + coordinate->popup_relative_y + baseWndRect.y;
+                    sclint popup_input_mode = sclres_manager->get_inputmode_id(coordinate->popup_input_mode[SCL_DRAG_STATE_NONE]);
                     SCLDisplayMode display_mode = context->get_display_mode();
                     /* FIXME */
                     //if (scl_check_arrindex(popup_input_mode, MAX_INPUT_MODE_POPUP) &&
@@ -771,21 +814,22 @@ CSCLController::process_button_long_pressed_event(sclwindow window, sclbyte key_
                                 popupRect,
                                 popup_input_mode,
                                 popupLayoutId,
-                                coordination->popup_type,
+                                coordinate->popup_type,
                                 sclres_input_mode_configure[popup_input_mode].use_virtual_window,
                                 sclres_input_mode_configure[popup_input_mode].use_dim_window,
-                                coordination->extract_offset_x,
-                                coordination->extract_offset_y,
+                                coordinate->extract_offset_x,
+                                coordinate->extract_offset_y,
                                 sclres_input_mode_configure[popup_input_mode].timeout
                                 );
+                            _play_tts_for_input_mode_name(popup_input_mode);
                             ret = TRUE;
                         }
                     }
-            } else if (coordination->long_key_value) {
-                if (strlen(coordination->long_key_value) > 0) {
+            } else if (coordinate->long_key_value) {
+                if (strlen(coordinate->long_key_value) > 0) {
                     SclPoint ptMoving = context->get_cur_move_point(touch_id);
-                    /*if (ptMoving.x >= coordination->x && ptMoving.x <= coordination->x + coordination->width &&
-                        ptMoving.y >= coordination->y && ptMoving.y <= coordination->y + coordination->height) {*/
+                    /*if (ptMoving.x >= coordinate->x && ptMoving.x <= coordinate->x + coordinate->width &&
+                        ptMoving.y >= coordinate->y && ptMoving.y <= coordinate->y + coordinate->height) {*/
                         if (windows->is_base_window(window)) {
                             state->set_cur_action_state(ACTION_STATE_BASE_LONGKEY);
                         } else {
@@ -798,7 +842,7 @@ CSCLController::process_button_long_pressed_event(sclwindow window, sclbyte key_
                         if (sclres_manager) {
                             magnifier_configure = sclres_manager->get_magnifier_configure();
                         }
-                        if (coordination->use_long_key_magnifier && magnifier_configure) {
+                        if (coordinate->use_long_key_magnifier && magnifier_configure) {
                             CSCLUtils *utils = CSCLUtils::get_instance();
                             SclPoint pos = {0,};
 
@@ -818,9 +862,9 @@ CSCLController::process_button_long_pressed_event(sclwindow window, sclbyte key_
                                 //SclWindowContext *winctx = windows->get_window_context(window, TRUE);
                                 SclWindowContext *winctx = windows->get_window_context(window);
                                 if (winctx) {
-                                    pos.x = winctx->geometry.x + (coordination->x + (coordination->width / 2)) -
+                                    pos.x = winctx->geometry.x + (coordinate->x + (coordinate->width / 2)) -
                                         (magnifier_configure->width / 2);
-                                    pos.y = winctx->geometry.y + coordination->y - magnifier_configure->height;
+                                    pos.y = winctx->geometry.y + coordinate->y - magnifier_configure->height;
                                 }
                                 if (pos.x < 0 - magnifier_configure->padding_x) {
                                     pos.x = 0 - magnifier_configure->padding_x;
@@ -829,8 +873,8 @@ CSCLController::process_button_long_pressed_event(sclwindow window, sclbyte key_
                                     pos.x = scnWidth + magnifier_configure->padding_x - magnifier_configure->width;
                                 }
                                 pos.y += magnifier_configure->padding_y;
-                                pos.x += coordination->magnifier_offset_x;
-                                pos.y += coordination->magnifier_offset_y;
+                                pos.x += coordinate->magnifier_offset_x;
+                                pos.y += coordinate->magnifier_offset_y;
                                 windows->move_window(windows->get_magnifier_window(), pos.x, pos.y);
                                 windows->update_window(windows->get_magnifier_window());
                                 windows->show_window(windows->get_magnifier_window(),TRUE);
@@ -838,9 +882,9 @@ CSCLController::process_button_long_pressed_event(sclwindow window, sclbyte key_
                         }
 
                         SclUIEventDesc key_event_desc = {0};
-                        key_event_desc.key_type = coordination->long_key_type;
-                        key_event_desc.key_value = coordination->long_key_value;
-                        key_event_desc.key_event = coordination->long_key_event;
+                        key_event_desc.key_type = coordinate->long_key_type;
+                        key_event_desc.key_value = coordinate->long_key_value;
+                        key_event_desc.key_event = coordinate->long_key_event;
                         key_event_desc.key_modifier = KEY_MODIFIER_LONGKEY;
 
                         key_event_desc.event_type = EVENT_TYPE_LONGPRESS;
@@ -875,23 +919,23 @@ CSCLController::process_button_repeat_pressed_event(sclwindow window, sclbyte ke
     CSCLEventHandler *handler = CSCLEventHandler::get_instance();
 
     if (context && cache && windows && handler) {
-        const SclLayoutKeyCoordinate *coordination = cache->get_cur_layout_key_coordinate(window, key_index);
+        const SclLayoutKeyCoordinate *coordinate = cache->get_cur_layout_key_coordinate(window, key_index);
 
         SCLShiftState shiftidx = context->get_shift_state();
         if (shiftidx < 0 || shiftidx >= SCL_SHIFT_STATE_MAX) shiftidx = SCL_SHIFT_STATE_OFF;
 
-        if (coordination) {
-            switch (coordination->button_type) {
+        if (coordinate) {
+            switch (coordinate->button_type) {
                 case BUTTON_TYPE_NORMAL:
                 case BUTTON_TYPE_GRAB:
                 case BUTTON_TYPE_SELFISH:
                 case BUTTON_TYPE_DIRECTION:
                 case BUTTON_TYPE_RELATIVE_DIRECTION: {
                     /* This is for enabling backspace key in search layout*/
-                    //if (coordination->key_type != KEY_TYPE_MODECHANGE && coordination->key_type != KEY_TYPE_COMPOSITION) {
-                    //if (coordination->key_type != KEY_TYPE_MODECHANGE || coordination->key_event[0][0] == MVK_BackSpace) {
-                    if (coordination->key_type != KEY_TYPE_MODECHANGE) {
-                        sclulong repeatKeyEvent = coordination->key_event[shiftidx][0];
+                    //if (coordinate->key_type != KEY_TYPE_MODECHANGE && coordinate->key_type != KEY_TYPE_COMPOSITION) {
+                    //if (coordinate->key_type != KEY_TYPE_MODECHANGE || coordinate->key_event[0][0] == MVK_BackSpace) {
+                    if (coordinate->key_type != KEY_TYPE_MODECHANGE) {
+                        sclulong repeatKeyEvent = coordinate->key_event[shiftidx][0];
 
                         /* In case of Delete key, Change from Char deletion to Word deletion
                            when the input accelation speed is reached to Max */
@@ -911,9 +955,9 @@ CSCLController::process_button_repeat_pressed_event(sclwindow window, sclbyte ke
                         }
 
                         SclUIEventDesc key_event_desc = {0};
-                        key_event_desc.key_value = coordination->key_value[shiftidx][0];
+                        key_event_desc.key_value = coordinate->key_value[shiftidx][0];
                         key_event_desc.key_event = repeatKeyEvent;
-                        key_event_desc.key_type = coordination->key_type;
+                        key_event_desc.key_type = coordinate->key_type;
                         key_event_desc.key_modifier = KEY_MODIFIER_NONE;
 
                         key_event_desc.event_type = EVENT_TYPE_REPEAT;
@@ -954,14 +998,14 @@ CSCLController::process_button_move_event(sclwindow window, sclint x, sclint y, 
 
     SclButtonContext *btncontext = NULL;
 
-    const SclLayoutKeyCoordinate *coordination = NULL;
+    const SclLayoutKeyCoordinate *coordinate = NULL;
 
     if (cache) {
-        coordination = cache->get_cur_layout_key_coordinate(window, key_index);
+        coordinate = cache->get_cur_layout_key_coordinate(window, key_index);
         btncontext = cache->get_cur_button_context(window, key_index);
     }
 
-    if (btncontext && coordination && feedback && utils && context && handler && cache && events && windows) {
+    if (btncontext && coordinate && feedback && utils && context && handler && cache && events && windows) {
         /* If this key is the key previously pressed, add threshold value for avoiding unintended moving */
         sclint thresholdX = 0;
         sclint thresholdY = 0;
@@ -972,15 +1016,15 @@ CSCLController::process_button_move_event(sclwindow window, sclint x, sclint y, 
 
         /* First check if this button is enabled in current active sublayout */
         sclboolean subLayoutMatch = TRUE;
-        if (coordination->sub_layout && context->get_cur_sublayout()) {
-            if (strncmp(coordination->sub_layout, context->get_cur_sublayout(), MAX_SIZE_OF_SUBLAYOUT_STRING) != 0) {
+        if (coordinate->sub_layout && context->get_cur_sublayout()) {
+            if (strncmp(coordinate->sub_layout, context->get_cur_sublayout(), MAX_SIZE_OF_SUBLAYOUT_STRING) != 0) {
                 subLayoutMatch = FALSE;
             }
         }
-        if ( x >= coordination->x - coordination->add_hit_left  - thresholdX &&
-            x < coordination->x + coordination->width + coordination->add_hit_right + thresholdX&&
-                y >= coordination->y - coordination->add_hit_top - thresholdY &&
-                y < coordination->y + coordination->height + coordination->add_hit_bottom + thresholdY &&
+        if ( x >= coordinate->x - coordinate->add_hit_left  - thresholdX &&
+            x < coordinate->x + coordinate->width + coordinate->add_hit_right + thresholdX&&
+                y >= coordinate->y - coordinate->add_hit_top - thresholdY &&
+                y < coordinate->y + coordinate->height + coordinate->add_hit_bottom + thresholdY &&
                 subLayoutMatch ) {
             ret = TRUE;
 
@@ -992,10 +1036,10 @@ CSCLController::process_button_move_event(sclwindow window, sclint x, sclint y, 
             sclwindow pressed_window = context->get_cur_pressed_window(touch_id);
             scl8 pressed_key = context->get_cur_pressed_key(touch_id);
             SclButtonContext *pressed_context = cache->get_cur_button_context(pressed_window, pressed_key);
-            const SclLayoutKeyCoordinate *pressed_coordination =
+            const SclLayoutKeyCoordinate *pressed_coordinate =
                 cache->get_cur_layout_key_coordinate(pressed_window, pressed_key);
 
-            if (pressed_context == NULL || pressed_coordination == NULL) {
+            if (pressed_context == NULL || pressed_coordinate == NULL) {
                 return FALSE;
             }
 
@@ -1003,7 +1047,7 @@ CSCLController::process_button_move_event(sclwindow window, sclint x, sclint y, 
                 /* When the focus has moved to another button, destroy all the timers */
                 events->destroy_all_timer();
 
-                if (check_event_transition_enabled(pressed_coordination, coordination)) {
+                if (check_event_transition_enabled(pressed_coordinate, coordinate)) {
                     if (layout) {
                         sclfloat scale_rate_x, scale_rate_y;
                         if (layout->display_mode == DISPLAYMODE_PORTRAIT) {
@@ -1017,7 +1061,7 @@ CSCLController::process_button_move_event(sclwindow window, sclint x, sclint y, 
                         const scl16 uniqId = utils->get_unique_id();
                         context->set_cur_pressed_event_id(touch_id, uniqId);
                         /* Special routine for autopopup */
-                        if (coordination->popup_type == POPUP_TYPE_AUTO_POPUP) {
+                        if (coordinate->popup_type == POPUP_TYPE_AUTO_POPUP) {
                             events->create_timer(SCL_TIMER_AUTOPOPUP, m_autopopup_key_duration, uniqId);
                         } else {
                             /* for long key & repeat key */
@@ -1037,13 +1081,13 @@ CSCLController::process_button_move_event(sclwindow window, sclint x, sclint y, 
                         if (showMagnifier && magnifier_configure) {
                             SclPoint pos = {0,};
                             /* calculates x position to be set */
-                            pos.x = (coordination->x + (coordination->width / 2)) - (magnifier_configure->width / 2);
+                            pos.x = (coordinate->x + (coordinate->width / 2)) - (magnifier_configure->width / 2);
 
                             /* calculates y position to be set */
                             sclint scnWidth, scnHeight;
                             utils->get_screen_resolution(&scnWidth, &scnHeight);
 
-                            pos.y = (scnHeight - layout->height) + coordination->y - magnifier_configure->height;
+                            pos.y = (scnHeight - layout->height) + coordinate->y - magnifier_configure->height;
 
                             if (pos.x < 0 - magnifier_configure->padding_x) {
                                 pos.x = 0 - magnifier_configure->padding_x;
@@ -1101,12 +1145,12 @@ CSCLController::process_button_move_event(sclwindow window, sclint x, sclint y, 
                         grps->end_paint(window, draw_ctx);
                         */
 
-                        switch (coordination->button_type) {
+                        switch (coordinate->button_type) {
                         case BUTTON_TYPE_DRAG: {
                             SclUIEventDesc key_event_desc = {0};
-                            key_event_desc.key_value = coordination->key_value[shiftidx][0];
-                            key_event_desc.key_event = coordination->key_event[shiftidx][0];
-                            key_event_desc.key_type = coordination->key_type;
+                            key_event_desc.key_value = coordinate->key_value[shiftidx][0];
+                            key_event_desc.key_event = coordinate->key_event[shiftidx][0];
+                            key_event_desc.key_type = coordinate->key_type;
                             key_event_desc.key_modifier = KEY_MODIFIER_NONE;
 
                             key_event_desc.event_type = EVENT_TYPE_MOVE;
@@ -1135,14 +1179,14 @@ CSCLController::process_button_move_event(sclwindow window, sclint x, sclint y, 
                                     scale_rate_y = utils->get_scale_rate_x();
                                 }
                                 /* calculates x position to be set */
-                                zoomwinpos.x = (coordination->x + (coordination->width / 2)) -
+                                zoomwinpos.x = (coordinate->x + (coordinate->width / 2)) -
                                     (magnifier_configure->width / 2);
 
                                 /* calculates y position to be set */
                                 sclint scnWidth, scnHeight;
                                 utils->get_screen_resolution(&scnWidth, &scnHeight);
 
-                                zoomwinpos.y = coordination->y - magnifier_configure->height;
+                                zoomwinpos.y = coordinate->y - magnifier_configure->height;
                                 SclWindowContext *winctx = windows->get_window_context(window);
                                 if (winctx) {
                                     zoomwinpos.x += winctx->geometry.x;
@@ -1157,8 +1201,8 @@ CSCLController::process_button_move_event(sclwindow window, sclint x, sclint y, 
                                             magnifier_configure->width;
                                 }
                                 zoomwinpos.y += magnifier_configure->padding_y;
-                                zoomwinpos.x += coordination->magnifier_offset_x;
-                                zoomwinpos.y += coordination->magnifier_offset_y;
+                                zoomwinpos.x += coordinate->magnifier_offset_x;
+                                zoomwinpos.y += coordinate->magnifier_offset_y;
                                 windows->move_window(windows->get_magnifier_window(), zoomwinpos.x, zoomwinpos.y);
                                 windows->show_window(windows->get_magnifier_window(), 0);
                             }
@@ -1191,12 +1235,12 @@ CSCLController::process_button_move_event(sclwindow window, sclint x, sclint y, 
                         }
 #else
                         windows->update_window(window,
-                                coordination->x, coordination->y, coordination->width, coordination->height);
-                        const SclLayoutKeyCoordinate *pressed_coordination =
+                                coordinate->x, coordinate->y, coordinate->width, coordinate->height);
+                        const SclLayoutKeyCoordinate *pressed_coordinate =
                             cache->get_cur_layout_key_coordinate(pressed_window, pressed_key);
-                        if (pressed_coordination) {
-                            windows->update_window(pressed_window, pressed_coordination->x, pressed_coordination->y,
-                                    pressed_coordination->width, pressed_coordination->height);
+                        if (pressed_coordinate) {
+                            windows->update_window(pressed_window, pressed_coordinate->x, pressed_coordinate->y,
+                                    pressed_coordinate->width, pressed_coordinate->height);
                         }
 #endif
                     }
@@ -1204,10 +1248,10 @@ CSCLController::process_button_move_event(sclwindow window, sclint x, sclint y, 
                     //utils->log("Now Moving : %d %d\n", pos.x, pos.y);
                 } else {
                     /* If the focus went out from our SELFISH button */
-                    if (pressed_coordination->button_type == BUTTON_TYPE_SELFISH) {
+                    if (pressed_coordinate->button_type == BUTTON_TYPE_SELFISH) {
                         pressed_context->state = BUTTON_STATE_NORMAL;
-                        windows->update_window(pressed_window, pressed_coordination->x, pressed_coordination->y,
-                            pressed_coordination->width, pressed_coordination->height);
+                        windows->update_window(pressed_window, pressed_coordinate->x, pressed_coordinate->y,
+                            pressed_coordinate->width, pressed_coordinate->height);
                         /* And if this SELFISH button was the last button pressed */
                         if (touch_id == context->get_last_touch_device_id()) {
                             windows->hide_window(windows->get_magnifier_window());
@@ -1216,10 +1260,10 @@ CSCLController::process_button_move_event(sclwindow window, sclint x, sclint y, 
                 }
             } else {
                 /* If the focus came back into our SELFISH button */
-                if (pressed_coordination->button_type == BUTTON_TYPE_SELFISH && pressed_context->state != BUTTON_STATE_PRESSED) {
+                if (pressed_coordinate->button_type == BUTTON_TYPE_SELFISH && pressed_context->state != BUTTON_STATE_PRESSED) {
                     pressed_context->state = BUTTON_STATE_PRESSED;
-                    windows->update_window(pressed_window, pressed_coordination->x, pressed_coordination->y,
-                        pressed_coordination->width, pressed_coordination->height);
+                    windows->update_window(pressed_window, pressed_coordinate->x, pressed_coordinate->y,
+                        pressed_coordinate->width, pressed_coordinate->height);
                     /* And if this SELFISH button was the last button pressed */
                     if (touch_id == context->get_last_touch_device_id()) {
                         sclboolean showMagnifier = check_magnifier_available(pressed_window, pressed_key, touch_id);
@@ -1236,6 +1280,97 @@ CSCLController::process_button_move_event(sclwindow window, sclint x, sclint y, 
     return ret;
 }
 
+sclboolean
+CSCLController::process_button_over_event(sclwindow window, sclint x, sclint y, sclbyte keyindex)
+{
+    SCL_DEBUG();
+
+    sclboolean ret = FALSE;
+
+    CSCLUtils *utils = CSCLUtils::get_instance();
+    CSCLEvents *events = CSCLEvents::get_instance();
+    CSCLContext *context = CSCLContext::get_instance();
+    CSCLWindows *windows = CSCLWindows::get_instance();
+    CSCLFeedback *feedback = CSCLFeedback::get_instance();
+    CSCLResourceCache *cache = CSCLResourceCache::get_instance();
+
+    SclButtonContext *btncontext = NULL;
+
+    const SclLayoutKeyCoordinate *coordinate = NULL;
+    if(cache) {
+        coordinate = cache->get_cur_layout_key_coordinate(window, keyindex);
+        btncontext = cache->get_cur_button_context(window, keyindex);
+    }
+
+    if(btncontext && coordinate && feedback && utils && context && cache && events && windows) {
+       /* If this key is the key previously pressed, add threshold value for avoiding unintended moving */
+        sclboolean subLayoutMatch = TRUE;
+        if (coordinate->sub_layout && context->get_cur_sublayout()) {
+            if (strncmp(coordinate->sub_layout, context->get_cur_sublayout(), MAX_SIZE_OF_SUBLAYOUT_STRING) != 0) {
+                subLayoutMatch = FALSE;
+            }
+        }
+        if ( x >= coordinate->x - coordinate->add_hit_left &&
+            x < coordinate->x + coordinate->width + coordinate->add_hit_right &&
+                y >= coordinate->y - coordinate->add_hit_top &&
+                y < coordinate->y + coordinate->height + coordinate->add_hit_bottom &&
+                subLayoutMatch ) {
+            ret = TRUE;
+
+            SCLShiftState shiftidx = context->get_shift_state();
+            if(shiftidx < 0 || shiftidx >= SCL_SHIFT_STATE_MAX) shiftidx = SCL_SHIFT_STATE_OFF;
+
+            const SclLayout* layout = cache->get_cur_layout(windows->get_base_window());
+
+            sclwindow highlighted_window = context->get_cur_highlighted_window();
+            scl8 highlighted_key = context->get_cur_highlighted_key();
+            SclButtonContext *cur_context = cache->get_cur_button_context(window, keyindex);
+
+            if(cur_context == NULL) {
+                return FALSE;
+            }
+            if (keyindex != highlighted_key || window != highlighted_window ) {
+                printf("%d != %d || %p != %p\n", keyindex, highlighted_key, window, highlighted_window);
+                if(layout) {
+                    SclPoint pos = {0,};
+                    sclfloat scale_rate_x, scale_rate_y;
+                    if(layout->display_mode == DISPLAYMODE_PORTRAIT) {
+                        scale_rate_x = utils->get_scale_rate_x();
+                        scale_rate_y = utils->get_scale_rate_y();
+                    } else {
+                        scale_rate_x = utils->get_scale_rate_y();
+                        scale_rate_y = utils->get_scale_rate_x();
+                    }
+
+                    if (coordinate->key_type != KEY_TYPE_NONE) {
+                        if (context->get_tts_enabled()) {
+                            const char *targetstr = coordinate->hint_string[shiftidx][btncontext->multikeyIdx];
+                            printf("coordinate->hint_string[%d][%d] : %p\n", shiftidx, btncontext->multikeyIdx, targetstr);
+                            if (targetstr == NULL) {
+                                targetstr = coordinate->key_value[shiftidx][btncontext->multikeyIdx];
+                            }
+                            printf("coordinate->key_value[%d][%d] : %p\n", shiftidx, btncontext->multikeyIdx, targetstr);
+                            if (targetstr == NULL) {
+                                targetstr = coordinate->label[shiftidx][0];
+                            }
+                            printf("coordinate->label[%d][0] : %p\n", shiftidx, targetstr);
+                            /*if(state->get_cur_action_state() == ACTION_STATE_BASE_LONGKEY ||
+                                state->get_cur_action_state() == ACTION_STATE_POPUP_LONGKEY ) {
+                                    targetstr = coordinate->long_key_value;
+                            }*/
+                            utils->play_tts(targetstr);
+                        }
+                    }
+                }
+
+                context->set_cur_highlighted_window(window);
+                context->set_cur_highlighted_key(keyindex);
+            }
+        }
+    }
+
+    return ret;
+}
 SCLKeyModifier
 CSCLController::get_drag_key_modifier(sclint deltax, sclint deltay, sclfloat dist, sclboolean check_farthest,
                                       scltouchdevice touch_id, sclbyte extra_option) {
@@ -1255,7 +1390,7 @@ CSCLController::get_drag_key_modifier(sclint deltax, sclint deltay, sclfloat dis
         if (extra_option == DIRECTION_EXTRA_OPTION_8_DIRECTIONS ||
             extra_option == DIRECTION_EXTRA_OPTION_8_DIRECTIONS_WITH_LONG ||
             extra_option == DIRECTION_EXTRA_OPTION_8_DIRECTIONS_WITH_RETURN) { /* 8 directions */
-                /* If the theta is below 0, the direction is upward since the y coordination grows downward */
+                /* If the theta is below 0, the direction is upward since the y coordinate grows downward */
                 /* The below angle values are customized for MoAKey, need to provide customizing API */
                 DIRECTIONINFO info[] = {
                     {-8 * (M_PI / 8), -7 * (M_PI / 8), KEY_MODIFIER_DIRECTION_LEFT},
@@ -1359,23 +1494,23 @@ CSCLController::process_button_release_event(sclwindow window, sclint x, sclint 
     assert(sclres_layout != NULL);
     assert(sclres_input_mode_configure != NULL);
     SclButtonContext *btncontext = NULL;
-    const SclLayoutKeyCoordinate *coordination = NULL;
+    const SclLayoutKeyCoordinate *coordinate = NULL;
 
     if (cache) {
         btncontext = cache->get_cur_button_context(window, key_index);
-        coordination = cache->get_cur_layout_key_coordinate(window, key_index);
+        coordinate = cache->get_cur_layout_key_coordinate(window, key_index);
     }
 
     const SclLayoutKeyCoordinate *targetCoordination = NULL;
 
-    if (utils && feedback && windows && context && state && handler && cache && btncontext && coordination) {
+    if (utils && feedback && windows && context && state && handler && cache && btncontext && coordinate) {
         scl8 savedInputMode = context->get_input_mode();
 
         sclwindow pressed_window = context->get_cur_pressed_window(touch_id);
         scl8 pressed_key = context->get_cur_pressed_key(touch_id);
 
         if (actual_event) {
-             if (coordination->multitouch_type == SCL_MULTI_TOUCH_TYPE_SETTLE_PREVIOUS) {
+             if (coordinate->multitouch_type == SCL_MULTI_TOUCH_TYPE_SETTLE_PREVIOUS) {
                  /* When calling mouse_release, the seq order of current multitouch events will be changed,
                     so we put all the multitouch events into a vector and use them afterwards for releasing */
                  sclboolean finished = FALSE;
@@ -1392,10 +1527,10 @@ CSCLController::process_button_release_event(sclwindow window, sclint x, sclint 
                      if (desc.touch_id != touch_id) {
                          sclwindow cur_pressed_window = context->get_cur_pressed_window(desc.touch_id);
                          scl8 cur_pressed_key = context->get_cur_pressed_key(desc.touch_id);
-                         const SclLayoutKeyCoordinate *cur_pressed_coordination =
+                         const SclLayoutKeyCoordinate *cur_pressed_coordinate =
                              cache->get_cur_layout_key_coordinate(cur_pressed_window, cur_pressed_key);
-                         if (cur_pressed_coordination) {
-                             if (cur_pressed_coordination->multitouch_type == SCL_MULTI_TOUCH_TYPE_SETTLE_PREVIOUS) {
+                         if (cur_pressed_coordinate) {
+                             if (cur_pressed_coordinate->multitouch_type == SCL_MULTI_TOUCH_TYPE_SETTLE_PREVIOUS) {
                                  mouse_release(context->get_cur_move_window(desc.touch_id),
                                      context->get_cur_move_point(desc.touch_id).x, context->get_cur_move_point(desc.touch_id).y,
                                      desc.touch_id, FALSE);
@@ -1419,7 +1554,7 @@ CSCLController::process_button_release_event(sclwindow window, sclint x, sclint 
         }
 
         /* Check if the pressed button's type is directional button */
-        if (coordination->button_type == BUTTON_TYPE_DIRECTION || coordination->button_type == BUTTON_TYPE_RELATIVE_DIRECTION) {
+        if (coordinate->button_type == BUTTON_TYPE_DIRECTION || coordinate->button_type == BUTTON_TYPE_RELATIVE_DIRECTION) {
             if (context) {
                 if (context->get_cur_pressed_window(touch_id) == window && context->get_cur_pressed_key(touch_id) == key_index) {
                     ret = TRUE;
@@ -1429,7 +1564,7 @@ CSCLController::process_button_release_event(sclwindow window, sclint x, sclint 
                     sclint starty = y;
 
                     /* If the buttontype is RELATIVE_DIRECTION, get the distance from last move point */
-                    if (coordination->button_type == BUTTON_TYPE_RELATIVE_DIRECTION) {
+                    if (coordinate->button_type == BUTTON_TYPE_RELATIVE_DIRECTION) {
                         startx = context->get_prev_move_point(touch_id).x;
                         starty = context->get_prev_move_point(touch_id).y;
                     } else {
@@ -1442,27 +1577,27 @@ CSCLController::process_button_release_event(sclwindow window, sclint x, sclint 
 
                     sclfloat dist = utils->get_distance(x, y, startx, starty);
                     sclfloat direction_recog_dist = SCL_DIRECTION_RECOG_DIST * utils->get_smallest_scale_rate();
-                    if (coordination->is_side_button) {
+                    if (coordinate->is_side_button) {
                         direction_recog_dist = SCL_DIRECTION_RECOG_DIST_SIDE * utils->get_smallest_scale_rate();
                     };
-                    if (coordination->button_type == BUTTON_TYPE_RELATIVE_DIRECTION) {
+                    if (coordinate->button_type == BUTTON_TYPE_RELATIVE_DIRECTION) {
                         direction_recog_dist = SCL_DIRECTION_RELATIVE_RECOG_DIST * utils->get_smallest_scale_rate();
                     }
                     if (context->get_cur_drag_state(touch_id) == SCL_DRAG_STATE_RETURN &&
-                        coordination->button_type != BUTTON_TYPE_RELATIVE_DIRECTION) {
-                        if (coordination->extra_option == DIRECTION_EXTRA_OPTION_8_DIRECTIONS_WITH_RETURN ||
-                            coordination->extra_option == DIRECTION_EXTRA_OPTION_4_DIRECTIONS_WITH_RETURN ||
-                            coordination->extra_option == DIRECTION_EXTRA_OPTION_4_DIRECTIONS_WITH_RETURN_AND_CURVE) {
+                        coordinate->button_type != BUTTON_TYPE_RELATIVE_DIRECTION) {
+                        if (coordinate->extra_option == DIRECTION_EXTRA_OPTION_8_DIRECTIONS_WITH_RETURN ||
+                            coordinate->extra_option == DIRECTION_EXTRA_OPTION_4_DIRECTIONS_WITH_RETURN ||
+                            coordinate->extra_option == DIRECTION_EXTRA_OPTION_4_DIRECTIONS_WITH_RETURN_AND_CURVE) {
                                 deltax = context->get_farthest_move_point(touch_id).x - context->get_cur_pressed_point(touch_id).x;
                                 deltay = context->get_farthest_move_point(touch_id).y - context->get_cur_pressed_point(touch_id).y;
                                 dist = utils->get_distance(context->get_farthest_move_point(touch_id), context->get_cur_pressed_point(touch_id));
                                 check_farthest = TRUE;
                         }
                     }
-                    if (coordination->button_type == BUTTON_TYPE_RELATIVE_DIRECTION) {
+                    if (coordinate->button_type == BUTTON_TYPE_RELATIVE_DIRECTION) {
                         key_modifier = context->get_cur_key_modifier(touch_id);
                     } else if (dist > direction_recog_dist) {
-                        key_modifier = get_drag_key_modifier(deltax, deltay, dist, check_farthest, touch_id, coordination->extra_option);
+                        key_modifier = get_drag_key_modifier(deltax, deltay, dist, check_farthest, touch_id, coordinate->extra_option);
                     }
                 }
             }
@@ -1470,16 +1605,16 @@ CSCLController::process_button_release_event(sclwindow window, sclint x, sclint 
 
         /* First check if this button is enabled in current active sublayout */
         sclboolean subLayoutMatch = TRUE;
-        if (coordination->sub_layout && context->get_cur_sublayout()) {
-            if (strncmp(coordination->sub_layout, context->get_cur_sublayout(), MAX_SIZE_OF_SUBLAYOUT_STRING) != 0) {
+        if (coordinate->sub_layout && context->get_cur_sublayout()) {
+            if (strncmp(coordinate->sub_layout, context->get_cur_sublayout(), MAX_SIZE_OF_SUBLAYOUT_STRING) != 0) {
                 subLayoutMatch = FALSE;
             }
         }
         /* Check if the event occured inside this button's rectangle */
-        if ( x >= coordination->x - coordination->add_hit_left  - thresholdX &&
-                x < coordination->x + coordination->width + coordination->add_hit_right + thresholdX &&
-                y >= coordination->y - coordination->add_hit_top - thresholdY &&
-                y < coordination->y + coordination->height + coordination->add_hit_bottom + thresholdY &&
+        if ( x >= coordinate->x - coordinate->add_hit_left  - thresholdX &&
+                x < coordinate->x + coordinate->width + coordinate->add_hit_right + thresholdX &&
+                y >= coordinate->y - coordinate->add_hit_top - thresholdY &&
+                y < coordinate->y + coordinate->height + coordinate->add_hit_bottom + thresholdY &&
                 subLayoutMatch ) {
             ret = TRUE;
         }
@@ -1491,15 +1626,15 @@ CSCLController::process_button_release_event(sclwindow window, sclint x, sclint 
             /* If this button's index is the same as the one initially pressed */
             if (pressed_window == window && pressed_key == key_index) {
                 fireEvt = TRUE;
-                targetCoordination = coordination;
+                targetCoordination = coordinate;
             } else {
-                const SclLayoutKeyCoordinate *pressed_coordination =
+                const SclLayoutKeyCoordinate *pressed_coordinate =
                     cache->get_cur_layout_key_coordinate(pressed_window, pressed_key);
 
-                if (pressed_coordination) {
-                    if (check_event_transition_enabled(pressed_coordination, coordination)) {
+                if (pressed_coordinate) {
+                    if (check_event_transition_enabled(pressed_coordinate, coordinate)) {
                         fireEvt = TRUE;
-                        targetCoordination = pressed_coordination;
+                        targetCoordination = pressed_coordinate;
                     } else {
                         ret = FALSE;
                     }
@@ -1509,7 +1644,7 @@ CSCLController::process_button_release_event(sclwindow window, sclint x, sclint 
 
         /* In case of mode change buttons, event should be fired only when it was pressed lastly */
         if (fireEvt) {
-            if (coordination->key_type == KEY_TYPE_MODECHANGE) {
+            if (coordinate->key_type == KEY_TYPE_MODECHANGE) {
                 if (touch_id != context->get_last_touch_device_id()) {
                     fireEvt = FALSE;
                 }
@@ -1572,8 +1707,8 @@ CSCLController::process_button_release_event(sclwindow window, sclint x, sclint 
                             key_modifier = KEY_MODIFIER_NONE;
                         }
                         if (btncontext->multikeyIdx < MAX_SIZE_OF_MULTITAP_CHAR) {
-                            key_event_desc.key_value = coordination->key_value[shiftidx][btncontext->multikeyIdx];
-                            key_event_desc.key_event = coordination->key_event[shiftidx][btncontext->multikeyIdx];
+                            key_event_desc.key_value = coordinate->key_value[shiftidx][btncontext->multikeyIdx];
+                            key_event_desc.key_event = coordinate->key_event[shiftidx][btncontext->multikeyIdx];
                             key_event_desc.key_modifier = key_modifier;
                             handler->on_event_key_clicked(key_event_desc);
                         }
@@ -1596,18 +1731,18 @@ CSCLController::process_button_release_event(sclwindow window, sclint x, sclint 
                     break;
                     }
 
-                    switch (coordination->popup_type) {
+                    switch (coordinate->popup_type) {
                     case POPUP_TYPE_BTN_RELEASE_POPUP:
                     case POPUP_TYPE_BTN_RELEASE_POPUP_ONCE: {
                         SCLDragState dragstate = context->get_cur_drag_state(touch_id);
                         sclint popup_input_mode = NOT_USED;
                         if (scl_check_arrindex(dragstate, SCL_DRAG_STATE_MAX)) {
-                            popup_input_mode = sclres_manager->get_inputmode_id(coordination->popup_input_mode[dragstate]);
+                            popup_input_mode = sclres_manager->get_inputmode_id(coordinate->popup_input_mode[dragstate]);
                             /* FIXME */
                             //if (!scl_check_arrindex(popup_input_mode, MAX_INPUT_MODE_POPUP)) {
                             if (!scl_check_arrindex(popup_input_mode, MAX_SCL_INPUT_MODE)) {
                                 popup_input_mode =
-                                    sclres_manager->get_inputmode_id(coordination->popup_input_mode[SCL_DRAG_STATE_NONE]);
+                                    sclres_manager->get_inputmode_id(coordinate->popup_input_mode[SCL_DRAG_STATE_NONE]);
                             }
                         }
                         SCLDisplayMode display_mode = context->get_display_mode();
@@ -1631,8 +1766,8 @@ CSCLController::process_button_release_event(sclwindow window, sclint x, sclint 
                                 SclRectangle popupRect;
                                 SclRectangle baseWndRect;
                                 windows->get_window_rect(windows->get_base_window(), &baseWndRect);
-                                popupRect.x = coordination->x + coordination->popup_relative_x + baseWndRect.x;
-                                popupRect.y = coordination->y + coordination->popup_relative_y + baseWndRect.y;
+                                popupRect.x = coordinate->x + coordinate->popup_relative_x + baseWndRect.x;
+                                popupRect.y = coordinate->y + coordinate->popup_relative_y + baseWndRect.y;
 
                                 //popupRect.width = utils->get_scale_x(layout->width);
                                 //popupRect.height= utils->get_scale_y(layout->height);
@@ -1658,13 +1793,14 @@ CSCLController::process_button_release_event(sclwindow window, sclint x, sclint 
                                     popupRect,
                                     popup_input_mode,
                                     popupLayoutId,
-                                    coordination->popup_type,
+                                    coordinate->popup_type,
                                     sclres_input_mode_configure[popup_input_mode].use_virtual_window,
                                     sclres_input_mode_configure[popup_input_mode].use_dim_window,
-                                    coordination->extract_offset_x,
-                                    coordination->extract_offset_y,
+                                    coordinate->extract_offset_x,
+                                    coordinate->extract_offset_y,
                                     sclres_input_mode_configure[popup_input_mode].timeout
                                 );
+                                _play_tts_for_input_mode_name(popup_input_mode);
                             }
                         }
                     }
@@ -1715,7 +1851,7 @@ CSCLController::process_button_release_event(sclwindow window, sclint x, sclint 
             if (savedInputMode == context->get_input_mode()) {
                 CSCLWindows *windows = CSCLWindows::get_instance();
                 if (windows) {
-                    windows->update_window(window, coordination->x, coordination->y, coordination->width, coordination->height);
+                    windows->update_window(window, coordinate->x, coordinate->y, coordinate->width, coordinate->height);
                 }
             }
 
@@ -1736,7 +1872,7 @@ CSCLController::mouse_press(sclwindow window, sclint x, sclint y, scltouchdevice
 
     //utils->log("Controller::mouse_press : %d %d\n", x, y);
 
-    /* Adjust x,y coordination by touch offset */
+    /* Adjust x,y coordinate by touch offset */
     CSCLErrorAdjustment *adjustment = CSCLErrorAdjustment::get_instance();
 
     CSCLContext *context = CSCLContext::get_instance();
@@ -1783,9 +1919,9 @@ CSCLController::mouse_press(sclwindow window, sclint x, sclint y, scltouchdevice
             context->get_multi_touch_event(0, &desc);
             sclwindow pressed_window = context->get_cur_pressed_window(desc.touch_id);
             scl8 pressed_key = context->get_cur_pressed_key(desc.touch_id);
-            SclLayoutKeyCoordinate *coordination = cache->get_cur_layout_key_coordinate(pressed_window, pressed_key);
-            if (coordination) {
-                if (coordination->multitouch_type == SCL_MULTI_TOUCH_TYPE_GRAB_SUB_EVENTS) {
+            SclLayoutKeyCoordinate *coordinate = cache->get_cur_layout_key_coordinate(pressed_window, pressed_key);
+            if (coordinate) {
+                if (coordinate->multitouch_type == SCL_MULTI_TOUCH_TYPE_GRAB_SUB_EVENTS) {
                     isSubEvent = TRUE;
                     utils->play_vibration(DEFAULT_VIBRATION_STYLE, DEFAULT_VIBRATION_DURATION);
                 }
@@ -1845,12 +1981,12 @@ CSCLController::mouse_press(sclwindow window, sclint x, sclint y, scltouchdevice
             sclboolean ended = FALSE;
             for (int loop = 0;loop < MAX_KEY && !ended;loop++) {
                 SclButtonContext *btncontext = cache->get_cur_button_context(window, loop);
-                const SclLayoutKeyCoordinate *coordination = cache->get_cur_layout_key_coordinate(window, loop);
-                if (btncontext && coordination) {
+                const SclLayoutKeyCoordinate *coordinate = cache->get_cur_layout_key_coordinate(window, loop);
+                if (btncontext && coordinate) {
                     if (!(btncontext->used)) {
                         ended = TRUE;
                     } else if (btncontext->state != BUTTON_STATE_DISABLED &&
-                                coordination->button_type != BUTTON_TYPE_UIITEM) {
+                                coordinate->button_type != BUTTON_TYPE_UIITEM) {
                         if (process_button_pressed_event(window, x, y, loop, touch_id, actual_event)) {
                             if (windows->is_base_window(window)) {
                                 state->set_cur_action_state(ACTION_STATE_BASE_PRESS);
@@ -1868,12 +2004,12 @@ CSCLController::mouse_press(sclwindow window, sclint x, sclint y, scltouchdevice
             if (!ret) {
                 for (int loop = 0;loop < MAX_KEY;loop++) {
                     SclButtonContext *btncontext = cache->get_cur_button_context(window, loop);
-                    const SclLayoutKeyCoordinate* coordination = cache->get_cur_layout_key_coordinate(window, loop);
-                    if (btncontext && coordination) {
+                    const SclLayoutKeyCoordinate* coordinate = cache->get_cur_layout_key_coordinate(window, loop);
+                    if (btncontext && coordinate) {
                         if (!(btncontext->used)) {
                             break;
                         } else if (btncontext->state != BUTTON_STATE_DISABLED &&
-                                    coordination->button_type != BUTTON_TYPE_UIITEM) {
+                                    coordinate->button_type != BUTTON_TYPE_UIITEM) {
                             if (process_button_pressed_event(window, x+1, y+1, loop, touch_id, actual_event)) {
                                 if (windows->is_base_window(window)) {
                                     state->set_cur_action_state(ACTION_STATE_BASE_PRESS);
@@ -1891,14 +2027,14 @@ CSCLController::mouse_press(sclwindow window, sclint x, sclint y, scltouchdevice
 
         sclwindow skipwindow = window;
         if (ret && btnIndex != NOT_USED) {
-            const SclLayoutKeyCoordinate *coordination = cache->get_cur_layout_key_coordinate(window, btnIndex);
-            if (coordination) {
+            const SclLayoutKeyCoordinate *coordinate = cache->get_cur_layout_key_coordinate(window, btnIndex);
+            if (coordinate) {
                 sclboolean dont_close_popup = FALSE;
-                if (coordination->dont_close_popup) {
+                if (coordinate->dont_close_popup) {
                     dont_close_popup = TRUE;
                 }
                 /* If the button's popup type is drag type, the opened popup could be the one opened by this press event */
-                if (coordination->popup_type == POPUP_TYPE_BTN_PRESS_POPUP_DRAG) {
+                if (coordinate->popup_type == POPUP_TYPE_BTN_PRESS_POPUP_DRAG) {
                     /* Check the opened popup was opened by this button */
                     sclwindow popupwin = windows->get_nth_window_in_Z_order_list(SCL_WINDOW_Z_TOP);
                     SclWindowContext *popupctx = windows->get_window_context(popupwin);
@@ -1946,7 +2082,7 @@ CSCLController::mouse_release(sclwindow window, sclint x, sclint y, scltouchdevi
     //if (m_input_events_disabled) return FALSE;
 
     //utils->log("Controller::mouse_release : %d %d\n", x, y);
-    /* Adjust x,y coordination by touch offset */
+    /* Adjust x,y coordinate by touch offset */
     CSCLErrorAdjustment *adjustment = CSCLErrorAdjustment::get_instance();
 
     CSCLContext *context = CSCLContext::get_instance();
@@ -2089,12 +2225,12 @@ CSCLController::mouse_release(sclwindow window, sclint x, sclint y, scltouchdevi
 
                             for (int loop = 0;loop < MAX_KEY && !ended;loop++) {
                                 SclButtonContext *btncontext = cache->get_cur_button_context(pressed_window, loop);
-                                const SclLayoutKeyCoordinate *coordination = cache->get_cur_layout_key_coordinate(window, loop);
-                                if (btncontext && coordination) {
+                                const SclLayoutKeyCoordinate *coordinate = cache->get_cur_layout_key_coordinate(window, loop);
+                                if (btncontext && coordinate) {
                                     if (!(btncontext->used)) {
                                         ended = TRUE;
                                     } else if (btncontext->state != BUTTON_STATE_DISABLED &&
-                                                coordination->button_type != BUTTON_TYPE_UIITEM) {
+                                                coordinate->button_type != BUTTON_TYPE_UIITEM) {
                                         if (process_button_release_event(pressed_window, x, y, loop, touch_id, actual_event)) {
                                             ret = TRUE;
                                             ended = TRUE;
@@ -2110,7 +2246,7 @@ CSCLController::mouse_release(sclwindow window, sclint x, sclint y, scltouchdevi
         // }
 
         SclButtonContext *btncontext = cache->get_cur_button_context(pressed_window, pressed_key);
-        const SclLayoutKeyCoordinate *coordination = cache->get_cur_layout_key_coordinate(pressed_window, pressed_key);
+        const SclLayoutKeyCoordinate *coordinate = cache->get_cur_layout_key_coordinate(pressed_window, pressed_key);
 
         /* FIXME : The rule below would not be a general requirement. A policy is needed regarding this. */
         /* Ignore base window's release event if a popup window is opened */
@@ -2123,15 +2259,15 @@ CSCLController::mouse_release(sclwindow window, sclint x, sclint y, scltouchdevi
             if (windows->is_base_window(window)) {
                 ended = TRUE;
                 /* In case of direction button, the release event on other window should be processed */
-                if (coordination && winctx && pressedCtx) {
-                    if (coordination->button_type == BUTTON_TYPE_DIRECTION || coordination->button_type == BUTTON_TYPE_RELATIVE_DIRECTION) {
+                if (coordinate && winctx && pressedCtx) {
+                    if (coordinate->button_type == BUTTON_TYPE_DIRECTION || coordinate->button_type == BUTTON_TYPE_RELATIVE_DIRECTION) {
                         sclint relx = (winctx->geometry.x + x) - pressedCtx->geometry.x;
                         sclint rely = (winctx->geometry.y + y) - pressedCtx->geometry.y;
                         if (process_button_release_event(pressed_window, relx, rely, pressed_key, touch_id, actual_event)) {
                             btnIndex = pressed_key;
                             ret = TRUE;
-                            x = coordination->x + (coordination->width / 2);
-                            y = coordination->y + (coordination->height / 2);
+                            x = coordinate->x + (coordinate->width / 2);
+                            y = coordinate->y + (coordinate->height / 2);
                             skipwindow = pressed_window;
                         }
                     }
@@ -2143,24 +2279,24 @@ CSCLController::mouse_release(sclwindow window, sclint x, sclint y, scltouchdevi
         if (mulctx) {
             if (!(mulctx->is_sub_event)) {
                 /* First check if the event occured in pressed key's threshold area */
-                if (btncontext && coordination && !ended) {
+                if (btncontext && coordinate && !ended) {
                     if (btncontext->used && btncontext->state != BUTTON_STATE_DISABLED) {
                         if (process_button_release_event(pressed_window, x, y, pressed_key, touch_id, actual_event)) {
                             btnIndex = pressed_key;
                             ret = TRUE;
-                            x = coordination->x + (coordination->width / 2);
-                            y = coordination->y + (coordination->height / 2);
+                            x = coordinate->x + (coordinate->width / 2);
+                            y = coordinate->y + (coordinate->height / 2);
                         }
                     }
                 }
                 for (int loop = 0;loop < MAX_KEY && !ended;loop++) {
                     SclButtonContext *btncontext = cache->get_cur_button_context(window, loop);
-                    const SclLayoutKeyCoordinate *coordination = cache->get_cur_layout_key_coordinate(window, loop);
-                    if (btncontext && coordination) {
+                    const SclLayoutKeyCoordinate *coordinate = cache->get_cur_layout_key_coordinate(window, loop);
+                    if (btncontext && coordinate) {
                         if (!(btncontext->used)) {
                             ended = TRUE;
                         } else if (btncontext->state != BUTTON_STATE_DISABLED &&
-                                    coordination->button_type != BUTTON_TYPE_UIITEM) {
+                                    coordinate->button_type != BUTTON_TYPE_UIITEM) {
                             if (window != pressed_window || loop != pressed_key) {
                                 if (process_button_release_event(window, x, y, loop, touch_id, actual_event)) {
                                     btnIndex = loop;
@@ -2204,12 +2340,12 @@ CSCLController::mouse_release(sclwindow window, sclint x, sclint y, scltouchdevi
 
             for (int loop = 0;loop < MAX_KEY && !ended;loop++) {
                 SclButtonContext *btncontext = cache->get_cur_button_context(window, loop);
-                if (btncontext && coordination) {
+                if (btncontext && coordinate) {
                     if (!(btncontext->used)) {
                         ended = TRUE;
                         break;
                     } else if (btncontext->state != BUTTON_STATE_DISABLED &&
-                                coordination->button_type != BUTTON_TYPE_UIITEM) {
+                                coordinate->button_type != BUTTON_TYPE_UIITEM) {
                         if (process_button_release_event(window, x+1, y+1, loop, touch_id)) {
                             btnIndex = loop;
                             ret = TRUE;
@@ -2227,10 +2363,10 @@ CSCLController::mouse_release(sclwindow window, sclint x, sclint y, scltouchdevi
         }
 
         /* Restore previously pressed button's context and redraw it */
-        if (btncontext && coordination) {
+        if (btncontext && coordinate) {
             btncontext->state = BUTTON_STATE_NORMAL;
             /* Commented below line to postpone some of the feedback for releasing */
-            //windows->update_window(pressed_window, coordination->x, coordination->y, coordination->width, coordination->height);
+            //windows->update_window(pressed_window, coordinate->x, coordinate->y, coordinate->width, coordinate->height);
         }
 
         /* If there is postponed update of button, update it now */
@@ -2250,8 +2386,8 @@ CSCLController::mouse_release(sclwindow window, sclint x, sclint y, scltouchdevi
 
         /* Do what has to be done when mouse gets released */
         sclboolean signaled = FALSE;
-        if (coordination) {
-            switch (coordination->popup_type) {
+        if (coordinate) {
+            switch (coordinate->popup_type) {
             case POPUP_TYPE_BTN_RELEASE_POPUP:
             case POPUP_TYPE_BTN_RELEASE_POPUP_ONCE:
             case POPUP_TYPE_BTN_LONGPRESS_POPUP:
@@ -2284,9 +2420,9 @@ CSCLController::mouse_release(sclwindow window, sclint x, sclint y, scltouchdevi
         context->set_cur_pressed_window(touch_id, SCLWINDOW_INVALID);
 
         if (ret && btnIndex != NOT_USED) {
-            const SclLayoutKeyCoordinate *coordination = cache->get_cur_layout_key_coordinate(window, btnIndex);
-            if (coordination) {
-                if (coordination->dont_close_popup) {
+            const SclLayoutKeyCoordinate *coordinate = cache->get_cur_layout_key_coordinate(window, btnIndex);
+            if (coordinate) {
+                if (coordinate->dont_close_popup) {
                     skipwindow = windows->get_nth_window_in_Z_order_list(SCL_WINDOW_Z_TOP);
                 }
             }
@@ -2320,10 +2456,10 @@ CSCLController::mouse_release(sclwindow window, sclint x, sclint y, scltouchdevi
             scl8 last_key = context->get_last_pressed_key();
 
             if (last_win != SCLWINDOW_INVALID && last_key != NOT_USED) {
-                const SclLayoutKeyCoordinate* coordination = cache->get_cur_layout_key_coordinate(last_win, last_key);
-                if (coordination) {
+                const SclLayoutKeyCoordinate* coordinate = cache->get_cur_layout_key_coordinate(last_win, last_key);
+                if (coordinate) {
                     windows->update_window(last_win,
-                        coordination->x, coordination->y, coordination->width, coordination->height);
+                        coordinate->x, coordinate->y, coordinate->width, coordinate->height);
                 }
             }
 
@@ -2379,7 +2515,7 @@ CSCLController::mouse_move(sclwindow window, sclint x, sclint y, scltouchdevice 
 
     //utils->log("Controller::mouse_move : %d %d\n", x, y);
 
-    /* Adjust x,y coordination by touch offset */
+    /* Adjust x,y coordinate by touch offset */
     CSCLErrorAdjustment *adjustment = CSCLErrorAdjustment::get_instance();
 
     CSCLContext *context = CSCLContext::get_instance();
@@ -2441,11 +2577,11 @@ CSCLController::mouse_move(sclwindow window, sclint x, sclint y, scltouchdevice 
         sclwindow pressed_window = context->get_cur_pressed_window(touch_id);
         scl8 pressed_key = context->get_cur_pressed_key(touch_id);
         SclButtonContext *btncontext = cache->get_cur_button_context(pressed_window, pressed_key);
-        const SclLayoutKeyCoordinate *coordination = cache->get_cur_layout_key_coordinate(pressed_window, pressed_key);
+        const SclLayoutKeyCoordinate *coordinate = cache->get_cur_layout_key_coordinate(pressed_window, pressed_key);
 
         /* If the multitouch type is SETTLE_PREVIOUS and is not the last touch device, let's ignore move events */
-        if (coordination) {
-            if (coordination->multitouch_type == SCL_MULTI_TOUCH_TYPE_SETTLE_PREVIOUS) {
+        if (coordinate) {
+            if (coordinate->multitouch_type == SCL_MULTI_TOUCH_TYPE_SETTLE_PREVIOUS) {
                 if (context->get_last_touch_device_id() != touch_id) {
                     return FALSE;
                 }
@@ -2509,7 +2645,7 @@ CSCLController::mouse_move(sclwindow window, sclint x, sclint y, scltouchdevice 
         sclint starty = originy;
 
         /* Check if we should recognize drag curve */
-        if (coordination) {
+        if (coordinate) {
             startx = context->get_cur_pressed_point(touch_id).x;
             starty = context->get_cur_pressed_point(touch_id).y;
             sclint deltax = originx - startx;
@@ -2522,11 +2658,11 @@ CSCLController::mouse_move(sclwindow window, sclint x, sclint y, scltouchdevice 
             SCLDragState cur_drag_state = context->get_cur_drag_state(touch_id);
             SCLDragState next_drag_state = SCL_DRAG_STATE_NONE;
             sclfloat direction_recog_dist = SCL_DIRECTION_RECOG_DIST * utils->get_smallest_scale_rate();
-            if (coordination->is_side_button) {
+            if (coordinate->is_side_button) {
                 direction_recog_dist = SCL_DIRECTION_RECOG_DIST_SIDE * utils->get_smallest_scale_rate();
             };
 
-            if (coordination->button_type == BUTTON_TYPE_DIRECTION) {
+            if (coordinate->button_type == BUTTON_TYPE_DIRECTION) {
                 /* Do not check farthest move point if current drag state is SCL_DRAG_STATE_RETURN */
                 if (context->get_cur_drag_state(touch_id) != SCL_DRAG_STATE_RETURN) {
                     if (dist > context->get_farthest_move_dist(touch_id)) {
@@ -2566,9 +2702,9 @@ CSCLController::mouse_move(sclwindow window, sclint x, sclint y, scltouchdevice 
                 sclfloat dist = utils->get_distance(originx, originy,
                     context->get_cur_pressed_point(touch_id).x, context->get_cur_pressed_point(touch_id).y);
                 if (dist < direction_recog_dist && context->get_cur_drag_state(touch_id) == SCL_DRAG_STATE_RETURN) {
-                    if (coordination->extra_option == DIRECTION_EXTRA_OPTION_8_DIRECTIONS_WITH_RETURN ||
-                        coordination->extra_option == DIRECTION_EXTRA_OPTION_4_DIRECTIONS_WITH_RETURN ||
-                        coordination->extra_option == DIRECTION_EXTRA_OPTION_4_DIRECTIONS_WITH_RETURN_AND_CURVE) {
+                    if (coordinate->extra_option == DIRECTION_EXTRA_OPTION_8_DIRECTIONS_WITH_RETURN ||
+                        coordinate->extra_option == DIRECTION_EXTRA_OPTION_4_DIRECTIONS_WITH_RETURN ||
+                        coordinate->extra_option == DIRECTION_EXTRA_OPTION_4_DIRECTIONS_WITH_RETURN_AND_CURVE) {
                             deltax = context->get_farthest_move_point(touch_id).x -
                                 context->get_cur_pressed_point(touch_id).x;
                             deltay = context->get_farthest_move_point(touch_id).y -
@@ -2579,17 +2715,17 @@ CSCLController::mouse_move(sclwindow window, sclint x, sclint y, scltouchdevice 
                     }
                 }
                 SCLKeyModifier key_modifier = get_drag_key_modifier(deltax, deltay, dist,
-                    check_farthest, touch_id, coordination->extra_option);
+                    check_farthest, touch_id, coordinate->extra_option);
                 if (dist > direction_recog_dist) {
                     context->set_cur_key_modifier(touch_id, key_modifier);
                 }
                 /* If this button needs to be decorated when dragged */
-                if (coordination->modifier_decorator) {
+                if (coordinate->modifier_decorator) {
                     const SclModifierDecoration *decoration = NULL;
                     /* FIXME */
-                    /*if (scl_check_arrindex(coordination->modifier_decorator,
+                    /*if (scl_check_arrindex(coordinate->modifier_decorator,
                         sizeof(sclres_modifier_decoration) / sizeof(SclModifierDecoration ))) {*/
-                    scl8 decoration_id = sclres_manager->get_modifier_decoration_id(coordination->modifier_decorator);
+                    scl8 decoration_id = sclres_manager->get_modifier_decoration_id(coordinate->modifier_decorator);
                     if (scl_check_arrindex(decoration_id, MAX_SCL_MODIFIER_DECORATION_NUM)) {
                         if (sclres_modifier_decoration[decoration_id].valid) {
                             decoration = &(sclres_modifier_decoration[decoration_id]);
@@ -2599,16 +2735,16 @@ CSCLController::mouse_move(sclwindow window, sclint x, sclint y, scltouchdevice 
                     if (decoration) {
                         if (decoration->bg_image_path[display][key_modifier]) {
                             windows->update_window(window,
-                                coordination->x, coordination->y, coordination->width, coordination->height);
+                                coordinate->x, coordinate->y, coordinate->width, coordinate->height);
                         }
                     }
                 }
                 if (dist > direction_recog_dist) {
                     SclUIEventDesc desc = {0};
                     SCLShiftState shiftidx = context->get_shift_state();
-                    desc.key_type = coordination->key_type;
-                    desc.key_value = coordination->key_value[shiftidx][0];
-                    desc.key_event = coordination->key_event[shiftidx][0];
+                    desc.key_type = coordinate->key_type;
+                    desc.key_value = coordinate->key_value[shiftidx][0];
+                    desc.key_event = coordinate->key_event[shiftidx][0];
                     desc.event_type = EVENT_TYPE_MOVE;
                     desc.mouse_pressed_point = context->get_cur_pressed_point(touch_id);
                     desc.mouse_current_point = context->get_cur_move_point(touch_id);
@@ -2619,7 +2755,7 @@ CSCLController::mouse_move(sclwindow window, sclint x, sclint y, scltouchdevice 
                         update_magnifier = TRUE;
                     }
                 }
-            } else if (coordination->button_type == BUTTON_TYPE_RELATIVE_DIRECTION) {
+            } else if (coordinate->button_type == BUTTON_TYPE_RELATIVE_DIRECTION) {
                 if (cur_drag_state != SCL_DRAG_STATE_NONE) {
                     startx = context->get_prev_move_point(touch_id).x;
                     starty = context->get_prev_move_point(touch_id).y;
@@ -2654,15 +2790,15 @@ CSCLController::mouse_move(sclwindow window, sclint x, sclint y, scltouchdevice 
                     if (dist_farthest > diffdir_recog_dist || context->get_cur_drag_state(touch_id) == SCL_DRAG_STATE_NONE) {
                         sclshort display = context->get_display_mode();
                         SCLKeyModifier key_modifier = get_drag_key_modifier(deltax, deltay, dist_farthest,
-                            FALSE, touch_id, coordination->extra_option);
+                            FALSE, touch_id, coordinate->extra_option);
                         context->set_cur_key_modifier(touch_id, key_modifier);
                         /* If this button needs to be decorated when dragged */
-                        if (coordination->modifier_decorator) {
+                        if (coordinate->modifier_decorator) {
                             const SclModifierDecoration  *decoration = NULL;
                             /* FIXME */
-                            /*if (scl_check_arrindex(coordination->modifier_decorator,
+                            /*if (scl_check_arrindex(coordinate->modifier_decorator,
                                 sizeof(sclres_modifier_decoration) / sizeof(SclModifierDecoration ))) {*/
-                            scl8 decoration_id = sclres_manager->get_modifier_decoration_id(coordination->modifier_decorator);
+                            scl8 decoration_id = sclres_manager->get_modifier_decoration_id(coordinate->modifier_decorator);
                             if (scl_check_arrindex(decoration_id, MAX_SCL_MODIFIER_DECORATION_NUM)) {
                                 if (sclres_modifier_decoration[decoration_id].valid) {
                                     decoration = &(sclres_modifier_decoration[decoration_id]);
@@ -2672,16 +2808,16 @@ CSCLController::mouse_move(sclwindow window, sclint x, sclint y, scltouchdevice 
                             if (decoration) {
                                 if (decoration->bg_image_path[display][key_modifier]) {
                                     windows->update_window(window,
-                                        coordination->x, coordination->y, coordination->width, coordination->height);
+                                        coordinate->x, coordinate->y, coordinate->width, coordinate->height);
                                 }
                             }
                         }
 
                         SclUIEventDesc desc = {0};
                         SCLShiftState shiftidx = context->get_shift_state();
-                        desc.key_type = coordination->key_type;
-                        desc.key_value = coordination->key_value[shiftidx][0];
-                        desc.key_event = coordination->key_event[shiftidx][0];
+                        desc.key_type = coordinate->key_type;
+                        desc.key_value = coordinate->key_value[shiftidx][0];
+                        desc.key_event = coordinate->key_event[shiftidx][0];
                         desc.event_type = EVENT_TYPE_MOVE;
                         desc.mouse_pressed_point = context->get_cur_pressed_point(touch_id);
                         desc.mouse_current_point = context->get_cur_move_point(touch_id);
@@ -2721,14 +2857,14 @@ CSCLController::mouse_move(sclwindow window, sclint x, sclint y, scltouchdevice 
 
                     SclPoint zoomwinpos = {0,};
                     /* calculates x position to be set */
-                    zoomwinpos.x = (coordination->x + (coordination->width / 2)) -
+                    zoomwinpos.x = (coordinate->x + (coordinate->width / 2)) -
                         (magnifier_configure->width / 2);
 
                     /* calculates y position to be set */
                     sclint scnWidth, scnHeight;
                     utils->get_screen_resolution(&scnWidth, &scnHeight);
 
-                    zoomwinpos.y =  coordination->y - magnifier_configure->height;
+                    zoomwinpos.y =  coordinate->y - magnifier_configure->height;
                     SclWindowContext *winctx = windows->get_window_context(window);
                     if (winctx) {
                         zoomwinpos.x += winctx->geometry.x;
@@ -2742,8 +2878,8 @@ CSCLController::mouse_move(sclwindow window, sclint x, sclint y, scltouchdevice 
                     }
                     zoomwinpos.y += magnifier_configure->padding_y;
 
-                    zoomwinpos.x += coordination->magnifier_offset_x;
-                    zoomwinpos.y += coordination->magnifier_offset_y;
+                    zoomwinpos.x += coordinate->magnifier_offset_x;
+                    zoomwinpos.y += coordinate->magnifier_offset_y;
                     windows->move_window(windows->get_magnifier_window(), zoomwinpos.x, zoomwinpos.y);
                     windows->show_window(windows->get_magnifier_window(), 0);
                 }
@@ -2778,16 +2914,16 @@ CSCLController::mouse_move(sclwindow window, sclint x, sclint y, scltouchdevice 
                         int min_dist_index = NOT_USED;
                         for (int loop = 0;loop < MAX_KEY && !ended && !ret;loop++) {
                             btncontext = cache->get_cur_button_context(window, loop);
-                            const SclLayoutKeyCoordinate *coordination = cache->get_cur_layout_key_coordinate(window, loop);
-                            if (btncontext && coordination) {
+                            const SclLayoutKeyCoordinate *coordinate = cache->get_cur_layout_key_coordinate(window, loop);
+                            if (btncontext && coordinate) {
                                 if (!(btncontext->used)) {
                                     ended = TRUE;
                                 } else if (btncontext->state != BUTTON_STATE_DISABLED &&
-                                    coordination->button_type != BUTTON_TYPE_UIITEM) {
-                                        const SclLayoutKeyCoordinate *coordination = cache->get_cur_layout_key_coordinate(window, loop);
-                                        if (coordination) {
+                                    coordinate->button_type != BUTTON_TYPE_UIITEM) {
+                                        const SclLayoutKeyCoordinate *coordinate = cache->get_cur_layout_key_coordinate(window, loop);
+                                        if (coordinate) {
                                             float dist = utils->get_approximate_distance(x, y,
-                                                    coordination->x + (coordination->width / 2), coordination->y + (coordination->height / 2));
+                                                    coordinate->x + (coordinate->width / 2), coordinate->y + (coordinate->height / 2));
                                             if (dist < min_dist) {
                                                 min_dist_index = loop;
                                                 min_dist = dist;
@@ -2798,9 +2934,9 @@ CSCLController::mouse_move(sclwindow window, sclint x, sclint y, scltouchdevice 
                         }
                         /* When we found the nearest button, generate this event on the button */
                         if (min_dist_index != NOT_USED) {
-                            const SclLayoutKeyCoordinate *coordination = cache->get_cur_layout_key_coordinate(window, min_dist_index);
-                            x = coordination->x + (coordination->width / 2);
-                            y = coordination->y + (coordination->height / 2);
+                            const SclLayoutKeyCoordinate *coordinate = cache->get_cur_layout_key_coordinate(window, min_dist_index);
+                            x = coordinate->x + (coordinate->width / 2);
+                            y = coordinate->y + (coordinate->height / 2);
                             if (process_button_move_event(window, x, y, min_dist_index, touch_id, actual_event)) {
                                 ret = TRUE;
                             }
@@ -2812,25 +2948,25 @@ CSCLController::mouse_move(sclwindow window, sclint x, sclint y, scltouchdevice 
                 if (mulctx) {
                     if (!(mulctx->is_sub_event)) {
                         /* First check if the event occured in pressed key's threshold area */
-                        if (btncontext && coordination) {
+                        if (btncontext && coordinate) {
                             if (pressed_window == window) { // Check only when the window is the one initally pressed
                                 if (btncontext->used && btncontext->state != BUTTON_STATE_DISABLED) {
                                     if (process_button_move_event(pressed_window, x, y, pressed_key, touch_id, actual_event)) {
                                         ret = TRUE;
-                                        x = coordination->x + (coordination->width / 2);
-                                        y = coordination->y + (coordination->height / 2);
+                                        x = coordinate->x + (coordinate->width / 2);
+                                        y = coordinate->y + (coordinate->height / 2);
                                     }
                                 }
                             }
                         }
                         for (int loop = 0;loop < MAX_KEY && !ended && !ret;loop++) {
                             btncontext = cache->get_cur_button_context(window, loop);
-                            const SclLayoutKeyCoordinate *coordination = cache->get_cur_layout_key_coordinate(window, loop);
-                            if (btncontext && coordination) {
+                            const SclLayoutKeyCoordinate *coordinate = cache->get_cur_layout_key_coordinate(window, loop);
+                            if (btncontext && coordinate) {
                                 if (!(btncontext->used)) {
                                     ended = TRUE;
                                 } else if (btncontext->state != BUTTON_STATE_DISABLED &&
-                                            coordination->button_type != BUTTON_TYPE_UIITEM) {
+                                            coordinate->button_type != BUTTON_TYPE_UIITEM) {
                                     if (window != pressed_window || loop != pressed_key) {
                                         if (process_button_move_event(window, x, y, loop, touch_id, actual_event)) {
                                             ret = TRUE;
@@ -2847,6 +2983,64 @@ CSCLController::mouse_move(sclwindow window, sclint x, sclint y, scltouchdevice 
 
     return ret;
 }
+
+sclboolean
+CSCLController::mouse_over(sclwindow window, sclint x, sclint y)
+{
+    SCL_DEBUG();
+    sclboolean ret = FALSE;
+
+    if(m_input_events_disabled)
+        return FALSE;
+
+    /* Adjust x,y coordinate by touch offset */
+    CSCLErrorAdjustment *adjustment = CSCLErrorAdjustment::get_instance();
+    /* Iterate all the buttons and inform the event */
+
+    CSCLContext *context = CSCLContext::get_instance();
+    CSCLResourceCache *cache = CSCLResourceCache::get_instance();
+    CSCLActionState *state = CSCLActionState::get_instance();
+    CSCLWindows *windows = CSCLWindows::get_instance();
+    CSCLEvents *events = CSCLEvents::get_instance();
+    CSCLUtils *utils = CSCLUtils::get_instance();
+    SclResParserManager *sclres_manager = SclResParserManager::get_instance();
+
+    if (cache && state && windows && context && utils && adjustment && sclres_manager) {
+        const SclLayout *layout = cache->get_cur_layout(window);
+        if (layout) {
+            x += layout->mouse_manipulate_x;
+            y += layout->mouse_manipulate_y;
+        }
+
+        SCLDisplayMode cur_display_mode = context->get_display_mode();
+
+        const SclDefaultConfigure *default_configure = sclres_manager->get_default_configure();
+        if (default_configure) {
+            adjustment->apply_touch_offset(default_configure->touch_offset_level[cur_display_mode], &x, &y);
+        }
+
+        /* Iterate all the buttons and inform the event */
+        sclboolean ended = FALSE;
+
+        for (int loop = 0; loop < MAX_KEY && !ended && !ret; loop++) {
+            SclButtonContext *btncontext = cache->get_cur_button_context(window, loop);
+            const SclLayoutKeyCoordinate *coordinate = cache->get_cur_layout_key_coordinate(window, loop);
+            if (btncontext && coordinate) {
+                if (!(btncontext->used)) {
+                    ended = TRUE;
+                } else if (btncontext->state != BUTTON_STATE_DISABLED &&
+                            coordinate->button_type != BUTTON_TYPE_UIITEM) {
+                    if (process_button_over_event(window, x, y, loop)) {
+                        ret = TRUE;
+                    }
+                }
+            }
+        }
+    }
+
+    return ret;
+}
+
 
 /**
  * Processes a timer event
@@ -2898,14 +3092,14 @@ CSCLController::timer_event(const scl32 data)
         if (configure_autopopup_window(window, keyIndex, &rect)) {
             /* Let's change out pressed button's state back to normal */
             SclButtonContext *btncontext = cache->get_cur_button_context(window, keyIndex);
-            const SclLayoutKeyCoordinate *coordination = cache->get_cur_layout_key_coordinate(window, keyIndex);
+            const SclLayoutKeyCoordinate *coordinate = cache->get_cur_layout_key_coordinate(window, keyIndex);
 
             if (btncontext) {
                 if (btncontext->state == BUTTON_STATE_PRESSED) {
                     btncontext->state = BUTTON_STATE_NORMAL;
                     CSCLWindows *windows = CSCLWindows::get_instance();
-                    if (windows && coordination) {
-                        windows->update_window(window, coordination->x, coordination->y, coordination->width, coordination->height);
+                    if (windows && coordinate) {
+                        windows->update_window(window, coordinate->x, coordinate->y, coordinate->width, coordinate->height);
                     }
                 }
             }
@@ -2923,6 +3117,7 @@ CSCLController::timer_event(const scl32 data)
                 FALSE,
                 FALSE
             );
+            _play_tts_for_layout_autopopup_name();
 
             sclwindow move_window = context->get_cur_move_window(context->get_last_touch_device_id());
             SclPoint move_point = context->get_cur_move_point(context->get_last_touch_device_id());
@@ -2935,8 +3130,8 @@ CSCLController::timer_event(const scl32 data)
             printf("AUTOPOPUP : %d %d\n", move_point.x, move_point.y);
 
             CSCLWindows *windows = CSCLWindows::get_instance();
-            if (windows && coordination) {
-                windows->update_window(window, coordination->x, coordination->y, coordination->width, coordination->height);
+            if (windows && coordinate) {
+                windows->update_window(window, coordinate->x, coordinate->y, coordinate->width, coordinate->height);
             }
         }
         events->destroy_timer(id);
@@ -2975,8 +3170,8 @@ CSCLController::timer_event(const scl32 data)
                 btncontext->state = BUTTON_STATE_NORMAL;
                 CSCLWindows *windows = CSCLWindows::get_instance();
                 if (windows) {
-                    const SclLayoutKeyCoordinate *coordination = cache->get_cur_layout_key_coordinate(window, key_index);
-                    windows->update_window(window, coordination->x, coordination->y, coordination->width, coordination->height);
+                    const SclLayoutKeyCoordinate *coordinate = cache->get_cur_layout_key_coordinate(window, key_index);
+                    windows->update_window(window, coordinate->x, coordinate->y, coordinate->width, coordinate->height);
                 }
             }
             context->set_cur_pressed_window(context->get_last_touch_device_id(), SCLWINDOW_INVALID);
@@ -2984,18 +3179,18 @@ CSCLController::timer_event(const scl32 data)
 */
         } else {
             /* Start the repeat key timer for NORMAL or GRAB buttons if longkey is not supported */
-            const SclLayoutKeyCoordinate *coordination = cache->get_cur_layout_key_coordinate(window, key_index);
+            const SclLayoutKeyCoordinate *coordinate = cache->get_cur_layout_key_coordinate(window, key_index);
 
-            if (coordination) {
+            if (coordinate) {
                 /* This is for enabling backspace key in search layout*/
-                //if (coordination->use_repeat_key) {
-                if (coordination->use_repeat_key
-                        || coordination->key_event[0][0] == MVK_BackSpace) {
-                    if (coordination->button_type == BUTTON_TYPE_NORMAL ||
-                            coordination->button_type == BUTTON_TYPE_GRAB ||
-                            coordination->button_type == BUTTON_TYPE_SELFISH ||
-                            coordination->button_type == BUTTON_TYPE_DIRECTION ||
-                            coordination->button_type == BUTTON_TYPE_RELATIVE_DIRECTION) {
+                //if (coordinate->use_repeat_key) {
+                if (coordinate->use_repeat_key
+                        || coordinate->key_event[0][0] == MVK_BackSpace) {
+                    if (coordinate->button_type == BUTTON_TYPE_NORMAL ||
+                            coordinate->button_type == BUTTON_TYPE_GRAB ||
+                            coordinate->button_type == BUTTON_TYPE_SELFISH ||
+                            coordinate->button_type == BUTTON_TYPE_DIRECTION ||
+                            coordinate->button_type == BUTTON_TYPE_RELATIVE_DIRECTION) {
                         m_key_repeated_num = 0;
                         events->create_timer(SCL_TIMER_REPEATKEY, m_repeat_key_duration, value);
                         if (windows->is_base_window(window)) {
@@ -3360,10 +3555,10 @@ CSCLController::configure_autopopup_window(sclwindow window, sclbyte key_index, 
     CSCLWindows *windows = CSCLWindows::get_instance();
     CSCLResourceCache *cache = CSCLResourceCache::get_instance();
 
-    const SclLayoutKeyCoordinate *coordination = NULL;
+    const SclLayoutKeyCoordinate *coordinate = NULL;
 
     if (cache) {
-        coordination = cache->get_cur_layout_key_coordinate(window, key_index);
+        coordinate = cache->get_cur_layout_key_coordinate(window, key_index);
     }
 
     SclResParserManager *sclres_manager = SclResParserManager::get_instance();
@@ -3372,10 +3567,10 @@ CSCLController::configure_autopopup_window(sclwindow window, sclbyte key_index, 
         autopopup_configure = sclres_manager->get_autopopup_configure();
     }
 
-    if (utils && context && windows && cache && coordination && rect && autopopup_configure) {
+    if (utils && context && windows && cache && coordinate && rect && autopopup_configure) {
         SCLShiftState shiftidx = context->get_shift_state();
         if (shiftidx < 0 || shiftidx >= SCL_SHIFT_STATE_MAX) shiftidx = SCL_SHIFT_STATE_OFF;
-        if (utils->get_autopopup_window_variables(coordination->autopopup_key_labels[shiftidx],
+        if (utils->get_autopopup_window_variables(coordinate->autopopup_key_labels[shiftidx],
                 &num_keys, &num_columns, &num_rows, &rect->width, &rect->height)) {
 
             /* There is no need for an autopopup window if number of keys are equal to or less than 0 */
@@ -3389,12 +3584,12 @@ CSCLController::configure_autopopup_window(sclwindow window, sclbyte key_index, 
 
             windows->get_window_rect(windows->get_base_window(), &baseWndRect);
             /* Let the autopopup have its position right above the pressed button, with center alignment) */
-            rect->x = baseWndRect.x + coordination->x + (coordination->width / 2) - (rect->width / 2);
-            rect->y = baseWndRect.y + coordination->y - rect->height + autopopup_configure->decoration_size;
+            rect->x = baseWndRect.x + coordinate->x + (coordinate->width / 2) - (rect->width / 2);
+            rect->y = baseWndRect.y + coordinate->y - rect->height + autopopup_configure->decoration_size;
             /* First check the growing direction of this autopopup window */
-            if (coordination->x < baseWndRect.width / 2) {
+            if (coordinate->x < baseWndRect.width / 2) {
                 /* We're growing left to right, caculate the left start point */
-                rect->x = baseWndRect.x + coordination->x + (coordination->width / 2) -
+                rect->x = baseWndRect.x + coordinate->x + (coordinate->width / 2) -
                     (autopopup_configure->button_width / 2) - autopopup_configure->bg_padding;
                 if (rect->x + rect->width > baseWndRect.x + baseWndRect.width) {
                     sclint relocate_unit = autopopup_configure->button_width +
@@ -3404,7 +3599,7 @@ CSCLController::configure_autopopup_window(sclwindow window, sclbyte key_index, 
                 }
             } else {
                 /* We're growing right to left, caculate the right end point */
-                rect->x = baseWndRect.x + coordination->x + (coordination->width / 2) +
+                rect->x = baseWndRect.x + coordinate->x + (coordinate->width / 2) +
                     (autopopup_configure->button_width / 2) + autopopup_configure->bg_padding;
                 rect->x -= rect->width;
                 if (rect->x < baseWndRect.x) {
@@ -3414,7 +3609,7 @@ CSCLController::configure_autopopup_window(sclwindow window, sclbyte key_index, 
                             relocate_unit) + 1) * relocate_unit;
                 }
             }
-            //rect->y = (scrheight - layout->height) + coordination->y - rect->height + autopopup_configure->decoration_size;
+            //rect->y = (scrheight - layout->height) + coordinate->y - rect->height + autopopup_configure->decoration_size;
             /* Check if the window goes out of screen boundary */
             //if (rect->x + rect->width > scrwidth + utils->get_scale_x(scl_autopopup_configure.decoration_size)) rect->x = (scrwidth + utils->get_scale_x(scl_autopopup_configure.decoration_size)) - rect->width;
             if (rect->x + rect->width > scrwidth) rect->x = (scrwidth) - rect->width;

@@ -359,6 +359,7 @@ CSCLResourceCache::copy_from_privatekeyproperties(const SclPrivateKeyProperties*
                 }
             }
         }
+        memcpy(coordination->hint_string, privProperties->hint_string, sizeof(coordination->hint_string));
     }
 
     return TRUE;
@@ -485,6 +486,7 @@ CSCLResourceCache::copy_to_privatekeyproperties(const SclLayoutKeyCoordinate *co
                 }
             }
         }
+        memcpy(privProperties->hint_string, coordination->hint_string, sizeof(privProperties->hint_string));
     }
 
     return TRUE;

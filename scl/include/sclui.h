@@ -307,6 +307,12 @@ public:
     void enable_vibration(sclboolean enabled);
 
     /**
+     * @brief This API requests SCL library to enable/disable tts feedback
+     * @param[in] enabled indicates whether tts feedback should be played or not, when a key is pressed
+     */
+    void enable_tts(sclboolean enabled);
+
+    /**
      * @brief This API requests SCL library to enable/disable shift multi touch action
      * @param[in] enabled indicates whether shift button should provide multi touch action
      */

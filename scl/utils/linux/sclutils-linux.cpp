@@ -25,6 +25,8 @@
 #include <Ecore_X.h>
 #include <Ecore_Evas.h>
 #include <feedback.h>
+#include <Elementary.h>
+#include <tts.h>
 
 #include <dlog.h>
 #ifndef LOG_TAG
@@ -33,6 +35,7 @@
 
 using namespace scl;
 
+static tts_h tts = NULL;
 static Eina_Bool _get_default_zone_geometry_info (Ecore_X_Window root, scluint *x, scluint *y, scluint *w, scluint *h)
 {
     Ecore_X_Atom zone_geometry_atom;
@@ -99,6 +102,29 @@ CSCLUtilsImplLinux::get_screen_resolution(sclint *x, sclint *y) {
         } else {
             *x = scr_w;
             *y = scr_h;
+        }
+    }
+    return TRUE;
+}
+
+sclboolean
+CSCLUtilsImplLinux::play_tts(const sclchar* str) {
+    SCL_DEBUG();
+
+    if (str) {
+        int utt_id = 0;
+        tts_state_e current_state;
+        tts_get_state(tts, &current_state);
+
+        if (TTS_STATE_PLAYING == current_state)  {
+            tts_stop(tts);
+        }
+        int r = tts_add_text(tts, str, "en_US", TTS_VOICE_TYPE_FEMALE, TTS_SPEED_NORMAL, &utt_id);
+        if (TTS_ERROR_NONE == r) {
+            r = tts_play(tts);
+            if (TTS_ERROR_NONE != r) {
+                printf("Fail to play TTS : ret(%d)\n", r);
+            }
         }
     }
     return TRUE;
@@ -192,6 +218,26 @@ CSCLUtilsImplLinux::open_devices() {
         LOGD("FEEDBACK INITIALIZATION SUCCESSFUL : %d\n", r);
     }
 
+    r = tts_create(&tts);
+    if (TTS_ERROR_NONE != r) {
+        printf("tts_create FAILED : result(%d)", r);
+    } else {
+        tts_set_mode (tts, TTS_MODE_SCREEN_READER);
+    }
+    if (TTS_ERROR_NONE != r) {
+        printf("tts_set_mode FAILED : result(%d)", r);
+    }
+
+    tts_state_e current_state;
+    tts_get_state(tts, &current_state);
+
+    if (TTS_STATE_CREATED == current_state)  {
+        r = tts_prepare(tts);
+    }
+    if (TTS_ERROR_NONE != r) {
+        LOGD("tts_prepare FAILED : ret(%d)\n", r);
+    }
+
     return TRUE;
 }
 
@@ -206,7 +252,15 @@ CSCLUtilsImplLinux::close_devices() {
     } else {
         LOGD("FEEDBACK DEINITIALIZATION SUCCESSFUL : %d\n", r);
     }
+    r = tts_unprepare(tts);
+    if (TTS_ERROR_NONE != r) {
+        printf("tts_unprepare FAILED : result(%d)", r);
+    }
 
+    r = tts_destroy(tts);
+    if (TTS_ERROR_NONE != r) {
+        printf("tts_destroy FAILED : result(%d)", r);
+    }
     return TRUE;
 }
 

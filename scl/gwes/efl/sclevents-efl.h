@@ -46,6 +46,7 @@ private:
     Ecore_Event_Handler *m_mouse_down_handler;
     Ecore_Event_Handler *m_mouse_move_handler;
     Ecore_Event_Handler *m_mouse_up_handler;
+    Ecore_Event_Handler *m_xclient_msg_handler;
 };
 } /* End of scl namespace */
 #endif

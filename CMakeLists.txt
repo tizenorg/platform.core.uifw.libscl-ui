@@ -93,6 +93,7 @@ pkg_check_modules(pkgs REQUIRED
         ecore-imf
         libxml-2.0
         utilX
+        tts
         )
 
 FOREACH(flag ${pkgs_CFLAGS})

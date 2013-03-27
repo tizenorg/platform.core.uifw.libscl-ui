@@ -465,6 +465,14 @@ CSCLUI::enable_vibration(sclboolean enabled)
 }
 
 void
+CSCLUI::enable_tts(sclboolean enabled)
+{
+    if (m_impl) {
+        m_impl->enable_tts(enabled);
+    }
+}
+
+void
 CSCLUI::enable_shift_multi_touch(sclboolean enabled)
 {
     if (m_impl) {

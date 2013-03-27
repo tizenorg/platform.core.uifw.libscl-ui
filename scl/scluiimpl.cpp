@@ -395,16 +395,24 @@ CSCLUIImpl::get_shift_state()
 void
 CSCLUIImpl::set_shift_state(SCLShiftState state)
 {
-    sclboolean ret = FALSE;
-
     if (m_initialized) {
+        CSCLUtils *utils = CSCLUtils::get_instance();
         CSCLContext *context = CSCLContext::get_instance();
         CSCLWindows *windows = CSCLWindows::get_instance();
-        if (context && windows) {
+        if (context && windows && utils) {
             SCLShiftState current_state = context->get_shift_state();
             context->set_shift_state(state);
             if (state != current_state) {
                 windows->update_window(windows->get_base_window());
+            }
+            if (context->get_tts_enabled()) {
+                if (state == SCL_SHIFT_STATE_ON) {
+                    utils->play_tts(SCL_SHIFT_STATE_ON_HINT_STRING);
+                } else if (state == SCL_SHIFT_STATE_LOCK) {
+                    utils->play_tts(SCL_SHIFT_STATE_LOCK_HINT_STRING);
+                } else {
+                    utils->play_tts(SCL_SHIFT_STATE_OFF_HINT_STRING);
+                }
             }
         }
     }
@@ -780,6 +788,19 @@ CSCLUIImpl::enable_vibration(sclboolean enabled)
         CSCLContext *context = CSCLContext::get_instance();
         if (context) {
             context->set_vibration_enabled(enabled);
+        }
+    }
+}
+
+void
+CSCLUIImpl::enable_tts(sclboolean enabled)
+{
+    sclboolean ret = FALSE;
+
+    if (m_initialized) {
+        CSCLContext *context = CSCLContext::get_instance();
+        if (context) {
+            context->set_tts_enabled(enabled);
         }
     }
 }

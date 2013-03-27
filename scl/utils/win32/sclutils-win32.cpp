@@ -29,6 +29,12 @@ CSCLUtilsImplWin32::get_screen_resolution(sclint *x, sclint *y) {
 }
 
 sclboolean
+CSCLUtilsImplWin32::play_tts(const sclchar* str) {
+    SCL_DEBUG();
+    return TRUE;
+}
+
+sclboolean
 CSCLUtilsImplWin32::play_sound(const sclchar* sndStyle) {
     SCL_DEBUG();
     return TRUE;

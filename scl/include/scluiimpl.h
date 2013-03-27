@@ -99,6 +99,7 @@ public:
     void enable_magnifier(sclboolean enabled);
     void enable_sound(sclboolean enabled);
     void enable_vibration(sclboolean enabled);
+    void enable_tts(sclboolean enabled);
     void enable_shift_multi_touch(sclboolean enabled);
 
     void enable_touch_offset(sclboolean enabled);

@@ -190,6 +190,30 @@ public:
         m_last_touch_device_id = touch_id;
     }
 
+    void set_tts_enabled(sclboolean enabled) {
+        m_tts_enabled = enabled;
+    }
+
+    sclboolean get_tts_enabled() {
+        return m_tts_enabled;
+    }
+
+    void set_cur_highlighted_key(scl8 val) {
+        m_cur_highlighted_key = val;
+    }
+
+    scl8 get_cur_highlighted_key() {
+        return m_cur_highlighted_key;
+    }
+
+    void set_cur_highlighted_window(sclwindow window) {
+        m_cur_highlighted_window = window;
+    }
+
+    sclwindow get_cur_highlighted_window() {
+        return m_cur_highlighted_window;
+    }
+
     void create_multi_touch_context(scltouchdevice touch_id, sclboolean isSubEvent = FALSE);
     void destroy_multi_touch_context(scltouchdevice touch_id);
     MultiTouchContext* find_multi_touch_context(scltouchdevice touch_id);
@@ -262,6 +286,10 @@ protected:
 
     sclwindow m_last_pressed_window;
     scl8 m_last_pressed_key;
+
+    sclboolean m_tts_enabled;
+    scl8 m_cur_highlighted_key;
+    sclwindow m_cur_highlighted_window;
 
     scltouchdevice m_last_touch_device_id;
     std::map<scltouchdevice, MultiTouchContext> m_multi_touch_context;

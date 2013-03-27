@@ -167,6 +167,8 @@ typedef struct _SclLayoutKeyCoordinate {
     sclchar* modifier_decorator;
     /* For the case if this button needs to display multiple labels or different string from the label string */
     sclchar* magnifier_label[SCL_SHIFT_STATE_MAX][MAX_SIZE_OF_LABEL_FOR_ONE];
+
+    sclchar* hint_string[SCL_SHIFT_STATE_MAX][MAX_SIZE_OF_MULTITAP_CHAR];
 }SclLayoutKeyCoordinate;
 
 ///**
@@ -310,6 +312,8 @@ typedef struct _SclPrivateKeyProperties {
     sclbyte extra_option;
     sclbyte multitouch_type;
     sclbyte modifier_decorator;
+
+    sclchar *hint_string[SCL_SHIFT_STATE_MAX][MAX_SIZE_OF_MULTITAP_CHAR];
 }SclPrivateKeyProperties;
 
 /**

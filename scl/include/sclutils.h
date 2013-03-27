@@ -49,6 +49,7 @@ class CSCLUtilsImpl
 {
 public :
     virtual sclboolean get_screen_resolution(sclint *x, sclint *y) = 0;
+    virtual sclboolean play_tts(const sclchar *str) = 0;
     virtual sclboolean play_sound(const sclchar* snd_style) = 0;
     virtual sclboolean play_vibration(const sclchar* vibe_style, const scllong duration) = 0;
 
@@ -62,6 +63,7 @@ class CSCLUtilsImplLinux : public CSCLUtilsImpl
 {
 public :
     sclboolean get_screen_resolution(sclint *x, sclint *y);
+    sclboolean play_tts(const sclchar *str);
     sclboolean play_sound(const sclchar* snd_style);
     sclboolean play_vibration(const sclchar* vibe_style, const scllong duration);
 
@@ -75,6 +77,7 @@ class CSCLUtilsImplWin32 : public CSCLUtilsImpl
 {
 public :
     sclboolean get_screen_resolution(sclint *x, sclint *y);
+    sclboolean play_tts(const sclchar *str);
     sclboolean play_sound(const sclchar* snd_style);
     sclboolean play_vibration(const sclchar* vibe_style, const scllong duration);
 
@@ -91,6 +94,7 @@ public :
         m_impl = 0;
     }
     virtual sclboolean get_screen_resolution(sclint *x, sclint *y) = 0;
+    virtual sclboolean play_tts(const sclchar *str) = 0;
     virtual sclboolean play_sound(const sclchar* snd_style) = 0;
     virtual sclboolean play_vibration(const sclchar* vibe_style, const scllong duration) = 0;
 
@@ -137,6 +141,10 @@ public :
 
     sclboolean get_screen_resolution(sclint *x, sclint *y) {
         return GetCSCLUtilsImpl()->get_screen_resolution(x, y);
+    }
+
+    sclboolean play_tts(const sclchar* str) {
+        return GetCSCLUtilsImpl()->play_tts(str);
     }
 
     sclboolean play_sound(const sclchar* snd_style) {

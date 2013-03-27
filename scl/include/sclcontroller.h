@@ -69,6 +69,7 @@ private:
         scltouchdevice touch_id, sclboolean actual_event = TRUE);
     sclboolean process_button_move_event(sclwindow window, sclint x, sclint y, sclbyte key_index,
         scltouchdevice touch_id, sclboolean actual_event = TRUE);
+    sclboolean process_button_over_event(sclwindow window, sclint x, sclint y, sclbyte keyindex);
     sclboolean process_button_release_event(sclwindow window, sclint x, sclint y, sclbyte key_index,
         scltouchdevice touch_id, sclboolean actual_event = TRUE);
 
@@ -77,7 +78,7 @@ private:
     sclboolean check_event_transition_enabled(const SclLayoutKeyCoordinate *btnFrom, const SclLayoutKeyCoordinate *btnTo);
     sclboolean check_magnifier_available(sclwindow window, sclbyte key_index, scltouchdevice touch_id);
 
-    SCLKeyModifier get_drag_key_modifier(sclint deltax, sclint deltay, sclfloat dist, 
+    SCLKeyModifier get_drag_key_modifier(sclint deltax, sclint deltay, sclfloat dist,
         sclboolean check_farthest,scltouchdevice touch_id, sclbyte extra_option);
 
 public:
@@ -88,6 +89,7 @@ public:
     sclboolean mouse_press(sclwindow window, sclint x, sclint y, scltouchdevice touch_id = 0, sclboolean actual_event = TRUE);
     sclboolean mouse_release(sclwindow window, sclint x, sclint y, scltouchdevice touch_id = 0, sclboolean actual_event = TRUE);
     sclboolean mouse_move(sclwindow window, sclint x, sclint y, scltouchdevice touch_id = 0, sclboolean actual_event = TRUE);
+    sclboolean mouse_over(sclwindow window, sclint x, sclint y);
     sclboolean timer_event(const scl32 id);
 
     sclboolean set_longkey_duration(scllong msc);
