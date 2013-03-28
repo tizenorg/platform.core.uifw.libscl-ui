@@ -206,6 +206,9 @@ void Default_Configure_Parser::parsing_default_configure() {
         else if (0 == xmlStrcmp(cur_node->name, (const xmlChar *)"use_lazy_loading")) {
             m_default_configure.use_lazy_loading = get_content_bool(cur_node);
         }
+        else if (0 == xmlStrcmp(cur_node->name, (const xmlChar *)"auto_detect_landscape")) {
+            m_default_configure.auto_detect_landscape = get_content_bool(cur_node);
+        }
         cur_node = cur_node->next;
     }
     //print_default_configure_table();
