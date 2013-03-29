@@ -579,6 +579,10 @@ CSCLGraphicsImplEfl::draw_text(sclwindow window, const scldrawctx draw_ctx, cons
 
                 if (text_object) {
                     if (inner_width > 0 || inner_height > 0) {
+                        SclPoint bottom_right;
+                        bottom_right.x = pos_x + width;
+                        bottom_right.y = pos_y + height;
+
                         /* The inner width and height value should be bigger than 0 */
                         if (inner_width <= 0) inner_width = width;
                         if (inner_height <= 0) inner_height = height;
@@ -610,8 +614,19 @@ CSCLGraphicsImplEfl::draw_text(sclwindow window, const scldrawctx draw_ctx, cons
                         } else {
                             pos_y += padding_y;
                         }
-                        width = inner_width;
-                        height = inner_height;
+
+                        /* Make sure the inner bounding box does not exceed the original bounding box */
+                        if (pos_x + inner_width > bottom_right.x) {
+                            width = bottom_right.x - pos_x;
+                        } else {
+                            width = inner_width;
+                        }
+                        if (pos_y + inner_height > bottom_right.y) {
+                            height = bottom_right.y - pos_y;
+                        } else {
+                            height = inner_height;
+                        }
+
                         align = LABEL_ALIGN_CENTER_MIDDLE;
                         padding_x = 0;
                         padding_y = 0;
