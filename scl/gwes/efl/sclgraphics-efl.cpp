@@ -655,6 +655,10 @@ CSCLGraphicsImplEfl::draw_text(sclwindow window, const scldrawctx draw_ctx, cons
                         static float _SPACE_RATE = 0.1;
                         calwidth  *= 1 + _SPACE_RATE;
                     }
+                    if (calheight > 0) {
+                        static float _SPACE_RATE = 0.1;
+                        calheight  *= 1 + _SPACE_RATE;
+                    }
 
                     /* FIXME : The following 2 lines are workaround for problem that EFL does not return correct font size */
                     sclint hardcoded_width = find_hardcoded_width(str, font_info.font_size);
