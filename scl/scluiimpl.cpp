@@ -905,3 +905,16 @@ CSCLUIImpl::unset_string_substitution(const sclchar *original)
         }
     }
 }
+
+void
+CSCLUIImpl::set_caps_mode(sclint mode) {
+    m_caps_mode = mode;
+    if (get_shift_state() != SCL_SHIFT_STATE_LOCK) {
+        set_shift_state(mode ? SCL_SHIFT_STATE_ON : SCL_SHIFT_STATE_OFF);
+    }
+}
+
+sclint
+CSCLUIImpl::get_caps_mode() {
+    return m_caps_mode;
+}

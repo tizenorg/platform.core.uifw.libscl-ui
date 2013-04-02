@@ -100,6 +100,9 @@ static void handle_shift_state_on_button_click_event(SclUIEventDesc ui_event_des
             if (ui_event_desc.key_type == KEY_TYPE_MODECHANGE) {
                 turn_shift_off = FALSE;
             }
+            if (uiimpl->get_caps_mode()) {
+                turn_shift_off = FALSE;
+            }
         }
         /* If we are in ON_PRESSED or ON_KEY_ENTERED mode of shift multi touch state, do not turn it off now */
         if (context->get_shift_multi_touch_enabled() && turn_shift_off) {
@@ -115,14 +118,7 @@ static void handle_shift_state_on_button_click_event(SclUIEventDesc ui_event_des
         }
         if (turn_shift_off) {
             if (uiimpl->get_shift_state() == SCL_SHIFT_STATE_ON) {
-                /* If the ISE doesn't care about changing the shift state to off */
-                CSCLEventHandler *handler = CSCLEventHandler::get_instance();
-                if (handler) {
-                    if (SCL_EVENT_PASS_ON ==
-                        handler->on_event_notification(SCL_UINOTITYPE_SHIFT_STATE_CHANGE, SCL_SHIFT_STATE_OFF)) {
-                            uiimpl->set_shift_state(SCL_SHIFT_STATE_OFF);
-                    }
-                }
+                uiimpl->set_shift_state(SCL_SHIFT_STATE_OFF);
             }
         }
     }
@@ -204,10 +200,7 @@ CSCLEventHandler::on_event_drag_state_changed(SclUIEventDesc ui_event_desc)
                     if (context) {
                         if (ui_event_desc.key_event == MVK_Shift_L) {
                             if (context->get_shift_multi_touch_state() == SCL_SHIFT_MULTITOUCH_OFF) {
-                                if (SCL_EVENT_PASS_ON ==
-                                    on_event_notification(SCL_UINOTITYPE_SHIFT_STATE_CHANGE, SCL_SHIFT_STATE_ON)) {
-                                        uiimpl->set_shift_state(SCL_SHIFT_STATE_ON);
-                                }
+                                uiimpl->set_shift_state(SCL_SHIFT_STATE_ON);
                                 context->set_shift_multi_touch_state(SCL_SHIFT_MULTITOUCH_ON_PRESSED);
                             }
                         }

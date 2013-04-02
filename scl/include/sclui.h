@@ -351,6 +351,8 @@ public:
      */
     void unset_string_substitution(const sclchar *original);
 
+    sclint get_caps_mode();
+    void set_caps_mode(sclint);
 private:
     CSCLUIImpl *m_impl;
 };
