@@ -89,38 +89,34 @@ static void handle_shift_button_click_event(SclUIEventDesc ui_event_desc)
 static void handle_shift_state_on_button_click_event(SclUIEventDesc ui_event_desc)
 {
     CSCLUIImpl *uiimpl = CSCLUIImpl::get_instance();
+    if (uiimpl->get_caps_mode()) {
+        return;
+    }
+
     CSCLContext *context = CSCLContext::get_instance();
 
-    if (uiimpl && context) {
-        sclboolean turn_shift_off = TRUE;
-        if (uiimpl->get_caps_mode()) {
-            turn_shift_off = FALSE;
-        } else {
-            if (ui_event_desc.key_type == KEY_TYPE_CONTROL) {
-                if (ui_event_desc.key_event == MVK_Shift_L || ui_event_desc.key_event == MVK_Caps_Lock) {
-                    turn_shift_off = FALSE;
-                }
-                if (ui_event_desc.key_type == KEY_TYPE_MODECHANGE) {
-                    turn_shift_off = FALSE;
-                }
+    sclboolean turn_shift_off = TRUE;
+    if (ui_event_desc.key_event == MVK_Shift_L || ui_event_desc.key_event == MVK_Caps_Lock) {
+        turn_shift_off = FALSE;
+    }
+    if (ui_event_desc.key_type == KEY_TYPE_MODECHANGE) {
+        turn_shift_off = FALSE;
+    }
+    /* If we are in ON_PRESSED or ON_KEY_ENTERED mode of shift multi touch state, do not turn it off now */
+    if (context->get_shift_multi_touch_enabled() && turn_shift_off) {
+        CSCLContext *context = CSCLContext::get_instance();
+        if (context) {
+            if (context->get_shift_multi_touch_state() == SCL_SHIFT_MULTITOUCH_ON_PRESSED) {
+                context->set_shift_multi_touch_state(SCL_SHIFT_MULTITOUCH_ON_KEY_ENTERED);
+                turn_shift_off = FALSE;
+            } else if (context->get_shift_multi_touch_state() == SCL_SHIFT_MULTITOUCH_ON_KEY_ENTERED) {
+                turn_shift_off = FALSE;
             }
         }
-        /* If we are in ON_PRESSED or ON_KEY_ENTERED mode of shift multi touch state, do not turn it off now */
-        if (context->get_shift_multi_touch_enabled() && turn_shift_off) {
-            CSCLContext *context = CSCLContext::get_instance();
-            if (context) {
-                if (context->get_shift_multi_touch_state() == SCL_SHIFT_MULTITOUCH_ON_PRESSED) {
-                    context->set_shift_multi_touch_state(SCL_SHIFT_MULTITOUCH_ON_KEY_ENTERED);
-                    turn_shift_off = FALSE;
-                } else if (context->get_shift_multi_touch_state() == SCL_SHIFT_MULTITOUCH_ON_KEY_ENTERED) {
-                    turn_shift_off = FALSE;
-                }
-            }
-        }
-        if (turn_shift_off) {
-            if (uiimpl->get_shift_state() == SCL_SHIFT_STATE_ON) {
-                uiimpl->set_shift_state(SCL_SHIFT_STATE_OFF);
-            }
+    }
+    if (turn_shift_off) {
+        if (uiimpl->get_shift_state() == SCL_SHIFT_STATE_ON) {
+            uiimpl->set_shift_state(SCL_SHIFT_STATE_OFF);
         }
     }
 }
