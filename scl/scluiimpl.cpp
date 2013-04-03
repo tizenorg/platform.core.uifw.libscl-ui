@@ -399,6 +399,16 @@ CSCLUIImpl::set_shift_state(SCLShiftState state)
         CSCLUtils *utils = CSCLUtils::get_instance();
         CSCLContext *context = CSCLContext::get_instance();
         CSCLWindows *windows = CSCLWindows::get_instance();
+
+        /*inform the client that the shift state changed */
+        CSCLEventHandler *handler = CSCLEventHandler::get_instance();
+        if (handler) {
+            SCLEventReturnType ret = handler->on_event_notification(SCL_UINOTITYPE_SHIFT_STATE_CHANGE, state);
+            if (ret == SCL_EVENT_DONE) {
+                return;
+            }
+        }
+
         if (context && windows && utils) {
             SCLShiftState current_state = context->get_shift_state();
             context->set_shift_state(state);

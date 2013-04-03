@@ -93,15 +93,16 @@ static void handle_shift_state_on_button_click_event(SclUIEventDesc ui_event_des
 
     if (uiimpl && context) {
         sclboolean turn_shift_off = TRUE;
-        if (ui_event_desc.key_type == KEY_TYPE_CONTROL) {
-            if (ui_event_desc.key_event == MVK_Shift_L || ui_event_desc.key_event == MVK_Caps_Lock) {
-                turn_shift_off = FALSE;
-            }
-            if (ui_event_desc.key_type == KEY_TYPE_MODECHANGE) {
-                turn_shift_off = FALSE;
-            }
-            if (uiimpl->get_caps_mode()) {
-                turn_shift_off = FALSE;
+        if (uiimpl->get_caps_mode()) {
+            turn_shift_off = FALSE;
+        } else {
+            if (ui_event_desc.key_type == KEY_TYPE_CONTROL) {
+                if (ui_event_desc.key_event == MVK_Shift_L || ui_event_desc.key_event == MVK_Caps_Lock) {
+                    turn_shift_off = FALSE;
+                }
+                if (ui_event_desc.key_type == KEY_TYPE_MODECHANGE) {
+                    turn_shift_off = FALSE;
+                }
             }
         }
         /* If we are in ON_PRESSED or ON_KEY_ENTERED mode of shift multi touch state, do not turn it off now */

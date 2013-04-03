@@ -218,7 +218,7 @@ CSCLUtilsImplLinux::open_devices() {
         LOGD("FEEDBACK INITIALIZATION SUCCESSFUL : %d\n", r);
     }
 
-    r = tts_create(&tts);
+    /*r = tts_create(&tts);
     if (TTS_ERROR_NONE != r) {
         printf("tts_create FAILED : result(%d)", r);
     } else {
@@ -236,7 +236,7 @@ CSCLUtilsImplLinux::open_devices() {
     }
     if (TTS_ERROR_NONE != r) {
         LOGD("tts_prepare FAILED : ret(%d)\n", r);
-    }
+    }*/
 
     return TRUE;
 }
@@ -252,6 +252,7 @@ CSCLUtilsImplLinux::close_devices() {
     } else {
         LOGD("FEEDBACK DEINITIALIZATION SUCCESSFUL : %d\n", r);
     }
+    /*
     r = tts_unprepare(tts);
     if (TTS_ERROR_NONE != r) {
         printf("tts_unprepare FAILED : result(%d)", r);
@@ -260,7 +261,7 @@ CSCLUtilsImplLinux::close_devices() {
     r = tts_destroy(tts);
     if (TTS_ERROR_NONE != r) {
         printf("tts_destroy FAILED : result(%d)", r);
-    }
+    }*/
     return TRUE;
 }
 
