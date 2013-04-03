@@ -73,6 +73,8 @@ CSCLContext::reset()
     m_vibration_enabled = TRUE;
     m_shift_multi_touch_enabled = TRUE;
 
+    m_tts_enabled = FALSE;
+
     m_multi_touch_context.clear();
     m_last_touch_device_id = SCLTOUCHDEVICE_INVALID;
 
