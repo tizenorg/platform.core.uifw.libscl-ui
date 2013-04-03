@@ -775,12 +775,20 @@ CSCLResourceCache::remove_private_key(sclint id)
     PSclLayoutKeyCoordinatePointerTable sclres_layout_key_coordinate_pointer_frame =
         sclres_manager->get_key_coordinate_pointer_frame();
 
+    if (sclres_layout_key_coordinate_pointer_frame == NULL) {
+        return FALSE;
+    }
     if (scl_check_arrindex(layout, MAX_SCL_LAYOUT)) {
         for (sclint loop = 0;loop < MAX_KEY; loop++) {
             if ((!(mPrivateKeyProperties[id].custom_id.empty())) && mCurBaseLayoutKeyCoordination[loop].custom_id) {
                 if (mPrivateKeyProperties[id].custom_id.compare(mCurBaseLayoutKeyCoordination[loop].custom_id) == 0) {
-                    memcpy((SclLayoutKeyCoordinatePointer)(&mCurBaseLayoutKeyCoordination) + loop,
-                        sclres_layout_key_coordinate_pointer_frame[layout][loop], sizeof(SclLayoutKeyCoordinate));
+                    SclLayoutKeyCoordinatePointer p = sclres_layout_key_coordinate_pointer_frame[layout][loop];
+                    if (p == NULL) {
+                        continue;
+                    }
+                    SclLayoutKeyCoordinatePointer the_key = mCurBaseLayoutKeyCoordination + loop;
+                    assert(the_key != NULL);
+                    memcpy(the_key, p, sizeof(SclLayoutKeyCoordinate));
 
                 }
             }
@@ -830,7 +838,6 @@ CSCLResourceCache::recompute_layout(sclwindow window)
         sclres_manager->get_key_coordinate_pointer_frame();
     const PSclModifierDecoration sclres_modifier_decoration = sclres_manager->get_modifier_decoration_table();
     const PSclLabelPropertiesTable sclres_label_properties = sclres_manager->get_label_properties_frame();
-    const PSclDefaultConfigure default_configure = sclres_manager->get_default_configure();
     assert(sclres_input_mode_configure != NULL);
     assert(sclres_layout != NULL);
     assert(sclres_layout_key_coordinate_pointer_frame != NULL);

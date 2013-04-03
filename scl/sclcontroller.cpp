@@ -3001,7 +3001,6 @@ CSCLController::mouse_over(sclwindow window, sclint x, sclint y)
     CSCLResourceCache *cache = CSCLResourceCache::get_instance();
     CSCLActionState *state = CSCLActionState::get_instance();
     CSCLWindows *windows = CSCLWindows::get_instance();
-    CSCLEvents *events = CSCLEvents::get_instance();
     CSCLUtils *utils = CSCLUtils::get_instance();
     SclResParserManager *sclres_manager = SclResParserManager::get_instance();
 

@@ -584,11 +584,13 @@ CSCLUIImpl::get_input_mode_size(const sclchar *input_mode, SCLDisplayMode displa
             const PSclInputModeConfigure sclres_input_mode_configure = sclres_manager->get_input_mode_configure_table();
             const PSclLayout sclres_layout = sclres_manager->get_layout_table();
             sclint inputmode = sclres_manager->get_inputmode_id(input_mode);
-            sclint layout = sclres_manager->get_layout_id(
-                sclres_input_mode_configure[inputmode].layouts[display_mode]);
+            if (sclres_input_mode_configure && sclres_layout) {
+                sclint layout = sclres_manager->get_layout_id(
+                        sclres_input_mode_configure[inputmode].layouts[display_mode]);
 
-            ret.width = sclres_layout[layout].width;
-            ret.height = sclres_layout[layout].height;
+                ret.width = sclres_layout[layout].width;
+                ret.height = sclres_layout[layout].height;
+            }
         }
     }
 
