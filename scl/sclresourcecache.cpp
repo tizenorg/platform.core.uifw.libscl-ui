@@ -1440,28 +1440,10 @@ CSCLResourceCache::set_private_key(SclPrivateKeyProperties* properties, sclboole
     if (cache && context && properties) {
         privateId = cache->add_private_key(properties, &isNeedUpdate);
         if (fRedraw && isNeedUpdate && !fPendingUpdate && privateId != NOT_USED) {
-            CSCLUIBuilder *builder = CSCLUIBuilder::get_instance();
             CSCLWindows *windows = CSCLWindows::get_instance();
-            if (builder && windows) {
+            if (windows) {
                 /* Fix me (we should consider popupwindow later)*/
-                sclwindow window = windows->get_base_window();
-                /* Let's draw this private key only if the key's sublayout ID is active */
-                SclLayoutKeyCoordinate *coordination = get_cur_layout_key_coordinate(window, properties->key_index);
-                if (coordination) {
-                    sclboolean redraw = TRUE;
-                    if (coordination->sub_layout && context->get_cur_sublayout()) {
-                        if (strncmp(coordination->sub_layout, context->get_cur_sublayout(), MAX_SIZE_OF_SUBLAYOUT_STRING) != 0) {
-                            redraw = FALSE;
-                        }
-                    }
-                    if (redraw) {
-                        windows->update_window(window,
-                            coordination->x, coordination->y, coordination->width, coordination->height);
-                        //builder->draw_button(window, NULL, properties->key_index, mCurBaseButtonContext[properties->key_index].state);
-                    }
-                }
-                /* Fix me (we should decide by which way we would redraw the button's region - direct or indirect?)*/
-                //windows->update_window(windows->get_base_window());
+                windows->update_window(windows->get_base_window());
             }
         }
     }
