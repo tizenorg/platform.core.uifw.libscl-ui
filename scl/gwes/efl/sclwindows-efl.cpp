@@ -23,14 +23,17 @@
 #include "scluibuilder.h"
 #include "sclwindows.h"
 
+#include <glib.h>
 #include <Elementary.h>
 #include <Ecore_X.h>
 #include <malloc.h>
 #include <X11/Xlib.h>
+#include <X11/Xatom.h>
 
 using namespace scl;
 
-Ecore_X_Atom ATOM_WM_CLASS = 0;
+static Ecore_X_Atom ATOM_WM_CLASS = 0;
+static Ecore_X_Window app_window = 0;
 
 const sclint rotation_values_EFL[ROTATION_MAX] = {
     0, // ROTATION_0
@@ -400,11 +403,6 @@ CSCLWindowsImplEfl::show_window(const sclwindow window, sclboolean queue)
     CSCLContext *context = CSCLContext::get_instance();
     CSCLUtils *utils = CSCLUtils::get_instance();
     if (windows && context && window) {
-#ifndef APPLY_WINDOW_MANAGER_CHANGE
-        if (windows->get_magnifier_window() == window) {
-            set_parent(windows->get_base_window(), window);
-        }
-#endif
         SclWindowContext *winctx = windows->get_window_context(window);
         if (!(context->get_hidden_state())) {
             if (winctx) {
@@ -421,13 +419,41 @@ CSCLWindowsImplEfl::show_window(const sclwindow window, sclboolean queue)
                 }
             }
         }
-        /*
-         * FIXME a solution to make magnifier window always on top
-         * N_SE-17689: magnifier window showing behind of candidate window
-         */
-        if (window != windows->get_base_window()) {
-            //elm_win_raise((Evas_Object *)window);
+#ifndef APPLY_WINDOW_MANAGER_CHANGE
+        if (windows->get_base_window() == window) {
+            int  ret = 0;
+            Atom type_return;
+            int  format_return;
+            unsigned long    nitems_return;
+            unsigned long    bytes_after_return;
+            unsigned char   *data = NULL;
+
+            Ecore_X_Window win = elm_win_xwindow_get(static_cast<Evas_Object*>(window));
+            ret = XGetWindowProperty ((Display *)ecore_x_display_get (),
+                    ecore_x_window_root_get (win),
+                    ecore_x_atom_get ("_ISF_ACTIVE_WINDOW"),
+                    0, G_MAXLONG, False, XA_WINDOW, &type_return,
+                    &format_return, &nitems_return, &bytes_after_return,
+                    &data);
+
+            if (ret == Success) {
+                if ((type_return == XA_WINDOW) && (format_return == 32) && (data)) {
+                    app_window = *(Window *)data;
+                    if (data)
+                        XFree (data);
+                }
+            }
         }
+        if (windows->get_magnifier_window() == window) {
+            /*
+             * FIXME a solution to make magnifier window always on top
+             * N_SE-17689: magnifier window showing behind of candidate window
+             */
+            ecore_x_icccm_transient_for_set
+                (elm_win_xwindow_get(static_cast<Evas_Object*>(window)), app_window);
+            elm_win_raise((Evas_Object *)window);
+        }
+#endif
         utils->log("%p (basewin %p mag %p)\n", window,
             windows->get_base_window(), windows->get_magnifier_window());
     }
