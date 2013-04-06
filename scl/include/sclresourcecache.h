@@ -77,7 +77,6 @@ public:
     void unset_private_key(sclshort input_mode_index, sclbyte layout_index, sclbyte key_index);
     void unset_private_key(const sclchar* custom_id);
 
-    sclbyte find_keyidx_by_customid(const sclchar* custom_id);
     void clone_keyproperties(SclPrivateKeyProperties* priv, sclbyte input_mode_index, sclbyte layout_index, sclbyte key_index);
 
     void enable_button(const sclchar* custom_id, sclboolean enabled);

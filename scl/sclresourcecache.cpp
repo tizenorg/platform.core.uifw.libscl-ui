@@ -1545,44 +1545,6 @@ CSCLResourceCache::unset_private_key(const sclchar* custom_id)
 }
 
 /**
-* Find appropriate index of the key specified by custom_id
-*/
-sclbyte
-CSCLResourceCache::find_keyidx_by_customid(const sclchar* custom_id)
-{
-    sclbyte ret = NOT_USED;
-    sclint loop;
-
-    CSCLContext *context = CSCLContext::get_instance();
-    SclResParserManager *sclres_manager = SclResParserManager::get_instance();
-    PSclLayoutKeyCoordinatePointerTable sclres_layout_key_coordinate_pointer_frame = sclres_manager->get_key_coordinate_pointer_frame();
-
-    assert(sclres_layout_key_coordinate_pointer_frame != NULL);
-
-    sclshort input_mode_index = NOT_USED;
-    sclbyte layout_index = NOT_USED;
-    if (context) {
-        input_mode_index = context->get_input_mode();
-        layout_index = context->get_base_layout();
-    }
-
-    if (scl_check_arrindex_unsigned(layout_index, MAX_SCL_LAYOUT) && custom_id) {
-        for (loop = 0;loop < MAX_KEY;loop++) {
-            SclLayoutKeyCoordinatePointer p = sclres_layout_key_coordinate_pointer_frame[layout_index][loop];
-            if (!p || !(p->valid)) break;
-            if (p->custom_id) {
-                if (strcmp(p->custom_id, custom_id) == 0) {
-                    ret = loop;
-                    break;
-                }
-            }
-        }
-    }
-
-    return ret;
-}
-
-/**
 * Enable/disable button for handling mouse events
 */
 void CSCLResourceCache::enable_button(const sclchar *custom_id, sclboolean enabled)
@@ -1591,18 +1553,36 @@ void CSCLResourceCache::enable_button(const sclchar *custom_id, sclboolean enabl
 
     sclint loop;
     if (custom_id) {
-        sclbyte key_index = find_keyidx_by_customid(custom_id);
-        if (scl_check_arrindex_unsigned(key_index, MAX_KEY)) {
-            if (enabled) {
-                mCurBaseButtonContext[key_index].state = BUTTON_STATE_NORMAL;
-            } else {
-                mCurBaseButtonContext[key_index].state = BUTTON_STATE_DISABLED;
-            }
+        sclbyte layout_index = NOT_USED;
+        CSCLContext *context = CSCLContext::get_instance();
+        SclResParserManager *sclres_manager = SclResParserManager::get_instance();
+        PSclLayoutKeyCoordinatePointerTable sclres_layout_key_coordinate_pointer_frame =
+            sclres_manager->get_key_coordinate_pointer_frame();
+        assert(sclres_layout_key_coordinate_pointer_frame != NULL);
 
-            CSCLWindows *windows = CSCLWindows::get_instance();
-            /* Fix me (we should decide by which way we would redraw the button's region - direct or indirect?)*/
-            windows->update_window(windows->get_base_window());
+        if (context) {
+            layout_index = context->get_base_layout();
         }
+        if (scl_check_arrindex_unsigned(layout_index, MAX_SCL_LAYOUT)) {
+            for (loop = 0;loop < MAX_KEY;loop++) {
+                SclLayoutKeyCoordinatePointer p =
+                    sclres_layout_key_coordinate_pointer_frame[layout_index][loop];
+                if (!p || !(p->valid)) break;
+                if (p->custom_id) {
+                    if (strcmp(p->custom_id, custom_id) == 0) {
+                        if (enabled) {
+                            mCurBaseButtonContext[loop].state = BUTTON_STATE_NORMAL;
+                        } else {
+                            mCurBaseButtonContext[loop].state = BUTTON_STATE_DISABLED;
+                        }
+                    }
+                }
+            }
+        }
+
+        CSCLWindows *windows = CSCLWindows::get_instance();
+        /* Fix me (we should decide by which way we would redraw the button's region - direct or indirect?)*/
+        windows->update_window(windows->get_base_window());
 
         sclboolean found = FALSE;
         sclint empty_index = -1;
