@@ -138,7 +138,6 @@ CSCLWindowsImplEfl::create_window(const sclwindow parent, SclWindowContext *winc
         new_height = height;
     }
 
-    /*
     ecore_x_e_window_rotation_geometry_set(elm_win_xwindow_get(win),
         rotation_values_EFL[ROTATION_0], 0, 0, new_width, new_height);
     ecore_x_e_window_rotation_geometry_set(elm_win_xwindow_get(win),
@@ -147,10 +146,9 @@ CSCLWindowsImplEfl::create_window(const sclwindow parent, SclWindowContext *winc
         rotation_values_EFL[ROTATION_180], 0, 0, new_width, new_height);
     ecore_x_e_window_rotation_geometry_set(elm_win_xwindow_get(win),
         rotation_values_EFL[ROTATION_90_CCW], 0, 0, new_width, new_height);
-    */
 
 #ifndef FULL_SCREEN_TEST
-    evas_object_resize(win, width, height);
+    //evas_object_resize(win, width, height);
 #endif
 
     const char *szProfile[] = {"mobile", ""};
