@@ -695,7 +695,11 @@ CSCLGraphicsImplEfl::draw_text(sclwindow window, const scldrawctx draw_ctx, cons
                             color.r, color.g, color.b, color.a, padding_x, padding_x);
                         evas_textblock_style_set(st, strStyle);
                         evas_object_textblock_style_set(text_object, st);
-                        evas_object_textblock_text_markup_set(text_object, str);
+                        char *markup = evas_textblock_text_utf8_to_markup(text_object, str);
+                        if (markup) {
+                            evas_object_textblock_text_markup_set(text_object, markup);
+                            free(markup);
+                        }
                         evas_object_resize(text_object, width, height);
                         evas_object_textblock_size_native_get(text_object, &calwidth, &calheight);
                     }
