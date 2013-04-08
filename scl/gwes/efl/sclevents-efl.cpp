@@ -632,44 +632,70 @@ CSCLEventsImplEfl::generate_mouse_event(SCLMouseEvent type, scl16 x, scl16 y)
 {
     CSCLWindows *windows = CSCLWindows::get_instance();
     SclWindowContext *winctx = NULL;
+
+    static const sclint MAX_DEVICES = 100;
+    static sclboolean pressed[MAX_DEVICES] = { FALSE };
     if (windows) {
         switch (type) {
             case SCL_MOUSE_EVENT_PRESS:
             {
-                Ecore_Event_Mouse_Button evt;
-                evt.window = elm_win_xwindow_get(static_cast<Evas_Object*>(windows->get_base_window()));
-                //winctx = windows->get_window_context(windows->get_base_window(), FALSE);
-                winctx = windows->get_window_context(windows->get_base_window());
-                if (winctx) {
-                    evt.root.x = x + winctx->geometry.x;
-                    evt.root.y = y + winctx->geometry.y;
-                    mouse_press(NULL, 0, &evt);
+                sclboolean generated = FALSE;
+                for (sclint loop = 0; !generated && loop < MAX_DEVICES; loop++) {
+                    if (pressed[loop] != TRUE) {
+                        pressed[loop] = TRUE;
+                        Ecore_Event_Mouse_Button evt;
+                        evt.window = elm_win_xwindow_get(static_cast<Evas_Object*>(windows->get_base_window()));
+                        //winctx = windows->get_window_context(windows->get_base_window(), FALSE);
+                        winctx = windows->get_window_context(windows->get_base_window());
+                        if (winctx) {
+                            evt.root.x = x + winctx->geometry.x;
+                            evt.root.y = y + winctx->geometry.y;
+                            evt.multi.device = loop;
+                            mouse_press(NULL, 0, &evt);
+                        }
+                        generated = TRUE;
+                    }
                 }
             }
             break;
             case SCL_MOUSE_EVENT_RELEASE:
             {
-                Ecore_Event_Mouse_Button evt;
-                evt.window = elm_win_xwindow_get(static_cast<Evas_Object*>(windows->get_base_window()));
-                //winctx = windows->get_window_context(windows->get_base_window(), FALSE);
-                winctx = windows->get_window_context(windows->get_base_window());
-                if (winctx) {
-                    evt.root.x = x + winctx->geometry.x;
-                    evt.root.y = y + winctx->geometry.y;
-                    mouse_release(NULL, 0, &evt);
+                sclboolean generated = FALSE;
+                for (sclint loop = 0; !generated && loop < MAX_DEVICES; loop++) {
+                    if (pressed[loop] == TRUE) {
+                        pressed[loop] = FALSE;
+                        Ecore_Event_Mouse_Button evt;
+                        evt.window = elm_win_xwindow_get(static_cast<Evas_Object*>(windows->get_base_window()));
+                        //winctx = windows->get_window_context(windows->get_base_window(), FALSE);
+                        winctx = windows->get_window_context(windows->get_base_window());
+                        if (winctx) {
+                            evt.root.x = x + winctx->geometry.x;
+                            evt.root.y = y + winctx->geometry.y;
+                            evt.multi.device = loop;
+                            mouse_release(NULL, 0, &evt);
+                        }
+                        generated = TRUE;
+                    }
                 }
             }
             break;
             case SCL_MOUSE_EVENT_MOVE:
             {
-                Ecore_Event_Mouse_Move evt;
-                evt.window = elm_win_xwindow_get(static_cast<Evas_Object*>(windows->get_base_window()));
-                //winctx = windows->get_window_context(windows->get_base_window(), FALSE);
-                winctx = windows->get_window_context(windows->get_base_window());
-                if (winctx) {
-                    evt.root.x = x + winctx->geometry.x;
-                    evt.root.y = y + winctx->geometry.y;
-                    mouse_move(NULL, 0, &evt);
+                sclboolean generated = FALSE;
+                for (sclint loop = 0; !generated && loop < MAX_DEVICES; loop++) {
+                    if (pressed[loop] == TRUE) {
+                        Ecore_Event_Mouse_Move evt;
+                        evt.window = elm_win_xwindow_get(static_cast<Evas_Object*>(windows->get_base_window()));
+                        //winctx = windows->get_window_context(windows->get_base_window(), FALSE);
+                        winctx = windows->get_window_context(windows->get_base_window());
+                        if (winctx) {
+                            evt.root.x = x + winctx->geometry.x;
+                            evt.root.y = y + winctx->geometry.y;
+                            evt.multi.device = loop;
+                            mouse_move(NULL, 0, &evt);
+                        }
+                        generated = TRUE;
+                    }
                 }
             }
             break;
