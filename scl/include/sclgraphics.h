@@ -41,6 +41,17 @@ typedef struct _SclFontInfo {
     sclboolean is_bold;
 } SclFontInfo;
 
+typedef struct _SclImageCachedInfo {
+    sclint nine_patch_left;
+    sclint nine_patch_right;
+    sclint nine_patch_top;
+    sclint nine_patch_bottom;
+}SclImageCachedInfo;
+
+typedef struct _SclTextCachedInfo {
+    SclSize actual_size;
+}SclTextCachedInfo;
+
 const SclColor SCLCOLOR_WHITE = {255, 255, 255};
 const SclColor SCLCOLOR_GREY = {128, 128, 128};
 const SclColor SCLCOLOR_BLACK = {0, 0, 0};
@@ -58,11 +69,12 @@ class CSCLGraphicsImpl
     friend class CSCLGraphics;
 private:
     virtual void draw_image(sclwindow window, const scldrawctx draw_ctx, sclchar* image_path,
+                            SclImageCachedInfo *cachedinfo,
                             sclint dest_x, sclint dest_y, sclint dest_width, sclint dest_height,
                             sclint src_x, sclint src_y, sclint src_width, sclint src_height,
                             sclboolean extrace_image) = 0;
     virtual void draw_text(sclwindow window, const scldrawctx draw_ctx, const SclFontInfo& font_info, const SclColor& color,
-                           const sclchar *str, sclint pos_x, sclint pos_y,
+                           const sclchar *str, SclTextCachedInfo *cachedinfo, sclint pos_x, sclint pos_y,
                            sclint width, sclint height, SCLLabelAlignment align,
                            sclint padding_x, sclint padding_y, sclint inner_width, sclint inner_height) = 0;
     virtual scldrawctx begin_paint(const sclwindow window, const sclboolean force_draw = FALSE) = 0;
@@ -75,6 +87,7 @@ private:
                                 scldouble width, scldouble height, const scldouble line_width, const SclColor& line_color,
                                 sclboolean fill, const SclColor& fill_color, scldouble radius, sclfloat alpha) = 0;
     virtual SclSize get_image_size(sclchar* image_path) = 0;
+    virtual SclSize get_text_size(const SclFontInfo &fontinfo, const sclchar *str) = 0;
 };
 
 class CSCLGraphics
@@ -90,16 +103,16 @@ public :
 
     static CSCLGraphics* get_instance();
 
-    void draw_image(sclwindow window, const scldrawctx draw_ctx, sclchar* image_path, sclint dest_x, sclint dest_y,
+    void draw_image(sclwindow window, const scldrawctx draw_ctx, sclchar* image_path, SclImageCachedInfo *cachedinfo, sclint dest_x, sclint dest_y,
                     sclint dest_width = -1, sclint dest_height = -1, sclint src_x = 0, sclint src_y = 0, sclint src_width = -1, sclint src_height = -1, sclboolean extrace_image = FALSE) {
-        get_scl_graphics_impl()->draw_image(window, draw_ctx, image_path, dest_x, dest_y, dest_width, dest_height, src_x, src_y, src_width, src_height, extrace_image);
+        get_scl_graphics_impl()->draw_image(window, draw_ctx, image_path, cachedinfo, dest_x, dest_y, dest_width, dest_height, src_x, src_y, src_width, src_height, extrace_image);
     }
 
     void draw_text(sclwindow window, const scldrawctx draw_ctx, const SclFontInfo& font_info, const SclColor& color,
-                   const sclchar *str, sclint pos_x, sclint pos_y, sclint width = 0, sclint height = 0,
+                   const sclchar *str, SclTextCachedInfo *cachedinfo, sclint pos_x, sclint pos_y, sclint width = 0, sclint height = 0,
                    SCLLabelAlignment align = LABEL_ALIGN_LEFT_TOP,
                    sclint padding_x = 0, sclint padding_y = 0, sclint inner_width = 0, sclint inner_height = 0) {
-        get_scl_graphics_impl()->draw_text(window, draw_ctx, font_info, color, str,
+        get_scl_graphics_impl()->draw_text(window, draw_ctx, font_info, color, str, cachedinfo,
             pos_x, pos_y, width, height, align, padding_x, padding_y, inner_width, inner_height);
     }
 
@@ -121,6 +134,9 @@ public :
         return get_scl_graphics_impl()->get_image_size(image_path);
     }
 
+    SclSize get_text_size(const SclFontInfo & fontinfo, const sclchar *str) {
+        return get_scl_graphics_impl()->get_text_size(fontinfo, str);
+    }
 private:
     sclimage load_image(const sclchar *image_path) {
         return get_scl_graphics_impl()->load_image(image_path);

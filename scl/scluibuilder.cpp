@@ -198,6 +198,8 @@ CSCLUIBuilder::show_layout(const sclwindow window, const scl16 x, const scl16 y,
         } else {
             /* For the base and popup window */
             const SclLayout* layout = cache->get_cur_layout(window);
+            // FIXME implement later
+            // SclLayoutInfoCache *info_cache = cache->get_cur_layout_info_cache(window);
             if (layout) {
                 CSCLWindows *windows = CSCLWindows::get_instance();
                 //SclWindowContext *winctx = windows->get_window_context(window, FALSE);
@@ -227,11 +229,18 @@ CSCLUIBuilder::show_layout(const sclwindow window, const scl16 x, const scl16 y,
                             }
                         }
                         if (strlen(layout->image_path[BUTTON_STATE_NORMAL]) > 0) {
+                            /*SclImageCachedInfo cached_info = {0, };
+                            cached_info.nine_patch_left = info_cache->bg_image_path[BUTTON_STATE_NORMAL].left;
+                            cached_info.nine_patch_right = info_cache->bg_image_path[BUTTON_STATE_NORMAL].right;
+                            cached_info.nine_patch_top = info_cache->bg_image_path[BUTTON_STATE_NORMAL].top;
+                            cached_info.nine_patch_bottom = info_cache->bg_image_path[BUTTON_STATE_NORMAL].bottom;*/
+
                             sclchar composed_path[_POSIX_PATH_MAX] = {0,};
                             m_utils->get_composed_path(composed_path, IMG_PATH_PREFIX, layout->image_path[BUTTON_STATE_NORMAL]);
                             // Temporary testing for EFL backend.. Otherwise the background image covers other buttons
                             if (winctx && (x + y + width + height == 0)) {
-                                graphics->draw_image(targetwin, draw_ctx, composed_path, targetx, targety, layout->width, layout->height,
+                                //graphics->draw_image(targetwin, draw_ctx, composed_path, &cached_info, targetx, targety, layout->width, layout->height, winctx->layout_image_offset.x, winctx->layout_image_offset.y, -1, -1, layout->extract_background);
+                                graphics->draw_image(targetwin, draw_ctx, composed_path, NULL, targetx, targety, layout->width, layout->height,
                                                         winctx->layout_image_offset.x, winctx->layout_image_offset.y, -1, -1, layout->extract_background);
                             }
                         }
@@ -471,10 +480,21 @@ CSCLUIBuilder::draw_button_label(const sclwindow window, const scldrawctx draw_c
                     pos.y = coordination->y + ((coordination->height - imgSize.height) / 2);
                 }
 
+                /*
                 graphics->draw_image(
                     targetwin,
                     draw_ctx,
                     composed_path,
+                    pos.x + targetaddx,
+                    pos.y + targetaddy,
+                    imgSize.width,
+                    imgSize.height
+                );*/
+                graphics->draw_image(
+                    targetwin,
+                    draw_ctx,
+                    composed_path,
+                    NULL,
                     pos.x + targetaddx,
                     pos.y + targetaddy,
                     imgSize.width,
@@ -541,6 +561,7 @@ CSCLUIBuilder::draw_button_label(const sclwindow window, const scldrawctx draw_c
                             info,
                             labelproperties->shadow_color[shiftstate][state],
                             label,
+                            NULL,
                             (sclint)coordination->x + deltax + targetaddx,
                             (sclint)coordination->y + deltax + targetaddy,
                             (sclint)coordination->width,
@@ -558,6 +579,7 @@ CSCLUIBuilder::draw_button_label(const sclwindow window, const scldrawctx draw_c
                         info,
                         labelproperties->font_color[shiftstate][state],
                         label,
+                        NULL,
                         (sclint)coordination->x + targetaddx,
                         (sclint)coordination->y + targetaddy,
                         (sclint)coordination->width,
@@ -760,6 +782,7 @@ CSCLUIBuilder::draw_button_bg_by_img(const sclwindow window, const scldrawctx dr
                 targetwin,
                 draw_ctx,
                 composed_path,
+                NULL,
                 (sclint)targetx,
                 (sclint)targety,
                 (sclint)coordination->width,
@@ -867,6 +890,7 @@ CSCLUIBuilder::draw_button_bg_by_layoutimg(const sclwindow window, const scldraw
                 window,
                 draw_ctx,
                 composed_path,
+                NULL,
                 dest_x,
                 dest_y,
                 (sclint)coordination->width,
@@ -993,20 +1017,20 @@ CSCLUIBuilder::show_magnifier(const sclwindow window, scldrawctx draw_ctx)
         }
         if (state->get_cur_action_state() == ACTION_STATE_BASE_LONGKEY) {
             m_utils->get_composed_path(composed_path, IMG_PATH_PREFIX, magnifier_configure->bg_long_key_image_path);
-            m_gwes->m_graphics->draw_image(window, draw_ctx, composed_path, 0, 0,
+            m_gwes->m_graphics->draw_image(window, draw_ctx, composed_path, NULL, 0, 0,
                 magnifier_configure->width, magnifier_configure->height);
         } else {
             if (context->get_shift_state() == SCL_SHIFT_STATE_LOCK) {
                 m_utils->get_composed_path(composed_path, IMG_PATH_PREFIX, magnifier_configure->bg_shift_lock_image_path);
-                m_gwes->m_graphics->draw_image(window, draw_ctx, composed_path, 0, 0,
+                m_gwes->m_graphics->draw_image(window, draw_ctx, composed_path, NULL, 0, 0,
                     magnifier_configure->width, magnifier_configure->height);
             } else if (context->get_shift_state() == SCL_SHIFT_STATE_ON) {
                 m_utils->get_composed_path(composed_path, IMG_PATH_PREFIX, magnifier_configure->bg_shift_image_path);
-                m_gwes->m_graphics->draw_image(window, draw_ctx, composed_path, 0, 0,
+                m_gwes->m_graphics->draw_image(window, draw_ctx, composed_path, NULL, 0, 0,
                     magnifier_configure->width, magnifier_configure->height);
             } else {
                 m_utils->get_composed_path(composed_path, IMG_PATH_PREFIX, magnifier_configure->bg_image_path);
-                m_gwes->m_graphics->draw_image(window, draw_ctx, composed_path, 0, 0,
+                m_gwes->m_graphics->draw_image(window, draw_ctx, composed_path, NULL, 0, 0,
                     magnifier_configure->width, magnifier_configure->height);
             }
         }
@@ -1112,6 +1136,7 @@ CSCLUIBuilder::draw_magnifier_label(const sclwindow window, const scldrawctx dra
                     info,
                     labelproperties->font_color[shiftstate][BUTTON_STATE_NORMAL],
                     label,
+                    NULL,
                     magnifier_configure->label_area_rect.left,
                     magnifier_configure->label_area_rect.top,
                     magnifier_configure->label_area_rect.right,

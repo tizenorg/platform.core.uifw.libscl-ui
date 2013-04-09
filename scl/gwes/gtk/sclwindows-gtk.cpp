@@ -74,7 +74,7 @@ make_transparent_window (GtkWidget *window)
  * Create a content window and binds it into given parent window as a child
  */
 sclwindow
-CSCLWindowsImplGtk::create_base_window(const sclwindow parent, SclWindowContext *winctx, const scl16 width, const scl16 height)
+CSCLWindowsImplGtk::create_base_window(const sclwindow parent, SclWindowContext *winctx, scl16 width, scl16 height)
 {
     SCL_DEBUG();
 
@@ -115,7 +115,7 @@ CSCLWindowsImplGtk::create_base_window(const sclwindow parent, SclWindowContext 
  * Creates a window
  */
 sclwindow
-CSCLWindowsImplGtk::create_window(const sclwindow parent, SclWindowContext *winctx, const scl16 width, const scl16 height)
+CSCLWindowsImplGtk::create_window(const sclwindow parent, SclWindowContext *winctx, scl16 width, scl16 height)
 {
     SCL_DEBUG();
     /* pre-condition */
@@ -167,7 +167,7 @@ CSCLWindowsImplGtk::create_window(const sclwindow parent, SclWindowContext *winc
  * Creates the dim window
  */
 sclwindow
-CSCLWindowsImplGtk::create_dim_window(const sclwindow parent, SclWindowContext *winctx, const scl16 width, const scl16 height)
+CSCLWindowsImplGtk::create_dim_window(const sclwindow parent, SclWindowContext *winctx, scl16 width, scl16 height)
 {
     SCL_DEBUG();
     /* pre-condition */
@@ -283,7 +283,7 @@ CSCLWindowsImplGtk::show_window(const sclwindow window, sclboolean queue)
  * Hides the given window
  */
 void
-CSCLWindowsImplGtk::hide_window(const sclwindow window,  const sclboolean fForce)
+CSCLWindowsImplGtk::hide_window(const sclwindow window,  sclboolean fForce)
 {
     SCL_DEBUG();
     scl_assert_return(window);
@@ -319,7 +319,7 @@ CSCLWindowsImplGtk::hide_window(const sclwindow window,  const sclboolean fForce
  * Moves the window to the given position
  */
 void
-CSCLWindowsImplGtk::move_window(const sclwindow window, const scl16 x, const scl16 y) {
+CSCLWindowsImplGtk::move_window(const sclwindow window, scl16 x, scl16 y) {
     SCL_DEBUG();
     scl_assert_return(window);
     GtkWidget* widget = static_cast<GtkWidget*>(window);
@@ -330,7 +330,7 @@ CSCLWindowsImplGtk::move_window(const sclwindow window, const scl16 x, const scl
 * Resizes the window to the given metric
 */
 void
-CSCLWindowsImplGtk::resize_window(const sclwindow window, const scl16 width, const scl16 height) {
+CSCLWindowsImplGtk::resize_window(const sclwindow window, scl16 width, scl16 height) {
     SCL_DEBUG();
     scl_assert_return(window);
     GtkWidget* widget = static_cast<GtkWidget*>(window);
@@ -344,7 +344,7 @@ CSCLWindowsImplGtk::resize_window(const sclwindow window, const scl16 width, con
 * Resizes the window to the given metric
 */
 void
-CSCLWindowsImplGtk::move_resize_window(const sclwindow window, const scl16 x, const scl16 y, const scl16 width, const scl16 height) {
+CSCLWindowsImplGtk::move_resize_window(const sclwindow window, scl16 x, scl16 y, scl16 width, scl16 height) {
     SCL_DEBUG();
     scl_assert_return(window);
     GtkWidget* widget = static_cast<GtkWidget*>(window);
@@ -356,7 +356,7 @@ CSCLWindowsImplGtk::move_resize_window(const sclwindow window, const scl16 x, co
 * Update the window to redraw given area
 */
 void
-CSCLWindowsImplGtk::update_window(const sclwindow window, const scl16 x, const scl16 y, const scl16 width, const scl16 height) {
+CSCLWindowsImplGtk::update_window(const sclwindow window, scl16 x, scl16 y, scl16 width, scl16 height) {
     SCL_DEBUG();
     scl_assert_return(window);
     GtkWidget* widget = static_cast<GtkWidget*>(window);
@@ -436,7 +436,7 @@ CSCLWindowsImplGtk::get_window_rect(const sclwindow window, SclRectangle *rect) 
  * Sets rotation
  */
 void
-CSCLWindowsImplGtk::set_window_rotation(const sclwindow window, const sclint degree) {
+CSCLWindowsImplGtk::set_window_rotation(const sclwindow window, sclint degree) {
     SCL_DEBUG();
     GtkWidget* widget = gtk_widget_get_toplevel(static_cast<GtkWidget*>(window));
     //gtk_window_set_rotate(GTK_WINDOW(widget), degree);
@@ -447,7 +447,7 @@ CSCLWindowsImplGtk::set_window_rotation(const sclwindow window, const sclint deg
  * Shows a message box
  */
 void
-CSCLWindowsImplGtk::show_message_box(const sclwindow parent, const scl8 msgType, sclchar* title, sclchar* msg) {
+CSCLWindowsImplGtk::show_message_box(const sclwindow parent, scl8 msgType, sclchar* title, sclchar* msg) {
     SCL_DEBUG();
     scl_assert_return(strlen(msg) > 0);
 
@@ -488,7 +488,7 @@ CSCLWindowsImplGtk::show_message_box(const sclwindow parent, const scl8 msgType,
 
 
 void
-CSCLWindowsImplGtk::set_keep_above(const sclwindow window, const sclboolean keepabove) {
+CSCLWindowsImplGtk::set_keep_above(const sclwindow window, sclboolean keepabove) {
     SCL_DEBUG();
 
     gtk_window_set_keep_above(GTK_WINDOW(window), keepabove);

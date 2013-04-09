@@ -103,7 +103,7 @@ CSCLWindows::get_instance()
     return (CSCLWindows*)m_instance;
 }
 
-sclwindow CSCLWindows::open_popup(const SclWindowOpener opener, const SclRectangle geometry, sclshort inputmode, sclshort layout, SCLPopupType popup_type, sclboolean is_virtual, sclboolean use_dim_window, sclint img_offset_x, sclint img_offset_y, sclint timeout)
+sclwindow CSCLWindows::open_popup(const SclWindowOpener opener, const SclRectangle &geometry, sclshort inputmode, sclshort layout, SCLPopupType popup_type, sclboolean is_virtual, sclboolean use_dim_window, sclint img_offset_x, sclint img_offset_y, sclint timeout)
 {
     sclwindow window = SCLWINDOW_INVALID;
 
@@ -267,7 +267,7 @@ bool CSCLWindows::close_all_popups(sclwindow skip_window /* = SCLWINDOW_INVALID 
 }
 
 sclwindow
-CSCLWindows::create_base_window(const sclwindow parent, const scl16 width, const scl16 height)
+CSCLWindows::create_base_window(const sclwindow parent, scl16 width, scl16 height)
 {
     SCL_DEBUG();
 
@@ -302,7 +302,7 @@ CSCLWindows::create_base_window(const sclwindow parent, const scl16 width, const
  *  }
  */
 sclwindow
-CSCLWindows::create_window(const SclWindowOpener opener, const SclRectangle geometry, sclshort inputmode, sclshort layout, SCLPopupType popup_type, sclboolean is_virtual, sclint img_offset_x, sclint img_offset_y, sclint timeout)
+CSCLWindows::create_window(const SclWindowOpener opener, const SclRectangle &geometry, sclshort inputmode, sclshort layout, SCLPopupType popup_type, sclboolean is_virtual, sclint img_offset_x, sclint img_offset_y, sclint timeout)
 {
     SCL_DEBUG();
 
@@ -354,7 +354,7 @@ CSCLWindows::create_window(const SclWindowOpener opener, const SclRectangle geom
 }
 
 sclwindow
-CSCLWindows::create_magnifier_window(const sclwindow parent, const scl16 x, const scl16 y, const scl16 width, const scl16 height)
+CSCLWindows::create_magnifier_window(const sclwindow parent, scl16 x, scl16 y, scl16 width, scl16 height)
 {
     SCL_DEBUG();
 
@@ -397,7 +397,7 @@ CSCLWindows::get_magnifier_window()
 }
 
 sclwindow
-CSCLWindows::create_dim_window(const sclwindow parent, SclWindowContext *winctx, const scl16 width, const scl16 height)
+CSCLWindows::create_dim_window(const sclwindow parent, SclWindowContext *winctx, scl16 width, scl16 height)
 {
     SCL_DEBUG();
 
@@ -603,7 +603,7 @@ CSCLWindows::find_popup_window_index(sclwindow window)
 }
 
 void
-CSCLWindows::move_window(const sclwindow window, const scl16 x, const scl16 y)
+CSCLWindows::move_window(const sclwindow window, scl16 x, scl16 y)
 {
     SCL_DEBUG();
 
@@ -639,7 +639,7 @@ CSCLWindows::move_window(const sclwindow window, const scl16 x, const scl16 y)
 }
 
 void
-CSCLWindows::resize_window(const sclwindow window, const scl16 width, const scl16 height)
+CSCLWindows::resize_window(const sclwindow window, scl16 width, scl16 height)
 {
     SCL_DEBUG();
 
@@ -675,7 +675,7 @@ CSCLWindows::resize_window(const sclwindow window, const scl16 width, const scl1
 }
 
 void
-CSCLWindows::move_resize_window(const sclwindow window, const scl16 x, const scl16 y, const scl16 width, const scl16 height)
+CSCLWindows::move_resize_window(const sclwindow window, scl16 x, scl16 y, scl16 width, scl16 height)
 {
     SCL_DEBUG();
 
@@ -812,7 +812,7 @@ void CSCLWindows::set_parent( const sclwindow parent, const sclwindow window )
     }
 }
 
-void CSCLWindows::set_window_rotation(const sclwindow window, const SCLRotation rotation)
+void CSCLWindows::set_window_rotation(const sclwindow window, SCLRotation rotation)
 {
     SCL_DEBUG();
 
@@ -903,7 +903,7 @@ CSCLWindows::show_window(const sclwindow window, sclboolean queue /*= FALSE*/)
 }
 
 void
-CSCLWindows::hide_window(const sclwindow window, const sclboolean force /*= FALSE*/)
+CSCLWindows::hide_window(const sclwindow window, sclboolean force /*= FALSE*/)
 {
     SCL_DEBUG();
 
@@ -929,7 +929,7 @@ CSCLWindows::hide_window(const sclwindow window, const sclboolean force /*= FALS
 }
 
 void
-CSCLWindows::set_keep_above(const sclwindow window, const sclboolean keep_above)
+CSCLWindows::set_keep_above(const sclwindow window, sclboolean keep_above)
 {
     CSCLWindowsImpl* impl = get_scl_windows_impl();
     if (impl) {
@@ -953,8 +953,8 @@ CSCLWindows::get_update_pending()
 }
 
 void
-CSCLWindows::update_window(const sclwindow window, 
-                           const scl16 x /*= 0*/, const scl16 y /*= 0*/, const scl16 width /*= 0*/, const scl16 height /*= 0*/ )
+CSCLWindows::update_window(const sclwindow window,
+                           scl16 x /*= 0*/, scl16 y /*= 0*/, scl16 width /*= 0*/, scl16 height /*= 0*/ )
 {
     if (!m_pending_update) {
         CSCLWindowsImpl* impl = get_scl_windows_impl();
@@ -967,7 +967,7 @@ CSCLWindows::update_window(const sclwindow window,
 sclboolean
 CSCLWindows::get_window_rect(const sclwindow window, SclRectangle *rect) {
     SCL_DEBUG();
-    
+
     sclboolean is_virtual = FALSE;
     sclboolean ret = FALSE;
     if (rect) {

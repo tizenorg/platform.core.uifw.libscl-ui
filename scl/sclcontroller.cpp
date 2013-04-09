@@ -3240,24 +3240,6 @@ CSCLController::timer_event(const scl32 data)
             }
         }
 
-        /* FIXME : Temporary way of clearing magnifier window */
-        {
-            CSCLGraphics *graphics = CSCLGraphics::get_instance();
-            CSCLUtils *utils = CSCLUtils::get_instance();
-            sclchar composed_path[_POSIX_PATH_MAX] = {0,};
-            scldrawctx draw_ctx = graphics->begin_paint(windows->get_magnifier_window());
-            SclResParserManager *sclres_manager = SclResParserManager::get_instance();
-            PSclMagnifierWndConfigure magnifier_configure = NULL;
-            if (sclres_manager) {
-                magnifier_configure = sclres_manager->get_magnifier_configure();
-            }
-            if (magnifier_configure) {
-                utils->get_composed_path(composed_path, IMG_PATH_PREFIX, magnifier_configure->bg_image_path);
-                graphics->draw_image(windows->get_magnifier_window(), draw_ctx, composed_path, 0, 0);
-                graphics->end_paint(windows->get_magnifier_window(), draw_ctx);
-            }
-        }
-
         windows->hide_window(windows->get_magnifier_window());
         context->set_last_pressed_window(SCLWINDOW_INVALID);
         context->set_last_pressed_key(NOT_USED);
@@ -3406,27 +3388,11 @@ void CSCLController::handle_engine_signal( SclInternalSignal signal, sclwindow t
             }
             break;
             case SIGACTION_CLOSE_MAGNIFIER: {
-                /* FIXME : Temporary way of clearing magnifier window */
-                CSCLGraphics *graphics = CSCLGraphics::get_instance();
-                CSCLUtils *utils = CSCLUtils::get_instance();
-                sclchar composed_path[_POSIX_PATH_MAX] = {0,};
-                scldrawctx draw_ctx = graphics->begin_paint(windows->get_magnifier_window());
-                SclResParserManager *sclres_manager = SclResParserManager::get_instance();
-                PSclMagnifierWndConfigure magnifier_configure = NULL;
-                if (sclres_manager) {
-                    magnifier_configure = sclres_manager->get_magnifier_configure();
+                if (signal == SCL_SIG_HIDE) {
+                    windows->hide_window(windows->get_magnifier_window(), TRUE);
+                } else {
+                    windows->hide_window(windows->get_magnifier_window());
                 }
-                if (magnifier_configure) {
-                    utils->get_composed_path(composed_path, IMG_PATH_PREFIX, magnifier_configure->bg_image_path);
-                    graphics->draw_image(windows->get_magnifier_window(), draw_ctx, composed_path, 0, 0);
-                    graphics->end_paint(windows->get_magnifier_window(), draw_ctx);
-                }
-            }
-
-            if (signal == SCL_SIG_HIDE) {
-                windows->hide_window(windows->get_magnifier_window(), TRUE);
-            } else {
-                windows->hide_window(windows->get_magnifier_window());
             }
             //events->create_timer(SCL_TIMER_BUTTON_DELAY, SCL_BUTTON_MIN_DURATION, 0);
             break;

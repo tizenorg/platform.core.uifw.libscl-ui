@@ -79,7 +79,7 @@ public :
     CSCLGraphicsImplEfl();
     ~CSCLGraphicsImplEfl();
 
-    void draw_image(sclwindow window, const scldrawctx draw_ctx, sclchar* image_path,
+    void draw_image(sclwindow window, const scldrawctx draw_ctx, sclchar* image_path, SclImageCachedInfo *cachedinfo,
                     sclint dest_x, sclint dest_y, sclint dest_width, sclint dest_height,
                     sclint src_x, sclint src_y, sclint src_width, sclint src_height, sclboolean extrace_image);
     sclimage load_image(const sclchar* image_path);
@@ -88,7 +88,7 @@ public :
     sclfont create_font(const SclFontInfo& info);
     void destroy_font(sclfont font);
     void draw_text(sclwindow window, const scldrawctx draw_ctx, const SclFontInfo& font_info, const SclColor& color,
-                   const sclchar *str, sclint pos_x, sclint pos_y, sclint width, sclint height,
+                   const sclchar *str, SclTextCachedInfo *cachedinfo, sclint pos_x, sclint pos_y, sclint width, sclint height,
                    SCLLabelAlignment align, sclint padding_x, sclint padding_y, sclint inner_width, sclint inner_height);
 
     void draw_rectangle(sclwindow window, const scldrawctx draw_ctx, scldouble pos_x, scldouble pos_y,
@@ -96,7 +96,7 @@ public :
     scldrawctx begin_paint(const sclwindow window, const sclboolean force_draw = FALSE);
     void end_paint(const sclwindow window, scldrawctx draw_ctx);
     SclSize get_image_size(sclchar* image_path);
-
+    SclSize get_text_size(const SclFontInfo &fontinfo, const sclchar *str);
 private:
 };
 } /* End of scl namespace */

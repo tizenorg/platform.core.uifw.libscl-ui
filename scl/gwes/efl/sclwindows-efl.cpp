@@ -78,7 +78,7 @@ CSCLWindowsImplEfl::~CSCLWindowsImplEfl()
  * Create a content window and binds it into given parent window as a child
  */
 sclwindow
-CSCLWindowsImplEfl::create_base_window(const sclwindow parent, SclWindowContext *winctx, const scl16 width, const scl16 height)
+CSCLWindowsImplEfl::create_base_window(const sclwindow parent, SclWindowContext *winctx, scl16 width, scl16 height)
 {
     SCL_DEBUG();
 
@@ -115,7 +115,7 @@ CSCLWindowsImplEfl::create_base_window(const sclwindow parent, SclWindowContext 
  * Creates a window
  */
 sclwindow
-CSCLWindowsImplEfl::create_window(const sclwindow parent, SclWindowContext *winctx, const scl16 width, const scl16 height)
+CSCLWindowsImplEfl::create_window(const sclwindow parent, SclWindowContext *winctx, scl16 width, scl16 height)
 {
     SCL_DEBUG();
 
@@ -183,7 +183,7 @@ CSCLWindowsImplEfl::create_window(const sclwindow parent, SclWindowContext *winc
 * Creates a window
 */
 sclwindow
-CSCLWindowsImplEfl::create_magnifier_window(const sclwindow parent, SclWindowContext *winctx, const scl16 width, const scl16 height)
+CSCLWindowsImplEfl::create_magnifier_window(const sclwindow parent, SclWindowContext *winctx, scl16 width, scl16 height)
 {
     SCL_DEBUG();
 
@@ -258,7 +258,7 @@ CSCLWindowsImplEfl::create_magnifier_window(const sclwindow parent, SclWindowCon
  * Creates the dim window
  */
 sclwindow
-CSCLWindowsImplEfl::create_dim_window(const sclwindow parent, SclWindowContext *winctx, const scl16 width, const scl16 height)
+CSCLWindowsImplEfl::create_dim_window(const sclwindow parent, SclWindowContext *winctx, scl16 width, scl16 height)
 {
     SCL_DEBUG();
 
@@ -469,7 +469,7 @@ CSCLWindowsImplEfl::show_window(const sclwindow window, sclboolean queue)
  * Hides the given window
  */
 void
-CSCLWindowsImplEfl::hide_window(const sclwindow window,  const sclboolean fForce)
+CSCLWindowsImplEfl::hide_window(const sclwindow window,  sclboolean fForce)
 {
     SCL_DEBUG();
     CSCLWindows *windows = CSCLWindows::get_instance();
@@ -486,7 +486,11 @@ CSCLWindowsImplEfl::hide_window(const sclwindow window,  const sclboolean fForce
                     elm_win_keyboard_mode_set(win, ELM_WIN_KEYBOARD_OFF);
                 } else {
 #endif
-                    evas_object_hide(win);
+                    if (window == windows->get_magnifier_window()) {
+                        evas_object_move(win, -10000, -10000);
+                    } else {
+                        evas_object_hide(win);
+                    }
 #ifdef APPLY_WINDOW_MANAGER_CHANGE
                 }
 #endif
@@ -576,7 +580,7 @@ CSCLWindowsImplEfl::hide_window(const sclwindow window,  const sclboolean fForce
  */
 sclint magnifierx, magnifiery;
 void
-CSCLWindowsImplEfl::move_window(const sclwindow window, const scl16 x, const scl16 y)
+CSCLWindowsImplEfl::move_window(const sclwindow window, scl16 x, scl16 y)
 {
     SCL_DEBUG();
     CSCLUtils *utils = CSCLUtils::get_instance();
@@ -665,7 +669,7 @@ CSCLWindowsImplEfl::move_window(const sclwindow window, const scl16 x, const scl
 * Resizes the window to the given metric
 */
 void
-CSCLWindowsImplEfl::resize_window(const sclwindow window, const scl16 width, const scl16 height)
+CSCLWindowsImplEfl::resize_window(const sclwindow window, scl16 width, scl16 height)
 {
     SCL_DEBUG();
 
@@ -719,7 +723,7 @@ CSCLWindowsImplEfl::resize_window(const sclwindow window, const scl16 width, con
 * Resizes the window to the given metric
 */
 void
-CSCLWindowsImplEfl::move_resize_window(const sclwindow window, const scl16 x, const scl16 y, const scl16 width, const scl16 height)
+CSCLWindowsImplEfl::move_resize_window(const sclwindow window, scl16 x, scl16 y, scl16 width, scl16 height)
 {
     SCL_DEBUG();
     Evas_Object *win = (Evas_Object*)window;
@@ -748,7 +752,7 @@ CSCLWindowsImplEfl::move_resize_window(const sclwindow window, const scl16 x, co
 * Update the window to redraw given area
 */
 void
-CSCLWindowsImplEfl::update_window(const sclwindow window, const scl16 x, const scl16 y, const scl16 width, const scl16 height)
+CSCLWindowsImplEfl::update_window(const sclwindow window, scl16 x, scl16 y, scl16 width, scl16 height)
 {
     SCL_DEBUG();
 
@@ -961,7 +965,7 @@ CSCLWindowsImplEfl::get_window_rect(const sclwindow window, SclRectangle *rect)
  * Sets rotation
  */
 void
-CSCLWindowsImplEfl::set_window_rotation(const sclwindow window, const SCLRotation rotation)
+CSCLWindowsImplEfl::set_window_rotation(const sclwindow window, SCLRotation rotation)
 {
     SCL_DEBUG();
 
@@ -1007,14 +1011,14 @@ CSCLWindowsImplEfl::set_window_rotation(const sclwindow window, const SCLRotatio
  * Shows a message box
  */
 void
-CSCLWindowsImplEfl::show_message_box(const sclwindow parent, const scl8 msgType, sclchar* title, sclchar* msg)
+CSCLWindowsImplEfl::show_message_box(const sclwindow parent, scl8 msgType, sclchar* title, sclchar* msg)
 {
     SCL_DEBUG();
 }
 
 
 void
-CSCLWindowsImplEfl::set_keep_above(const sclwindow window, const sclboolean keepabove)
+CSCLWindowsImplEfl::set_keep_above(const sclwindow window, sclboolean keepabove)
 {
     SCL_DEBUG();
 }
@@ -1104,7 +1108,7 @@ void release_all(Evas_Object *win)
 }
 
 #ifndef APPLY_WINDOW_MANAGER_CHANGE
-void CSCLWindowsImplEfl::set_window_accepts_focus(const sclwindow window, const sclboolean acceptable)
+void CSCLWindowsImplEfl::set_window_accepts_focus(const sclwindow window, sclboolean acceptable)
 {
     Eina_Bool accepts_focus;
     Ecore_X_Window_State_Hint initial_state;

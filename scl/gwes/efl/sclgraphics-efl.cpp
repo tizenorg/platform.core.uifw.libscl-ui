@@ -119,7 +119,7 @@ Evas_Object* extract_partimage_from_fullimage(
 
 extern sclint magnifierx, magnifiery;
 void
-CSCLGraphicsImplEfl::draw_image(sclwindow window, const scldrawctx draw_ctx, sclchar* image_path,
+CSCLGraphicsImplEfl::draw_image(sclwindow window, const scldrawctx draw_ctx, sclchar* image_path, SclImageCachedInfo *cachedinfo,
                                 sclint dest_x, sclint dest_y, sclint dest_width, sclint dest_height,
                                 sclint src_x, sclint src_y, sclint src_width, sclint src_height, sclboolean extrace_image)
 {
@@ -213,10 +213,18 @@ CSCLGraphicsImplEfl::draw_image(sclwindow window, const scldrawctx draw_ctx, scl
                     int image_height = 0;
                     evas_object_image_file_set(image_object, image_path, NULL);
                     evas_object_image_size_get(image_object, &image_width, &image_height);
-                    const SclNinePatchInfo *nine_patch_info = utils->get_nine_patch_info(image_path);
-                    if (nine_patch_info) {
+                    if (cachedinfo) {
                         evas_object_image_border_set(image_object,
-                            nine_patch_info->left, nine_patch_info->right, nine_patch_info->top, nine_patch_info->bottom);
+                                cachedinfo->nine_patch_left,
+                                cachedinfo->nine_patch_right,
+                                cachedinfo->nine_patch_top,
+                                cachedinfo->nine_patch_bottom);
+                    } else {
+                        const SclNinePatchInfo *nine_patch_info = utils->get_nine_patch_info(image_path);
+                        if (nine_patch_info) {
+                            evas_object_image_border_set(image_object,
+                                    nine_patch_info->left, nine_patch_info->right, nine_patch_info->top, nine_patch_info->bottom);
+                        }
                     }
                     const SclLayout *layout = cache->get_cur_layout(window);
                     if (layout) {
@@ -405,87 +413,12 @@ CSCLGraphicsImplEfl::destroy_font(sclfont font)
 }
 
 
-typedef struct {
-    const char *szString;
-    const float actual_width;
-} HARDCODED_WIDTH;
-HARDCODED_WIDTH hardcoded_width[] = {
-    {"\xe3\x85\x82" , 0.59 }, // q
-    {"\xe3\x85\x83" , 0.59 }, // Q
-    {"\xe3\x85\x88" , 0.59 }, // w
-    {"\xe3\x85\x89" , 0.59 }, // W
-    {"\xe3\x84\xb7" , 0.59 }, // e
-    {"\xe3\x84\xb8" , 0.59 }, // E
-    {"\xe3\x84\xb1" , 0.59 }, // r
-    {"\xe3\x84\xb2" , 0.59 }, // R
-    {"\xe3\x85\x85" , 0.59 }, // t
-    {"\xe3\x85\x86" , 0.59 }, // T
-    {"\xe3\x85\x9b" , 0.72 }, // y
-    {"\xe3\x85\x95" , 0.40 }, // u
-    {"\xe3\x85\x91" , 0.40 }, // i
-    {"\xe3\x85\x90" , 0.50 }, // o
-    {"\xe3\x85\x92" , 0.55 }, // O
-    {"\xe3\x85\x94" , 0.59 }, // p
-    {"\xe3\x85\x96" , 0.59 }, // P
-    {"\xe3\x85\x81" , 0.59 }, // a
-    {"\xe3\x84\xb4" , 0.59 }, // s
-    {"\xe3\x85\x87" , 0.59 }, // d
-    {"\xe3\x84\xb9" , 0.59 }, // f
-    {"\xe3\x85\x8e" , 0.59 }, // g
-    {"\xe3\x85\x97" , 0.72 }, // h
-    {"\xe3\x85\x93" , 0.40 }, // j
-    {"\xe3\x85\x8f" , 0.40 }, // k
-    {"\xe3\x85\xa3" , 0.30 }, // l
-    {"\xe3\x85\x8b" , 0.59 }, // z
-    {"\xe3\x85\x8c" , 0.59 }, // x
-    {"\xe3\x85\x8a" , 0.59 }, // c
-    {"\xe3\x85\x8d" , 0.59 }, // v
-    {"\xe3\x85\xa0" , 0.72 }, // b
-    {"\xe3\x85\x9c" , 0.72 }, // n
-    {"\xe3\x85\xa1" , 0.75 }, // m
-
-    {"\xe3\x85\xa3" , 0.30 }, // び
-    {"\xe3\x86\x8d" , 0.30 }, // .
-    {"\xe3\x85\xa1" , 0.75 }, // ぱ
-    {"\xe3\x84\xb1\xe3\x85\x8b" , 1.18 }, // ぁせ
-    {"\xe3\x84\xb4\xe3\x84\xb9" , 1.18 }, // いぉ
-    {"\xe3\x84\xb7\xe3\x85\x8c" , 1.18 }, // ぇぜ
-    {"\xe3\x85\x82\xe3\x85\x8d" , 1.18 }, // げそ
-    {"\xe3\x85\x85\xe3\x85\x8e" , 1.18 }, // さぞ
-    {"\xe3\x85\x88\xe3\x85\x8a" , 1.18 }, // じず
-    {"\xe3\x85\x87\xe3\x85\x81" , 1.18 }, // しけ
-    {"\xe3\x85\x87\xe3\x85\x81" , 1.18 }, // しけ
-    {"\xe3\x84\xb1\xe3\x84\xb4" , 1.38 }, // ぁい
-    {"\xe1\x84\x88" , 0.59 }, // こ
-    {"\xe1\x84\x8d" , 0.59 }, // す
-    {"\xe1\x84\x84" , 0.59 }, // え
-    {"\xe1\x84\x81" , 0.59 }, // あ
-    {"\xe1\x84\x8a" , 0.59 }, // ざ
-
-    {"\xe2\x86\x90" , 0.50 }, // Arrows
-    {"\xe2\x86\x91" , 0.40 }, // 
-    {"\xe2\x86\x92" , 0.55 }, // 
-    {"\xe2\x86\x93" , 0.40 }, // 
-
-	{"\xe3\x85\xa0" , 0.1 }, // ば
-	{"\341\205\262" , 0.9 }, // ば
-};
-
-int find_hardcoded_width(const char *szString, int font_size) {
-    for(unsigned int loop = 0;loop < sizeof(hardcoded_width) / sizeof(HARDCODED_WIDTH);loop++) {
-        if (strcmp(szString, hardcoded_width[loop].szString) == 0) {
-            return hardcoded_width[loop].actual_width * font_size;
-        }
-    }
-    return 0;
-}
-
 /**
  * Draws the given text on cairo-surface
  */
 void
 CSCLGraphicsImplEfl::draw_text(sclwindow window, const scldrawctx draw_ctx, const SclFontInfo& font_info, const SclColor& color,
-                               const sclchar *str, sclint pos_x, sclint pos_y, sclint width, sclint height,
+                               const sclchar *str, SclTextCachedInfo *cachedinfo, sclint pos_x, sclint pos_y, sclint width, sclint height,
                                SCLLabelAlignment align, sclint padding_x, sclint padding_y,
                                sclint inner_width, sclint inner_height)
 {
@@ -664,7 +597,12 @@ CSCLGraphicsImplEfl::draw_text(sclwindow window, const scldrawctx draw_ctx, cons
                     object->data = st;
 
                     sclint calwidth, calheight;
-                    evas_object_textblock_size_native_get(text_object, &calwidth, &calheight);
+                    if (cachedinfo) {
+                        calwidth = cachedinfo->actual_size.width;
+                        calheight = cachedinfo->actual_size.height;
+                    } else {
+                        evas_object_textblock_size_native_get(text_object, &calwidth, &calheight);
+                    }
                     // FIXME: float to int may loose precision
                     if (calwidth > 0) {
                         static float _SPACE_RATE = 0.1;
@@ -674,10 +612,6 @@ CSCLGraphicsImplEfl::draw_text(sclwindow window, const scldrawctx draw_ctx, cons
                         static float _SPACE_RATE = 0.1;
                         calheight  *= 1 + _SPACE_RATE;
                     }
-
-                    /* FIXME : The following 2 lines are workaround for problem that EFL does not return correct font size */
-                    sclint hardcoded_width = find_hardcoded_width(str, font_info.font_size);
-                    if (hardcoded_width != 0) calwidth = hardcoded_width;
 
                     if (calwidth > width || calheight > height) {
                         sclfloat width_rate = (sclfloat)width / (sclfloat)calwidth;
@@ -869,4 +803,51 @@ CSCLGraphicsImplEfl::get_image_size(sclchar* image_path)
     return ret;
 }
 
+SclSize
+CSCLGraphicsImplEfl::get_text_size(const SclFontInfo &fontinfo, const sclchar *str)
+{
+    SCL_DEBUG();
+    SclSize ret = { 0, 0 };
 
+    CSCLWindows *windows = CSCLWindows::get_instance();
+
+    Evas_Object *winobj = (Evas_Object*)(windows->get_base_window());
+    Evas *evas = evas_object_evas_get(winobj);
+
+    int w, h;
+
+    Evas_Textblock_Style *st;
+    st = evas_textblock_style_new();
+
+    Evas_Object *text_object = evas_object_textblock_add(evas);
+
+    if (text_object && st) {
+        const sclint STYLE_STR_LEN = 256;
+        sclchar strStyle[STYLE_STR_LEN] = {0};
+        snprintf(strStyle, STYLE_STR_LEN - 1, "DEFAULT='font=%s font_size=%d'",
+            fontinfo.font_name, fontinfo.font_size);
+
+        evas_textblock_style_set(st, strStyle);
+        evas_object_textblock_style_set(text_object, st);
+
+        evas_object_textblock_clear(text_object);
+        char *markup = evas_textblock_text_utf8_to_markup(text_object, str);
+        if (markup) {
+            evas_object_textblock_text_markup_set(text_object, markup);
+            free(markup);
+        }
+
+        evas_object_textblock_size_native_get(text_object, &w, &h);
+
+        ret.width = w;
+        ret.height = h;
+    }
+    if (text_object) {
+        evas_object_del(text_object);
+    }
+    if (st) {
+        evas_textblock_style_free(st);
+    }
+
+    return ret;
+}

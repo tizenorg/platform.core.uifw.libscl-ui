@@ -42,7 +42,7 @@ CSCLGraphicsImplGtk::~CSCLGraphicsImplGtk()
 
 
 void
-CSCLGraphicsImplGtk::draw_image(sclwindow window, const scldrawctx drawCtx, sclchar* imgPath, sclint destX, sclint destY,
+CSCLGraphicsImplGtk::draw_image(sclwindow window, const scldrawctx drawCtx, sclchar* imgPath, SclImageCachedInfo *cachedinfo, sclint destX, sclint destY,
                                 sclint destWidth, sclint destHeight, sclint srcX, sclint srcY, sclint srcWidth, sclint srcHeight)
 {
     SCL_DEBUG();
@@ -192,7 +192,7 @@ CSCLGraphicsImplGtk::destroy_font(sclfont font)
  */
 void
 CSCLGraphicsImplGtk::draw_text(sclwindow window, const scldrawctx drawCtx, const SclFontInfo& fontinfo, const SclColor& color,
-                               const sclchar *str, sclint posx, sclint posy, sclint width, sclint height,
+                               const sclchar *str, SclTextCachedInfo *cachedinfo, sclint posx, sclint posy, sclint width, sclint height,
                                SCLLabelAlignment align, sclbyte padding)
 {
     SCL_DEBUG();
@@ -333,4 +333,11 @@ CSCLGraphicsImplGtk::get_image_size(sclchar* imgPath)
     return ret;
 }
 
+SclSize
+CSCLGraphicsImplGtk::get_text_size(const SclFontInfo & fontinfo, const sclchar *str)
+{
+    SCL_DEBUG();
+    SclSize ret = {0, 0};
 
+    return ret;
+}
