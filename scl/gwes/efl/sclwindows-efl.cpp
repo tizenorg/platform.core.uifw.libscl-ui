@@ -126,6 +126,7 @@ CSCLWindowsImplEfl::create_window(const sclwindow parent, SclWindowContext *winc
 
     elm_win_borderless_set(win, EINA_TRUE);
     elm_win_alpha_set(win, EINA_TRUE);
+    elm_win_title_set(win, "Keyboard Popup Window");
 
     scl16 new_width;
     scl16 new_height;
@@ -194,6 +195,7 @@ CSCLWindowsImplEfl::create_magnifier_window(const sclwindow parent, SclWindowCon
 
     elm_win_borderless_set(win, EINA_TRUE);
     elm_win_alpha_set(win, EINA_TRUE);
+    elm_win_title_set(win, "Keyboard Magnifier Window");
 
     /*
      * FIXME set override to let window manager responds elm_win_raise request
@@ -269,6 +271,8 @@ CSCLWindowsImplEfl::create_dim_window(const sclwindow parent, SclWindowContext *
 
     elm_win_borderless_set(win, EINA_TRUE);
     elm_win_alpha_set(win, EINA_TRUE);
+    elm_win_title_set(win, "Keyboard Dim Window");
+
     evas_object_resize(win, width, height);
 
 #ifndef APPLY_WINDOW_MANAGER_CHANGE
