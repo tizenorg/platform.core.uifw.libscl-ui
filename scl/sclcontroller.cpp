@@ -574,6 +574,7 @@ CSCLController::process_button_pressed_event(sclwindow window, sclint x, sclint 
                                             coordinate->extract_offset_y,
                                             sclres_input_mode_configure[popup_input_mode].timeout
                                            );
+                        windows->hide_window(windows->get_magnifier_window());
                         /* FIXME : The parent key should be turned back to NORMAL state when RELEASED,
                             in case of POPUP_TYPE_BTN_PRESS_POPUP_DRAG type. Temporariliy setting NORMAL here. */
                         btncontext->state = BUTTON_STATE_NORMAL;
@@ -821,6 +822,7 @@ CSCLController::process_button_long_pressed_event(sclwindow window, sclbyte key_
                                 coordinate->extract_offset_y,
                                 sclres_input_mode_configure[popup_input_mode].timeout
                                 );
+                            windows->hide_window(windows->get_magnifier_window());
                             _play_tts_for_input_mode_name(popup_input_mode);
                             ret = TRUE;
                         }
@@ -1800,6 +1802,7 @@ CSCLController::process_button_release_event(sclwindow window, sclint x, sclint 
                                     coordinate->extract_offset_y,
                                     sclres_input_mode_configure[popup_input_mode].timeout
                                 );
+                                windows->hide_window(windows->get_magnifier_window());
                                 _play_tts_for_input_mode_name(popup_input_mode);
                             }
                         }
@@ -3116,6 +3119,7 @@ CSCLController::timer_event(const scl32 data)
                 FALSE,
                 FALSE
             );
+            windows->hide_window(windows->get_magnifier_window());
             _play_tts_for_layout_autopopup_name();
 
             sclwindow move_window = context->get_cur_move_window(context->get_last_touch_device_id());
