@@ -112,14 +112,22 @@ CSCLUtilsImplLinux::play_tts(const sclchar* str) {
     SCL_DEBUG();
 
     if (str) {
+        int r;
         int utt_id = 0;
         tts_state_e current_state;
-        tts_get_state(tts, &current_state);
+
+        r = tts_get_state(tts, &current_state);
+        if (TTS_ERROR_NONE != r) {
+            printf("Fail to get state from TTS : ret(%d)\n", r);
+        }
 
         if (TTS_STATE_PLAYING == current_state)  {
-            tts_stop(tts);
+            r = tts_stop(tts);
+            if (TTS_ERROR_NONE != r) {
+                printf("Fail to stop TTS : ret(%d)\n", r);
+            }
         }
-        int r = tts_add_text(tts, str, "en_US", TTS_VOICE_TYPE_FEMALE, TTS_SPEED_NORMAL, &utt_id);
+        r = tts_add_text(tts, str, "en_US", TTS_VOICE_TYPE_FEMALE, TTS_SPEED_NORMAL, &utt_id);
         if (TTS_ERROR_NONE == r) {
             r = tts_play(tts);
             if (TTS_ERROR_NONE != r) {
@@ -127,6 +135,7 @@ CSCLUtilsImplLinux::play_tts(const sclchar* str) {
             }
         }
     }
+
     return TRUE;
 }
 
