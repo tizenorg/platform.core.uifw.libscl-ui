@@ -89,7 +89,9 @@ static void handle_shift_button_click_event(SclUIEventDesc ui_event_desc)
 static void handle_shift_state_on_button_click_event(SclUIEventDesc ui_event_desc)
 {
     CSCLUIImpl *uiimpl = CSCLUIImpl::get_instance();
-    if (uiimpl->get_caps_mode()) {
+
+    /* do not need the libscl-ui auto-captial the shift state  */
+    if (FALSE == uiimpl->get_autocapital_shift_state()) {
         return;
     }
 

@@ -351,8 +351,17 @@ public:
      */
     void unset_string_substitution(const sclchar *original);
 
-    sclint get_caps_mode();
-    void set_caps_mode(sclint);
+    /**
+     * @brief This API sets the autocapital shift state flag
+     * @param[in] flag: TRUE indicates the libscl-ui will auto handle the shift state
+     *                  FALSE not, then the users will handle this outside the libscl-ui
+     * default is TRUE
+     */
+    void set_autocapital_shift_state(sclboolean flag);
+    /**
+     * @brief This API gets the autocapital shift state flag
+     */
+    sclint get_autocapital_shift_state();
 private:
     CSCLUIImpl *m_impl;
 };

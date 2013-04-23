@@ -109,11 +109,11 @@ public:
 
     void set_string_substitution(const sclchar *original, const sclchar *substitute);
     void unset_string_substitution(const sclchar *original);
-    sclint get_caps_mode();
-    void set_caps_mode(sclint caps_mode);
+    sclboolean get_autocapital_shift_state();
+    void set_autocapital_shift_state(sclboolean flag);
 private:
     sclboolean m_initialized;
-    sclint m_caps_mode;
+    sclboolean m_autocapital_shift_state;
 };
 
 }

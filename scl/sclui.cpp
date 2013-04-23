@@ -541,19 +541,19 @@ CSCLUI::unset_string_substitution(const sclchar *original)
 }
 
 void
-CSCLUI::set_caps_mode(sclint mode) {
+CSCLUI::set_autocapital_shift_state(sclboolean flag) {
     if (m_impl) {
-        m_impl->set_caps_mode(mode);
+        m_impl->set_autocapital_shift_state(flag);
     }
 }
 
 sclint
-CSCLUI::get_caps_mode() {
-    sclint mode = 0;
+CSCLUI::get_autocapital_shift_state() {
+    sclint flag = 0;
 
     if (m_impl) {
-        mode = m_impl->get_caps_mode();
+        flag = m_impl->get_autocapital_shift_state();
     }
 
-    return mode;
+    return flag;
 }
