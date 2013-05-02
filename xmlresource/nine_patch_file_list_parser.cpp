@@ -66,6 +66,7 @@ class NinePatchFileListParserImpl {
             assert(m_size == 0);
             while (cur_node != NULL) {
                 if (0 == xmlStrcmp(cur_node->name, (const xmlChar *)"file")) {
+                    assert(m_size >= 0 && m_size < MAX_NINE_PATCH_FILE_LIST);
                     m_nine_patch_file_list[m_size].image_path = (const char*)xmlNodeGetContent(cur_node);
                     get_prop_number(cur_node, "left", &(m_nine_patch_file_list[m_size].left));
                     get_prop_number(cur_node, "right", &(m_nine_patch_file_list[m_size].right));
@@ -77,6 +78,7 @@ class NinePatchFileListParserImpl {
                     m_size++;
                     if (m_size >= MAX_NINE_PATCH_FILE_LIST) {
                         SCLLOG(SclLog::ERROR, "No Space for nine patch file list record.");
+                        break;
                     }
                 }
 

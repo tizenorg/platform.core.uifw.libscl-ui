@@ -140,7 +140,7 @@ class ModifierDecorationParserImpl {
             int size = 0;
             while (cur_node != NULL) {
                 if (0 == xmlStrcmp(cur_node->name, (const xmlChar *)"modifier_decoration_record")) {
-                    parsing_modifier_decoration_record( cur_node, cur_rec);
+                    parsing_modifier_decoration_record(cur_node, cur_rec);
                     size++;
                     cur_rec++;
                     if (size >= MAX_SCL_MODIFIER_DECORATION_NUM) {
