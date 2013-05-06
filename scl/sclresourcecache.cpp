@@ -965,7 +965,9 @@ CSCLResourceCache::recompute_layout(sclwindow window)
             }*/
 
             /* EFL testing */
-            windows->update_window(window);
+            if (window) {
+                windows->update_window(window);
+            }
         }
     }
 

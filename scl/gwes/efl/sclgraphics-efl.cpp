@@ -83,6 +83,9 @@ Evas_Object* extract_partimage_from_fullimage(
     int w,h;
     Evas_Object *image_ob;
 
+    if (fullimage == NULL) {
+        return NULL;
+    }
     evas_object_image_size_get(fullimage, &w, &h);
 
     data = (unsigned int*)evas_object_image_data_get(fullimage,0);
@@ -132,7 +135,7 @@ CSCLGraphicsImplEfl::draw_image(sclwindow window, const scldrawctx draw_ctx, scl
     CSCLUtils *utils = CSCLUtils::get_instance();
     SclWindowContext *winctx = NULL;
     SclWindowContext *targetctx = NULL;
-    if (windows) {
+    if (windows && window) {
         //winctx = windows->get_window_context(window, FALSE);
         winctx = windows->get_window_context(window);
         //targetctx = windows->get_window_context(draw_ctx, FALSE);
@@ -428,7 +431,7 @@ CSCLGraphicsImplEfl::draw_text(sclwindow window, const scldrawctx draw_ctx, cons
     SclWindowContext *winctx = NULL;
     SclWindowContext *targetctx = NULL;
 
-    if (windows) {
+    if (windows && window) {
         //winctx = windows->get_window_context(window, FALSE);
         winctx = windows->get_window_context(window);
         //targetctx = windows->get_window_context(draw_ctx, FALSE);
@@ -730,7 +733,7 @@ CSCLGraphicsImplEfl::draw_rectangle(sclwindow window, const scldrawctx draw_ctx,
     SclWindowContext *winctx = NULL;
     SclWindowContext *targetctx = NULL;
 
-    if (windows) {
+    if (windows && window) {
         //winctx = windows->get_window_context(window, FALSE);
         winctx = windows->get_window_context(window);
         //targetctx = windows->get_window_context(draw_ctx, FALSE);
@@ -788,8 +791,12 @@ CSCLGraphicsImplEfl::get_image_size(sclchar* image_path)
     CSCLWindows *windows = CSCLWindows::get_instance();
 
     Evas_Object *window_object = (Evas_Object*)(windows->get_base_window());
-    Evas *evas = evas_object_evas_get(window_object);
-    Evas_Object *image_object = evas_object_image_add(evas);
+    Evas_Object *image_object = NULL;
+
+    if (window_object) {
+        Evas *evas = evas_object_evas_get(window_object);
+        image_object = evas_object_image_add(evas);
+    }
 
     if (image_object) {
         int w, h;
@@ -810,9 +817,15 @@ CSCLGraphicsImplEfl::get_text_size(const SclFontInfo &fontinfo, const sclchar *s
     SclSize ret = { 0, 0 };
 
     CSCLWindows *windows = CSCLWindows::get_instance();
+    Evas_Object *winobj = NULL;
+    Evas *evas = NULL;
 
-    Evas_Object *winobj = (Evas_Object*)(windows->get_base_window());
-    Evas *evas = evas_object_evas_get(winobj);
+    if (windows) {
+        winobj = (Evas_Object*)(windows->get_base_window());
+    }
+    if (winobj) {
+        evas = evas_object_evas_get(winobj);
+    }
 
     int w, h;
 
