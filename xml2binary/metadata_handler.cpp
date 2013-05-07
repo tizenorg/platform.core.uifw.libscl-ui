@@ -208,19 +208,16 @@ parsing_metadata() {
 
     doc = xmlReadFile(file_name, NULL, 0);
     if (doc == NULL) {
-        printf("Could not load file.\n");
         exit(1);
     }
 
     curNode = xmlDocGetRootElement(doc);
     if (curNode == NULL) {
-        printf("empty document.\n");
         xmlFreeDoc(doc);
         exit(1);
     }
     if (0 != xmlStrcmp(curNode->name, (const xmlChar*)"metadata"))
     {
-        printf("root name %s error!\n", curNode->name);
         xmlFreeDoc(doc);
         exit(1);
     }

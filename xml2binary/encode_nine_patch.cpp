@@ -20,7 +20,6 @@
 #include "xmlresource.h"
 #include "imetadata_helper.h"
 #include "resource_storage_impl.h"
-#include "put_record.h"
 #include "_auto_metadata.h"
 using namespace std;
 using namespace xmlresource;
@@ -44,19 +43,10 @@ encode_nine_patch_file(ResourceStorage& storage, IMetaData_Helper& md_helper) {
     int init_size = storage.size();
 
     XMLResource *xmlresource = XMLResource::get_instance();
-    if (xmlresource == NULL) {
-        printf("Error: failed to get xmlresource instance.\n");
-        return 0;
-    }
     SclNinePatchInfo* ninePatchInfoTable = xmlresource->get_nine_patch_list();
     if (ninePatchInfoTable == NULL) {
-        printf("Warning: nine patch list is null\n");
         return 0;
     }
-#ifdef __SCL_TXT_DEBUG
-    put_nine_patch_info(ENCODE, ninePatchInfoTable);
-
-#endif
     storage.reserve(8);
     storage.put<sint_t>(MAX_NINE_PATCH_FILE_LIST, 4);
 

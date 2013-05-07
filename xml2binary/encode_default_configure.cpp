@@ -20,7 +20,6 @@
 #include "resource_storage_impl.h"
 using namespace xmlresource;
 
-#include "put_record.h"
 #include "_auto_metadata.h"
 static void _encode_color(ResourceStorage& storage, const SclColor& color, int width) {
     if (width <= 0) return;
@@ -96,10 +95,6 @@ encode_default_configure_file(ResourceStorage& storage, IMetaData_Helper& md_hel
     XMLResource *xmlresource = XMLResource::get_instance();
     PSclDefaultConfigure defaultConfigure = xmlresource->get_default_configure();
 
-#ifdef __SCL_TXT_DEBUG
-    put_default_configure(ENCODE, *defaultConfigure);
-
-#endif
     Default_configure_width record_width;
     set_default_configure_width(md_helper, record_width);
 

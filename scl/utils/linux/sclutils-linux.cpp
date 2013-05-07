@@ -118,20 +118,20 @@ CSCLUtilsImplLinux::play_tts(const sclchar* str) {
 
         r = tts_get_state(tts, &current_state);
         if (TTS_ERROR_NONE != r) {
-            printf("Fail to get state from TTS : ret(%d)\n", r);
+            LOGD("Fail to get state from TTS : ret(%d)\n", r);
         }
 
         if (TTS_STATE_PLAYING == current_state)  {
             r = tts_stop(tts);
             if (TTS_ERROR_NONE != r) {
-                printf("Fail to stop TTS : ret(%d)\n", r);
+                LOGD("Fail to stop TTS : ret(%d)\n", r);
             }
         }
         r = tts_add_text(tts, str, "en_US", TTS_VOICE_TYPE_FEMALE, TTS_SPEED_NORMAL, &utt_id);
         if (TTS_ERROR_NONE == r) {
             r = tts_play(tts);
             if (TTS_ERROR_NONE != r) {
-                printf("Fail to play TTS : ret(%d)\n", r);
+                LOGD("Fail to play TTS : ret(%d)\n", r);
             }
         }
     }
@@ -229,12 +229,12 @@ CSCLUtilsImplLinux::open_devices() {
 
     /*r = tts_create(&tts);
     if (TTS_ERROR_NONE != r) {
-        printf("tts_create FAILED : result(%d)", r);
+        LOGD("tts_create FAILED : result(%d)", r);
     } else {
         tts_set_mode (tts, TTS_MODE_SCREEN_READER);
     }
     if (TTS_ERROR_NONE != r) {
-        printf("tts_set_mode FAILED : result(%d)", r);
+        LOGD("tts_set_mode FAILED : result(%d)", r);
     }
 
     tts_state_e current_state;
@@ -264,12 +264,12 @@ CSCLUtilsImplLinux::close_devices() {
     /*
     r = tts_unprepare(tts);
     if (TTS_ERROR_NONE != r) {
-        printf("tts_unprepare FAILED : result(%d)", r);
+        LOGD("tts_unprepare FAILED : result(%d)", r);
     }
 
     r = tts_destroy(tts);
     if (TTS_ERROR_NONE != r) {
-        printf("tts_destroy FAILED : result(%d)", r);
+        LOGD("tts_destroy FAILED : result(%d)", r);
     }*/
     return TRUE;
 }

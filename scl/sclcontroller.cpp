@@ -1332,7 +1332,6 @@ CSCLController::process_button_over_event(sclwindow window, sclint x, sclint y, 
                 return FALSE;
             }
             if (keyindex != highlighted_key || window != highlighted_window ) {
-                printf("%d != %d || %p != %p\n", keyindex, highlighted_key, window, highlighted_window);
                 if(layout) {
                     SclPoint pos = {0,};
                     sclfloat scale_rate_x, scale_rate_y;
@@ -1347,15 +1346,12 @@ CSCLController::process_button_over_event(sclwindow window, sclint x, sclint y, 
                     if (coordinate->key_type != KEY_TYPE_NONE) {
                         if (context->get_tts_enabled()) {
                             const char *targetstr = coordinate->hint_string[shiftidx][btncontext->multikeyIdx];
-                            printf("coordinate->hint_string[%d][%d] : %p\n", shiftidx, btncontext->multikeyIdx, targetstr);
                             if (targetstr == NULL) {
                                 targetstr = coordinate->key_value[shiftidx][btncontext->multikeyIdx];
                             }
-                            printf("coordinate->key_value[%d][%d] : %p\n", shiftidx, btncontext->multikeyIdx, targetstr);
                             if (targetstr == NULL) {
                                 targetstr = coordinate->label[shiftidx][0];
                             }
-                            printf("coordinate->label[%d][0] : %p\n", shiftidx, targetstr);
                             /*if(state->get_cur_action_state() == ACTION_STATE_BASE_LONGKEY ||
                                 state->get_cur_action_state() == ACTION_STATE_POPUP_LONGKEY ) {
                                     targetstr = coordinate->long_key_value;
@@ -1756,7 +1752,6 @@ CSCLController::process_button_release_event(sclwindow window, sclint x, sclint 
                                 sclres_manager->get_layout_id(sclres_input_mode_configure[popup_input_mode].layouts[display_mode]);
                             if (popupLayoutId == NOT_USED){
                                 // deal with NOT_USED
-                                printf("popupLayoutID is not used.\n");
                             }
                             SclLayout *layout = NULL;
                             /* FIXME */
@@ -2767,7 +2762,6 @@ CSCLController::mouse_move(sclwindow window, sclint x, sclint y, scltouchdevice 
                 }
                 deltax = originx - startx;
                 deltay = originy - starty;
-                //printf("DIST : %f, RECOG : %f\n", dist, direction_recog_dist);
                 if (dist > direction_recog_dist) {
                     next_drag_state = get_drag_state(deltax, deltay);
                     /* Disable longkey if dragging is recognized */
@@ -2786,7 +2780,6 @@ CSCLController::mouse_move(sclwindow window, sclint x, sclint y, scltouchdevice 
                     deltax = originx - startx;
                     deltay = originy - starty;
                     sclfloat dist_farthest = utils->get_approximate_distance(originx, originy, startx, starty);
-                    printf("%d %d %d %d %f, %d %d\n", originx, originy, startx, starty, dist_farthest, cur_drag_state, next_drag_state);
                     /* Let's see how much we are away from the last farthest point */
                     sclfloat diffdir_recog_dist = SCL_DIRECTION_RELATIVE_DIFFDIR_RECOG_DIST * utils->get_smallest_scale_rate();
                     /* If we moved certain amount from the point where direction changed, process drag state change routine */
@@ -2836,7 +2829,6 @@ CSCLController::mouse_move(sclwindow window, sclint x, sclint y, scltouchdevice 
                 if (drag_state_changed) {
                     /* When the dragging direction changes, save the current position as farthest point for future comparison */
                     context->set_farthest_move_point(touch_id, originx, originy);
-                    printf("SET_FARTHEST : %d %d %d\n", originx, originy, context->get_cur_drag_state(touch_id));
                 }
             }
 
@@ -3130,7 +3122,6 @@ CSCLController::timer_event(const scl32 data)
                 move_point.x = (move_ctx->geometry.x - popup_ctx->geometry.x) + move_point.x;
                 move_point.y = (move_ctx->geometry.y - popup_ctx->geometry.y) + move_point.y;
             }
-            printf("AUTOPOPUP : %d %d\n", move_point.x, move_point.y);
 
             CSCLWindows *windows = CSCLWindows::get_instance();
             if (windows && coordinate) {

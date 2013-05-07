@@ -16,8 +16,6 @@
  */
 
 #include "label_properties_bin_parser.h"
-#include "simple_debug.h"
-#include "put_record.h"
 BinLabelPropertyParser* BinLabelPropertyParser::m_instance = NULL;
 
 BinLabelPropertyParser::BinLabelPropertyParser() {
@@ -59,7 +57,6 @@ void BinLabelPropertyParser::parsing_label_properties_frame() {
     int maxj = m_storage.get<sint_t>(4);
 
     if (parser_info_provider == NULL) {
-        SCLLOG(SclLog::ERROR, "Error parser_info_provider is NULL\n");
         return;
     }
 
@@ -71,9 +68,6 @@ void BinLabelPropertyParser::parsing_label_properties_frame() {
             decode_label_properties_record(&cur, record_width);
         }
     }
-#ifdef __SCL_TXT_DEBUG
-    put_label_properties_frame(DECODE, m_label_properties_frame);
-#endif
 }
 
 void

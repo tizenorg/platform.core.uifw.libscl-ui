@@ -19,7 +19,6 @@
 #include "file_storage.h"
 #include <assert.h>
 using namespace std;
-#include "put_record.h"
 BinMagnifierConfigParser* BinMagnifierConfigParser::m_instance = NULL;
 
 BinMagnifierConfigParser::BinMagnifierConfigParser() {
@@ -89,10 +88,6 @@ void BinMagnifierConfigParser::parsing_magnifier_configure() {
     cur->padding_y = m_storage.get<sint_t>(record_width.padding_y);
     //show_shift_label
     cur->show_shift_label = m_storage.get<sint_t>(record_width.show_shift_label);
-
-#ifdef __SCL_TXT_DEBUG
-    put_magnifier_wnd_configure(DECODE, m_magnifier_configure);
-#endif
 }
 
 PSclMagnifierWndConfigure BinMagnifierConfigParser::get_magnifier_configure() {

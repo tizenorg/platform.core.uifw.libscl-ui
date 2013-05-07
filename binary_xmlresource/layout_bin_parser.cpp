@@ -20,7 +20,6 @@
 #include "key_coordinate_frame_bin_parser.h"
 #include "sclutils.h"
 
-#include "put_record.h"
 #include <algorithm>
 using namespace std;
 using namespace scl;
@@ -109,10 +108,6 @@ parsing_layout_table() {
         SclLayout& cur = m_layout_table[i];
         decode_layout_record(cur, record_width);
     }
-#ifdef __SCL_TXT_DEBUG
-    put_layout_table(DECODE, m_layout_table);
-#endif
-
 }
 
 void

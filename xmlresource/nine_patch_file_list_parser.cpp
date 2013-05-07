@@ -15,13 +15,16 @@
  *
  */
 
+#include <dlog.h>
+#ifndef LOG_TAG
+#define LOG_TAG "LIBSCL_UI"
+#endif
 #include <memory.h>
 #include <assert.h>
 #include <libxml/parser.h>
 
 #include "nine_patch_file_list_parser.h"
 #include "xml_parser_utils.h"
-#include "simple_debug.h"
 
 class NinePatchFileListParserImpl {
     public:
@@ -44,19 +47,19 @@ class NinePatchFileListParserImpl {
 
             doc = xmlReadFile(input_file, NULL, 0);
             if (doc == NULL) {
-                SCLLOG(SclLog::DEBUG, "Could not load file: %s.", input_file);
+                LOGD("Could not load file: %s\n", input_file);
                 return -1;
             }
 
             cur_node = xmlDocGetRootElement(doc);
             if (cur_node == NULL) {
-                SCLLOG(SclLog::DEBUG, "Nine_Patch_File_Parser: empty document.\n");
+                LOGD("Nine_Patch_File_Parser: empty document.\n");
                 xmlFreeDoc(doc);
                 return -1;
             }
             if (0 != xmlStrcmp(cur_node->name, (const xmlChar*)"nine_patch_file_list"))
             {
-                SCLLOG(SclLog::DEBUG, "Nine_Patch_File_Parser: root name error: %s\n!", (char *)cur_node->name);
+                LOGD("%s: root name error: %s.\n", __FUNCTION__, (char *)cur_node->name);
                 xmlFreeDoc(doc);
                 return -1;
             }
@@ -73,11 +76,11 @@ class NinePatchFileListParserImpl {
                     get_prop_number(cur_node, "top", &(m_nine_patch_file_list[m_size].top));
                     get_prop_number(cur_node, "bottom", &(m_nine_patch_file_list[m_size].bottom));
                     if (m_nine_patch_file_list[m_size].image_path == NULL) {
-                        SCLLOG(SclLog::ERROR, "NinePatchFileParser: image_path should be not NULL");
+                        LOGD("NinePatchFileParser: image_path should be not NULL");
                     }
                     m_size++;
                     if (m_size >= MAX_NINE_PATCH_FILE_LIST) {
-                        SCLLOG(SclLog::ERROR, "No Space for nine patch file list record.");
+                        LOGD("No Space for nine patch file list record.");
                         break;
                     }
                 }
@@ -102,7 +105,7 @@ NinePatchFileParser::NinePatchFileParser() {
 
 NinePatchFileParser::~NinePatchFileParser() {
     if (m_impl) {
-        SCLLOG(SclLog::MESSAGE, "~NinePatchFileParser() has called.");
+        LOGD("~NinePatchFileParser() has called.");
         delete m_impl;
         m_impl = NULL;
     }
@@ -123,13 +126,13 @@ NinePatchFileParser::init(const char* file) {
 bool
 NinePatchFileParser::get_nine_patch_info(const char* filename, SclNinePatchInfo *info) {
     if (filename == NULL) {
-        SCLLOG(SclLog::DEBUG, "get_nine_patch_info() has failed.");
+        LOGD("get_nine_patch_info() has failed.");
         return false;
     }
 
     SclNinePatchInfo *nine_patch_list = get_nine_patch_list();
     if (nine_patch_list == NULL) {
-        SCLLOG(SclLog::DEBUG, "get_nine_patch_info() has failed.");
+        LOGD("get_nine_patch_info() has failed.");
         return false;
     }
 
@@ -143,7 +146,7 @@ NinePatchFileParser::get_nine_patch_info(const char* filename, SclNinePatchInfo 
         }
     }
 
-    SCLLOG(SclLog::DEBUG, "get_nine_patch_info() has failed.");
+    LOGD("get_nine_patch_info() has failed.");
     return false;
 
 }

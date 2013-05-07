@@ -18,7 +18,6 @@
 #include "autopopup_configure_bin_parser.h"
 #include <assert.h>
 using namespace std;
-#include "put_record.h"
 
 BinAutoPopupConfigParser* BinAutoPopupConfigParser::m_instance = NULL;
 
@@ -117,9 +116,6 @@ void BinAutoPopupConfigParser::parsing_autopopup_configure() {
 
     //add_grab_bottom
     cur->add_grab_bottom = m_storage.get<sint_t>(record_width.add_grab_bottom);
-#ifdef __SCL_TXT_DEBUG
-    put_autopopup_configure(DECODE, m_autopopup_configure);
-#endif
 }
 
 PSclAutoPopupConfigure BinAutoPopupConfigParser::get_autopopup_configure() {

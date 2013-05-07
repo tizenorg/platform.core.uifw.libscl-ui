@@ -17,7 +17,6 @@
 
 #include "modifier_decoration_bin_parser.h"
 #include <memory.h>
-#include "put_record.h"
 
 BinModifierDecorationParser* BinModifierDecorationParser::m_instance = NULL;
 
@@ -72,9 +71,6 @@ BinModifierDecorationParser::parsing_modifier_decoration_table() {
 
         cur++;
     }
-#ifdef __SCL_TXT_DEBUG
-    put_modifier_decoration(DECODE, m_modifier_decoration_table);
-#endif
 }
 
 int

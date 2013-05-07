@@ -30,25 +30,21 @@
 #include "encode_autopopup_configure.h"
 #include "encode_nine_patch.h"
 #include "xmlresource.h"
+#include <iostream>
 using namespace xmlresource;
 using namespace std;
 
 String_Encoder actual_string_encoder;
 IString_Encoder& string_encoder = actual_string_encoder;
 
-static inline void show_usage(){
-    static const char* message = {  "xml2binary: missing folder operand\n"
-                                    "-------------------------------------------------------\n"
-                                    "|  Usage: xml2binary operand1 operand2                |\n"
-                                    "|  operand1: the folder where xml text files located  |\n"
-                                    "|  operand2: the folder you want to place the bin file|\n"
-                                    "------------------------------------------------------- \n"};
-    printf("%s", message);
-}
-
 int main(const int argc, char* argv[]) {
     if (argc < 2) {
-        show_usage();
+        cout<<"xml2binary: missing folder operand\n"
+            <<"-------------------------------------------------------\n"
+            <<"|  Usage: xml2binary operand1 operand2                |\n"
+            <<"|  operand1: the folder where xml text files located  |\n"
+            <<"|  operand2: the folder you want to place the bin file|\n"
+            <<"------------------------------------------------------- \n";
         return -1;
     }
 
@@ -71,11 +67,6 @@ int main(const int argc, char* argv[]) {
     }
 
     XMLResource *xmlresource = XMLResource::get_instance();
-    if (!xmlresource) {
-        printf("Failed build xmlresource instance.\n");
-        return -1;
-    }
-
 
     xmlresource->set_resource_directory(xml_text_dir);
     xmlresource->init("main_entry.xml");
@@ -124,7 +115,6 @@ int main(const int argc, char* argv[]) {
         rs.reserve(MAX_DATATYPE * (SIZE_WIDTH + OFFSET_WIDTH));
         int ret = rs.toFile(bin_file, offset);
         if (ret < 0) {
-            printf("error\n");
             return -1;
         }
     }
@@ -175,12 +165,11 @@ int main(const int argc, char* argv[]) {
         int offset = 0;
         int ret = rs.toFile(bin_file, offset);
         if (ret < 0) {
-            printf("error\n");
             return -1;
         }
     }
 
-    printf("xml2binary succesfully.\n");
+    cout<<"xml2binary succesfully.\n";
 
     return 0;
 }

@@ -19,6 +19,10 @@
 #define __RESOURCE_STORAGE_IMPL_H__
 #include "resource_storage.h"
 
+#include <dlog.h>
+#ifndef LOG_TAG
+#define LOG_TAG "LIBSCL_UI"
+#endif
 inline ResourceStorage::
 ResourceStorage() {
     init();
@@ -144,13 +148,13 @@ inline void ResourceStorage::
 expand_storage() {
     unsigned int _new_size = (unsigned int)(m_capability + __RE_NEW_LENGTH__);
     if (_new_size > __MAX_NEW_SIZE__) {
-        printf("expand_storage failed: size is limited to %d\n", __MAX_NEW_SIZE__);
+        LOGD("expand_storage failed: size is limited to %d\n", __MAX_NEW_SIZE__);
         return;
     }
 
     char* _p = new char[_new_size];
     if(_p == NULL) {
-        printf("expand_storage error");
+        LOGD("expand_storage error");
         return;
     }
     memset(_p, 0x00, _new_size);

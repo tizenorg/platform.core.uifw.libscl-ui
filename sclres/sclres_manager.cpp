@@ -19,11 +19,9 @@
 #include "xmlresource.h"
 #include "binary_xmlresource.h"
 #include <assert.h>
-#include "simple_debug.h"
 using namespace xmlresource;
 using namespace binary_xmlresource;
 using namespace sclres;
-#include "put_record.h"
 
 static sclres::SclRes *_current_parser = NULL;
 
@@ -49,11 +47,9 @@ SclResParserManager::SclResParserManager() {
 void
 SclResParserManager::init(const SCLParserType parser_type, const char *entry_filepath) {
     if (parser_type == SCL_PARSER_TYPE_XML) {
-        SCLLOG(SclLog::MESSAGE, "Use text xml\n");
         _current_parser = XMLResource::get_instance();
     }
     else if (parser_type == SCL_PARSER_TYPE_BINARY_XML) {
-        SCLLOG(SclLog::MESSAGE, "Use binary xml\n");
         _current_parser = BinResource::get_instance();
     }
 
@@ -70,17 +66,6 @@ SclResParserManager::init(const SCLParserType parser_type, const char *entry_fil
         /* Assume the directory where the main entry file exists, is the default resource directory */
         _current_parser->set_resource_directory(filepath.c_str());
         _current_parser->init(filename.c_str());
-#ifdef __SCL_TXT_DEBUG
-        put_autopopup_configure(PARSER, *(_current_parser->get_autopopup_configure()));
-        put_default_configure(PARSER, *(_current_parser->get_default_configure()));
-        put_input_mode_configure_table(PARSER, _current_parser->get_input_mode_configure_table());
-        put_key_coordinate_frame(PARSER, _current_parser->get_key_coordinate_pointer_frame());
-        put_label_properties_frame(PARSER, _current_parser->get_label_properties_frame());
-        put_layout_table(PARSER, _current_parser->get_layout_table());
-        put_magnifier_wnd_configure(PARSER, *(_current_parser->get_magnifier_configure()));
-        put_modifier_decoration(PARSER, _current_parser->get_modifier_decoration_table());
-        //put_nine_patch_info(PARSER, _current_parser->get_nine_patch_file_list());
-#endif
     }
 }
 

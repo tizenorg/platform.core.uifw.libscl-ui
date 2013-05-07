@@ -18,7 +18,6 @@
 #include "nine_patch_file_list_bin_parser.h"
 #include <memory.h>
 #include <assert.h>
-#include "put_record.h"
 BinNinePatchFileParser* BinNinePatchFileParser::m_instance = NULL;
 
 BinNinePatchFileParser::BinNinePatchFileParser() {
@@ -64,9 +63,6 @@ void BinNinePatchFileParser::parsing_nine_patch_file_list() {
         cur->bottom = m_storage.get<sint_t>(record_width.bottom);
         cur++;
     }
-#ifdef __SCL_TXT_DEBUG
-    put_nine_patch_info(DECODE, m_nine_patch_file_list);
-#endif
 }
 
 SclNinePatchInfo*

@@ -15,12 +15,15 @@
  *
  */
 
+#include <dlog.h>
+#ifndef LOG_TAG
+#define LOG_TAG "LIBSCL_UI"
+#endif
 #include <string.h>
 #include <libxml/parser.h>
 
 #include "input_mode_configure_parser.h"
 #include "xml_parser_utils.h"
-#include "simple_debug.h"
 
 /** Example of input mode XML file :
  * <?xml version="1.0"?>
@@ -80,19 +83,19 @@ class InputModeConfigureParserImpl {
 
             doc = xmlReadFile(input_file, NULL, 0);
             if (doc == NULL) {
-                SCLLOG(SclLog::DEBUG, "Could not load file: %s.", input_file);
+                LOGD("Could not load file: %s\n", input_file);
                 return -1;
             }
 
             cur_node = xmlDocGetRootElement(doc);
             if (cur_node == NULL) {
-                SCLLOG(SclLog::DEBUG, "InputModeConfigParser: empty document.\n");
+                LOGD("InputModeConfigParser: empty document.\n");
                 xmlFreeDoc(doc);
                 return -1;
             }
             if (0 != xmlStrcmp(cur_node->name, (const xmlChar*)INPUT_MODE_CONFIGURE_TABLE_TAG))
             {
-                SCLLOG(SclLog::DEBUG, "InputModeConfigParser: root name error: %s\n!", (char *)cur_node->name);
+                LOGD("%s: root name error: %s.\n", __FUNCTION__, (char *)cur_node->name);
                 xmlFreeDoc(doc);
                 return -1;
             }
@@ -117,7 +120,7 @@ class InputModeConfigureParserImpl {
                     m_inputmode_size++;
                     cur_rec++;
                     if (m_inputmode_size >= MAX_SCL_INPUT_MODE) {
-                        SCLLOG(SclLog::ERROR, "No Space for input mode record.");
+                        LOGD("No Space for input mode record.");
                         break;
                     }
                 }
@@ -157,7 +160,7 @@ class InputModeConfigureParserImpl {
                 if (0 == xmlStrcmp(child_node->name, (const xmlChar *)INPUT_MODE_CONFIGURE_LAYOUT_TAG) ) {
                     parsing_layouts(child_node, cur_rec);
                 } else {
-                    SCLLOG(SclLog::WARNING, "input_mode_configure has no such node name: %s\n", (char *)child_node->name);
+                    LOGD("No such node name: %s.\n", (char *)child_node->name);
                 }
 
                 child_node = child_node->next;
@@ -195,7 +198,7 @@ InputModeConfigParser::InputModeConfigParser() {
 
 InputModeConfigParser::~InputModeConfigParser() {
     if (m_impl) {
-        SCLLOG(SclLog::MESSAGE, "~InputModeConfigParser() has called");
+        LOGD("~InputModeConfigParser() has called");
         delete m_impl;
         m_impl = NULL;
     }
@@ -217,14 +220,14 @@ InputModeConfigParser::init(const char* file) {
 int
 InputModeConfigParser::get_inputmode_id(const char *name) {
     if (name == NULL) {
-        SCLLOG(SclLog::DEBUG, "get_inputmode_id failed");
+        LOGD("get_inputmode_id failed");
         return -1;
     }
 
     PSclInputModeConfigure config_table = get_input_mode_configure_table();
 
     if (config_table == NULL) {
-        SCLLOG(SclLog::DEBUG, "get_inputmode_id failed");
+        LOGD("get_inputmode_id failed");
         return -1;
     }
 
@@ -236,7 +239,7 @@ InputModeConfigParser::get_inputmode_id(const char *name) {
         }
     }
 
-    SCLLOG(SclLog::DEBUG, "get_inputmode_id failed");
+    LOGD("get_inputmode_id failed");
     return -1;
 }
 

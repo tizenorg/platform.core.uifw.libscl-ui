@@ -18,7 +18,6 @@
 #include "encode_modifier_decoration.h"
 #include "xmlresource.h"
 #include "resource_storage_impl.h"
-#include "put_record.h"
 #include "_auto_metadata.h"
 using namespace xmlresource;
 static void
@@ -40,14 +39,9 @@ encode_modifier_decoration_file(ResourceStorage& storage, IMetaData_Helper& md_h
     XMLResource *xmlresource = XMLResource::get_instance();
     PSclModifierDecoration modifierDecorationTable = xmlresource->get_modifier_decoration_table();
     if (modifierDecorationTable == NULL) {
-        printf("Error. modifier decoration table is NULL\n");
         return 0;
     }
 
-#ifdef __SCL_TXT_DEBUG
-    put_modifier_decoration(ENCODE, modifierDecorationTable);
-
-#endif
     Modifier_decoration_width record_width;
     set_modifier_decoration_width(md_helper, record_width);
 

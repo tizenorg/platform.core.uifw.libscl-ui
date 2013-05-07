@@ -15,12 +15,14 @@
  *
  */
 
+#include <dlog.h>
+#ifndef LOG_TAG
+#define LOG_TAG "LIBSCL_UI"
+#endif
 #include <memory.h>
 #include <libxml/parser.h>
 #include "label_properties_parser.h"
 #include "xml_parser_utils.h"
-#include "simple_debug.h"
-#include "put_record.h"
 static int
 match_alignment(const char* key) {
   assert(key != NULL);
@@ -117,19 +119,19 @@ class LabelPropertiesParserImpl {
 
             doc = xmlReadFile(input_file, NULL, 0);
             if (doc == NULL) {
-                SCLLOG(SclLog::DEBUG, "Could not load file: %s.", input_file);
+                LOGD("Could not load file: %s\n", input_file);
                 return -1;
             }
 
             cur_node = xmlDocGetRootElement(doc);
             if (cur_node == NULL) {
-                SCLLOG(SclLog::DEBUG, "Label_Properties_Parser: empty document.\n");
+                LOGD("Label_Properties_Parser: empty document.\n");
                 xmlFreeDoc(doc);
                 return -1;
             }
             if (0 != xmlStrcmp(cur_node->name, (const xmlChar*)"label_properties_frame"))
             {
-                SCLLOG(SclLog::DEBUG, "Label_Properties_Parser: root name error: %s\n!", (char *)cur_node->name);
+                LOGD("%s: root name error: %s.\n", __FUNCTION__, (char *)cur_node->name);
                 xmlFreeDoc(doc);
                 return -1;
             }
@@ -147,7 +149,7 @@ class LabelPropertiesParserImpl {
                     m_size++;
                     curTable++;
                     if (m_size >= MAX_SCL_LABEL_PROPERTIES) {
-                        SCLLOG(SclLog::ERROR, "No Space for label properties record.");
+                        LOGD("No Space for label properties record.");
                         break;
                     }
                 }
@@ -315,24 +317,24 @@ class LabelPropertiesParserImpl {
                     temp_string[2] = key[2];
                     temp_string[3] = key[3];
                     if (sscanf(temp_string, "%x", &r) <= 0) {
-                        SCLLOG(SclLog::ERROR, "parsing_rgb() has failed.");
+                        LOGD("parsing_rgb() has failed.");
                     }
 
                     temp_string[2] = key[4];
                     temp_string[3] = key[5];
                     if (sscanf(temp_string, "%x", &g) <= 0) {
-                        SCLLOG(SclLog::ERROR, "parsing_rgb() has failed.");
+                        LOGD("parsing_rgb() has failed.");
                     }
                     temp_string[2] = key[6];
                     temp_string[3] = key[7];
                     if (sscanf(temp_string, "%x", &b) <= 0) {
-                        SCLLOG(SclLog::ERROR, "parsing_rgb() has failed.");
+                        LOGD("parsing_rgb() has failed.");
                     }
 
                     temp_string[2] = key[8];
                     temp_string[3] = key[9];
                     if (sscanf(temp_string, "%x", &a) <= 0) {
-                        SCLLOG(SclLog::ERROR, "parsing_rgb() has failed.");
+                        LOGD("parsing_rgb() has failed.");
                     }
 
                     cur_color.r = r;
@@ -388,7 +390,7 @@ LabelPropertyParser::LabelPropertyParser() {
 
 LabelPropertyParser::~LabelPropertyParser() {
     if (m_impl) {
-        SCLLOG(SclLog::MESSAGE, "~LabelPropertyParser() has called");
+        LOGD("~LabelPropertyParser() has called");
         delete m_impl;
         m_impl = NULL;
     }
