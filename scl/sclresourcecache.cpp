@@ -757,7 +757,7 @@ CSCLResourceCache::add_private_key(SclPrivateKeyProperties* privProperties, sclb
 #endif
 
     if (ret == NOT_USED) {
-        LOGD("Failed!. Out of private data buffer\n");
+        printf("Failed!. Out of private data buffer\n");
     }
     return ret;
 }

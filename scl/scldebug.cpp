@@ -44,9 +44,9 @@ float SCL_DEBUG_TIME(const char* fileStr, int line, const char* str)
             etime = ((t1.tv_sec * 1000000 + t1.tv_usec) - (t0.tv_sec * 1000000 + t0.tv_usec))/1000000.0;
         }
         if (strncmp(str, "get_", 4) == 0) {
-            //LOGD("[%-20.20s]%04d [T:%u][E:" mc_red "%f" mc_normal "]" mc_normal " %s" mc_normal "\n", pFileStr, line, (t1.tv_sec * 1000000 + t1.tv_usec), etime, str);
+            //printf("[%-20.20s]%04d [T:%u][E:" mc_red "%f" mc_normal "]" mc_normal " %s" mc_normal "\n", pFileStr, line, (t1.tv_sec * 1000000 + t1.tv_usec), etime, str);
         } else {
-            LOGD("[%-20.20s]%04d [T:%u][E:" mc_red "%f" mc_normal "]" mc_blue " %s" mc_normal "\n", pFileStr, line, (t1.tv_sec * 1000000 + t1.tv_usec), etime, str);
+            printf("[%-20.20s]%04d [T:%u][E:" mc_red "%f" mc_normal "]" mc_blue " %s" mc_normal "\n", pFileStr, line, (t1.tv_sec * 1000000 + t1.tv_usec), etime, str);
         }
         t0 = t1;
     }
@@ -57,7 +57,7 @@ static float _SCL_DEBUG_ELAPASED_TIME(const char* str, struct timeval t0, struct
 {
     float etime;
     etime = ((t1.tv_sec * 1000000 + t1.tv_usec) - (t0.tv_sec * 1000000 + t0.tv_usec))/1000000.0;
-    LOGD("[%s] elap-time = " mc_green "%f" mc_normal " (%u~%u) \n", str, etime, (t0.tv_sec * 1000000 + t0.tv_usec), (t1.tv_sec * 1000000 + t1.tv_usec));
+    printf("[%s] elap-time = " mc_green "%f" mc_normal " (%u~%u) \n", str, etime, (t0.tv_sec * 1000000 + t0.tv_usec), (t1.tv_sec * 1000000 + t1.tv_usec));
     return etime;
 }
 
@@ -71,7 +71,7 @@ float SCL_DEBUG_ELAPASED_TIME(const char* fileStr, int line, const char* str, in
     if (type == MEASURE_START) {
         gettimeofday(&s_tv1, NULL);
         s_start_line = line;
-        LOGD("[%-20.20s]%04d [T:%u]" mc_blue " %s" mc_normal "\n", fileStr, line, (s_tv1.tv_sec * 1000000 + s_tv1.tv_usec), str);
+        printf("[%-20.20s]%04d [T:%u]" mc_blue " %s" mc_normal "\n", fileStr, line, (s_tv1.tv_sec * 1000000 + s_tv1.tv_usec), str);
     } else if (type == MEASURE_END) {
         gettimeofday(&s_tv2, NULL);
         s_end_line = line;
