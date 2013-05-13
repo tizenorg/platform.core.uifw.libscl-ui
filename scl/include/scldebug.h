@@ -21,10 +21,6 @@
 #include <stdlib.h>
 #include <stdio.h>
 
-#include <dlog.h>
-#ifndef LOG_TAG
-#define LOG_TAG "LIBSCL_UI"
-#endif
 #ifdef __cplusplus
 extern "C"
 {
@@ -56,14 +52,14 @@ extern "C"
 
     /* assert macro */
 #define scl_assert(_e) \
-	if (!(_e)) LOGD(mc_red "scl assert!(%s) failed at file :%s, line %04d, func: %s" mc_normal "\n", #_e, __FILE__, __LINE__, __FUNCTION__);
+	if (!(_e)) printf(mc_red "scl assert!(%s) failed at file :%s, line %04d, func: %s" mc_normal "\n", #_e, __FILE__, __LINE__, __FUNCTION__);
 
 #define scl_assert_return(_e) \
-	if (!(_e)) { LOGD(mc_red "scl assert!(%s) failed at file :%s, line %04d, func: %s" mc_normal "\n", #_e, __FILE__, __LINE__, __FUNCTION__); \
+	if (!(_e)) { printf(mc_red "scl assert!(%s) failed at file :%s, line %04d, func: %s" mc_normal "\n", #_e, __FILE__, __LINE__, __FUNCTION__); \
        return;}
 
 #define scl_assert_return_false(_e) \
-	if (!(_e)) {LOGD(mc_red "scl assert!(%s) failed at file :%s, line %04d, func: %s" mc_normal "\n", #_e, __FILE__, __LINE__, __FUNCTION__); \
+	if (!(_e)) {printf(mc_red "scl assert!(%s) failed at file :%s, line %04d, func: %s" mc_normal "\n", #_e, __FILE__, __LINE__, __FUNCTION__); \
        return 0;}
 
 #define scl_assert_return_null scl_assert_return_false
@@ -87,13 +83,13 @@ extern "C"
     static struct timeval t0;\
     static struct timeval t1;\
     gettimeofday(&t0, NULL);\
-    LOGD("[%-20.20s][%04d][" mc_blue "%s" mc_normal "]\n", __FILE__, __LINE__, __FUNCTION__);
+    printf("[%-20.20s][%04d][" mc_blue "%s" mc_normal "]\n", __FILE__, __LINE__, __FUNCTION__);
 
 #define SCL_DEBUG_END() \
     gettimeofday(&t1, NULL);\
     float etime;\
     etime = ((t1.tv_sec * 1000000 + t1.tv_usec) - (t0.tv_sec * 1000000 + t0.tv_usec))/1000000.0;\
-    LOGD("[%-20.20s][%04d][%s] E: " mc_green "%f" mc_normal " (S:%u) \n", __FILE__, __LINE__, __FUNCTION__, etime, (t0.tv_sec * 1000000 + t0.tv_usec) );
+    printf("[%-20.20s][%04d][%s] E: " mc_green "%f" mc_normal " (S:%u) \n", __FILE__, __LINE__, __FUNCTION__, etime, (t0.tv_sec * 1000000 + t0.tv_usec) );
 
 #define IO_TEST
 
