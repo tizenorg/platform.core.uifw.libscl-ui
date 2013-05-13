@@ -18,6 +18,7 @@
 #include "encode_magnifier_configure.h"
 #include "xmlresource.h"
 #include "resource_storage_impl.h"
+#include "put_record.h"
 #include "_auto_metadata.h"
 using namespace xmlresource;
 static void
@@ -68,6 +69,11 @@ encode_magnifier_configure_file(ResourceStorage& storage, IMetaData_Helper& md_h
     XMLResource *xmlresource = XMLResource::get_instance();
     PSclMagnifierWndConfigure magnifierConfigure = xmlresource->get_magnifier_configure();
 
+
+#ifdef __SCL_TXT_DEBUG
+    put_magnifier_wnd_configure(ENCODE, *magnifierConfigure);
+
+#endif
     Magnifier_configure_width record_width;
     set_magnifier_configure_width(md_helper, record_width);
 

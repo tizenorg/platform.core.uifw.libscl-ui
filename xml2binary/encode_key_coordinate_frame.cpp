@@ -19,6 +19,7 @@
 #include "encode_key_coordinate_frame.h"
 #include <string>
 #include "xmlresource.h"
+#include "put_record.h"
 #include "_auto_metadata.h"
 using namespace xmlresource;
 using namespace std;

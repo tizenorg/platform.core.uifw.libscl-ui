@@ -15,10 +15,6 @@
  *
  */
 
-#include <dlog.h>
-#ifndef LOG_TAG
-#define LOG_TAG "LIBSCL_UI"
-#endif
 #include <stdio.h>
 #include <stdlib.h>
 #include "sclresourcekeys.h"
@@ -718,7 +714,7 @@ CSCLResourceCache::add_private_key(SclPrivateKeyProperties* privProperties, sclb
             if (mPrivateKeyProperties[loop].valid == FALSE) break;
         }
         if (loop == MAX_PRIVATE_KEY) {
-            LOGD("Out of buffer!! could not insert new private data into buffer \n");
+            printf("Out of buffer!! could not insert new private data into buffer \n");
             return ret;
         }
     }

@@ -27,6 +27,7 @@ SET(SRCS
     metadata_handler.cpp
     xml2dat.cpp
     ../sclres/sclres.cpp
+    ../res/simple_debug.cpp
 )
 
 SET(PACKAGE ${PROJECT_NAME})

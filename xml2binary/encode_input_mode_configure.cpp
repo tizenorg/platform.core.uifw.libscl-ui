@@ -21,6 +21,7 @@
 #include <libxml/parser.h>
 #include "xmlresource.h"
 #include "imetadata_helper.h"
+#include "put_record.h"
 #include "_auto_metadata.h"
 using namespace std;
 using namespace xmlresource;
@@ -51,6 +52,10 @@ int encode_input_mode_configure_file(ResourceStorage& storage, IMetaData_Helper&
     XMLResource *xmlresource = XMLResource::get_instance();
     PSclInputModeConfigure inputModeConfigureTable = xmlresource->get_input_mode_configure_table();
     int size = xmlresource->get_inputmode_size();
+#ifdef __SCL_TXT_DEBUG
+    put_input_mode_configure_table(ENCODE, inputModeConfigureTable);
+
+#endif
     PSclInputModeConfigure cur = inputModeConfigureTable;
 
     //first 8 byte is the size of the block

@@ -18,6 +18,7 @@
 #include "default_configure_bin_parser.h"
 #include <assert.h>
 using namespace std;
+#include "put_record.h"
 
 BinDefaultConfigParser* BinDefaultConfigParser::m_instance = NULL;
 
@@ -116,6 +117,10 @@ void BinDefaultConfigParser::parsing_default_configure() {
 
     //dim_color
     decode_color(cur->dim_color, record_width.dim_color);
+
+#ifdef __SCL_TXT_DEBUG
+    put_default_configure(DECODE, m_default_configure);
+#endif
 }
 
 PSclDefaultConfigure BinDefaultConfigParser::get_default_configure() {

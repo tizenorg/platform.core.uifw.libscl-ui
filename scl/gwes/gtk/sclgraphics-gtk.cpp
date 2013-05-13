@@ -46,6 +46,7 @@ CSCLGraphicsImplGtk::draw_image(sclwindow window, const scldrawctx drawCtx, sclc
                                 sclint destWidth, sclint destHeight, sclint srcX, sclint srcY, sclint srcWidth, sclint srcHeight)
 {
     SCL_DEBUG();
+    //printf("\n %d destX, %d destY,\n %d destWidth, %d destHeight, %d srcX, %d srcY,\n %d srcWidth, %d srcHeight\n", destX, destY, destWidth, destHeight,  srcX,  srcWidth,  srcHeight);
     /* pre-condition */
     scl_assert_return(imgPath);
 
@@ -215,10 +216,12 @@ CSCLGraphicsImplGtk::draw_text(sclwindow window, const scldrawctx drawCtx, const
 
     if (textExtents.width > width) {
         int newSize = fontinfo.fontsize - (fontinfo.fontsize * (float)(textExtents.width - width)) / width - 1;
+        //printf("%s , %ld %ld %ld %ld %d\n", str, (int)(textExtents.width), (int)(textExtents.x_bearing), (int)(textExtents.x_advance), (int)(width), fontinfo.fontsize);
         cairo_set_font_size(cr, newSize);
 
         cairo_text_extents(cr, str, &textExtents);
         cairo_text_extents(cr, "|", &barExtents);
+        //printf("%s , %ld %ld %ld %ld %d\n", str, (int)(textExtents.width), (int)(textExtents.x_bearing), (int)(textExtents.x_advance), (int)(width), newSize);
     }
 
     if (align == LABEL_ALIGN_CENTER_TOP || align == LABEL_ALIGN_CENTER_MIDDLE || align == LABEL_ALIGN_CENTER_BOTTOM) {

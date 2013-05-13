@@ -18,6 +18,7 @@
 #include "encode_autopopup_configure.h"
 #include "xmlresource.h"
 #include "resource_storage_impl.h"
+#include "put_record.h"
 #include "_auto_metadata.h"
 using namespace xmlresource;
 static void _encode_color(ResourceStorage& storage, const SclColor& color, int width) {
@@ -93,6 +94,11 @@ encode_autopopup_configure_file(ResourceStorage& storage, IMetaData_Helper& md_h
 
     XMLResource *xmlresource = XMLResource::get_instance();
     PSclAutoPopupConfigure autopopupConfigure = xmlresource->get_autopopup_configure();
+
+#ifdef __SCL_TXT_DEBUG
+    put_autopopup_configure(ENCODE, *autopopupConfigure);
+
+#endif
 
     Autopopup_configure_width record_width;
     set_autopopup_configure_width(md_helper, record_width);

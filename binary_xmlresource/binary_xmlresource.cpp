@@ -22,6 +22,7 @@
 #include "string_provider.h"
 #include "metadata_provider.h"
 #include <assert.h>
+#include "simple_debug.h"
 
 using namespace binary_xmlresource;
 
@@ -81,6 +82,8 @@ BinResource* BinResource::get_instance() {
 }
 
 void BinResource::init(const char *entry_filepath) {
+    SCLLOG_TIME_BEGIN();
+
     char path[_POSIX_PATH_MAX] = {0};
 
 
@@ -156,6 +159,7 @@ void BinResource::init(const char *entry_filepath) {
         m_nine_patch_file_list_parser->init(storageAllData, info[NINE_PATCH].offset, info[NINE_PATCH].size, &parser_info_provider);
     }
 
+    SCLLOG_TIME_END("Parsing binary XML files");
 }
 
 void BinResource::load(int layout_id) {

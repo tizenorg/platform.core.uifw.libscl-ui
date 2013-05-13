@@ -15,11 +15,6 @@
  *
  */
 
-#include <dlog.h>
-#ifndef LOG_TAG
-#define LOG_TAG "LIBSCL_UI"
-#endif
-
 #include "sclwindows.h"
 #ifdef  __WIN32__
 #include "sclwindows-win32.h"
@@ -133,7 +128,7 @@ sclwindow CSCLWindows::open_popup(const SclWindowOpener opener, const SclRectang
             events->create_timer(SCL_TIMER_POPUP_TIMEOUT, timeout, layout);
         }
 
-        LOGD("create window (%p) x: %d, y:%d, width:%d, height:%d , layout:%d, popuptype:%d\n",
+        printf("create window (%p) x: %d, y:%d, width:%d, height:%d , layout:%d, popuptype:%d\n",
             window, geometry.x, geometry.y, geometry.width, geometry.height, layout, popup_type);
 
         events->connect_window_events(window, SCL_EVENT_MOUSE | SCL_EVENT_EXPOSE);
@@ -240,6 +235,8 @@ sclwindow CSCLWindows::open_popup(const SclWindowOpener opener, const SclRectang
 
 bool CSCLWindows::close_popup(sclwindow window)
 {
+    printf("close_popup window (%p) \n",window);
+
     pop_window_in_Z_order_list(window);
 
     hide_window(get_dim_window());
@@ -350,7 +347,7 @@ CSCLWindows::create_window(const SclWindowOpener opener, const SclRectangle &geo
         //get_window_context(window, TRUE);
 
         if (window == NULL) {
-            LOGD("Failed to create a new window. The size of window buffer has exeeded.\n");
+            printf("Failed to create a new window. The size of window buffer has exeeded.\n");
         }
     }
     return window;
@@ -380,9 +377,9 @@ CSCLWindows::create_magnifier_window(const sclwindow parent, scl16 x, scl16 y, s
         set_parent(parent, window);
 
         if (window == NULL) {
-            LOGD("Failed to create a new window. The size of window buffer has exeeded.\n");
+            printf("Failed to create a new window. The size of window buffer has exeeded.\n");
         } else {
-            LOGD("Magnifier Window %p created\n", window);
+            printf("Magnifier Window %p created\n", window);
         }
     }
 
@@ -430,7 +427,7 @@ CSCLWindows::create_dim_window(const sclwindow parent, SclWindowContext *winctx,
         }
 
         if (window == NULL) {
-            LOGD("Failed to create a new window. The size of window buffer has exeeded.\n");
+            printf("Failed to create a new window. The size of window buffer has exeeded.\n");
         }
     }
 
@@ -866,7 +863,7 @@ void CSCLWindows::set_window_rotation(const sclwindow window, SCLRotation rotati
             */
         } else {
             impl->set_window_rotation(window, rotation);
-            LOGD("## set_window_rotation : %d \n", rotation);
+            printf("## set_window_rotation : %d \n", rotation);
         }
     }
 

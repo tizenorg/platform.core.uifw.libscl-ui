@@ -15,15 +15,12 @@
  *
  */
 
-#include <dlog.h>
-#ifndef LOG_TAG
-#define LOG_TAG "LIBSCL_UI"
-#endif
 #include <libxml/parser.h>
 #include <assert.h>
 #include <limits.h>
 #include <string.h>
 #include "xmlresource.h"
+#include "simple_debug.h"
 
 using namespace xmlresource;
 
@@ -121,7 +118,7 @@ get_layout_files(char **layout_files, int* size) {
             }
 
             if (empty_index == NOT_USED) {
-                LOGD("No space for new layout: %s.\n", cur_layout_file);
+                SCLLOG(SclLog::ERROR, "No space for new layout %s\n", cur_layout_file);
             }
 
             if (empty_index != NOT_USED) {
@@ -142,25 +139,25 @@ XMLResource::init(const char *entry_filepath) {
         snprintf(input_file, _POSIX_PATH_MAX, "%s/%s", get_resource_directory(), entry_filepath);
         if ( 0 != m_main_entry_parser->init(input_file)) {
             /* main entry is necessary */
-            LOGD("main entry init");
+            SCLLOG(SclLog::ERROR, "main entry init");
         }
     }
 
     /* get each type of xml file name */
     XMLFiles& xml_files = m_main_entry_parser->get_xml_files();
 
-    LOGD("init inputmode configure\n\n");
+    SCLLOG(SclLog::MESSAGE, "init inputmode configure\n\n");
     if (m_input_mode_configure_parser == NULL) {
         m_input_mode_configure_parser = InputModeConfigParser::get_instance();
         char input_file[_POSIX_PATH_MAX] = {0};
         snprintf(input_file, _POSIX_PATH_MAX, "%s/%s", get_resource_directory(), xml_files.input_mode_configure);
         if (0 != m_input_mode_configure_parser->init(input_file)) {
             /* input mode configure is necessary */
-            LOGD("input mode configure init");
+            SCLLOG(SclLog::ERROR, "input mode configure init");
         }
     }
 
-    LOGD("init default_configure\n\n");
+    SCLLOG(SclLog::MESSAGE, "init default_configure\n\n");
     if (m_default_configure_parser == NULL) {
         m_default_configure_parser = DefaultConfigParser::get_instance();
         char input_file[_POSIX_PATH_MAX] = {0};
@@ -168,11 +165,11 @@ XMLResource::init(const char *entry_filepath) {
 
         if (0 != m_default_configure_parser->init(input_file)) {
             /* default configure is not necessary */
-            LOGD("default configure init");
+            SCLLOG(SclLog::WARNING, "default configure init");
         }
     }
 
-    LOGD("init modifier_decoration\n\n");
+    SCLLOG(SclLog::MESSAGE, "init modifier_decoration\n\n");
     if (m_modifier_decoration_parser == NULL) {
         m_modifier_decoration_parser = ModifierDecorationParser::get_instance();
         char input_file[_POSIX_PATH_MAX] = {0};
@@ -180,10 +177,10 @@ XMLResource::init(const char *entry_filepath) {
 
         if (0 != m_modifier_decoration_parser->init(input_file)) {
             /* modifier decoration is not necessary */
-            LOGD("modifier decoration init");
+            SCLLOG(SclLog::WARNING, "modifier decoration init");
         }
     }
-    LOGD("init label_properties\n\n");
+    SCLLOG(SclLog::MESSAGE, "init label_properties\n\n");
     if (m_label_properties_parser == NULL) {
         m_label_properties_parser = LabelPropertyParser::get_instance();
         char input_file[_POSIX_PATH_MAX] = {0};
@@ -191,21 +188,21 @@ XMLResource::init(const char *entry_filepath) {
 
         if (0 != m_label_properties_parser->init(input_file)) {
             /* label properties is not necessary */
-            LOGD("label properties init");
+            SCLLOG(SclLog::WARNING, "label properties init");
         }
     }
 
-    LOGD("init autopopup_configure\n\n");
+    SCLLOG(SclLog::MESSAGE, "init autopopup_configure\n\n");
     if (m_autopopup_configure_parser == NULL) {
         m_autopopup_configure_parser = AutoPopupConfigParser::get_instance();
         char input_file[_POSIX_PATH_MAX] = {0};
         snprintf(input_file, _POSIX_PATH_MAX, "%s/%s", get_resource_directory(), xml_files.autopopup_configure);
         if (0 != m_autopopup_configure_parser->init(input_file)) {
             /* autopopup configure is not necessary */
-            LOGD("autopopup configure init");
+            SCLLOG(SclLog::WARNING, "autopopup configure init");
         }
     }
-    LOGD("init magnifier_configure\n\n");
+    SCLLOG(SclLog::MESSAGE, "init magnifier_configure\n\n");
     if (m_magnifier_configure_parser == NULL) {
         m_magnifier_configure_parser = MagnifierConfigParser::get_instance();
         char input_file[_POSIX_PATH_MAX] = {0};
@@ -213,11 +210,11 @@ XMLResource::init(const char *entry_filepath) {
 
         if (0 != m_magnifier_configure_parser->init(input_file)) {
             /* magnifier configure is not necessary */
-            LOGD("magnifier configure init");
+            SCLLOG(SclLog::WARNING, "magnifier configure init");
         }
     }
 
-    LOGD("init nine_patch_file_list\n\n");
+    SCLLOG(SclLog::MESSAGE, "init nine_patch_file_list\n\n");
     if (m_nine_patch_file_list_parser == NULL) {
         m_nine_patch_file_list_parser = NinePatchFileParser::get_instance();
         char input_file[_POSIX_PATH_MAX] = {0};
@@ -225,11 +222,11 @@ XMLResource::init(const char *entry_filepath) {
 
         if (0 != m_nine_patch_file_list_parser->init(input_file)) {
             /* nine patch file list is not necessary */
-            LOGD("nine patch file list init");
+            SCLLOG(SclLog::WARNING, "nine patch file list init");
         }
     }
 
-    LOGD("init layout\n\n");
+    SCLLOG(SclLog::MESSAGE, "init layout\n\n");
     if (m_layout_parser == NULL) {
         m_layout_parser = LayoutParser::get_instance();
         char **layout_files = NULL;
@@ -237,7 +234,7 @@ XMLResource::init(const char *entry_filepath) {
 
         layout_files = (char**)malloc(sizeof(char*) * MAX_SCL_LAYOUT);
         if (layout_files == NULL) {
-            LOGD("layout init");
+            SCLLOG(SclLog::ERROR, "layout init");
             exit(1);
         }
         memset(layout_files, 0, sizeof(char*) * MAX_SCL_LAYOUT);
@@ -245,7 +242,7 @@ XMLResource::init(const char *entry_filepath) {
         get_layout_files(layout_files, &layout_file_size);
         if ( 0 != m_layout_parser->init(get_resource_directory(), layout_files, layout_file_size)) {
             /* layout is necessary */
-            LOGD("layout init");
+            SCLLOG(SclLog::ERROR, "layout init");
         }
         for (int i = 0; i < layout_file_size; ++i) {
             free(layout_files[i]);
@@ -254,7 +251,7 @@ XMLResource::init(const char *entry_filepath) {
         free(layout_files);
     }
 
-    LOGD("init Text XML resources OK.\n\n");
+    SCLLOG(SclLog::MESSAGE, "init Text XML resources OK.\n\n");
 }
 
 

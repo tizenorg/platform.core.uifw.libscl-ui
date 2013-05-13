@@ -24,8 +24,10 @@
 #include "string_provider.h"
 #include "metadata_provider.h"
 #include <algorithm>
+#include "put_record.h"
 #include <malloc.h>
 #include "binary_xmlresource.h"
+#include "simple_debug.h"
 using namespace binary_xmlresource;
 
 using namespace std;
@@ -107,6 +109,7 @@ load(int layout_id)
             for (int j = 0; j < pKey_num_array[i]; ++j) {
                 SclLayoutKeyCoordinatePointer curPointer = (SclLayoutKeyCoordinatePointer)malloc(sizeof(SclLayoutKeyCoordinate));
                 if (curPointer == NULL) {
+                    SCLLOG(SclLog::ERROR, "Memory malloc error.\n");
                     assert(0);
                 }
                 memset(curPointer, 0x00, sizeof(SclLayoutKeyCoordinate));

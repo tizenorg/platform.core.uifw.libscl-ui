@@ -16,6 +16,8 @@
  */
 
 #include "input_mode_configure_bin_parser.h"
+#include "simple_debug.h"
+#include "put_record.h"
 using namespace std;
 BinInputModeConfigParser* BinInputModeConfigParser::m_instance = NULL;
 

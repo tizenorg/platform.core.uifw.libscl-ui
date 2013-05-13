@@ -19,6 +19,7 @@
 #include "encode_label_properties_frame.h"
 #include <string>
 #include "xmlresource.h"
+#include "put_record.h"
 #include "_auto_metadata.h"
 using namespace xmlresource;
 using namespace std;
@@ -94,6 +95,10 @@ encode_label_properties_frame_file(ResourceStorage& storage, IMetaData_Helper& m
     XMLResource *xmlresource = XMLResource::get_instance();
     PSclLabelPropertiesTable labelPropertiesFrame = xmlresource->get_label_properties_frame();
 
+#ifdef __SCL_TXT_DEBUG
+    put_label_properties_frame(ENCODE, labelPropertiesFrame);
+
+#endif
     int size = xmlresource->get_labelproperty_size();
     int maxj = MAX_SIZE_OF_LABEL_FOR_ONE;
 
