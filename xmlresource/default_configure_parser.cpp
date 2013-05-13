@@ -15,15 +15,12 @@
  *
  */
 
-#include <dlog.h>
-#ifndef LOG_TAG
-#define LOG_TAG "LIBSCL_UI"
-#endif
 #include <assert.h>
 #include <string.h>
 #include <libxml/parser.h>
 #include "default_configure_parser.h"
 #include "xml_parser_utils.h"
+#include "simple_debug.h"
 using namespace std;
 
 class DefaultConfigureParserImpl {
@@ -55,19 +52,19 @@ class DefaultConfigureParserImpl {
 
             doc = xmlReadFile(input_file, NULL, 0);
             if (doc == NULL) {
-                LOGD("Could not load file: %s\n", input_file);
+                SCLLOG(SclLog::DEBUG, "Could not load file: %s.", input_file);
                 return -1;
             }
 
             cur_node = xmlDocGetRootElement(doc);
             if (cur_node == NULL) {
-                LOGD("DefaultConfigParser: empty document.\n");
+                SCLLOG(SclLog::DEBUG, "DefaultConfigParser: empty document.\n");
                 xmlFreeDoc(doc);
                 return -1;
             }
             if (0 != xmlStrcmp(cur_node->name, (const xmlChar*)"default_configure"))
             {
-                LOGD("%s: root name error: %s.\n", __FUNCTION__, (char *)cur_node->name);
+                SCLLOG(SclLog::DEBUG, "DefaultConfigParser: root name error: %s\n!", (char *)cur_node->name);
                 xmlFreeDoc(doc);
                 return -1;
             }
@@ -220,7 +217,7 @@ DefaultConfigParser::DefaultConfigParser() {
 
 DefaultConfigParser::~DefaultConfigParser() {
     if (m_impl) {
-        LOGD("~DefaultConfigParser() has called");
+        SCLLOG(SclLog::MESSAGE, "~DefaultConfigParser() has called");
         delete m_impl;
         m_impl = NULL;
     }

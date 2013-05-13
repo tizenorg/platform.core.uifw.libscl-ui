@@ -387,7 +387,7 @@ CSCLUtils::get_nine_patch_info(const sclchar *image_path)
             finished = TRUE;
         }
     }
-
+    
     SclResParserManager *sclres_manager = SclResParserManager::get_instance();
     if (sclres_manager) {
         if (sclres_manager->get_nine_patch_info(buf, &ret)) {

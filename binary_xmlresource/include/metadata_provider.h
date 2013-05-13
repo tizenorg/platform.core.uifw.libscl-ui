@@ -17,10 +17,6 @@
 
 #ifndef __METADATA_PROVIDER_H__
 #define __METADATA_PROVIDER_H_
-#include <dlog.h>
-#ifndef LOG_TAG
-#define LOG_TAG "LIBSCL_UI"
-#endif
 #include "imetadata_provider.h"
 #include "metadata_bin_parser.h"
 class Metadata_Provider:public IMetadata_Provider{
@@ -48,7 +44,7 @@ class Metadata_Provider:public IMetadata_Provider{
                 current_record_name = record_name;
                 curRecordIndex = find_metadata_record_index(record_name);
                 if (curRecordIndex == -1) {
-                    LOGD("Can not find %s metadata record.\n", record_name);
+                    printf("Can not find %s metadata record.\n", record_name);
                 }
             }
         }

@@ -15,16 +15,13 @@
  *
  */
 
-#include <dlog.h>
-#ifndef LOG_TAG
-#define LOG_TAG "LIBSCL_UI"
-#endif
 #include <assert.h>
 #include <string.h>
 #include <libxml/parser.h>
 
 #include "autopopup_configure_parser.h"
 #include "xml_parser_utils.h"
+#include "simple_debug.h"
 using namespace std;
 
 class AutoPopupConfigureParserImpl {
@@ -66,19 +63,19 @@ class AutoPopupConfigureParserImpl {
 
             doc = xmlReadFile(input_file, NULL, 0);
             if (doc == NULL) {
-                LOGD("Could not load file: %s.", input_file);
+                SCLLOG(SclLog::WARNING, "Could not load file: %s.", input_file);
                 return -1;
             }
 
             cur_node = xmlDocGetRootElement(doc);
             if (cur_node == NULL) {
-                LOGD("AutoPopupConfigParser: empty document.\n");
+                SCLLOG(SclLog::WARNING, "AutoPopupConfigParser: empty document.\n");
                 xmlFreeDoc(doc);
                 return -1;
             }
             if (0 != xmlStrcmp(cur_node->name, (const xmlChar*)"autopopup_configure"))
             {
-                LOGD("AutoPopup_Configure: root name error: %s\n!", (char *)cur_node->name);
+                SCLLOG(SclLog::WARNING, "AutoPopup_Configure: root name error: %s\n!", (char *)cur_node->name);
                 xmlFreeDoc(doc);
                 return -1;
             }
@@ -312,7 +309,7 @@ AutoPopupConfigParser::AutoPopupConfigParser() {
 
 AutoPopupConfigParser::~AutoPopupConfigParser() {
     if (m_impl) {
-        LOGD("~AutoPopupConfigParser() has called");
+        SCLLOG(SclLog::MESSAGE, "~AutoPopupConfigParser() has called");
         delete m_impl;
         m_impl = NULL;
     }

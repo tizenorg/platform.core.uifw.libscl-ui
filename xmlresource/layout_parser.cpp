@@ -15,10 +15,6 @@
  *
  */
 
-#include <dlog.h>
-#ifndef LOG_TAG
-#define LOG_TAG "LIBSCL_UI"
-#endif
 #include <algorithm>
 #include <vector>
 #include <malloc.h>
@@ -29,6 +25,8 @@
 #include "default_configure_parser.h" /* use data in default_configure.xml */
 #include "xml_parser_utils.h"
 #include "layout_parser_helper.h"
+#include "put_record.h"
+#include "simple_debug.h"
 
 using namespace std;
 
@@ -261,19 +259,19 @@ LayoutParserImpl::load(int layout_id) {
 
         doc = xmlReadFile(input_file, NULL, 0);
         if (doc == NULL) {
-            LOGD("Could not load file: %s\n", input_file);
+            SCLLOG(SclLog::ERROR, "Could not load file: %s.", input_file);
             exit(1);
         }
 
         cur_node = xmlDocGetRootElement(doc);
         if (cur_node == NULL) {
-            LOGD("LayoutParserImpl: empty document.\n");
+            SCLLOG(SclLog::ERROR, "LayoutParserImpl: empty document.\n");
             xmlFreeDoc(doc);
             exit(1);
         }
         if (0 != xmlStrcmp(cur_node->name, (const xmlChar*)LAYOUT_TAG))
         {
-            LOGD("%s: root name error: %s.\n", __FUNCTION__, (char *)cur_node->name);
+            SCLLOG(SclLog::ERROR, "LayoutParserImpl: root name error: %s\n!", (char *)cur_node->name);
             xmlFreeDoc(doc);
             exit(1);
         }
@@ -390,19 +388,19 @@ LayoutParserImpl::parsing_layout_table(char** file, int file_num) {
         string input_file = m_dir + "/" + m_layout_files[index];
         doc = xmlReadFile(input_file.c_str(), NULL, 0);
         if (doc == NULL) {
-            LOGD("Could not load file: %s\n", input_file.c_str());
+            SCLLOG(SclLog::DEBUG, "Could not load file: %s.", input_file.c_str());
             return -1;
         }
 
         cur_node = xmlDocGetRootElement(doc);
         if (cur_node == NULL) {
-            LOGD("LayoutParserImpl: empty document.\n");
+            SCLLOG(SclLog::DEBUG, "LayoutParserImpl: empty document.\n");
             xmlFreeDoc(doc);
             return -1;
         }
         if (0 != xmlStrcmp(cur_node->name, (const xmlChar*)LAYOUT_TAG))
         {
-            LOGD("%s: root name error: %s.\n", __FUNCTION__, (char *)cur_node->name);
+            SCLLOG(SclLog::DEBUG, "LayoutParserImpl: root name error: %s\n!", (char *)cur_node->name);
             xmlFreeDoc(doc);
             return -1;
         }
@@ -1197,7 +1195,7 @@ LayoutParserImpl::parsing_key_coordinate_record_node(
 
     *cur_rec_coordinate = (SclLayoutKeyCoordinatePointer)malloc(sizeof(SclLayoutKeyCoordinate));
     if (*cur_rec_coordinate == NULL) {
-        LOGD("LayoutParserImpl: memory malloc eror.\n");
+        SCLLOG(SclLog::ERROR, "LayoutParserImpl: memory malloc eror.\n");
         return;
     }
     memset(*cur_rec_coordinate, 0x00, sizeof(SclLayoutKeyCoordinate));
@@ -1394,7 +1392,7 @@ LayoutParser::LayoutParser() {
     m_impl = new LayoutParserImpl;
 }
 LayoutParser::~LayoutParser() {
-    LOGD("~LayoutParser() has called");
+    SCLLOG(SclLog::MESSAGE, "~LayoutParser() has called");
     delete m_impl;
     m_impl = NULL;
 }

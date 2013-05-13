@@ -20,6 +20,7 @@
 #include <string>
 #include <libxml/parser.h>
 #include "xmlresource.h"
+#include "put_record.h"
 #include "_auto_metadata.h"
 using namespace std;
 using namespace xmlresource;
@@ -128,6 +129,10 @@ encode_layout_file(ResourceStorage& storage, IMetaData_Helper& md_helper) {
     PSclLayout layoutTable = xmlresource->get_layout_table();
 
     int size = xmlresource->get_layout_size();
+
+#ifdef __SCL_TXT_DEBUG
+    put_layout_table(ENCODE, layoutTable);
+#endif
 
     PSclLayout cur = layoutTable;
 

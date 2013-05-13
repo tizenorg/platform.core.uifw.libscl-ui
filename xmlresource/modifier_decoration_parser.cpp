@@ -15,15 +15,12 @@
  *
  */
 
-#include <dlog.h>
-#ifndef LOG_TAG
-#define LOG_TAG "LIBSCL_UI"
-#endif
 #include <memory.h>
 #include <libxml/parser.h>
 
 #include "modifier_decoration_parser.h"
 #include "xml_parser_utils.h"
+#include "simple_debug.h"
 
 static int get_key_modifier_state_prop(const char*);
 //UTILS
@@ -119,18 +116,18 @@ class ModifierDecorationParserImpl {
 
             doc = xmlReadFile(input_file, NULL, 0);
             if (doc == NULL) {
-                LOGD("Could not load file: %s\n", input_file);
+                SCLLOG(SclLog::DEBUG, "Could not load file: %s.", input_file);
                 return -1;
             }
             cur_node = xmlDocGetRootElement(doc);
             if (cur_node == NULL) {
-                LOGD("ModifierDecorationParser: empty document.\n");
+                SCLLOG(SclLog::DEBUG, "ModifierDecorationParser: empty document.\n");
                 xmlFreeDoc(doc);
                 return -1;
             }
             if (0 != xmlStrcmp(cur_node->name, (const xmlChar*)"modifier_decoration_table"))
             {
-                LOGD("%s: root name error: %s.\n", __FUNCTION__, (char *)cur_node->name);
+                SCLLOG(SclLog::DEBUG, "ModifierDecorationParser: root name error: %s\n!", (char *)cur_node->name);
                 xmlFreeDoc(doc);
                 return -1;
             }
@@ -147,7 +144,7 @@ class ModifierDecorationParserImpl {
                     size++;
                     cur_rec++;
                     if (size >= MAX_SCL_MODIFIER_DECORATION_NUM) {
-                        LOGD("No Space for modifier decoration record.");
+                        SCLLOG(SclLog::ERROR, "No Space for modifier decoration record.");
                         break;
                     }
                 }
@@ -252,7 +249,7 @@ ModifierDecorationParser::ModifierDecorationParser() {
 
 ModifierDecorationParser::~ModifierDecorationParser() {
     if (m_impl) {
-        LOGD("~ModifierDecorationParser() has called");
+        SCLLOG(SclLog::MESSAGE, "~ModifierDecorationParser() has called");
         delete m_impl;
         m_impl = NULL;
     }
@@ -273,13 +270,13 @@ int
 ModifierDecorationParser::get_modifier_decoration_id( const char *name )
 {
     if (name == NULL) {
-        LOGD("get_modifier_decoration_id() has failed");
+        SCLLOG(SclLog::DEBUG, "get_modifier_decoration_id() has failed");
         return -1;
     }
 
     PSclModifierDecoration modifier_decoration_table = get_modifier_decoration_table();
     if (modifier_decoration_table == NULL) {
-        LOGD("get_modifier_decoration_id() has failed");
+        SCLLOG(SclLog::DEBUG, "get_modifier_decoration_id() has failed");
         return -1;
     }
     for(int i = 0; i < MAX_SCL_MODIFIER_DECORATION_NUM; ++i) {
@@ -290,7 +287,7 @@ ModifierDecorationParser::get_modifier_decoration_id( const char *name )
         }
     }
 
-    LOGD("get_modifier_decoration_id() has failed");
+    SCLLOG(SclLog::DEBUG, "get_modifier_decoration_id() has failed");
     return -1;
 }
 
