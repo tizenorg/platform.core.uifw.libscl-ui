@@ -225,6 +225,9 @@ CSCLWindowsImplEfl::create_magnifier_window(const sclwindow parent, SclWindowCon
     ecore_x_e_window_rotation_geometry_set(elm_win_xwindow_get(win),
         rotation_values_EFL[ROTATION_90_CCW], 0, 0, height, width);
 
+    int rots[4] = {0,90,180,270};
+    elm_win_wm_rotation_available_rotations_set(win, rots, 4);
+
 #ifndef APPLY_WINDOW_MANAGER_CHANGE
     ecore_x_icccm_name_class_set(elm_win_xwindow_get(static_cast<Evas_Object*>(win)), "Key Magnifier", "ISF");
 
