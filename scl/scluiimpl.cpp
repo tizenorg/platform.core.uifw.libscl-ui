@@ -419,14 +419,14 @@ CSCLUIImpl::set_shift_state(SCLShiftState state)
             context->set_shift_state(state);
             if (state != current_state) {
                 windows->update_window(windows->get_base_window());
-            }
-            if (context->get_tts_enabled()) {
-                if (state == SCL_SHIFT_STATE_ON) {
-                    utils->play_tts(SCL_SHIFT_STATE_ON_HINT_STRING);
-                } else if (state == SCL_SHIFT_STATE_LOCK) {
-                    utils->play_tts(SCL_SHIFT_STATE_LOCK_HINT_STRING);
-                } else {
-                    utils->play_tts(SCL_SHIFT_STATE_OFF_HINT_STRING);
+                if (context->get_tts_enabled()) {
+                    if (state == SCL_SHIFT_STATE_ON) {
+                        utils->play_tts(SCL_SHIFT_STATE_ON_HINT_STRING);
+                    } else if (state == SCL_SHIFT_STATE_LOCK) {
+                        utils->play_tts(SCL_SHIFT_STATE_LOCK_HINT_STRING);
+                    } else {
+                        utils->play_tts(SCL_SHIFT_STATE_OFF_HINT_STRING);
+                    }
                 }
             }
         }
