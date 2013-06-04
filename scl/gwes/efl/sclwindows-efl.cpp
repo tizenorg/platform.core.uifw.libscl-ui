@@ -495,11 +495,7 @@ CSCLWindowsImplEfl::hide_window(const sclwindow window,  sclboolean fForce)
                     elm_win_keyboard_mode_set(win, ELM_WIN_KEYBOARD_OFF);
                 } else {
 #endif
-                    if (window == windows->get_magnifier_window()) {
-                        evas_object_move(win, -10000, -10000);
-                    } else {
-                        evas_object_hide(win);
-                    }
+                    evas_object_hide(win);
 #ifdef APPLY_WINDOW_MANAGER_CHANGE
                 }
 #endif
