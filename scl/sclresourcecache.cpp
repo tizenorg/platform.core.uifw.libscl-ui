@@ -1028,7 +1028,7 @@ CSCLResourceCache::get_label_properties(sclchar *label_type, sclbyte index) cons
     }
 
     CSCLUtils *utils = CSCLUtils::get_instance();
-    if (utils) {
+    if (utils && label_type) {
         utils->log("WARNINNG!!!!!!!!!!!!!!!!!! LABEL NAME %s COULD NOT BE FOUND!!!!!\n", label_type);
     }
 
