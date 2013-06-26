@@ -1346,21 +1346,19 @@ CSCLController::process_button_over_event(sclwindow window, sclint x, sclint y, 
 
                     if (coordinate->key_type != KEY_TYPE_NONE) {
                         if (context->get_tts_enabled()) {
-                            const char *targetstr = coordinate->hint_string[shiftidx][btncontext->multikeyIdx];
-                            printf("coordinate->hint_string[%d][%d] : %p\n", shiftidx, btncontext->multikeyIdx, targetstr);
-                            if (targetstr == NULL) {
-                                targetstr = coordinate->key_value[shiftidx][btncontext->multikeyIdx];
-                            }
-                            printf("coordinate->key_value[%d][%d] : %p\n", shiftidx, btncontext->multikeyIdx, targetstr);
+                            const sclchar *targetstr = coordinate->hint_string[shiftidx][btncontext->multikeyIdx];
                             if (targetstr == NULL) {
                                 targetstr = coordinate->label[shiftidx][0];
                             }
-                            printf("coordinate->label[%d][0] : %p\n", shiftidx, targetstr);
+                            if (targetstr == NULL) {
+                                targetstr = coordinate->key_value[shiftidx][btncontext->multikeyIdx];
+                            }
                             /*if(state->get_cur_action_state() == ACTION_STATE_BASE_LONGKEY ||
                                 state->get_cur_action_state() == ACTION_STATE_POPUP_LONGKEY ) {
                                     targetstr = coordinate->long_key_value;
                             }*/
-                            utils->play_tts(targetstr);
+                            const sclchar *sayit = cache->find_substituted_string(targetstr);
+                            utils->play_tts(sayit);
                         }
                     }
                 }
