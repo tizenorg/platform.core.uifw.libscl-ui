@@ -506,6 +506,7 @@ CSCLGraphicsImplEfl::draw_text(sclwindow window, const scldrawctx draw_ctx, cons
 #endif
             EFLObject *object = new EFLObject;
             if (object) {
+                object->extracted = FALSE;
                 Evas_Object *window_object = (Evas_Object*)window;
                 if (winctx->is_virtual) {
                     window_object = static_cast<Evas_Object*>(windows->get_base_window());
@@ -762,6 +763,7 @@ CSCLGraphicsImplEfl::draw_rectangle(sclwindow window, const scldrawctx draw_ctx,
 //            evas_object_raise(rectobj);
             evas_object_show(rectobj);
 
+            object->extracted = FALSE;
             object->object = rectobj;
             object->type = EFLOBJECT_RECTANGLE;
             object->position.x = pos_x;
