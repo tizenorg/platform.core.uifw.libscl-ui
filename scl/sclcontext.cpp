@@ -78,6 +78,9 @@ CSCLContext::reset()
     m_multi_touch_context.clear();
     m_last_touch_device_id = SCLTOUCHDEVICE_INVALID;
 
+    m_last_pressed_window = SCLWINDOW_INVALID;
+    m_last_pressed_key = NOT_USED;
+
     memset(m_cur_sub_layout, 0x00, sizeof(m_cur_sub_layout));
 }
 
