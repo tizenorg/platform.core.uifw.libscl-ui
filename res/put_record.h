@@ -351,6 +351,12 @@ static void put_key_coordinate_record(FILE* fp, const SclLayoutKeyCoordinate& re
             put_str(fp, record.magnifier_label[i][j]);
         }
     }
+    put_seperator(fp);
+    for (int i = 0; i < SCL_SHIFT_STATE_MAX; ++i) {
+        for (int j = 0; j < MAX_SIZE_OF_MULTITAP_CHAR; ++j) {
+            put_str(fp, record.hint_string[i][j]);
+        }
+    }
 }
 static void put_input_mode_configure_record(FILE* fp, const SclInputModeConfigure& record) {
     put_str(fp, record.name);

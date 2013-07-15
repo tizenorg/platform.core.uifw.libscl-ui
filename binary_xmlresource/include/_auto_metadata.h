@@ -106,6 +106,7 @@ typedef struct _Key_coordinate_record_width {
 	int multitouch_type;
 	int modifier_decorator;
 	int magnifier_label;
+	int hint_string;
 }Key_coordinate_record_width;
 
 typedef struct _Label_properties_record_width {
@@ -294,6 +295,7 @@ void set_key_coordinate_record_width(T& md_helper,
 	record_width.multitouch_type = md_helper.get_width("multitouch_type");
 	record_width.modifier_decorator = md_helper.get_width("modifier_decorator");
 	record_width.magnifier_label = md_helper.get_width("magnifier_label");
+	record_width.hint_string = md_helper.get_width("hint_string");
 }
 
 template <class T>
