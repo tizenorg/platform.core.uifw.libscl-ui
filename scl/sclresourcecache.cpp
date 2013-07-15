@@ -359,7 +359,14 @@ CSCLResourceCache::copy_from_privatekeyproperties(const SclPrivateKeyProperties*
                 }
             }
         }
-        memcpy(coordination->hint_string, privProperties->hint_string, sizeof(coordination->hint_string));
+        for (loop = 0;loop < SCL_SHIFT_STATE_MAX;loop++) {
+            for (inner_loop = 0;inner_loop < MAX_SIZE_OF_MULTITAP_CHAR;inner_loop++) {
+                if (!(privProperties->hint_string[loop][inner_loop].empty())) {
+                    coordination->hint_string[loop][inner_loop] =
+                        (sclchar*)privProperties->hint_string[loop][inner_loop].c_str();
+                }
+            }
+        }
     }
 
     return TRUE;
@@ -486,7 +493,14 @@ CSCLResourceCache::copy_to_privatekeyproperties(const SclLayoutKeyCoordinate *co
                 }
             }
         }
-        memcpy(privProperties->hint_string, coordination->hint_string, sizeof(privProperties->hint_string));
+        for (loop = 0;loop < SCL_SHIFT_STATE_MAX;loop++) {
+            for (inner_loop = 0;inner_loop < MAX_SIZE_OF_MULTITAP_CHAR;inner_loop++) {
+                if (coordination->hint_string[loop][inner_loop]) {
+                    privProperties->hint_string[loop][inner_loop] =
+                        coordination->hint_string[loop][inner_loop];
+                }
+            }
+        }
     }
 
     return TRUE;
@@ -585,6 +599,12 @@ CSCLResourceCache::copy_privatekeyproperties(const SclPrivateKeyProperties* sour
                     source->autopopup_key_values[loop][inner_loop];
             }
         }
+        for (loop = 0;loop < SCL_SHIFT_STATE_MAX;loop++) {
+            for (inner_loop = 0;inner_loop < MAX_SIZE_OF_MULTITAP_CHAR;inner_loop++) {
+                target->hint_string[loop][inner_loop] =
+                    source->hint_string[loop][inner_loop];
+            }
+        }
     }
 
     return TRUE;
@@ -675,6 +695,11 @@ CSCLResourceCache::clear_privatekeyproperties(SclPrivateKeyProperties* privPrope
         for (loop = 0;loop < SCL_SHIFT_STATE_MAX;loop++) {
             for (inner_loop = 0;inner_loop < MAX_SIZE_OF_AUTOPOPUP_STRING;inner_loop++) {
                 privProperties->autopopup_key_values[loop][inner_loop].clear();
+            }
+        }
+        for (loop = 0;loop < SCL_SHIFT_STATE_MAX;loop++) {
+            for (inner_loop = 0;inner_loop < MAX_SIZE_OF_MULTITAP_CHAR;inner_loop++) {
+                privProperties->hint_string[loop][inner_loop].clear();
             }
         }
     }

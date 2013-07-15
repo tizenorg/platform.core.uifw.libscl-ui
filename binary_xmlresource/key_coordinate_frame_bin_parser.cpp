@@ -302,5 +302,12 @@ BinKeyCoordFrameParser::decode_key_coordinate_record(FileStorage& storage, const
             storage.get_str(&(cur->magnifier_label[i][j]), record_width.magnifier_label, m_string_collector);
         }
     }
+
+    // hint_string
+    for (int i = 0; i < SCL_SHIFT_STATE_MAX; ++i) {
+        for (int j = 0; j < MAX_SIZE_OF_MULTITAP_CHAR; ++j) {
+            storage.get_str(&(cur->hint_string[i][j]), record_width.hint_string, m_string_collector);
+        }
+    }
 }
 

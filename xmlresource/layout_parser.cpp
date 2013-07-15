@@ -141,6 +141,8 @@ using namespace std;
 #define LAYOUT_ROW_KEY_AUTOPOPUP_KEYS_SHIFTMODE_ATTRIBUTE "shift_state"
 #define LAYOUT_ROW_KEY_MAGNIFIER_LABEL_TAG "magnifier_label"
 
+#define LAYOUT_ROW_KEY_HINT_STRING_TAG "hint_string"
+
 class LayoutParserImpl {
     public:
         typedef struct {
@@ -205,6 +207,7 @@ class LayoutParserImpl {
         void parsing_key_event_record_node(const xmlNodePtr cur_node, const PSclLayoutKeyCoordinate cur_rec);
         void parsing_auto_popup_keys_record_node(const xmlNodePtr cur_node, const PSclLayoutKeyCoordinate cur_rec);
         void parsing_magnifier_label_record_node(const xmlNodePtr cur_node, const PSclLayoutKeyCoordinate cur_rec);
+        void parsing_hint_string_record_node(const xmlNodePtr cur_node, const PSclLayoutKeyCoordinate cur_rec);
 
         void add_layout_string(xmlChar*);
         void release_layout_strings();
@@ -629,6 +632,11 @@ LayoutParserImpl::set_default_key_coordinate_value(
         cur_rec_coordinate->extra_option = NOT_USED;
         cur_rec_coordinate->multitouch_type = SCL_MULTI_TOUCH_TYPE_EXCLUSIVE;
         cur_rec_coordinate->modifier_decorator = NULL;
+        for(int shift_state = 0; shift_state < SCL_SHIFT_STATE_MAX; shift_state++) {
+            for( int multitap_state = 0; multitap_state < MAX_SIZE_OF_MULTITAP_CHAR; ++multitap_state) {
+                cur_rec_coordinate->hint_string[shift_state][multitap_state] = NULL;
+            }
+        }
         cur_rec_coordinate->sub_layout = row->sub_layout;
     }
 }
@@ -1020,6 +1028,35 @@ LayoutParserImpl::parsing_magnifier_label_record_node(
 }
 
 void
+LayoutParserImpl::parsing_hint_string_record_node(
+    const xmlNodePtr cur_node,
+    const PSclLayoutKeyCoordinate cur_rec) {
+        assert(cur_node != NULL);
+        assert(cur_rec != NULL);
+        assert(0 == xmlStrcmp(cur_node->name, (const xmlChar*)"hint_string"));
+        xmlNodePtr child_node = cur_node->xmlChildrenNode;
+
+        while (child_node != NULL) {
+            if (0 == xmlStrcmp(child_node->name, (const xmlChar*)"rec") ) {
+                int shift_state = get_shift_state_prop(child_node);
+                int multichar_state = 0;
+                get_prop_number(child_node, "multichar_state", &multichar_state);
+
+                if (multichar_state >= 0 && multichar_state < MAX_SIZE_OF_MULTITAP_CHAR) {
+                    for(int shift_loop = 0;shift_loop < SCL_SHIFT_STATE_MAX;shift_loop++) {
+                        if ((shift_state == shift_loop || shift_state == -1)) {
+                            xmlChar* key = xmlNodeGetContent(child_node);
+                            cur_rec->hint_string[shift_loop][multichar_state] = (sclchar*)key;
+                            add_key_string(key);
+                        }
+                    }
+                }
+            }
+            child_node = child_node->next;
+        }
+}
+
+void
 LayoutParserImpl::parsing_label_image_record_node(
         const xmlNodePtr cur_node,
         const PSclLayoutKeyCoordinate cur_rec) {
@@ -1349,6 +1386,10 @@ LayoutParserImpl::parsing_key_coordinate_record_node(
         }
         else if ( 0 == xmlStrcmp(child_node->name, (const xmlChar*)LAYOUT_ROW_KEY_MAGNIFIER_LABEL_TAG)) {
             parsing_magnifier_label_record_node(child_node, (*cur_rec_coordinate));
+            (*cur_rec_coordinate)->valid = TRUE;
+        }
+        else if ( 0 == xmlStrcmp(child_node->name, (const xmlChar*)LAYOUT_ROW_KEY_HINT_STRING_TAG)) {
+            parsing_hint_string_record_node(child_node, (*cur_rec_coordinate));
             (*cur_rec_coordinate)->valid = TRUE;
         }
 

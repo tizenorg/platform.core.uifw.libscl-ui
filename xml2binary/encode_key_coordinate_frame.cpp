@@ -174,6 +174,13 @@ encode_key_coordinate_record(ResourceStorage& storage, const PSclLayoutKeyCoordi
             storage.encode_string(cur->magnifier_label[i][j], record_width.magnifier_label);
         }
     }
+
+    // hint_string
+    for (int i = 0; i < SCL_SHIFT_STATE_MAX; ++i) {
+        for (int j = 0; j < MAX_SIZE_OF_MULTITAP_CHAR; ++j) {
+            storage.encode_string(cur->hint_string[i][j], record_width.hint_string);
+        }
+    }
 }
 
 const int get_layout_num(const PSclLayoutKeyCoordinatePointerTable keyCoordinatePointerFrame) {

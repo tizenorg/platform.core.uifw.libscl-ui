@@ -313,7 +313,7 @@ typedef struct _SclPrivateKeyProperties {
     sclbyte multitouch_type;
     sclbyte modifier_decorator;
 
-    sclchar *hint_string[SCL_SHIFT_STATE_MAX][MAX_SIZE_OF_MULTITAP_CHAR];
+    std::string hint_string[SCL_SHIFT_STATE_MAX][MAX_SIZE_OF_MULTITAP_CHAR];
 }SclPrivateKeyProperties;
 
 /**
