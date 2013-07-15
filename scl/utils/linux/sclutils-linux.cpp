@@ -240,7 +240,10 @@ CSCLUtilsImplLinux::open_devices() {
     }
 
     tts_state_e current_state;
-    tts_get_state(tts, &current_state);
+    r = tts_get_state(tts, &current_state);
+    if (TTS_ERROR_NONE != r) {
+        LOGD("tts_get_state FAILED : result(%d)", r);
+    }
 
     if (TTS_STATE_CREATED == current_state)  {
         r = tts_prepare(tts);
