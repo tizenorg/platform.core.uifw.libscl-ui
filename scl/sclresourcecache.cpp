@@ -908,7 +908,7 @@ CSCLResourceCache::recompute_layout(sclwindow window)
                 sclres_manager->load(layout);
                 resize_layout_by_resolution(layout, TRUE);
             }
-            context->set_base_layout(layout);
+            context->set_popup_layout(window, layout);
 
             if (popupindex >= 0 && popupindex < MAX_POPUP_WINDOW) {
                 if (!(windows->is_base_window(window))) {
