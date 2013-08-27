@@ -38,8 +38,10 @@ CSCLUtils* CSCLUtils::m_instance = NULL; /* For singleton */
 CSCLUtils::CSCLUtils()
 {
     SCL_DEBUG();
-    m_scn_rate_x = 1.0;
-    m_scn_rate_y = 1.0;
+    m_scn_rate_x = 1.0f;
+    m_scn_rate_y = 1.0f;
+    m_custom_scale_rate_x = 1.0f;
+    m_custom_scale_rate_y = 1.0f;
     m_scn_resolution_x = 0;
     m_scn_resolution_y = 0;
     open_devices();
@@ -98,7 +100,7 @@ sclfloat
 CSCLUtils::get_smallest_scale_rate()
 {
     /* Try to return smaller scale rate, to avoid UI crash */
-    return (m_scn_rate_x < m_scn_rate_y) ? m_scn_rate_x : m_scn_rate_y;
+    return (m_scn_rate_x < m_scn_rate_y ) ? m_scn_rate_x : m_scn_rate_y ;
 }
 
 /**
@@ -127,7 +129,7 @@ CSCLUtils::get_scale_rate_y()
 void
 CSCLUtils::scale_x(scl16 *x)
 {
-    if (x) ((*x) *= m_scn_rate_x);
+    if (x) (*x) *= m_scn_rate_x;
 }
 
 /**
@@ -136,14 +138,14 @@ CSCLUtils::scale_x(scl16 *x)
 void
 CSCLUtils::scale_y(scl16 *y)
 {
-    if (y) ((*y) *= m_scn_rate_y);
+    if (y) (*y) *= m_scn_rate_y;
 }
 
 /**
  * Returns a calculated x value according to the current screen resolution
  */
 scl16
-CSCLUtils::get_scale_x(scl16 x)
+CSCLUtils::get_scaled_x(scl16 x)
 {
     return static_cast<scl16>(x * m_scn_rate_x);
 }
@@ -152,9 +154,53 @@ CSCLUtils::get_scale_x(scl16 x)
  * Returns a calculated y value according to the current screen resolution
  */
 scl16
-CSCLUtils::get_scale_y(scl16 y)
+CSCLUtils::get_scaled_y(scl16 y)
 {
     return static_cast<scl16>(y * m_scn_rate_y);
+}
+
+/**
+ * Returns the smallest custom scale rate
+ */
+sclfloat
+CSCLUtils::get_smallest_custom_scale_rate()
+{
+    /* Try to return smaller scale rate, to avoid UI crash */
+    return (m_custom_scale_rate_x < m_custom_scale_rate_y) ? m_custom_scale_rate_x : m_custom_scale_rate_y;
+}
+
+/**
+* Returns the current custom scale rate X
+*/
+sclfloat
+CSCLUtils::get_custom_scale_rate_x()
+{
+    return m_custom_scale_rate_x;
+}
+
+/**
+* Returns the current custom scale rate Y
+*/
+sclfloat
+CSCLUtils::get_custom_scale_rate_y()
+{
+    return m_custom_scale_rate_y;
+}
+
+void
+CSCLUtils::set_custom_scale_rate_x(sclfloat x)
+{
+    if (x > 0.0f) {
+        m_custom_scale_rate_x = x;
+    }
+}
+
+void
+CSCLUtils::set_custom_scale_rate_y(sclfloat y)
+{
+    if (y > 0.0f) {
+        m_custom_scale_rate_y = y;
+    }
 }
 
 /**
@@ -264,8 +310,9 @@ CSCLUtils::get_autopopup_window_variables(sclchar * const autopopup_keys[MAX_SIZ
             scry = swap;
         }
 
-        *num_columns = (scrx - (2 * autopopup_configure->bg_padding)) /
-                      (autopopup_configure->button_width + autopopup_configure->button_spacing);
+        *num_columns = (scrx - (2 * autopopup_configure->bg_padding * get_smallest_custom_scale_rate())) /
+                      (autopopup_configure->button_width * get_smallest_custom_scale_rate() +
+                      autopopup_configure->button_spacing * get_smallest_custom_scale_rate());
         if (*num_columns > autopopup_configure->max_column && autopopup_configure->max_column > 0)
             *num_columns = autopopup_configure->max_column;
         *num_rows = ((*num_keys - 1) / *num_columns) + 1;
@@ -276,16 +323,16 @@ CSCLUtils::get_autopopup_window_variables(sclchar * const autopopup_keys[MAX_SIZ
         if ((*num_keys) % *num_rows != 0) (*num_columns)++;
 
         *width =
-            (*num_columns * autopopup_configure->button_width) +
-            (2 * autopopup_configure->bg_padding) +
-            ((*num_columns - 1) * autopopup_configure->button_spacing);
+            (*num_columns * autopopup_configure->button_width * get_custom_scale_rate_x()) +
+            (2 * autopopup_configure->bg_padding * get_smallest_custom_scale_rate()) +
+            ((*num_columns - 1) * autopopup_configure->button_spacing * get_smallest_custom_scale_rate());
         *height =
-            (*num_rows * autopopup_configure->button_height) +
-            (2 * autopopup_configure->bg_padding) +
-            ((*num_rows - 1) * autopopup_configure->button_spacing);
+            (*num_rows * autopopup_configure->button_height * get_custom_scale_rate_y()) +
+            (2 * autopopup_configure->bg_padding * get_smallest_custom_scale_rate()) +
+            ((*num_rows - 1) * autopopup_configure->button_spacing * get_smallest_custom_scale_rate());
 
-        *width += (2 * autopopup_configure->decoration_size);
-        *height += (2 * autopopup_configure->decoration_size);
+        *width += (2 * autopopup_configure->decoration_size * get_smallest_custom_scale_rate());
+        *height += (2 * autopopup_configure->decoration_size * get_smallest_custom_scale_rate());
     }
 
     return ret;

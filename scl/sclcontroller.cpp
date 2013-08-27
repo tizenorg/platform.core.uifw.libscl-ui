@@ -606,13 +606,14 @@ CSCLController::process_button_pressed_event(sclwindow window, sclint x, sclint 
                 if (showMagnifier && magnifier_configure) {
                     SclPoint pos = {0,};
                     /* calculates x position to be set */
-                    pos.x = (coordinate->x + (coordinate->width / 2)) - (magnifier_configure->width / 2);
+                    pos.x = (coordinate->x + (coordinate->width / 2)) -
+                        (magnifier_configure->width * utils->get_custom_scale_rate_x() / 2);
 
                     /* calculates y position to be set */
                     sclint scnWidth, scnHeight;
                     utils->get_screen_resolution(&scnWidth, &scnHeight);
 
-                    pos.y = coordinate->y - magnifier_configure->height;
+                    pos.y = coordinate->y - magnifier_configure->height * utils->get_custom_scale_rate_y();
 
                     /* FIXME : Temporary way of clearing magnifier window */
                     /*SclWindowContext *winctx = windows->get_window_context(windows->get_magnifier_window(), FALSE);
@@ -650,13 +651,16 @@ CSCLController::process_button_pressed_event(sclwindow window, sclint x, sclint 
                         pos.y += winctx->geometry.y;
                     }
 
-                    if (pos.x < 0 - magnifier_configure->padding_x) {
-                        pos.x = 0 - magnifier_configure->padding_x;
+                    if (pos.x < 0 - magnifier_configure->padding_x * utils->get_custom_scale_rate_x()) {
+                        pos.x = 0 - magnifier_configure->padding_x * utils->get_custom_scale_rate_x();
                     }
-                    if (pos.x > scnWidth + magnifier_configure->padding_x - magnifier_configure->width) {
-                        pos.x = scnWidth + magnifier_configure->padding_x - magnifier_configure->width;
+                    if (pos.x > scnWidth +
+                        magnifier_configure->padding_x * utils->get_custom_scale_rate_x() -
+                        magnifier_configure->width * utils->get_custom_scale_rate_x()) {
+                        pos.x = scnWidth + magnifier_configure->padding_x * utils->get_custom_scale_rate_x() -
+                            magnifier_configure->width * utils->get_custom_scale_rate_x();
                     }
-                    pos.y += magnifier_configure->padding_y;
+                    pos.y += magnifier_configure->padding_y * utils->get_custom_scale_rate_y();
                     pos.x += coordinate->magnifier_offset_x;
                     pos.y += coordinate->magnifier_offset_y;
                     windows->move_window(windows->get_magnifier_window(), pos.x, pos.y);
@@ -865,16 +869,21 @@ CSCLController::process_button_long_pressed_event(sclwindow window, sclbyte key_
                                 SclWindowContext *winctx = windows->get_window_context(window);
                                 if (winctx) {
                                     pos.x = winctx->geometry.x + (coordinate->x + (coordinate->width / 2)) -
-                                        (magnifier_configure->width / 2);
-                                    pos.y = winctx->geometry.y + coordinate->y - magnifier_configure->height;
+                                        (magnifier_configure->width * utils->get_custom_scale_rate_x() / 2);
+                                    pos.y = winctx->geometry.y + coordinate->y -
+                                        magnifier_configure->height * utils->get_custom_scale_rate_y();
                                 }
-                                if (pos.x < 0 - magnifier_configure->padding_x) {
-                                    pos.x = 0 - magnifier_configure->padding_x;
+                                if (pos.x < 0 - magnifier_configure->padding_x * utils->get_custom_scale_rate_x()) {
+                                    pos.x = 0 - magnifier_configure->padding_x * utils->get_custom_scale_rate_x();
                                 }
-                                if (pos.x > scnWidth + magnifier_configure->padding_x - magnifier_configure->width) {
-                                    pos.x = scnWidth + magnifier_configure->padding_x - magnifier_configure->width;
+                                if (pos.x > scnWidth +
+                                    magnifier_configure->padding_x * utils->get_custom_scale_rate_x() -
+                                    magnifier_configure->width * utils->get_custom_scale_rate_x()) {
+                                    pos.x = scnWidth +
+                                        magnifier_configure->padding_x * utils->get_custom_scale_rate_x() -
+                                        magnifier_configure->width * utils->get_custom_scale_rate_x();
                                 }
-                                pos.y += magnifier_configure->padding_y;
+                                pos.y += magnifier_configure->padding_y * utils->get_custom_scale_rate_y();
                                 pos.x += coordinate->magnifier_offset_x;
                                 pos.y += coordinate->magnifier_offset_y;
                                 windows->move_window(windows->get_magnifier_window(), pos.x, pos.y);
@@ -1012,8 +1021,8 @@ CSCLController::process_button_move_event(sclwindow window, sclint x, sclint y, 
         sclint thresholdX = 0;
         sclint thresholdY = 0;
         if (context->get_cur_pressed_window(touch_id) == window && context->get_cur_pressed_key(touch_id) == key_index) {
-            thresholdX = utils->get_scale_x(SCL_MOUSE_BUTTON_CHANGE_THRESHOLD_X);
-            thresholdY = utils->get_scale_y(SCL_MOUSE_BUTTON_CHANGE_THRESHOLD_Y);
+            thresholdX = utils->get_scaled_x(SCL_MOUSE_BUTTON_CHANGE_THRESHOLD_X);
+            thresholdY = utils->get_scaled_y(SCL_MOUSE_BUTTON_CHANGE_THRESHOLD_Y);
         }
 
         /* First check if this button is enabled in current active sublayout */
@@ -1083,21 +1092,27 @@ CSCLController::process_button_move_event(sclwindow window, sclint x, sclint y, 
                         if (showMagnifier && magnifier_configure) {
                             SclPoint pos = {0,};
                             /* calculates x position to be set */
-                            pos.x = (coordinate->x + (coordinate->width / 2)) - (magnifier_configure->width / 2);
+                            pos.x = (coordinate->x + (coordinate->width / 2)) -
+                                (magnifier_configure->width * utils->get_custom_scale_rate_x() / 2);
 
                             /* calculates y position to be set */
                             sclint scnWidth, scnHeight;
                             utils->get_screen_resolution(&scnWidth, &scnHeight);
 
-                            pos.y = (scnHeight - layout->height) + coordinate->y - magnifier_configure->height;
+                            pos.y = (scnHeight - layout->height) + coordinate->y -
+                                magnifier_configure->height * utils->get_custom_scale_rate_y();
 
-                            if (pos.x < 0 - magnifier_configure->padding_x) {
-                                pos.x = 0 - magnifier_configure->padding_x;
+                            if (pos.x < 0 - magnifier_configure->padding_x * utils->get_custom_scale_rate_x()) {
+                                pos.x = 0 - magnifier_configure->padding_x * utils->get_custom_scale_rate_x();
                             }
-                            if (pos.x > scnWidth + magnifier_configure->padding_x - magnifier_configure->width) {
-                                pos.x = scnWidth + magnifier_configure->padding_x - magnifier_configure->width;
+                            if (pos.x > scnWidth +
+                                magnifier_configure->padding_x * utils->get_custom_scale_rate_x() -
+                                magnifier_configure->width * utils->get_custom_scale_rate_x()) {
+                                pos.x = scnWidth +
+                                    magnifier_configure->padding_x * utils->get_custom_scale_rate_x() -
+                                    magnifier_configure->width * utils->get_custom_scale_rate_x();
                             }
-                            pos.y += magnifier_configure->padding_y;
+                            pos.y += magnifier_configure->padding_y * utils->get_custom_scale_rate_y();
                             if (windows->get_nth_window_in_Z_order_list(SCL_WINDOW_Z_TOP) == windows->get_base_window()) {
                                 windows->move_window(windows->get_magnifier_window(), pos.x, pos.y);
                                 windows->update_window(windows->get_magnifier_window());
@@ -1182,27 +1197,30 @@ CSCLController::process_button_move_event(sclwindow window, sclint x, sclint y, 
                                 }
                                 /* calculates x position to be set */
                                 zoomwinpos.x = (coordinate->x + (coordinate->width / 2)) -
-                                    (magnifier_configure->width / 2);
+                                    (magnifier_configure->width * utils->get_custom_scale_rate_x() / 2);
 
                                 /* calculates y position to be set */
                                 sclint scnWidth, scnHeight;
                                 utils->get_screen_resolution(&scnWidth, &scnHeight);
 
-                                zoomwinpos.y = coordinate->y - magnifier_configure->height;
+                                zoomwinpos.y = coordinate->y -
+                                    magnifier_configure->height * utils->get_custom_scale_rate_y();
                                 SclWindowContext *winctx = windows->get_window_context(window);
                                 if (winctx) {
                                     zoomwinpos.x += winctx->geometry.x;
                                     zoomwinpos.y += winctx->geometry.y;
                                 }
-                                if (zoomwinpos.x < 0 - magnifier_configure->padding_x) {
-                                    zoomwinpos.x = 0 - magnifier_configure->padding_x;
+                                if (zoomwinpos.x < 0 - magnifier_configure->padding_x * utils->get_custom_scale_rate_x()) {
+                                    zoomwinpos.x = 0 - magnifier_configure->padding_x * utils->get_custom_scale_rate_x();
                                 }
-                                if (zoomwinpos.x > scnWidth + magnifier_configure->padding_x -
-                                    magnifier_configure->width) {
-                                        zoomwinpos.x = scnWidth + magnifier_configure->padding_x -
-                                            magnifier_configure->width;
+                                if (zoomwinpos.x > scnWidth +
+                                    magnifier_configure->padding_x * utils->get_custom_scale_rate_x() -
+                                    magnifier_configure->width * utils->get_custom_scale_rate_x()) {
+                                        zoomwinpos.x = scnWidth +
+                                            magnifier_configure->padding_x * utils->get_custom_scale_rate_x() -
+                                            magnifier_configure->width * utils->get_custom_scale_rate_x();
                                 }
-                                zoomwinpos.y += magnifier_configure->padding_y;
+                                zoomwinpos.y += magnifier_configure->padding_y * utils->get_custom_scale_rate_y();
                                 zoomwinpos.x += coordinate->magnifier_offset_x;
                                 zoomwinpos.y += coordinate->magnifier_offset_y;
                                 windows->move_window(windows->get_magnifier_window(), zoomwinpos.x, zoomwinpos.y);
@@ -1501,7 +1519,7 @@ CSCLController::process_button_release_event(sclwindow window, sclint x, sclint 
         coordinate = cache->get_cur_layout_key_coordinate(window, key_index);
     }
 
-    const SclLayoutKeyCoordinate *targetCoordination = NULL;
+    const SclLayoutKeyCoordinate *targetCoordinate = NULL;
 
     if (utils && feedback && windows && context && state && handler && cache && btncontext && coordinate) {
         scl8 savedInputMode = context->get_input_mode();
@@ -1548,8 +1566,8 @@ CSCLController::process_button_release_event(sclwindow window, sclint x, sclint 
         sclint thresholdY = 0;
         if (context) {
             if (context->get_cur_pressed_window(touch_id) == window && context->get_cur_pressed_key(touch_id) == key_index) {
-                thresholdX = utils->get_scale_x(SCL_MOUSE_BUTTON_CHANGE_THRESHOLD_X);
-                thresholdY = utils->get_scale_y(SCL_MOUSE_BUTTON_CHANGE_THRESHOLD_Y);
+                thresholdX = utils->get_scaled_x(SCL_MOUSE_BUTTON_CHANGE_THRESHOLD_X);
+                thresholdY = utils->get_scaled_y(SCL_MOUSE_BUTTON_CHANGE_THRESHOLD_Y);
             }
         }
 
@@ -1626,7 +1644,7 @@ CSCLController::process_button_release_event(sclwindow window, sclint x, sclint 
             /* If this button's index is the same as the one initially pressed */
             if (pressed_window == window && pressed_key == key_index) {
                 fireEvt = TRUE;
-                targetCoordination = coordinate;
+                targetCoordinate = coordinate;
             } else {
                 const SclLayoutKeyCoordinate *pressed_coordinate =
                     cache->get_cur_layout_key_coordinate(pressed_window, pressed_key);
@@ -1634,7 +1652,7 @@ CSCLController::process_button_release_event(sclwindow window, sclint x, sclint 
                 if (pressed_coordinate) {
                     if (check_event_transition_enabled(pressed_coordinate, coordinate)) {
                         fireEvt = TRUE;
-                        targetCoordination = pressed_coordinate;
+                        targetCoordinate = pressed_coordinate;
                     } else {
                         ret = FALSE;
                     }
@@ -1663,12 +1681,12 @@ CSCLController::process_button_release_event(sclwindow window, sclint x, sclint 
                 state->get_cur_action_state() != ACTION_STATE_POPUP_REPEATKEY) {
             /* An event occured? */
             if (fireEvt) {
-                if (targetCoordination) {
+                if (targetCoordinate) {
                     SCLShiftState shiftidx = context->get_shift_state();
                     if (shiftidx < 0 || shiftidx >= SCL_SHIFT_STATE_MAX) shiftidx = SCL_SHIFT_STATE_OFF;
 
                     SclUIEventDesc key_event_desc = {0};
-                    key_event_desc.key_type = targetCoordination->key_type;
+                    key_event_desc.key_type = targetCoordinate->key_type;
 
                     key_event_desc.event_type = EVENT_TYPE_RELEASE;
                     key_event_desc.touch_id = touch_id;
@@ -1678,7 +1696,7 @@ CSCLController::process_button_release_event(sclwindow window, sclint x, sclint 
 
                     key_event_desc.touch_event_order = context->get_multi_touch_event_order(touch_id);
 
-                    switch (targetCoordination->button_type) {
+                    switch (targetCoordinate->button_type) {
                     case BUTTON_TYPE_NORMAL:
                     case BUTTON_TYPE_GRAB :
                     case BUTTON_TYPE_SELFISH:
@@ -1686,9 +1704,9 @@ CSCLController::process_button_release_event(sclwindow window, sclint x, sclint 
                     case BUTTON_TYPE_RELATIVE_DIRECTION: {
                         SclButtonContext *pressed_context = cache->get_cur_button_context(pressed_window, pressed_key);
                         if (pressed_context) {
-                            if (!(targetCoordination->use_repeat_key) && pressed_context->state == BUTTON_STATE_PRESSED) {
-                                key_event_desc.key_value = targetCoordination->key_value[shiftidx][0];
-                                key_event_desc.key_event = targetCoordination->key_event[shiftidx][0];
+                            if (!(targetCoordinate->use_repeat_key) && pressed_context->state == BUTTON_STATE_PRESSED) {
+                                key_event_desc.key_value = targetCoordinate->key_value[shiftidx][0];
+                                key_event_desc.key_event = targetCoordinate->key_event[shiftidx][0];
                                 key_event_desc.key_modifier = key_modifier;
                                 handler->on_event_key_clicked(key_event_desc);
                             }
@@ -1697,7 +1715,7 @@ CSCLController::process_button_release_event(sclwindow window, sclint x, sclint 
                     break;
                     case BUTTON_TYPE_MULTITAP:
                     case BUTTON_TYPE_ROTATION: {
-                        if (targetCoordination->button_type == BUTTON_TYPE_MULTITAP) {
+                        if (targetCoordinate->button_type == BUTTON_TYPE_MULTITAP) {
                             if (window == lastFiredWin && key_index == lastFiredKey) {
                                 key_modifier = KEY_MODIFIER_MULTITAP_REPEAT;
                             } else {
@@ -1718,8 +1736,8 @@ CSCLController::process_button_release_event(sclwindow window, sclint x, sclint 
                         } else {
                             sclbyte orgindex = btncontext->multikeyIdx;
                             btncontext->multikeyIdx = 0;
-                            if (targetCoordination->key_value[shiftidx][orgindex + 1]) {
-                                if (strlen(targetCoordination->key_value[shiftidx][orgindex + 1]) > 0) {
+                            if (targetCoordinate->key_value[shiftidx][orgindex + 1]) {
+                                if (strlen(targetCoordinate->key_value[shiftidx][orgindex + 1]) > 0) {
                                     btncontext->multikeyIdx = orgindex + 1;
                                 }
                             }
@@ -2156,8 +2174,8 @@ CSCLController::mouse_release(sclwindow window, sclint x, sclint y, scltouchdevi
         }*/
 
         if (context->get_cur_pressed_window(touch_id) == window) {
-            if (abs(context->get_cur_pressed_point(touch_id).x - x) > utils->get_scale_x(SCL_FLICK_GESTURE_RECOG_THRESHOLD) ||
-                abs(context->get_cur_pressed_point(touch_id).y - y) > utils->get_scale_y(SCL_FLICK_GESTURE_RECOG_THRESHOLD) )
+            if (abs(context->get_cur_pressed_point(touch_id).x - x) > utils->get_scaled_x(SCL_FLICK_GESTURE_RECOG_THRESHOLD) ||
+                abs(context->get_cur_pressed_point(touch_id).y - y) > utils->get_scaled_y(SCL_FLICK_GESTURE_RECOG_THRESHOLD) )
             {
                 struct timeval t0 = context->get_cur_pressed_time(touch_id);
                 struct timeval t1;
@@ -2166,16 +2184,16 @@ CSCLController::mouse_release(sclwindow window, sclint x, sclint y, scltouchdevi
                 etime = ((t1.tv_sec * 1000000 + t1.tv_usec) - (t0.tv_sec * 1000000 + t0.tv_usec))/1000.0;
                 if (etime < SCL_FLICK_GESTURE_RECOG_TIME) {
                     sclint direction = DRAG_NONE;
-                    if (x > context->get_cur_pressed_point(touch_id).x + utils->get_scale_x(SCL_FLICK_GESTURE_RECOG_THRESHOLD)) {
+                    if (x > context->get_cur_pressed_point(touch_id).x + utils->get_scaled_x(SCL_FLICK_GESTURE_RECOG_THRESHOLD)) {
                         direction = DRAG_RIGHT;
                     }
-                    if (x < context->get_cur_pressed_point(touch_id).x - utils->get_scale_x(SCL_FLICK_GESTURE_RECOG_THRESHOLD)) {
+                    if (x < context->get_cur_pressed_point(touch_id).x - utils->get_scaled_x(SCL_FLICK_GESTURE_RECOG_THRESHOLD)) {
                         direction = DRAG_LEFT;
                     }
-                    if (y > context->get_cur_pressed_point(touch_id).y + utils->get_scale_y(SCL_FLICK_GESTURE_RECOG_THRESHOLD)) {
+                    if (y > context->get_cur_pressed_point(touch_id).y + utils->get_scaled_y(SCL_FLICK_GESTURE_RECOG_THRESHOLD)) {
                         direction = DRAG_DOWN;
                     }
-                    if (y < context->get_cur_pressed_point(touch_id).y - utils->get_scale_y(SCL_FLICK_GESTURE_RECOG_THRESHOLD)) {
+                    if (y < context->get_cur_pressed_point(touch_id).y - utils->get_scaled_y(SCL_FLICK_GESTURE_RECOG_THRESHOLD)) {
                         direction = DRAG_UP;
                     }
                     if (handler->on_event_notification(SCL_UINOTITYPE_GESTURE_FLICK, direction)) {
@@ -2859,25 +2877,29 @@ CSCLController::mouse_move(sclwindow window, sclint x, sclint y, scltouchdevice 
                     SclPoint zoomwinpos = {0,};
                     /* calculates x position to be set */
                     zoomwinpos.x = (coordinate->x + (coordinate->width / 2)) -
-                        (magnifier_configure->width / 2);
+                        (magnifier_configure->width * utils->get_custom_scale_rate_x() / 2);
 
                     /* calculates y position to be set */
                     sclint scnWidth, scnHeight;
                     utils->get_screen_resolution(&scnWidth, &scnHeight);
 
-                    zoomwinpos.y =  coordinate->y - magnifier_configure->height;
+                    zoomwinpos.y =  coordinate->y - magnifier_configure->height * utils->get_custom_scale_rate_y();
                     SclWindowContext *winctx = windows->get_window_context(window);
                     if (winctx) {
                         zoomwinpos.x += winctx->geometry.x;
                         zoomwinpos.y += winctx->geometry.y;
                     }
-                    if (zoomwinpos.x < 0 - magnifier_configure->padding_x) {
-                        zoomwinpos.x = 0 - magnifier_configure->padding_x;
+                    if (zoomwinpos.x < 0 - magnifier_configure->padding_x * utils->get_custom_scale_rate_x()) {
+                        zoomwinpos.x = 0 - magnifier_configure->padding_x * utils->get_custom_scale_rate_x();
                     }
-                    if (zoomwinpos.x > scnWidth + magnifier_configure->padding_x - magnifier_configure->width) {
-                        zoomwinpos.x = scnWidth + magnifier_configure->padding_x - magnifier_configure->width;
+                    if (zoomwinpos.x > scnWidth +
+                        magnifier_configure->padding_x * utils->get_custom_scale_rate_x() -
+                        magnifier_configure->width * utils->get_custom_scale_rate_x()) {
+                        zoomwinpos.x = scnWidth +
+                            magnifier_configure->padding_x * utils->get_custom_scale_rate_x() -
+                            magnifier_configure->width * utils->get_custom_scale_rate_x();
                     }
-                    zoomwinpos.y += magnifier_configure->padding_y;
+                    zoomwinpos.y += magnifier_configure->padding_y * utils->get_custom_scale_rate_y();
 
                     zoomwinpos.x += coordinate->magnifier_offset_x;
                     zoomwinpos.y += coordinate->magnifier_offset_y;
@@ -3552,26 +3574,29 @@ CSCLController::configure_autopopup_window(sclwindow window, sclbyte key_index, 
             windows->get_window_rect(windows->get_base_window(), &baseWndRect);
             /* Let the autopopup have its position right above the pressed button, with center alignment) */
             rect->x = baseWndRect.x + coordinate->x + (coordinate->width / 2) - (rect->width / 2);
-            rect->y = baseWndRect.y + coordinate->y - rect->height + autopopup_configure->decoration_size;
+            rect->y = baseWndRect.y + coordinate->y - rect->height +
+                autopopup_configure->decoration_size * utils->get_smallest_custom_scale_rate();
             /* First check the growing direction of this autopopup window */
             if (coordinate->x < baseWndRect.width / 2) {
                 /* We're growing left to right, caculate the left start point */
                 rect->x = baseWndRect.x + coordinate->x + (coordinate->width / 2) -
-                    (autopopup_configure->button_width / 2) - autopopup_configure->bg_padding;
+                    (autopopup_configure->button_width * utils->get_custom_scale_rate_x() / 2) -
+                    autopopup_configure->bg_padding * utils->get_smallest_custom_scale_rate();
                 if (rect->x + rect->width > baseWndRect.x + baseWndRect.width) {
-                    sclint relocate_unit = autopopup_configure->button_width +
-                        autopopup_configure->button_spacing;
+                    sclint relocate_unit = autopopup_configure->button_width * utils->get_custom_scale_rate_x() +
+                        autopopup_configure->button_spacing * utils->get_smallest_custom_scale_rate();
                     rect->x -= (((rect->x + rect->width - (baseWndRect.x + baseWndRect.width)) /
                             relocate_unit) + 1) * relocate_unit;
                 }
             } else {
                 /* We're growing right to left, caculate the right end point */
                 rect->x = baseWndRect.x + coordinate->x + (coordinate->width / 2) +
-                    (autopopup_configure->button_width / 2) + autopopup_configure->bg_padding;
+                    (autopopup_configure->button_width * utils->get_custom_scale_rate_x() / 2) +
+                    autopopup_configure->bg_padding * utils->get_smallest_custom_scale_rate();
                 rect->x -= rect->width;
                 if (rect->x < baseWndRect.x) {
-                    sclint relocate_unit = autopopup_configure->button_width +
-                        autopopup_configure->button_spacing;
+                    sclint relocate_unit = autopopup_configure->button_width * utils->get_custom_scale_rate_x() +
+                        autopopup_configure->button_spacing * utils->get_smallest_custom_scale_rate();
                     rect->x += (((baseWndRect.x - rect->x) /
                             relocate_unit) + 1) * relocate_unit;
                 }
@@ -3581,7 +3606,8 @@ CSCLController::configure_autopopup_window(sclwindow window, sclbyte key_index, 
             //if (rect->x + rect->width > scrwidth + utils->get_scale_x(scl_autopopup_configure.decoration_size)) rect->x = (scrwidth + utils->get_scale_x(scl_autopopup_configure.decoration_size)) - rect->width;
             if (rect->x + rect->width > scrwidth) rect->x = (scrwidth) - rect->width;
             if (rect->y + rect->height > scrheight) rect->y = scrheight - rect->height;
-            if (rect->x < 0 - autopopup_configure->decoration_size) rect->x = 0 - autopopup_configure->decoration_size;
+            if (rect->x < 0 - autopopup_configure->decoration_size * utils->get_smallest_custom_scale_rate())
+                rect->x = 0 - autopopup_configure->decoration_size * utils->get_smallest_custom_scale_rate();
             // restrict to 0
             if (rect->x < 0) rect->x = 0;
             if (rect->y < 0) rect->y = 0;

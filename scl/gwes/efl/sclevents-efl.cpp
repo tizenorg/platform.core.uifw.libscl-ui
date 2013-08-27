@@ -258,7 +258,7 @@ Eina_Bool mouse_press(void *data, int type, void *event_info)
                     }
                     if (process_event)
                     {
-                        // Now convert the global coordination to appropriate local coordination 
+                        // Now convert the global coordinate to appropriate local coordinate
                         SclPoint coords = get_rotated_local_coords(ev->root.x, ev->root.y, context->get_rotation(), &rect);
                         controller->mouse_press(window, coords.x, coords.y, ev->multi.device);
                         mouse_pressed = TRUE;
@@ -280,7 +280,7 @@ Eina_Bool mouse_press(void *data, int type, void *event_info)
                     rect.height = temp;
                 }
 
-                // Now convert the global coordination to appropriate local coordination 
+                // Now convert the global coordinate to appropriate local coordinate
                 SclPoint coords = get_rotated_local_coords(ev->root.x, ev->root.y, context->get_rotation(), &rect);
                 controller->mouse_press(window, coords.x, coords.y, ev->multi.device);
                 mouse_pressed = TRUE;
@@ -366,7 +366,7 @@ Eina_Bool mouse_release (void *data, int type, void *event_info)
                         }
                         if (process_event)
                         {
-                            /* Now convert the global coordination to appropriate local coordination */
+                            /* Now convert the global coordinate to appropriate local coordinate */
                             SclPoint coords = get_rotated_local_coords(ev->root.x, ev->root.y, context->get_rotation(), &rect);
                             controller->mouse_release(window, coords.x, coords.y, ev->multi.device);
                             processed = TRUE;
@@ -387,7 +387,7 @@ Eina_Bool mouse_release (void *data, int type, void *event_info)
                     rect.height = temp;
                 }
 
-                /* Now convert the global coordination to appropriate local coordination */
+                /* Now convert the global coordinate to appropriate local coordinate */
                 SclPoint coords = get_rotated_local_coords(ev->root.x, ev->root.y, context->get_rotation(), &rect);
                 controller->mouse_release(window, coords.x, coords.y, ev->multi.device);
                 processed = TRUE;
@@ -473,7 +473,7 @@ Eina_Bool mouse_move (void *data, int type, void *event_info)
                             (adjusty >= rect.y && adjusty <= (rect.y + winheight))) {
                                 process_event = TRUE;
                         }
-                        /* Process this event regardless of the coordination if the top window has the POPUP_GRAB layout style */
+                        /* Process this event regardless of the coordinate if the top window has the POPUP_GRAB layout style */
                         if (index == SCL_WINDOW_Z_TOP) {
                             const SclLayout *layout = cache->get_cur_layout(window);
                             if (layout) {
@@ -484,7 +484,7 @@ Eina_Bool mouse_move (void *data, int type, void *event_info)
                         }
                         if (process_event)
                         {
-                            /* Now convert the global coordination to appropriate local coordination */
+                            /* Now convert the global coordinate to appropriate local coordinate */
                             SclPoint coords = get_rotated_local_coords(ev->root.x, ev->root.y, context->get_rotation(), &rect);
 
                             controller->mouse_move(window, coords.x, coords.y, ev->multi.device);
@@ -500,7 +500,7 @@ Eina_Bool mouse_move (void *data, int type, void *event_info)
         if (!processed) {
             window = pressed_window;
             if (get_window_rect(window, &rect)) {
-                /* Now convert the global coordination to appropriate local coordination */
+                /* Now convert the global coordinate to appropriate local coordinate */
                 SclPoint coords = get_rotated_local_coords(ev->root.x, ev->root.y, context->get_rotation(), &rect);
                 controller->mouse_move(window, coords.x, coords.y, ev->multi.device);
                 processed = TRUE;
