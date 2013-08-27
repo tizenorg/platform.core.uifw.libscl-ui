@@ -91,7 +91,7 @@ mouse_press(GtkWidget *widget, GdkEventButton *event, gpointer user_data)
             magpressposx = magctx->x;
             magpressposy = magctx->y;
         }
-        /* First convert the local coordination to global coordination */
+        /* First convert the local coordinate to global coordinate */
         sclwindow window = SCLWINDOW_INVALID;
         sclbyte index = 0;
         SclWindowContext *context = NULL;
@@ -110,7 +110,7 @@ mouse_press(GtkWidget *widget, GdkEventButton *event, gpointer user_data)
             if (context) {
                 if ((x >= context->x && x <= (context->x + context->width)) &&
                         (y >= context->y && y <= (context->y + context->height))) {
-                    /* Now convert the global coordination to appropriate local coordination */
+                    /* Now convert the global coordinate to appropriate local coordinate */
                     x = x - context->x;
                     y = y - context->y;
 
@@ -166,7 +166,7 @@ mouse_release(GtkWidget *widget, GdkEventButton *event, gpointer user_data)
         sclwindow window = SCLWINDOW_INVALID;
         SclWindowContext *context = NULL;
 
-        /* First convert the local coordination to global coordination */
+        /* First convert the local coordinate to global coordinate */
         context = windows->get_window_context(static_cast<sclwindow>(user_data), FALSE);
         if (widget == windows->get_magnifier_window()) {
             //context->x = magpressposx;
@@ -188,7 +188,7 @@ mouse_release(GtkWidget *widget, GdkEventButton *event, gpointer user_data)
             if (context) {
                 if ((x >= context->x && x <= (context->x + context->width)) &&
                         (y >= context->y && y <= (context->y + context->height))) {
-                    /* Now convert the global coordination to appropriate local coordination */
+                    /* Now convert the global coordinate to appropriate local coordinate */
                     x = x - context->x;
                     y = y - context->y;
 
@@ -292,7 +292,7 @@ mouse_move(GtkWidget *widget, GdkEventButton *event, gpointer user_data)
         sclwindow window = SCLWINDOW_INVALID;
         SclWindowContext *context = NULL;
 
-        /* First convert the local coordination to global coordination */
+        /* First convert the local coordinate to global coordinate */
         context = windows->get_window_context(static_cast<sclwindow>(user_data), FALSE);
         if (widget == windows->get_magnifier_window()) {
             //context->x = magpressposx;
@@ -314,7 +314,7 @@ mouse_move(GtkWidget *widget, GdkEventButton *event, gpointer user_data)
             if (context) {
                 if ((x >= context->x && x <= (context->x + context->width)) &&
                         (y >= context->y && y <= (context->y + context->height))) {
-                    /* Now convert the global coordination to appropriate local coordination */
+                    /* Now convert the global coordinate to appropriate local coordinate */
                     x = x - context->x;
                     y = y - context->y;
 

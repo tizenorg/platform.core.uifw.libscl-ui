@@ -80,9 +80,13 @@ public:
     SclSize get_input_mode_size(const sclchar *input_mode, SCLDisplayMode display_mode);
     void get_screen_resolution(sclint *width, sclint *height);
 
-    scl16 get_scale_x(scl16 x);
-    scl16 get_scale_y(scl16 y);
+    scl16 get_scaled_x(scl16 x);
+    scl16 get_scaled_y(scl16 y);
     sclfloat get_scale_rate();
+
+    sclfloat get_custom_scale_rate_x();
+    sclfloat get_custom_scale_rate_y();
+    void set_custom_scale_rate(sclfloat x, sclfloat y);
 
     sclint get_multi_touch_context_num();
     sclboolean get_multi_touch_event(sclint seqorder, SclUIEventDesc *desc);

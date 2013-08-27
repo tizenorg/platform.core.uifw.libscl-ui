@@ -271,11 +271,11 @@ CSCLUI::get_scale_rate()
  * Returns a calculated x value according to the current screen resolution
  */
 scl16
-CSCLUI::get_scale_x(scl16 x)
+CSCLUI::get_scaled_x(scl16 x)
 {
     scl16 ret = 0;
     if (m_impl) {
-        ret = m_impl->get_scale_x(x);
+        ret = m_impl->get_scaled_x(x);
     }
     return ret;
 }
@@ -284,13 +284,50 @@ CSCLUI::get_scale_x(scl16 x)
  * Returns a calculated y value according to the current screen resolution
  */
 scl16
-CSCLUI::get_scale_y(scl16 y)
+CSCLUI::get_scaled_y(scl16 y)
 {
     scl16 ret = 0;
     if (m_impl) {
-        ret = m_impl->get_scale_y(y);
+        ret = m_impl->get_scaled_y(y);
     }
     return ret;
+}
+
+/**
+ * Returns the current rate x value for resizing the keyboard's content
+ */
+sclfloat
+CSCLUI::get_custom_scale_rate_x()
+{
+    sclfloat ret = 1.0f;
+    if (m_impl) {
+        ret = m_impl->get_custom_scale_rate_x();
+    }
+    return ret;
+}
+
+/**
+ * Returns the current rate y value for resizing the keyboard's content
+ */
+sclfloat
+CSCLUI::get_custom_scale_rate_y()
+{
+    sclfloat ret = 1.0f;
+    if (m_impl) {
+        ret = m_impl->get_custom_scale_rate_y();
+    }
+    return ret;
+}
+
+/**
+ * Sets the custom rate value for resizing the keyboard's content
+ */
+void
+CSCLUI::set_custom_scale_rate(sclfloat x, sclfloat y)
+{
+    if (m_impl) {
+        m_impl->set_custom_scale_rate(x, y);
+    }
 }
 
 /**

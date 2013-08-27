@@ -90,12 +90,12 @@ typedef struct _SclLayout {
 }SclLayout;
 
 /**
-  *@brief SCL Layout key coordination structure, which represents a key's position-related information
+  *@brief SCL Layout key coordinate structure, which represents a key's position-related information
   */
 typedef struct _SclLayoutKeyCoordinate {
     sclboolean valid;					/* Indicates whether this information is in use or not */
-    sclshort x;							/* X coordination of this button */
-    sclshort y;							/* Y coordination of this button */
+    sclshort x;							/* X coordinate of this button */
+    sclshort y;							/* Y coordinate of this button */
     sclshort width;						/* Width of this button */
     sclshort height;					/* Height of this button */
     sclshort add_hit_left;				/* Left value for expanded hit area */

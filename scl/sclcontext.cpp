@@ -533,15 +533,15 @@ CSCLContext::get_multi_touch_event(sclint seqorder, SclUIEventDesc *desc)
             if (iSeqIndex == seqorder) {
                 MultiTouchContext *pContext = find_multi_touch_context(*list_iter);
                 if (pContext) {
-                    const SclLayoutKeyCoordinate *coordination =
+                    const SclLayoutKeyCoordinate *coordinate =
                         cache->get_cur_layout_key_coordinate(pContext->cur_pressed_window, pContext->cur_pressed_key);
 
-                    if (coordination) {
+                    if (coordinate) {
                         SCLShiftState shiftidx = get_shift_state();
                         if (shiftidx < 0 || shiftidx >= SCL_SHIFT_STATE_MAX) shiftidx = SCL_SHIFT_STATE_OFF;
-                        desc->key_event = coordination->key_event[shiftidx][0];
-                        desc->key_value = coordination->key_value[shiftidx][0];
-                        desc->key_type = coordination->key_type;
+                        desc->key_event = coordinate->key_event[shiftidx][0];
+                        desc->key_value = coordinate->key_value[shiftidx][0];
+                        desc->key_type = coordinate->key_type;
                     } else {
                         desc->key_event = 0;
                         desc->key_value = NULL;

@@ -69,9 +69,9 @@ CSCLErrorAdjustment::apply_touch_offset(SCLTouchOffsetLevel level, sclint *x, sc
 
     if (m_enabled) {
         if (level == TOUCH_OFFSET_LEVEL_1 ) {
-            *x = *x + utils->get_scale_x(pos->x);
+            *x = *x + utils->get_scaled_x(pos->x);
         } else if (level == TOUCH_OFFSET_LEVEL_2) {
-            *x = *x + utils->get_scale_x(pos->x);
+            *x = *x + utils->get_scaled_x(pos->x);
             ///* CODE for landscape	 CODE for landscape*/
             //if (*x < utils->get_scale_x(scl_layout[LYT_LANDSCAPE_QTY_DEFAULT].width/TWO)) {
             //    *x = *x + utils->get_scale_x(OFFSET_MAX +((*x - utils->get_scale_x(scl_layout[LYT_LANDSCAPE_QTY_DEFAULT].width/TWO)) /(utils->get_scale_x(scl_layout[LYT_LANDSCAPE_QTY_DEFAULT].width/TWO)/OFFSET_MAX)));
@@ -79,7 +79,7 @@ CSCLErrorAdjustment::apply_touch_offset(SCLTouchOffsetLevel level, sclint *x, sc
             //    *x = *x - utils->get_scale_x(OFFSET_MAX -((*x - utils->get_scale_x(scl_layout[LYT_LANDSCAPE_QTY_DEFAULT].width/TWO)) /(utils->get_scale_x(scl_layout[LYT_LANDSCAPE_QTY_DEFAULT].width/TWO)/OFFSET_MAX)));
             //}
         }
-        *y = *y + utils->get_scale_y(pos->y);
+        *y = *y + utils->get_scaled_y(pos->y);
     }
 
     return TRUE;
