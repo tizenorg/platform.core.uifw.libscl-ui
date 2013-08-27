@@ -211,7 +211,7 @@ public:
      * @param[in] x the value that needs to be scaled
      * @return scaled value
      */
-    scl16 get_scale_x(scl16 x);
+    scl16 get_scaled_x(scl16 x);
 
     /**
      * @brief This API request SCL library to scale the input value,
@@ -219,13 +219,31 @@ public:
      * @param[in] y the value that needs to be scaled
      * @return scaled value
      */
-    scl16 get_scale_y(scl16 y);
+    scl16 get_scaled_y(scl16 y);
 
     /**
      * @brief This API returns the smaller scale rate, between x and y
      * @return scale rate
      */
     sclfloat get_scale_rate();
+
+    /**
+     * @brief This API retrieves the current custom scale rate x, for resizing the keyboard's content
+     * @return current custom x scale value
+     */
+    sclfloat get_custom_scale_rate_x();
+
+    /**
+     * @brief This API retrieves the current custom scale rate y, for resizing the keyboard's content
+     * @return current custom y scale value
+     */
+    sclfloat get_custom_scale_rate_y();
+
+    /**
+     * @brief This API sets the current custom scale rate values, for resizing the keyboard's content
+     * @param[in] x the scale rate value
+     */
+    void set_custom_scale_rate(sclfloat x, sclfloat y);
 
     /**
      * @brief This API returns the number of current multi touch contexts,
@@ -358,10 +376,12 @@ public:
      * default is TRUE
      */
     void set_autocapital_shift_state(sclboolean flag);
+
     /**
      * @brief This API gets the autocapital shift state flag
      */
     sclint get_autocapital_shift_state();
+
 private:
     CSCLUIImpl *m_impl;
 };

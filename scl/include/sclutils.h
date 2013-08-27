@@ -131,11 +131,17 @@ public :
 
     void scale_x(scl16 *x);
     void scale_y(scl16 *y);
-    scl16 get_scale_x(scl16 x);
-    scl16 get_scale_y(scl16 y);
+    scl16 get_scaled_x(scl16 x);
+    scl16 get_scaled_y(scl16 y);
     sclfloat get_smallest_scale_rate();
     sclfloat get_scale_rate_x();
     sclfloat get_scale_rate_y();
+    sclfloat get_smallest_custom_scale_rate();
+    sclfloat get_custom_scale_rate_x();
+    sclfloat get_custom_scale_rate_y();
+
+    void set_custom_scale_rate_x(sclfloat x);
+    void set_custom_scale_rate_y(sclfloat y);
 
     sclchar* get_str_dup(const sclchar* str);
 
@@ -184,6 +190,9 @@ public :
 private :
     sclfloat m_scn_rate_x;
     sclfloat m_scn_rate_y;
+
+    sclfloat m_custom_scale_rate_x;
+    sclfloat m_custom_scale_rate_y;
 
     sclint m_scn_resolution_x;
     sclint m_scn_resolution_y;

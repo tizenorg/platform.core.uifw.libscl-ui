@@ -232,11 +232,11 @@ CSCLGraphicsImplEfl::draw_image(sclwindow window, const scldrawctx draw_ctx, scl
                     const SclLayout *layout = cache->get_cur_layout(window);
                     if (layout) {
                         if (layout->display_mode == DISPLAYMODE_PORTRAIT) {
-                            image_width = utils->get_scale_x(image_width);
-                            image_height = utils->get_scale_y(image_height);
+                            image_width = utils->get_scaled_x(image_width);
+                            image_height = utils->get_scaled_y(image_height);
                         } else {
-                            image_width = utils->get_scale_y(image_width);
-                            image_height = utils->get_scale_x(image_height);
+                            image_width = utils->get_scaled_y(image_width);
+                            image_height = utils->get_scaled_x(image_height);
                         }
                     }
                     if (src_width == -1 && src_height == -1) {

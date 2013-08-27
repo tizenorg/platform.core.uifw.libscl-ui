@@ -64,8 +64,8 @@ public:
     sclint add_private_key(SclPrivateKeyProperties* properties, sclboolean *fNeedInvaild);
     sclboolean remove_private_key(sclint id);
 
-    sclboolean copy_from_privatekeyproperties(const SclPrivateKeyProperties* privProperties, SclLayoutKeyCoordinate* coordination);
-    sclboolean copy_to_privatekeyproperties(const SclLayoutKeyCoordinate *coordination, SclPrivateKeyProperties* privProperties);
+    sclboolean copy_from_privatekeyproperties(const SclPrivateKeyProperties* privProperties, SclLayoutKeyCoordinate* coordinate);
+    sclboolean copy_to_privatekeyproperties(const SclLayoutKeyCoordinate *coordinate, SclPrivateKeyProperties* privProperties);
     sclboolean copy_privatekeyproperties(const SclPrivateKeyProperties* source, SclPrivateKeyProperties* target);
     sclboolean clear_privatekeyproperties(SclPrivateKeyProperties* privProperties);
 
@@ -87,22 +87,22 @@ public:
 private:
     sclboolean resize_resource_elements_by_resolution();
     sclboolean resize_layout_by_resolution(sclbyte layout_index, sclboolean resize_key_only = FALSE);
-    sclboolean change_by_privatekey(const sclbyte input_mode_index, const sclbyte layout_index, const sclbyte key_index, SclLayoutKeyCoordinate* coordination);
+    sclboolean change_by_privatekey(const sclbyte input_mode_index, const sclbyte layout_index, const sclbyte key_index, SclLayoutKeyCoordinate* coordinate);
 
-    void generate_autopopup_layout(const SclLayoutKeyCoordinate *coordination,
+    void generate_autopopup_layout(const SclLayoutKeyCoordinate *coordinate,
                                    SclLayout *pCurLayout,
-                                   SclLayoutKeyCoordinate (*pCurLayoutKeyCoordination)[MAX_KEY],
+                                   SclLayoutKeyCoordinate (*pCurLayoutKeyCoordinates)[MAX_KEY],
                                    SclButtonContext (*pCurButtonContext)[MAX_KEY]);
 
 protected:
 
     SclLayout mCurBaseLayout;
-    SclLayoutKeyCoordinate mCurBaseLayoutKeyCoordination[MAX_KEY];
+    SclLayoutKeyCoordinate mCurBaseLayoutKeyCoordinates[MAX_KEY];
 
     SclButtonContext mCurBaseButtonContext[MAX_KEY];
 
     SclLayout mCurPopupLayout[MAX_POPUP_WINDOW];
-    SclLayoutKeyCoordinate mCurPopupLayoutKeyCoordination[MAX_POPUP_WINDOW][MAX_KEY];
+    SclLayoutKeyCoordinate mCurPopupLayoutKeyCoordinates[MAX_POPUP_WINDOW][MAX_KEY];
 
     SclButtonContext mCurPopupButtonContext[MAX_POPUP_WINDOW][MAX_KEY];
 

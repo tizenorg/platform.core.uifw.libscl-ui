@@ -77,18 +77,18 @@ CSCLFeedback::button_pressed(sclwindow window, sclbyte key_index)
     SCL_DEBUG();
     CSCLResourceCache *cache = CSCLResourceCache::get_instance();
     if (cache) {
-        const SclLayoutKeyCoordinate *coordination = cache->get_cur_layout_key_coordinate(window, key_index);
+        const SclLayoutKeyCoordinate *coordinate = cache->get_cur_layout_key_coordinate(window, key_index);
         CSCLUtils *utils = CSCLUtils::get_instance();
         CSCLContext *context = CSCLContext::get_instance();
-        if (utils && context && coordination) {
-            if (coordination->sound_style) {
+        if (utils && context && coordinate) {
+            if (coordinate->sound_style) {
                 if (context->get_sound_enabled()) {
-                    utils->play_sound(coordination->sound_style);
+                    utils->play_sound(coordinate->sound_style);
                 }
             }
-            if (coordination->vibe_style) {
+            if (coordinate->vibe_style) {
                 if (context->get_vibration_enabled()) {
-                    utils->play_vibration(coordination->vibe_style, DEFAULT_VIBRATION_DURATION);
+                    utils->play_vibration(coordinate->vibe_style, DEFAULT_VIBRATION_DURATION);
                 }
             }
         }

@@ -218,7 +218,7 @@ CSCLResourceCache::resize_resource_elements_by_resolution()
             }
         }
 
-        /* First we recalculate all the coordinations of each keys and sizes of layouts structure */
+        /* First we recalculate all the coordinates of each keys and sizes of layouts structure */
         /* FIXME */
         //for (loop = 0;loop < MAX_LAYOUT;loop++) {
         for (loop = 0;loop < MAX_SCL_LAYOUT;loop++) {
@@ -244,11 +244,11 @@ CSCLResourceCache::resize_resource_elements_by_resolution()
         sclres_autopopup_configure->decoration_size *= utils->get_smallest_scale_rate();
         sclres_autopopup_configure->bg_padding *= utils->get_smallest_scale_rate();
         sclres_autopopup_configure->button_spacing *= utils->get_smallest_scale_rate();
-        utils->scale_x(&(sclres_autopopup_configure->button_width));
-        utils->scale_y(&(sclres_autopopup_configure->button_height));
+        sclres_autopopup_configure->button_width *= utils->get_scale_rate_x();
+        sclres_autopopup_configure->button_height *= utils->get_scale_rate_y();
 
-        utils->scale_x(&(sclres_magnifier_configure->width));
-        utils->scale_y(&(sclres_magnifier_configure->height));
+        sclres_magnifier_configure->width *= utils->get_scale_rate_x();
+        sclres_magnifier_configure->height *= utils->get_scale_rate_y();
         sclres_magnifier_configure->label_area_rect.left *= utils->get_scale_rate_x();
         sclres_magnifier_configure->label_area_rect.right *= utils->get_scale_rate_x();
         sclres_magnifier_configure->label_area_rect.top *= utils->get_scale_rate_y();
@@ -283,18 +283,18 @@ CSCLResourceCache::resize_resource_elements_by_resolution()
  * This func should be called when the class init
  */
 sclboolean
-CSCLResourceCache::change_by_privatekey(const sclbyte input_mode_index, const sclbyte layout_index, const sclbyte key_index, SclLayoutKeyCoordinate* coordination)
+CSCLResourceCache::change_by_privatekey(const sclbyte input_mode_index, const sclbyte layout_index, const sclbyte key_index, SclLayoutKeyCoordinate* coordinate)
 {
     SCL_DEBUG();
-    scl_assert_return_false(coordination);
+    scl_assert_return_false(coordinate);
 
-    if (coordination) {
+    if (coordinate) {
         for (int loop = 0;loop < MAX_PRIVATE_KEY; loop++) {
             if (mPrivateKeyProperties[loop].valid &&
-                !(mPrivateKeyProperties[loop].custom_id.empty()) && coordination->custom_id) {
-                if (mPrivateKeyProperties[loop].custom_id.compare(coordination->custom_id) == 0) {
+                !(mPrivateKeyProperties[loop].custom_id.empty()) && coordinate->custom_id) {
+                if (mPrivateKeyProperties[loop].custom_id.compare(coordinate->custom_id) == 0) {
                     /* sets the current properties to private key properties */
-                    copy_from_privatekeyproperties(&mPrivateKeyProperties[loop], coordination);
+                    copy_from_privatekeyproperties(&mPrivateKeyProperties[loop], coordinate);
                 }
             }
         }
@@ -307,21 +307,21 @@ CSCLResourceCache::change_by_privatekey(const sclbyte input_mode_index, const sc
  * Copys the given private properties data to the given key properties
  */
 sclboolean
-CSCLResourceCache::copy_from_privatekeyproperties(const SclPrivateKeyProperties* privProperties, SclLayoutKeyCoordinate* coordination)
+CSCLResourceCache::copy_from_privatekeyproperties(const SclPrivateKeyProperties* privProperties, SclLayoutKeyCoordinate* coordinate)
 {
     SCL_DEBUG();
     scl_assert_return_false(privProperties);
-    scl_assert_return_false(coordination);
+    scl_assert_return_false(coordinate);
 
     sclint loop;
     sclint inner_loop;
-    if (privProperties && coordination) {
+    if (privProperties && coordinate) {
         /* Copy customizing-allowed properties only if those properties are valid */
-        coordination->label_count = privProperties->label_count;
+        coordinate->label_count = privProperties->label_count;
         for (loop = 0;loop < SCL_SHIFT_STATE_MAX;loop++) {
             for (inner_loop = 0;inner_loop < MAX_SIZE_OF_LABEL_FOR_ONE;inner_loop++) {
                 if (!(privProperties->label[loop][inner_loop].empty())) {
-                    coordination->label[loop][inner_loop] =
+                    coordinate->label[loop][inner_loop] =
                         (sclchar*)privProperties->label[loop][inner_loop].c_str();
                 }
             }
@@ -329,7 +329,7 @@ CSCLResourceCache::copy_from_privatekeyproperties(const SclPrivateKeyProperties*
         for (loop = 0;loop < SCL_SHIFT_STATE_MAX;loop++) {
             for (inner_loop = 0;inner_loop < SCL_BUTTON_STATE_MAX;inner_loop++) {
                 if (!(privProperties->image_label_path[loop][inner_loop].empty())) {
-                    coordination->image_label_path[loop][inner_loop] =
+                    coordinate->image_label_path[loop][inner_loop] =
                         (sclchar*)privProperties->image_label_path[loop][inner_loop].c_str();
                 }
             }
@@ -337,7 +337,7 @@ CSCLResourceCache::copy_from_privatekeyproperties(const SclPrivateKeyProperties*
         for (loop = 0;loop < SCL_SHIFT_STATE_MAX;loop++) {
             for (inner_loop = 0;inner_loop < SCL_BUTTON_STATE_MAX;inner_loop++) {
                 if (!(privProperties->bg_image_path[loop][inner_loop].empty())) {
-                    coordination->bg_image_path[loop][inner_loop] =
+                    coordinate->bg_image_path[loop][inner_loop] =
                         (sclchar*)privProperties->bg_image_path[loop][inner_loop].c_str();
                 }
             }
@@ -346,7 +346,7 @@ CSCLResourceCache::copy_from_privatekeyproperties(const SclPrivateKeyProperties*
         for (loop = 0;loop < SCL_SHIFT_STATE_MAX;loop++) {
             for (inner_loop = 0;inner_loop < MAX_SIZE_OF_MULTITAP_CHAR;inner_loop++) {
                 if (!(privProperties->key_value[loop][inner_loop].empty())) {
-                    coordination->key_value[loop][inner_loop] =
+                    coordinate->key_value[loop][inner_loop] =
                         (sclchar*)privProperties->key_value[loop][inner_loop].c_str();
                 }
             }
@@ -354,7 +354,7 @@ CSCLResourceCache::copy_from_privatekeyproperties(const SclPrivateKeyProperties*
         for (loop = 0;loop < SCL_SHIFT_STATE_MAX;loop++) {
             for (inner_loop = 0;inner_loop < MAX_SIZE_OF_MULTITAP_CHAR;inner_loop++) {
                 if (privProperties->key_event[loop][inner_loop] != 0) {
-                    coordination->key_event[loop][inner_loop] =
+                    coordinate->key_event[loop][inner_loop] =
                         privProperties->key_event[loop][inner_loop];
                 }
             }
@@ -362,7 +362,7 @@ CSCLResourceCache::copy_from_privatekeyproperties(const SclPrivateKeyProperties*
         for (loop = 0;loop < SCL_SHIFT_STATE_MAX;loop++) {
             for (inner_loop = 0;inner_loop < MAX_SIZE_OF_MULTITAP_CHAR;inner_loop++) {
                 if (!(privProperties->hint_string[loop][inner_loop].empty())) {
-                    coordination->hint_string[loop][inner_loop] =
+                    coordinate->hint_string[loop][inner_loop] =
                         (sclchar*)privProperties->hint_string[loop][inner_loop].c_str();
                 }
             }
@@ -376,128 +376,128 @@ CSCLResourceCache::copy_from_privatekeyproperties(const SclPrivateKeyProperties*
  * Copys the given properties data to the given private key properties
  */
 sclboolean
-CSCLResourceCache::copy_to_privatekeyproperties(const SclLayoutKeyCoordinate *coordination, SclPrivateKeyProperties* privProperties)
+CSCLResourceCache::copy_to_privatekeyproperties(const SclLayoutKeyCoordinate *coordinate, SclPrivateKeyProperties* privProperties)
 {
     SCL_DEBUG();
     scl_assert_return_false(privProperties);
-    scl_assert_return_false(coordination);
+    scl_assert_return_false(coordinate);
 
     /* sets the current key Properties to private key privProperties */
 
     sclint loop;
     sclint inner_loop;
-    if (privProperties && coordination) {
+    if (privProperties && coordinate) {
         /* Configure */
-        if (coordination->custom_id) {
-            privProperties->custom_id = coordination->custom_id;
+        if (coordinate->custom_id) {
+            privProperties->custom_id = coordinate->custom_id;
         }
-        privProperties->button_type = coordination->button_type;
-        privProperties->key_type = coordination->key_type;
-        privProperties->popup_type = coordination->popup_type;
-        privProperties->use_magnifier = coordination->use_magnifier;
-        privProperties->use_long_key_magnifier = coordination->use_long_key_magnifier;
-        if (coordination->sound_style) {
-            privProperties->sound_style = coordination->sound_style;
+        privProperties->button_type = coordinate->button_type;
+        privProperties->key_type = coordinate->key_type;
+        privProperties->popup_type = coordinate->popup_type;
+        privProperties->use_magnifier = coordinate->use_magnifier;
+        privProperties->use_long_key_magnifier = coordinate->use_long_key_magnifier;
+        if (coordinate->sound_style) {
+            privProperties->sound_style = coordinate->sound_style;
         }
-        if (coordination->vibe_style) {
-            privProperties->vibe_style = coordination->vibe_style;
+        if (coordinate->vibe_style) {
+            privProperties->vibe_style = coordinate->vibe_style;
         }
 
         for (loop = 0;loop < SCL_DRAG_STATE_MAX;loop++) {
-            if (coordination->popup_input_mode[loop]) {
-                privProperties->popup_input_mode[loop] = coordination->popup_input_mode[loop];
+            if (coordinate->popup_input_mode[loop]) {
+                privProperties->popup_input_mode[loop] = coordinate->popup_input_mode[loop];
             }
         }
 
         /* Properties */
-        privProperties->label_count = coordination->label_count;
-        privProperties->key_value_count = coordination->key_value_count;
-        privProperties->long_key_type = coordination->long_key_type;
-        if (coordination->long_key_value) {
-            privProperties->long_key_value = coordination->long_key_value;
+        privProperties->label_count = coordinate->label_count;
+        privProperties->key_value_count = coordinate->key_value_count;
+        privProperties->long_key_type = coordinate->long_key_type;
+        if (coordinate->long_key_value) {
+            privProperties->long_key_value = coordinate->long_key_value;
         }
-        privProperties->long_key_event = coordination->long_key_event;
-        privProperties->use_repeat_key = coordination->use_repeat_key;
-        privProperties->dont_close_popup = coordination->dont_close_popup;
-        privProperties->extra_option = coordination->extra_option;
-        if (coordination->label_type) {
-            privProperties->label_type = coordination->label_type;
+        privProperties->long_key_event = coordinate->long_key_event;
+        privProperties->use_repeat_key = coordinate->use_repeat_key;
+        privProperties->dont_close_popup = coordinate->dont_close_popup;
+        privProperties->extra_option = coordinate->extra_option;
+        if (coordinate->label_type) {
+            privProperties->label_type = coordinate->label_type;
         }
-        if (coordination->image_label_type) {
-            privProperties->image_label_type = coordination->image_label_type;
+        if (coordinate->image_label_type) {
+            privProperties->image_label_type = coordinate->image_label_type;
         }
 
         for (loop = 0;loop < SCL_SHIFT_STATE_MAX;loop++) {
             for (inner_loop = 0;inner_loop < MAX_SIZE_OF_LABEL_FOR_ONE;inner_loop++) {
-                if (coordination->label[loop][inner_loop]) {
+                if (coordinate->label[loop][inner_loop]) {
                     privProperties->label[loop][inner_loop] =
-                        coordination->label[loop][inner_loop];
+                        coordinate->label[loop][inner_loop];
                 }
             }
         }
         for (loop = 0;loop < SCL_SHIFT_STATE_MAX;loop++) {
             for (inner_loop = 0;inner_loop < SCL_BUTTON_STATE_MAX;inner_loop++) {
-                if (coordination->image_label_path[loop][inner_loop]) {
+                if (coordinate->image_label_path[loop][inner_loop]) {
                     privProperties->image_label_path[loop][inner_loop] =
-                        coordination->image_label_path[loop][inner_loop];
+                        coordinate->image_label_path[loop][inner_loop];
                 }
             }
         }
         for (loop = 0;loop < SCL_SHIFT_STATE_MAX;loop++) {
             for (inner_loop = 0;inner_loop < SCL_BUTTON_STATE_MAX;inner_loop++) {
-                if (coordination->bg_image_path[loop][inner_loop]) {
+                if (coordinate->bg_image_path[loop][inner_loop]) {
                     privProperties->bg_image_path[loop][inner_loop] =
-                        coordination->bg_image_path[loop][inner_loop];
+                        coordinate->bg_image_path[loop][inner_loop];
                 }
             }
         }
 
         for (loop = 0;loop < SCL_SHIFT_STATE_MAX;loop++) {
             for (inner_loop = 0;inner_loop < MAX_SIZE_OF_MULTITAP_CHAR;inner_loop++) {
-                if (coordination->key_value[loop][inner_loop]) {
+                if (coordinate->key_value[loop][inner_loop]) {
                     privProperties->key_value[loop][inner_loop] =
-                        coordination->key_value[loop][inner_loop];
+                        coordinate->key_value[loop][inner_loop];
                 }
             }
         }
         for (loop = 0;loop < SCL_SHIFT_STATE_MAX;loop++) {
             for (inner_loop = 0;inner_loop < MAX_SIZE_OF_MULTITAP_CHAR;inner_loop++) {
-                if (coordination->key_event[loop][inner_loop]) {
+                if (coordinate->key_event[loop][inner_loop]) {
                     privProperties->key_event[loop][inner_loop] =
-                        coordination->key_event[loop][inner_loop];
+                        coordinate->key_event[loop][inner_loop];
                 }
             }
         }
 
         for (loop = 0;loop < SCL_SHIFT_STATE_MAX;loop++) {
             for (inner_loop = 0;inner_loop < MAX_SIZE_OF_AUTOPOPUP_STRING;inner_loop++) {
-                if (coordination->autopopup_key_labels[loop][inner_loop]) {
+                if (coordinate->autopopup_key_labels[loop][inner_loop]) {
                     privProperties->autopopup_key_labels[loop][inner_loop] =
-                        coordination->autopopup_key_labels[loop][inner_loop];
+                        coordinate->autopopup_key_labels[loop][inner_loop];
                 }
             }
         }
         for (loop = 0;loop < SCL_SHIFT_STATE_MAX;loop++) {
             for (inner_loop = 0;inner_loop < MAX_SIZE_OF_AUTOPOPUP_STRING;inner_loop++) {
-                if (coordination->autopopup_key_events[loop][inner_loop]) {
+                if (coordinate->autopopup_key_events[loop][inner_loop]) {
                     privProperties->autopopup_key_events[loop][inner_loop] =
-                        coordination->autopopup_key_events[loop][inner_loop];
+                        coordinate->autopopup_key_events[loop][inner_loop];
                 }
             }
         }
         for (loop = 0;loop < SCL_SHIFT_STATE_MAX;loop++) {
             for (inner_loop = 0;inner_loop < MAX_SIZE_OF_AUTOPOPUP_STRING;inner_loop++) {
-                if (coordination->autopopup_key_values[loop][inner_loop]) {
+                if (coordinate->autopopup_key_values[loop][inner_loop]) {
                     privProperties->autopopup_key_values[loop][inner_loop] =
-                        coordination->autopopup_key_values[loop][inner_loop];
+                        coordinate->autopopup_key_values[loop][inner_loop];
                 }
             }
         }
         for (loop = 0;loop < SCL_SHIFT_STATE_MAX;loop++) {
             for (inner_loop = 0;inner_loop < MAX_SIZE_OF_MULTITAP_CHAR;inner_loop++) {
-                if (coordination->hint_string[loop][inner_loop]) {
+                if (coordinate->hint_string[loop][inner_loop]) {
                     privProperties->hint_string[loop][inner_loop] =
-                        coordination->hint_string[loop][inner_loop];
+                        coordinate->hint_string[loop][inner_loop];
                 }
             }
         }
@@ -750,10 +750,10 @@ CSCLResourceCache::add_private_key(SclPrivateKeyProperties* privProperties, sclb
 
     sclboolean found = FALSE;
     for (sclint loop = 0;loop < MAX_KEY; loop++) {
-        if ((!(privProperties->custom_id.empty())) && mCurBaseLayoutKeyCoordination[loop].custom_id) {
-            if (privProperties->custom_id.compare(mCurBaseLayoutKeyCoordination[loop].custom_id) == 0) {
+        if ((!(privProperties->custom_id.empty())) && mCurBaseLayoutKeyCoordinates[loop].custom_id) {
+            if (privProperties->custom_id.compare(mCurBaseLayoutKeyCoordinates[loop].custom_id) == 0) {
                 /* sets the current properties to private key properties */
-                copy_from_privatekeyproperties(privProperties, &mCurBaseLayoutKeyCoordination[loop]);
+                copy_from_privatekeyproperties(privProperties, &mCurBaseLayoutKeyCoordinates[loop]);
                 found = TRUE;
             }
         }
@@ -805,13 +805,13 @@ CSCLResourceCache::remove_private_key(sclint id)
     }
     if (scl_check_arrindex(layout, MAX_SCL_LAYOUT)) {
         for (sclint loop = 0;loop < MAX_KEY; loop++) {
-            if ((!(mPrivateKeyProperties[id].custom_id.empty())) && mCurBaseLayoutKeyCoordination[loop].custom_id) {
-                if (mPrivateKeyProperties[id].custom_id.compare(mCurBaseLayoutKeyCoordination[loop].custom_id) == 0) {
+            if ((!(mPrivateKeyProperties[id].custom_id.empty())) && mCurBaseLayoutKeyCoordinates[loop].custom_id) {
+                if (mPrivateKeyProperties[id].custom_id.compare(mCurBaseLayoutKeyCoordinates[loop].custom_id) == 0) {
                     SclLayoutKeyCoordinatePointer p = sclres_layout_key_coordinate_pointer_frame[layout][loop];
                     if (p == NULL) {
                         continue;
                     }
-                    SclLayoutKeyCoordinatePointer the_key = mCurBaseLayoutKeyCoordination + loop;
+                    SclLayoutKeyCoordinatePointer the_key = mCurBaseLayoutKeyCoordinates + loop;
                     assert(the_key != NULL);
                     memcpy(the_key, p, sizeof(SclLayoutKeyCoordinate));
 
@@ -844,7 +844,7 @@ CSCLResourceCache::clear_private_keys()
 
 /**
  * Re-computes the cache data of the given window. The cache data has been including the current key properties, button context, layout etc,,
- * Another role of this func is to adjust the current coordination according to the current resolution.
+ * Another role of this func is to adjust the current coordinate according to the current resolution.
  * This func will be called when a newly window is created
  */
 sclboolean
@@ -854,6 +854,7 @@ CSCLResourceCache::recompute_layout(sclwindow window)
 
     sclint loop;
 
+    CSCLUtils *utils = CSCLUtils::get_instance();
     CSCLWindows *windows = CSCLWindows::get_instance();
     CSCLContext *context = CSCLContext::get_instance();
     SclResParserManager *sclres_manager = SclResParserManager::get_instance();
@@ -873,11 +874,11 @@ CSCLResourceCache::recompute_layout(sclwindow window)
     scl8 popupindex = NOT_USED;
 
     SclLayout *pCurLayout = NULL;
-    SclLayoutKeyCoordinate (*pCurLayoutKeyCoordination)[MAX_KEY] = NULL;
+    SclLayoutKeyCoordinate (*pCurLayoutKeyCoordinate)[MAX_KEY] = NULL;
     SclButtonContext (*pCurButtonContext)[MAX_KEY] = NULL;
 
     sclshort layout =  NOT_USED;
-    if (windows && context) {
+    if (windows && context && utils) {
         sclbyte display = context->get_display_mode();
         sclbyte inputmode = context->get_input_mode();
 
@@ -895,7 +896,7 @@ CSCLResourceCache::recompute_layout(sclwindow window)
             context->set_base_layout(layout);
 
             pCurLayout = &mCurBaseLayout;
-            pCurLayoutKeyCoordination = &mCurBaseLayoutKeyCoordination;
+            pCurLayoutKeyCoordinate = &mCurBaseLayoutKeyCoordinates;
             pCurButtonContext = &mCurBaseButtonContext;
         } else {
             popupindex = windows->find_popup_window_index(window);
@@ -924,33 +925,30 @@ CSCLResourceCache::recompute_layout(sclwindow window)
                 }
 
                 pCurLayout = &mCurPopupLayout[popupindex];
-                pCurLayoutKeyCoordination = &mCurPopupLayoutKeyCoordination[popupindex];
+                pCurLayoutKeyCoordinate = &mCurPopupLayoutKeyCoordinates[popupindex];
 
                 pCurButtonContext = &mCurPopupButtonContext[popupindex];
             }
         }
 
-        if (pCurLayout && pCurLayoutKeyCoordination && pCurButtonContext) {
+        if (pCurLayout && pCurLayoutKeyCoordinate && pCurButtonContext) {
             /* If the layout index represents system-defined autopopup, generate layout and key properties data */
             if (layout == SCL_LAYOUT_AUTOPOPUP) {
-                const SclLayoutKeyCoordinate *coordination =
+                const SclLayoutKeyCoordinate *coordinate =
                     get_cur_layout_key_coordinate(context->get_cur_pressed_window(context->get_last_touch_device_id()),
                         context->get_cur_pressed_key(context->get_last_touch_device_id()));
 
-                generate_autopopup_layout(coordination, pCurLayout, pCurLayoutKeyCoordination, pCurButtonContext);
+                generate_autopopup_layout(coordinate, pCurLayout, pCurLayoutKeyCoordinate, pCurButtonContext);
             } else {
                 if (scl_check_arrindex(layout, MAX_SCL_LAYOUT)) {
                     memcpy(pCurLayout, &sclres_layout[layout], sizeof(SclLayout));
 
-                    memset(pCurLayoutKeyCoordination, 0x00, sizeof(SclLayoutKeyCoordinate) * (MAX_KEY));
+                    memset(pCurLayoutKeyCoordinate, 0x00, sizeof(SclLayoutKeyCoordinate) * (MAX_KEY));
                     for (int i = 0; i < MAX_KEY; ++i) {
                         SclLayoutKeyCoordinatePointer p = sclres_layout_key_coordinate_pointer_frame[layout][i];
                         if (!p) break;
-                        memcpy((SclLayoutKeyCoordinatePointer)pCurLayoutKeyCoordination + i, p, sizeof(SclLayoutKeyCoordinate));
+                        memcpy((SclLayoutKeyCoordinatePointer)pCurLayoutKeyCoordinate + i, p, sizeof(SclLayoutKeyCoordinate));
                     }
-                    // FIXME Good Idea
-                    // memset(pCurLayoutKeyCoordination + i, 0x00, sizeof(SclLayoutKeyCoordinate) * (MAX_KEY - i));
-                    // memcpy(pCurLayoutKeyCoordination, sclres_layout_key_coordinate[layout], sizeof(SclLayoutKeyCoordinate) * MAX_KEY);
                     memset(pCurButtonContext, 0x00, sizeof(SclButtonContext) * MAX_KEY);
 
                     for (loop = 0;loop < MAX_KEY;loop++) {
@@ -958,30 +956,62 @@ CSCLResourceCache::recompute_layout(sclwindow window)
                         if (p && p->valid) {
                             (*pCurButtonContext)[loop].used = TRUE;
                             if (popupindex != NOT_USED) {
-                                change_by_privatekey(inputmode, layout, loop, &(mCurPopupLayoutKeyCoordination[popupindex][loop]));
+                                change_by_privatekey(inputmode, layout, loop, &(mCurPopupLayoutKeyCoordinates[popupindex][loop]));
                             } else {
-                                change_by_privatekey(inputmode, layout, loop, &(mCurBaseLayoutKeyCoordination[loop]));
+                                change_by_privatekey(inputmode, layout, loop, &(mCurBaseLayoutKeyCoordinates[loop]));
                             }
                             /* if this button is UIITEM type, set the state of this button disabled */
-                            if ((*pCurLayoutKeyCoordination)[loop].button_type == BUTTON_TYPE_UIITEM) {
+                            if ((*pCurLayoutKeyCoordinate)[loop].button_type == BUTTON_TYPE_UIITEM) {
                                 (*pCurButtonContext)[loop].state = BUTTON_STATE_DISABLED;
                             }
 
                             /* If this button's custom id is in the disabled key list, make it disabled */
-                            if ((*pCurLayoutKeyCoordination)[loop].custom_id) {
+                            if ((*pCurLayoutKeyCoordinate)[loop].custom_id) {
                                 for (sclint inner_loop = 0;inner_loop < MAX_DISABLED_KEY;inner_loop++) {
                                     if (!(mDisabledKeyList[inner_loop].empty())) {
                                         if (mDisabledKeyList[inner_loop].compare(
-                                            (*pCurLayoutKeyCoordination)[loop].custom_id) == 0) {
+                                            (*pCurLayoutKeyCoordinate)[loop].custom_id) == 0) {
                                                 (*pCurButtonContext)[loop].state = BUTTON_STATE_DISABLED;
                                         }
                                     }
                                 }
                             }
+
+                            /* Apply the custom scale rate value */
+                            (*pCurLayoutKeyCoordinate)[loop].x *= utils->get_custom_scale_rate_x();
+                            (*pCurLayoutKeyCoordinate)[loop].y *= utils->get_custom_scale_rate_y();
+                            (*pCurLayoutKeyCoordinate)[loop].width *= utils->get_custom_scale_rate_x();
+                            (*pCurLayoutKeyCoordinate)[loop].height *= utils->get_custom_scale_rate_y();
+                            (*pCurLayoutKeyCoordinate)[loop].add_hit_left *= utils->get_custom_scale_rate_x();
+                            (*pCurLayoutKeyCoordinate)[loop].add_hit_right *= utils->get_custom_scale_rate_x();
+                            (*pCurLayoutKeyCoordinate)[loop].add_hit_top *= utils->get_custom_scale_rate_y();
+                            (*pCurLayoutKeyCoordinate)[loop].add_hit_bottom *= utils->get_custom_scale_rate_y();
+                            (*pCurLayoutKeyCoordinate)[loop].popup_relative_x *= utils->get_custom_scale_rate_x();
+                            (*pCurLayoutKeyCoordinate)[loop].popup_relative_y *= utils->get_custom_scale_rate_y();
+                            (*pCurLayoutKeyCoordinate)[loop].extract_offset_x *= utils->get_custom_scale_rate_x();
+                            (*pCurLayoutKeyCoordinate)[loop].extract_offset_y *= utils->get_custom_scale_rate_y();
+                            (*pCurLayoutKeyCoordinate)[loop].magnifier_offset_x *= utils->get_custom_scale_rate_x();
+                            (*pCurLayoutKeyCoordinate)[loop].magnifier_offset_y *= utils->get_custom_scale_rate_y();
+
+                            utils->log("CUSTOM_SCALED_GEOMETRY : %d %d %d %d",
+                                (*pCurLayoutKeyCoordinate)[loop].x, (*pCurLayoutKeyCoordinate)[loop].y,
+                                (*pCurLayoutKeyCoordinate)[loop].width, (*pCurLayoutKeyCoordinate)[loop].height);
                         }
                     }
                 }
             }
+
+            /* Apply the custom scale rate value */
+            (*pCurLayout).width *= utils->get_custom_scale_rate_x();
+            (*pCurLayout).height *= utils->get_custom_scale_rate_y();
+
+            (*pCurLayout).add_grab_left *= utils->get_custom_scale_rate_x();
+            (*pCurLayout).add_grab_right *= utils->get_custom_scale_rate_x();
+            (*pCurLayout).add_grab_top *= utils->get_custom_scale_rate_y();
+            (*pCurLayout).add_grab_bottom *= utils->get_custom_scale_rate_y();
+
+            (*pCurLayout).mouse_manipulate_x *= utils->get_custom_scale_rate_x();
+            (*pCurLayout).mouse_manipulate_y *= utils->get_custom_scale_rate_y();
 
             /* Resize window */
             /*if (windows->is_base_window(window)) {
@@ -1000,7 +1030,7 @@ CSCLResourceCache::recompute_layout(sclwindow window)
 }
 
 /**
- * Returns the current key_coordination data
+ * Returns the current key_coordinate data
  */
 SclLayoutKeyCoordinate*
 CSCLResourceCache::get_cur_layout_key_coordinate(sclwindow window, sclbyte key_index)
@@ -1011,13 +1041,13 @@ CSCLResourceCache::get_cur_layout_key_coordinate(sclwindow window, sclbyte key_i
     CSCLWindows *windows = CSCLWindows::get_instance();
     if (windows->get_base_window() == window) {
         if (key_index < MAX_KEY) {
-            return &mCurBaseLayoutKeyCoordination[key_index];
+            return &mCurBaseLayoutKeyCoordinates[key_index];
         }
     } else {
         sclbyte popupindex = windows->find_popup_window_index(window);
         scl_assert_return_false(popupindex < MAX_POPUP_WINDOW);
         if (key_index < MAX_KEY && popupindex < MAX_POPUP_WINDOW) {
-            return &mCurPopupLayoutKeyCoordination[popupindex][key_index];
+            return &mCurPopupLayoutKeyCoordinates[popupindex][key_index];
         }
     }
 
@@ -1086,8 +1116,8 @@ CSCLResourceCache::get_cur_button_context(sclwindow window, sclbyte key_index)
 }
 
 /* Generate and fill autopopup layout data */
-void CSCLResourceCache::generate_autopopup_layout( const SclLayoutKeyCoordinate *coordination,
-        SclLayout *pCurLayout, SclLayoutKeyCoordinate (*pCurLayoutKeyCoordination)[MAX_KEY],
+void CSCLResourceCache::generate_autopopup_layout( const SclLayoutKeyCoordinate *coordinate,
+        SclLayout *pCurLayout, SclLayoutKeyCoordinate (*pCurLayoutKeyCoordinates)[MAX_KEY],
         SclButtonContext (*pCurButtonContext)[MAX_KEY] )
 {
     SCL_DEBUG();
@@ -1102,12 +1132,12 @@ void CSCLResourceCache::generate_autopopup_layout( const SclLayoutKeyCoordinate 
     }
 
     int loop;
-    if (coordination && autopopup_configure) {
+    if (coordinate && autopopup_configure) {
         sclbyte num_keys, num_columns, num_rows;
         sclint x, y, width, height;
         SCLShiftState shiftidx = context->get_shift_state();
         if (shiftidx < 0 || shiftidx >= SCL_SHIFT_STATE_MAX) shiftidx = SCL_SHIFT_STATE_OFF;
-        if (utils->get_autopopup_window_variables(coordination->autopopup_key_labels[shiftidx], &num_keys, &num_columns, &num_rows, &width, &height)) {
+        if (utils->get_autopopup_window_variables(coordinate->autopopup_key_labels[shiftidx], &num_keys, &num_columns, &num_rows, &width, &height)) {
             int row = 0, column = 0;
 
             pCurLayout->use_magnifier_window = FALSE;
@@ -1130,106 +1160,112 @@ void CSCLResourceCache::generate_autopopup_layout( const SclLayoutKeyCoordinate 
             pCurLayout->use_magnifier_window = FALSE;
             pCurLayout->extract_background = FALSE;
             pCurLayout->bg_color = autopopup_configure->bg_color;
-            pCurLayout->bg_line_width = autopopup_configure->bg_line_width;
+            pCurLayout->bg_line_width = autopopup_configure->bg_line_width * utils->get_smallest_custom_scale_rate();
             pCurLayout->bg_line_color = autopopup_configure->bg_line_color;
-            pCurLayout->add_grab_left = autopopup_configure->add_grab_left;
-            pCurLayout->add_grab_right = autopopup_configure->add_grab_right;
-            pCurLayout->add_grab_top = autopopup_configure->add_grab_top;
-            pCurLayout->add_grab_bottom = autopopup_configure->add_grab_bottom;
+            pCurLayout->add_grab_left = autopopup_configure->add_grab_left * utils->get_custom_scale_rate_x();
+            pCurLayout->add_grab_right = autopopup_configure->add_grab_right * utils->get_custom_scale_rate_x();
+            pCurLayout->add_grab_top = autopopup_configure->add_grab_top * utils->get_custom_scale_rate_y();
+            pCurLayout->add_grab_bottom = autopopup_configure->add_grab_bottom * utils->get_custom_scale_rate_y();
             pCurLayout->mouse_manipulate_x = 0;
-            pCurLayout->mouse_manipulate_y = (autopopup_configure->button_height * -1);
+            pCurLayout->mouse_manipulate_y = (autopopup_configure->button_height * utils->get_custom_scale_rate_y() * -1);
 
-            memset((*pCurLayoutKeyCoordination), 0x00, sizeof(SclLayoutKeyCoordinate) * MAX_KEY);
+            memset((*pCurLayoutKeyCoordinates), 0x00, sizeof(SclLayoutKeyCoordinate) * MAX_KEY);
 
             memset((*pCurButtonContext), 0x00, sizeof(SclButtonContext) * MAX_KEY);
 
             for (loop = 0;loop < (num_columns * num_rows) && loop < MAX_KEY && loop < MAX_SIZE_OF_AUTOPOPUP_STRING;loop++) {
                 column = (loop % num_columns);
                 row = loop / num_columns;
-                x = autopopup_configure->bg_padding + (autopopup_configure->button_width * column) +
-                    (autopopup_configure->button_spacing * column);
-                y = autopopup_configure->bg_padding + (autopopup_configure->button_height * (num_rows - row - 1)) +
-                    (autopopup_configure->button_spacing * row);
+                x = autopopup_configure->bg_padding * utils->get_smallest_custom_scale_rate() +
+                    (autopopup_configure->button_width * utils->get_custom_scale_rate_x() * column) +
+                    (autopopup_configure->button_spacing * utils->get_smallest_custom_scale_rate() * column);
+                y = autopopup_configure->bg_padding * utils->get_smallest_custom_scale_rate() +
+                    (autopopup_configure->button_height * utils->get_custom_scale_rate_y() * (num_rows - row - 1)) +
+                    (autopopup_configure->button_spacing * utils->get_smallest_custom_scale_rate() * row);
 
-                (*pCurLayoutKeyCoordination)[loop].valid = TRUE;
-                (*pCurLayoutKeyCoordination)[loop].x = x + autopopup_configure->decoration_size;
-                (*pCurLayoutKeyCoordination)[loop].y = y + autopopup_configure->decoration_size;
-                (*pCurLayoutKeyCoordination)[loop].width = autopopup_configure->button_width;
-                (*pCurLayoutKeyCoordination)[loop].height = autopopup_configure->button_height;
-                (*pCurLayoutKeyCoordination)[loop].popup_relative_x = 0;
-                (*pCurLayoutKeyCoordination)[loop].popup_relative_y = 0;
-                (*pCurLayoutKeyCoordination)[loop].extract_offset_x = 0;
-                (*pCurLayoutKeyCoordination)[loop].extract_offset_y = 0;
-                (*pCurLayoutKeyCoordination)[loop].sub_layout = NULL;
+                (*pCurLayoutKeyCoordinates)[loop].valid = TRUE;
+                (*pCurLayoutKeyCoordinates)[loop].x = x +
+                    autopopup_configure->decoration_size * utils->get_smallest_custom_scale_rate();
+                (*pCurLayoutKeyCoordinates)[loop].y = y +
+                    autopopup_configure->decoration_size * utils->get_smallest_custom_scale_rate();
+                (*pCurLayoutKeyCoordinates)[loop].width =
+                    autopopup_configure->button_width * utils->get_custom_scale_rate_x();
+                (*pCurLayoutKeyCoordinates)[loop].height =
+                    autopopup_configure->button_height * utils->get_custom_scale_rate_y();
+                (*pCurLayoutKeyCoordinates)[loop].popup_relative_x = 0;
+                (*pCurLayoutKeyCoordinates)[loop].popup_relative_y = 0;
+                (*pCurLayoutKeyCoordinates)[loop].extract_offset_x = 0;
+                (*pCurLayoutKeyCoordinates)[loop].extract_offset_y = 0;
+                (*pCurLayoutKeyCoordinates)[loop].sub_layout = NULL;
 
-                (*pCurLayoutKeyCoordination)[loop].valid = TRUE;
+                (*pCurLayoutKeyCoordinates)[loop].valid = TRUE;
                 if (loop < num_keys) {
-                    (*pCurLayoutKeyCoordination)[loop].button_type = BUTTON_TYPE_NORMAL;
+                    (*pCurLayoutKeyCoordinates)[loop].button_type = BUTTON_TYPE_NORMAL;
                 } else {
-                    (*pCurLayoutKeyCoordination)[loop].button_type = BUTTON_TYPE_UIITEM;
+                    (*pCurLayoutKeyCoordinates)[loop].button_type = BUTTON_TYPE_UIITEM;
                 }
-                (*pCurLayoutKeyCoordination)[loop].key_type = KEY_TYPE_STRING;
-                (*pCurLayoutKeyCoordination)[loop].popup_type = POPUP_TYPE_NONE;
-                (*pCurLayoutKeyCoordination)[loop].use_magnifier = FALSE;
-                (*pCurLayoutKeyCoordination)[loop].use_long_key_magnifier = TRUE;
-                memset((*pCurLayoutKeyCoordination)[loop].popup_input_mode, NOT_USED, sizeof((*pCurLayoutKeyCoordination)[loop].popup_input_mode));
+                (*pCurLayoutKeyCoordinates)[loop].key_type = KEY_TYPE_STRING;
+                (*pCurLayoutKeyCoordinates)[loop].popup_type = POPUP_TYPE_NONE;
+                (*pCurLayoutKeyCoordinates)[loop].use_magnifier = FALSE;
+                (*pCurLayoutKeyCoordinates)[loop].use_long_key_magnifier = TRUE;
+                memset((*pCurLayoutKeyCoordinates)[loop].popup_input_mode, NOT_USED, sizeof((*pCurLayoutKeyCoordinates)[loop].popup_input_mode));
 
-                (*pCurLayoutKeyCoordination)[loop].valid = TRUE;
-                (*pCurLayoutKeyCoordination)[loop].label_count = 1;
-                (*pCurLayoutKeyCoordination)[loop].label[0][0] = coordination->autopopup_key_labels[0][loop];
-                (*pCurLayoutKeyCoordination)[loop].label[1][0] = coordination->autopopup_key_labels[1][loop];
-                (*pCurLayoutKeyCoordination)[loop].label[2][0] = coordination->autopopup_key_labels[2][loop];
+                (*pCurLayoutKeyCoordinates)[loop].valid = TRUE;
+                (*pCurLayoutKeyCoordinates)[loop].label_count = 1;
+                (*pCurLayoutKeyCoordinates)[loop].label[0][0] = coordinate->autopopup_key_labels[0][loop];
+                (*pCurLayoutKeyCoordinates)[loop].label[1][0] = coordinate->autopopup_key_labels[1][loop];
+                (*pCurLayoutKeyCoordinates)[loop].label[2][0] = coordinate->autopopup_key_labels[2][loop];
                 //(*pCurLayoutKeyProperties)[loop].labelPropId = SCL_LABEL_PROPERTY_AUTOPOPUP;
-                (*pCurLayoutKeyCoordination)[loop].label_type = autopopup_configure->label_type;
-                memset((*pCurLayoutKeyCoordination)[loop].image_label_path, 0x00, sizeof((*pCurLayoutKeyCoordination)[loop].image_label_path));
-                memset((*pCurLayoutKeyCoordination)[loop].bg_image_path, 0x00, sizeof((*pCurLayoutKeyCoordination)[loop].bg_image_path));
+                (*pCurLayoutKeyCoordinates)[loop].label_type = autopopup_configure->label_type;
+                memset((*pCurLayoutKeyCoordinates)[loop].image_label_path, 0x00, sizeof((*pCurLayoutKeyCoordinates)[loop].image_label_path));
+                memset((*pCurLayoutKeyCoordinates)[loop].bg_image_path, 0x00, sizeof((*pCurLayoutKeyCoordinates)[loop].bg_image_path));
                 for (int innerLoop = 0;innerLoop < SCL_BUTTON_STATE_MAX;innerLoop++) {
-                    (*pCurLayoutKeyCoordination)[loop].bg_image_path[SCL_SHIFT_STATE_OFF][innerLoop] =
-                        (*pCurLayoutKeyCoordination)[loop].bg_image_path[SCL_SHIFT_STATE_ON][innerLoop] =
-                        (*pCurLayoutKeyCoordination)[loop].bg_image_path[SCL_SHIFT_STATE_LOCK][innerLoop] =
+                    (*pCurLayoutKeyCoordinates)[loop].bg_image_path[SCL_SHIFT_STATE_OFF][innerLoop] =
+                        (*pCurLayoutKeyCoordinates)[loop].bg_image_path[SCL_SHIFT_STATE_ON][innerLoop] =
+                        (*pCurLayoutKeyCoordinates)[loop].bg_image_path[SCL_SHIFT_STATE_LOCK][innerLoop] =
                             autopopup_configure->button_image_path[innerLoop];
                 }
 
-                (*pCurLayoutKeyCoordination)[loop].key_value_count = 1;
+                (*pCurLayoutKeyCoordinates)[loop].key_value_count = 1;
 
-                if (coordination->autopopup_key_values[0][loop] == NULL) {
-                    (*pCurLayoutKeyCoordination)[loop].key_value[0][0] = coordination->autopopup_key_labels[0][loop];
+                if (coordinate->autopopup_key_values[0][loop] == NULL) {
+                    (*pCurLayoutKeyCoordinates)[loop].key_value[0][0] = coordinate->autopopup_key_labels[0][loop];
                 } else {
-                    (*pCurLayoutKeyCoordination)[loop].key_value[0][0] = coordination->autopopup_key_values[0][loop];
+                    (*pCurLayoutKeyCoordinates)[loop].key_value[0][0] = coordinate->autopopup_key_values[0][loop];
                 }
-                if (coordination->autopopup_key_values[1][loop] == NULL) {
-                    (*pCurLayoutKeyCoordination)[loop].key_value[1][0] = coordination->autopopup_key_labels[1][loop];
+                if (coordinate->autopopup_key_values[1][loop] == NULL) {
+                    (*pCurLayoutKeyCoordinates)[loop].key_value[1][0] = coordinate->autopopup_key_labels[1][loop];
                 } else {
-                    (*pCurLayoutKeyCoordination)[loop].key_value[1][0] = coordination->autopopup_key_values[1][loop];
+                    (*pCurLayoutKeyCoordinates)[loop].key_value[1][0] = coordinate->autopopup_key_values[1][loop];
                 }
-                if (coordination->autopopup_key_values[2][loop] == NULL) {
-                    (*pCurLayoutKeyCoordination)[loop].key_value[2][0] = coordination->autopopup_key_labels[2][loop];
+                if (coordinate->autopopup_key_values[2][loop] == NULL) {
+                    (*pCurLayoutKeyCoordinates)[loop].key_value[2][0] = coordinate->autopopup_key_labels[2][loop];
                 } else {
-                    (*pCurLayoutKeyCoordination)[loop].key_value[2][0] = coordination->autopopup_key_values[2][loop];
+                    (*pCurLayoutKeyCoordinates)[loop].key_value[2][0] = coordinate->autopopup_key_values[2][loop];
                 }
-                (*pCurLayoutKeyCoordination)[loop].key_event[0][0] = coordination->autopopup_key_events[0][loop];
-                (*pCurLayoutKeyCoordination)[loop].key_event[1][0] = coordination->autopopup_key_events[1][loop];
-                (*pCurLayoutKeyCoordination)[loop].key_event[2][0] = coordination->autopopup_key_events[2][loop];
-                (*pCurLayoutKeyCoordination)[loop].long_key_type = KEY_TYPE_NONE;
-                (*pCurLayoutKeyCoordination)[loop].long_key_value = NULL;
-                (*pCurLayoutKeyCoordination)[loop].long_key_event = 0;
+                (*pCurLayoutKeyCoordinates)[loop].key_event[0][0] = coordinate->autopopup_key_events[0][loop];
+                (*pCurLayoutKeyCoordinates)[loop].key_event[1][0] = coordinate->autopopup_key_events[1][loop];
+                (*pCurLayoutKeyCoordinates)[loop].key_event[2][0] = coordinate->autopopup_key_events[2][loop];
+                (*pCurLayoutKeyCoordinates)[loop].long_key_type = KEY_TYPE_NONE;
+                (*pCurLayoutKeyCoordinates)[loop].long_key_value = NULL;
+                (*pCurLayoutKeyCoordinates)[loop].long_key_event = 0;
 
-                (*pCurLayoutKeyCoordination)[loop].autopopup_key_labels[0][0] = NULL;
-                (*pCurLayoutKeyCoordination)[loop].autopopup_key_labels[1][0] = NULL;
-                (*pCurLayoutKeyCoordination)[loop].autopopup_key_labels[2][0] = NULL;
-                (*pCurLayoutKeyCoordination)[loop].autopopup_key_events[0][0] = 0;
-                (*pCurLayoutKeyCoordination)[loop].autopopup_key_events[1][0] = 0;
-                (*pCurLayoutKeyCoordination)[loop].autopopup_key_events[2][0] = 0;
-                (*pCurLayoutKeyCoordination)[loop].autopopup_key_values[0][0] = NULL;
-                (*pCurLayoutKeyCoordination)[loop].autopopup_key_values[1][0] = NULL;
-                (*pCurLayoutKeyCoordination)[loop].autopopup_key_values[2][0] = NULL;
-                (*pCurLayoutKeyCoordination)[loop].extra_option = 0;
+                (*pCurLayoutKeyCoordinates)[loop].autopopup_key_labels[0][0] = NULL;
+                (*pCurLayoutKeyCoordinates)[loop].autopopup_key_labels[1][0] = NULL;
+                (*pCurLayoutKeyCoordinates)[loop].autopopup_key_labels[2][0] = NULL;
+                (*pCurLayoutKeyCoordinates)[loop].autopopup_key_events[0][0] = 0;
+                (*pCurLayoutKeyCoordinates)[loop].autopopup_key_events[1][0] = 0;
+                (*pCurLayoutKeyCoordinates)[loop].autopopup_key_events[2][0] = 0;
+                (*pCurLayoutKeyCoordinates)[loop].autopopup_key_values[0][0] = NULL;
+                (*pCurLayoutKeyCoordinates)[loop].autopopup_key_values[1][0] = NULL;
+                (*pCurLayoutKeyCoordinates)[loop].autopopup_key_values[2][0] = NULL;
+                (*pCurLayoutKeyCoordinates)[loop].extra_option = 0;
 
                 /* If the keyvalue is in between the SCL_ISCHAR range, consider this to be a KEY_TYPE_CHAR */
-                if ((*pCurLayoutKeyCoordination)[loop].key_value[0][0]) {
-                    if (strlen((*pCurLayoutKeyCoordination)[loop].key_value[0][0]) == 1) {
-                        if (SCL_ISCHAR(*(*pCurLayoutKeyCoordination)[loop].key_value[0][0])) {
-                            (*pCurLayoutKeyCoordination)[loop].key_type = KEY_TYPE_CHAR;
+                if ((*pCurLayoutKeyCoordinates)[loop].key_value[0][0]) {
+                    if (strlen((*pCurLayoutKeyCoordinates)[loop].key_value[0][0]) == 1) {
+                        if (SCL_ISCHAR(*(*pCurLayoutKeyCoordinates)[loop].key_value[0][0])) {
+                            (*pCurLayoutKeyCoordinates)[loop].key_type = KEY_TYPE_CHAR;
                         }
                     }
                 }
@@ -1240,92 +1276,92 @@ void CSCLResourceCache::generate_autopopup_layout( const SclLayoutKeyCoordinate 
                 sclbyte decoidx;
                 for (decoidx = 0;decoidx < MAX_WND_DECORATOR;decoidx++) {
                     if (loop + decoidx < MAX_KEY) {
-                        (*pCurLayoutKeyCoordination)[loop + decoidx].valid = TRUE;
+                        (*pCurLayoutKeyCoordinates)[loop + decoidx].valid = TRUE;
                         switch (decoidx) {
                             case WND_DECORATOR_TOP_LEFT:
-                                (*pCurLayoutKeyCoordination)[loop + decoidx].x = 0;
-                                (*pCurLayoutKeyCoordination)[loop + decoidx].y = 0;
-                                (*pCurLayoutKeyCoordination)[loop + decoidx].width = 
-                                    autopopup_configure->decoration_size;
-                                (*pCurLayoutKeyCoordination)[loop + decoidx].height = 
-                                    autopopup_configure->decoration_size;
+                                (*pCurLayoutKeyCoordinates)[loop + decoidx].x = 0;
+                                (*pCurLayoutKeyCoordinates)[loop + decoidx].y = 0;
+                                (*pCurLayoutKeyCoordinates)[loop + decoidx].width =
+                                    autopopup_configure->decoration_size * utils->get_smallest_custom_scale_rate();
+                                (*pCurLayoutKeyCoordinates)[loop + decoidx].height =
+                                    autopopup_configure->decoration_size * utils->get_smallest_custom_scale_rate();
                             break;
                             case WND_DECORATOR_TOP_CENTER:
-                                (*pCurLayoutKeyCoordination)[loop + decoidx].x = 
-                                    autopopup_configure->decoration_size;
-                                (*pCurLayoutKeyCoordination)[loop + decoidx].y = 0;
-                                (*pCurLayoutKeyCoordination)[loop + decoidx].width = 
-                                    width - (2 * autopopup_configure->decoration_size);
-                                (*pCurLayoutKeyCoordination)[loop + decoidx].height = 
-                                    autopopup_configure->decoration_size;
+                                (*pCurLayoutKeyCoordinates)[loop + decoidx].x =
+                                    autopopup_configure->decoration_size * utils->get_smallest_custom_scale_rate();
+                                (*pCurLayoutKeyCoordinates)[loop + decoidx].y = 0;
+                                (*pCurLayoutKeyCoordinates)[loop + decoidx].width = width -
+                                    (2 * autopopup_configure->decoration_size * utils->get_smallest_custom_scale_rate());
+                                (*pCurLayoutKeyCoordinates)[loop + decoidx].height =
+                                    autopopup_configure->decoration_size * utils->get_smallest_custom_scale_rate();
                                 break;
                             case WND_DECORATOR_TOP_RIGHT:
-                                (*pCurLayoutKeyCoordination)[loop + decoidx].x = 
-                                    width - autopopup_configure->decoration_size;
-                                (*pCurLayoutKeyCoordination)[loop + decoidx].y = 0;
-                                (*pCurLayoutKeyCoordination)[loop + decoidx].width = 
-                                    autopopup_configure->decoration_size;
-                                (*pCurLayoutKeyCoordination)[loop + decoidx].height = 
-                                    autopopup_configure->decoration_size;
+                                (*pCurLayoutKeyCoordinates)[loop + decoidx].x =
+                                    width - autopopup_configure->decoration_size * utils->get_smallest_custom_scale_rate();
+                                (*pCurLayoutKeyCoordinates)[loop + decoidx].y = 0;
+                                (*pCurLayoutKeyCoordinates)[loop + decoidx].width =
+                                    autopopup_configure->decoration_size * utils->get_smallest_custom_scale_rate();
+                                (*pCurLayoutKeyCoordinates)[loop + decoidx].height =
+                                    autopopup_configure->decoration_size * utils->get_smallest_custom_scale_rate();
                                 break;
                             case WND_DECORATOR_MIDDLE_LEFT:
-                                (*pCurLayoutKeyCoordination)[loop + decoidx].x = 0;
-                                (*pCurLayoutKeyCoordination)[loop + decoidx].y = 
-                                    autopopup_configure->decoration_size;
-                                (*pCurLayoutKeyCoordination)[loop + decoidx].width = 
-                                    autopopup_configure->decoration_size;
-                                (*pCurLayoutKeyCoordination)[loop + decoidx].height = 
-                                    height - (2 * autopopup_configure->decoration_size);
+                                (*pCurLayoutKeyCoordinates)[loop + decoidx].x = 0;
+                                (*pCurLayoutKeyCoordinates)[loop + decoidx].y =
+                                    autopopup_configure->decoration_size * utils->get_smallest_custom_scale_rate();
+                                (*pCurLayoutKeyCoordinates)[loop + decoidx].width =
+                                    autopopup_configure->decoration_size * utils->get_smallest_custom_scale_rate();
+                                (*pCurLayoutKeyCoordinates)[loop + decoidx].height = height -
+                                    (2 * autopopup_configure->decoration_size * utils->get_smallest_custom_scale_rate());
                                 break;
                             case WND_DECORATOR_MIDDLE_RIGHT:
-                                (*pCurLayoutKeyCoordination)[loop + decoidx].x = 
-                                    width - autopopup_configure->decoration_size;
-                                (*pCurLayoutKeyCoordination)[loop + decoidx].y = 
-                                    autopopup_configure->decoration_size;
-                                (*pCurLayoutKeyCoordination)[loop + decoidx].width = 
-                                    autopopup_configure->decoration_size;
-                                (*pCurLayoutKeyCoordination)[loop + decoidx].height = 
-                                    height - (2 * autopopup_configure->decoration_size);
+                                (*pCurLayoutKeyCoordinates)[loop + decoidx].x =
+                                    width - autopopup_configure->decoration_size * utils->get_smallest_custom_scale_rate();
+                                (*pCurLayoutKeyCoordinates)[loop + decoidx].y =
+                                    autopopup_configure->decoration_size * utils->get_smallest_custom_scale_rate();
+                                (*pCurLayoutKeyCoordinates)[loop + decoidx].width =
+                                    autopopup_configure->decoration_size * utils->get_smallest_custom_scale_rate();
+                                (*pCurLayoutKeyCoordinates)[loop + decoidx].height = height -
+                                    (2 * autopopup_configure->decoration_size * utils->get_smallest_custom_scale_rate());
                                 break;
                             case WND_DECORATOR_BOTTOM_LEFT:
-                                (*pCurLayoutKeyCoordination)[loop + decoidx].x = 0;
-                                (*pCurLayoutKeyCoordination)[loop + decoidx].y = 
-                                    height - autopopup_configure->decoration_size;
-                                (*pCurLayoutKeyCoordination)[loop + decoidx].width = 
-                                    autopopup_configure->decoration_size;
-                                (*pCurLayoutKeyCoordination)[loop + decoidx].height = 
-                                    autopopup_configure->decoration_size;
+                                (*pCurLayoutKeyCoordinates)[loop + decoidx].x = 0;
+                                (*pCurLayoutKeyCoordinates)[loop + decoidx].y =
+                                    height - autopopup_configure->decoration_size * utils->get_smallest_custom_scale_rate();
+                                (*pCurLayoutKeyCoordinates)[loop + decoidx].width =
+                                    autopopup_configure->decoration_size * utils->get_smallest_custom_scale_rate();
+                                (*pCurLayoutKeyCoordinates)[loop + decoidx].height =
+                                    autopopup_configure->decoration_size * utils->get_smallest_custom_scale_rate();
                                 break;
                             case WND_DECORATOR_BOTTOM_CENTER:
-                                (*pCurLayoutKeyCoordination)[loop + decoidx].x = 
-                                    autopopup_configure->decoration_size;
-                                (*pCurLayoutKeyCoordination)[loop + decoidx].y = 
-                                    height - autopopup_configure->decoration_size;
-                                (*pCurLayoutKeyCoordination)[loop + decoidx].width = 
-                                    width - (2 * autopopup_configure->decoration_size);
-                                (*pCurLayoutKeyCoordination)[loop + decoidx].height = 
-                                    autopopup_configure->decoration_size;
+                                (*pCurLayoutKeyCoordinates)[loop + decoidx].x =
+                                    autopopup_configure->decoration_size * utils->get_smallest_custom_scale_rate();
+                                (*pCurLayoutKeyCoordinates)[loop + decoidx].y =
+                                    height - autopopup_configure->decoration_size * utils->get_smallest_custom_scale_rate();
+                                (*pCurLayoutKeyCoordinates)[loop + decoidx].width = width -
+                                    (2 * autopopup_configure->decoration_size * utils->get_smallest_custom_scale_rate());
+                                (*pCurLayoutKeyCoordinates)[loop + decoidx].height =
+                                    autopopup_configure->decoration_size * utils->get_smallest_custom_scale_rate();
                                 break;
                             case WND_DECORATOR_BOTTOM_RIGHT:
-                                (*pCurLayoutKeyCoordination)[loop + decoidx].x = 
-                                    width - autopopup_configure->decoration_size;
-                                (*pCurLayoutKeyCoordination)[loop + decoidx].y = 
-                                    height - autopopup_configure->decoration_size;
-                                (*pCurLayoutKeyCoordination)[loop + decoidx].width = 
-                                    autopopup_configure->decoration_size;
-                                (*pCurLayoutKeyCoordination)[loop + decoidx].height = 
-                                    autopopup_configure->decoration_size;
+                                (*pCurLayoutKeyCoordinates)[loop + decoidx].x =
+                                    width - autopopup_configure->decoration_size * utils->get_smallest_custom_scale_rate();
+                                (*pCurLayoutKeyCoordinates)[loop + decoidx].y =
+                                    height - autopopup_configure->decoration_size * utils->get_smallest_custom_scale_rate();
+                                (*pCurLayoutKeyCoordinates)[loop + decoidx].width =
+                                    autopopup_configure->decoration_size * utils->get_smallest_custom_scale_rate();
+                                (*pCurLayoutKeyCoordinates)[loop + decoidx].height =
+                                    autopopup_configure->decoration_size * utils->get_smallest_custom_scale_rate();
                                 break;
                         }
                         
                         (*pCurButtonContext)[loop + decoidx].used = TRUE;
-                        (*pCurLayoutKeyCoordination)[loop + decoidx].valid = TRUE;
-                        (*pCurLayoutKeyCoordination)[loop + decoidx].button_type = BUTTON_TYPE_UIITEM;
-                        (*pCurLayoutKeyCoordination)[loop + decoidx].valid = TRUE;
-                        (*pCurLayoutKeyCoordination)[loop + decoidx].bg_image_path[0][0] =
-                            (*pCurLayoutKeyCoordination)[loop + decoidx].bg_image_path[0][1] =
-                            (*pCurLayoutKeyCoordination)[loop + decoidx].bg_image_path[1][0] =
-                            (*pCurLayoutKeyCoordination)[loop + decoidx].bg_image_path[1][1] =
+                        (*pCurLayoutKeyCoordinates)[loop + decoidx].valid = TRUE;
+                        (*pCurLayoutKeyCoordinates)[loop + decoidx].button_type = BUTTON_TYPE_UIITEM;
+                        (*pCurLayoutKeyCoordinates)[loop + decoidx].valid = TRUE;
+                        (*pCurLayoutKeyCoordinates)[loop + decoidx].bg_image_path[0][0] =
+                            (*pCurLayoutKeyCoordinates)[loop + decoidx].bg_image_path[0][1] =
+                            (*pCurLayoutKeyCoordinates)[loop + decoidx].bg_image_path[1][0] =
+                            (*pCurLayoutKeyCoordinates)[loop + decoidx].bg_image_path[1][1] =
                             autopopup_configure->decoration_image_path[decoidx];
                     }
                 }
@@ -1340,70 +1376,9 @@ void CSCLResourceCache::generate_autopopup_layout( const SclLayoutKeyCoordinate 
 sclboolean
 CSCLResourceCache::set_cur_themename( const sclchar *themename )
 {
-    /*SclResParserManager *sclres_manager = SclResParserManager::get_instance();
-    const PSclLabelPropertiesTable sclres_label_properties = sclres_manager->get_label_properties_frame();
-    assert(sclres_label_properties != NULL);*/
     if (themename) {
         strncpy(mCurThemename, themename, _POSIX_PATH_MAX - 1);
         mCurThemename[_POSIX_PATH_MAX - 1] = '\0';
-
-        /*CSCLUtils *utils = CSCLUtils::get_instance();
-        utils->get_composed_path(fontprop_path, FONT_PROPERTIES_FILE);
-        FILE *fp = fopen(fontprop_path, "r");
-        if (fp) {
-            sclint index = 0;
-            sclint r,g,b,a;
-            if (!feof(fp)) {
-                for(sclint shiftstate = 0;shiftstate < SCL_SHIFT_STATE_MAX && !feof(fp);shiftstate++) {
-                    char comment[_POSIX_PATH_MAX];
-                    for(sclint buttonstate = 0;buttonstate < SCL_BUTTON_STATE_MAX && !feof(fp);buttonstate++) {
-                        fscanf(fp, "%d%d%d%d", &r, &g, &b, &a);
-                        scl_autopopup_configure.labelProp.font_color[shiftstate][buttonstate].r = r;
-                        scl_autopopup_configure.labelProp.font_color[shiftstate][buttonstate].g = g;
-                        scl_autopopup_configure.labelProp.font_color[shiftstate][buttonstate].b = b;
-                        scl_autopopup_configure.labelProp.font_color[shiftstate][buttonstate].a = a;
-                    }
-                    fscanf(fp, "%s", comment);
-                }
-            }
-            if (!feof(fp)) {
-                sclint subindex = 0;
-                while (subindex < MAX_SIZE_OF_LABEL_FOR_ONE && !feof(fp) && scl_magnifier_configure.labelProp[subindex].valid) {
-                    for(sclint shiftstate = 0;shiftstate < SCL_SHIFT_STATE_MAX && !feof(fp);shiftstate++) {
-                        char comment[_POSIX_PATH_MAX];
-                        for(sclint buttonstate = 0;buttonstate < SCL_BUTTON_STATE_MAX && !feof(fp);buttonstate++) {
-                            fscanf(fp, "%d%d%d%d", &r, &g, &b, &a);
-                            scl_magnifier_configure.labelProp[subindex].font_color[shiftstate][buttonstate].r = r;
-                            scl_magnifier_configure.labelProp[subindex].font_color[shiftstate][buttonstate].g = g;
-                            scl_magnifier_configure.labelProp[subindex].font_color[shiftstate][buttonstate].b = b;
-                            scl_magnifier_configure.labelProp[subindex].font_color[shiftstate][buttonstate].a = a;
-                        }
-                        fscanf(fp, "%s", comment);
-                    }
-                    subindex++;
-                }
-            }
-            index = 0;
-            while (index < MAX_LABEL_PROPERTIES && !feof(fp)) {
-                sclint subindex = 0;
-                while (subindex < MAX_SIZE_OF_LABEL_FOR_ONE && !feof(fp) && sclres_label_properties[index][subindex].valid) {
-                    for(sclint shiftstate = 0;shiftstate < SCL_SHIFT_STATE_MAX && !feof(fp);shiftstate++) {
-                        char comment[_POSIX_PATH_MAX];
-                        for(sclint buttonstate = 0;buttonstate < SCL_BUTTON_STATE_MAX && !feof(fp);buttonstate++) {
-                            fscanf(fp, "%d%d%d%d", &r, &g, &b, &a);
-                            sclres_label_properties[index][subindex].font_color[shiftstate][buttonstate].r = r;
-                            sclres_label_properties[index][subindex].font_color[shiftstate][buttonstate].g = g;
-                            sclres_label_properties[index][subindex].font_color[shiftstate][buttonstate].b = b;
-                            sclres_label_properties[index][subindex].font_color[shiftstate][buttonstate].a = a;
-                        }
-                        fscanf(fp, "%s", comment);
-                    }
-                    subindex++;
-                }
-                index++;
-            }
-            fclose(fp);
-        }*/
     }
 
     return TRUE;
@@ -1431,19 +1406,19 @@ CSCLResourceCache::clone_keyproperties(SclPrivateKeyProperties* priv, sclbyte in
 
         /* gets the value of the previous key properties */
         sclint loop;
-        SclLayoutKeyCoordinate keyCoordination = { 0 };
+        SclLayoutKeyCoordinate keyCoordinate = { 0 };
         if (scl_check_arrindex_unsigned(layout_index, MAX_SCL_LAYOUT) &&
             scl_check_arrindex_unsigned(key_index, MAX_KEY)) {
             SclLayoutKeyCoordinatePointer p = sclres_layout_key_coordinate_pointer_frame[layout_index][key_index];
             if (p) {
-                memcpy(&keyCoordination, p, sizeof(SclLayoutKeyCoordinate));
+                memcpy(&keyCoordinate, p, sizeof(SclLayoutKeyCoordinate));
             }
         }
 
-        scl_assert_return(keyCoordination.valid == TRUE);
+        scl_assert_return(keyCoordinate.valid == TRUE);
 
         /* Sets the default properties base on the properties values of the given context */
-        cache->copy_to_privatekeyproperties(&keyCoordination, priv);
+        cache->copy_to_privatekeyproperties(&keyCoordinate, priv);
     }
 }
 

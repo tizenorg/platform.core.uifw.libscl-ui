@@ -172,7 +172,7 @@ sclwindow CSCLWindows::open_popup(const SclWindowOpener opener, const SclRectang
                 sclwindow pressed_window = context->get_cur_pressed_window(context->get_last_touch_device_id());
                 sclbyte pressed_key = context->get_cur_pressed_key(context->get_last_touch_device_id());
 
-                const SclLayoutKeyCoordinate* coordination = cache->get_cur_layout_key_coordinate(pressed_window, pressed_key);
+                const SclLayoutKeyCoordinate* coordinate = cache->get_cur_layout_key_coordinate(pressed_window, pressed_key);
 
                 sclwindow move_window = context->get_cur_move_window(context->get_last_touch_device_id());
                 SclPoint move_point = context->get_cur_move_point(context->get_last_touch_device_id());
@@ -189,16 +189,16 @@ sclwindow CSCLWindows::open_popup(const SclWindowOpener opener, const SclRectang
                 sclint min_dist_index = NOT_USED;
                 for (sclint loop = 0;loop < MAX_KEY && !ended;loop++) {
                     SclButtonContext *popup_btncontext = cache->get_cur_button_context(window, loop);
-                    const SclLayoutKeyCoordinate *popup_coordination = cache->get_cur_layout_key_coordinate(window, loop);
-                    if (popup_btncontext && popup_coordination) {
+                    const SclLayoutKeyCoordinate *popup_coordinate = cache->get_cur_layout_key_coordinate(window, loop);
+                    if (popup_btncontext && popup_coordinate) {
                         if (!(popup_btncontext->used)) {
                             ended = TRUE;
                         } else if (popup_btncontext->state != BUTTON_STATE_DISABLED &&
-                            popup_coordination->button_type != BUTTON_TYPE_UIITEM) {
-                                if (popup_coordination) {
+                            popup_coordinate->button_type != BUTTON_TYPE_UIITEM) {
+                                if (popup_coordinate) {
                                     float dist = utils->get_approximate_distance(move_point.x, move_point.y,
-                                        popup_coordination->x + (popup_coordination->width / 2) - layout->mouse_manipulate_x,
-                                        popup_coordination->y + (popup_coordination->height / 2) - layout->mouse_manipulate_y);
+                                        popup_coordinate->x + (popup_coordinate->width / 2) - layout->mouse_manipulate_x,
+                                        popup_coordinate->y + (popup_coordinate->height / 2) - layout->mouse_manipulate_y);
                                     if (dist < min_dist) {
                                         min_dist_index = loop;
                                         min_dist = dist;
@@ -209,11 +209,11 @@ sclwindow CSCLWindows::open_popup(const SclWindowOpener opener, const SclRectang
                 }
                 /* When we found the nearest button, make it pressed */
                 if (min_dist_index != NOT_USED) {
-                    const SclLayoutKeyCoordinate *popup_coordination =
+                    const SclLayoutKeyCoordinate *popup_coordinate =
                         cache->get_cur_layout_key_coordinate(window, min_dist_index);
-                    if (popup_coordination) {
-                        sclint x = popup_coordination->x + (popup_coordination->width / 2) - layout->mouse_manipulate_x;
-                        sclint y = popup_coordination->y + (popup_coordination->height / 2) - layout->mouse_manipulate_y;
+                    if (popup_coordinate) {
+                        sclint x = popup_coordinate->x + (popup_coordinate->width / 2) - layout->mouse_manipulate_x;
+                        sclint y = popup_coordinate->y + (popup_coordinate->height / 2) - layout->mouse_manipulate_y;
                         controller->mouse_press(window, x, y, context->get_last_touch_device_id());
                     }
                 }
@@ -225,7 +225,7 @@ sclwindow CSCLWindows::open_popup(const SclWindowOpener opener, const SclRectang
                     btncontext->state = BUTTON_STATE_NORMAL;
                 }*/
 
-                windows->update_window(window, coordination->x, coordination->y, coordination->width, coordination->height);
+                windows->update_window(window, coordinate->x, coordinate->y, coordinate->width, coordinate->height);
             }
         }
     }
@@ -838,8 +838,10 @@ void CSCLWindows::set_window_rotation(const sclwindow window, SCLRotation rotati
                     magnifier_configure = sclres_manager->get_magnifier_configure();
                 }
                 if (magnifier_configure) {
-                    m_magnifier_winctx.geometry.width = magnifier_configure->width;
-                    m_magnifier_winctx.geometry.height = magnifier_configure->height;
+                    m_magnifier_winctx.geometry.width =
+                        magnifier_configure->width * utils->get_custom_scale_rate_x();
+                    m_magnifier_winctx.geometry.height =
+                        magnifier_configure->height * utils->get_custom_scale_rate_y();
 
                     impl->set_window_rotation(m_magnifier_winctx.window, rotation);
                 }
