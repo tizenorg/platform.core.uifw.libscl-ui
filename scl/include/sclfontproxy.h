@@ -25,7 +25,6 @@ namespace scl
 class CSCLFontProxy
 {
 private:
-    static CSCLFontProxy* m_instance; /* For singleton */
     CSCLFontProxy();
 public :
     ~CSCLFontProxy();

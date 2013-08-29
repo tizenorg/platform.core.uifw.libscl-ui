@@ -28,8 +28,6 @@
 
 using namespace scl;
 
-CSCLEvents* CSCLEvents::m_instance = NULL; /* For singleton */
-
 CSCLEvents::CSCLEvents()
 {
     SCL_DEBUG();
@@ -40,6 +38,29 @@ CSCLEvents::CSCLEvents()
 CSCLEvents::~CSCLEvents()
 {
     SCL_DEBUG();
+
+    fini();
+
+    if (m_impl) {
+        delete m_impl;
+        m_impl = NULL;
+    }
+}
+
+void CSCLEvents::init()
+{
+    CSCLEventsImpl *impl = get_scl_events_impl();
+    if (impl) {
+        impl->init();
+    }
+}
+
+void CSCLEvents::fini()
+{
+    CSCLEventsImpl *impl = get_scl_events_impl();
+    if (impl) {
+        impl->fini();
+    }
 }
 
 CSCLEventsImpl* CSCLEvents::get_scl_events_impl()
@@ -59,10 +80,8 @@ CSCLEventsImpl* CSCLEvents::get_scl_events_impl()
 
 CSCLEvents* CSCLEvents::get_instance()
 {
-    if (!m_instance) {
-        m_instance = new CSCLEvents();
-    }
-    return (CSCLEvents*)m_instance;
+    static CSCLEvents instance;
+    return &instance;
 }
 
 void

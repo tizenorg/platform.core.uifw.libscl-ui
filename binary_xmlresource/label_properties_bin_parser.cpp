@@ -18,7 +18,6 @@
 #include "label_properties_bin_parser.h"
 #include "simple_debug.h"
 #include "put_record.h"
-BinLabelPropertyParser* BinLabelPropertyParser::m_instance = NULL;
 
 BinLabelPropertyParser::BinLabelPropertyParser() {
     m_size = 0;
@@ -30,10 +29,8 @@ BinLabelPropertyParser::~BinLabelPropertyParser() {
 }
 
 BinLabelPropertyParser* BinLabelPropertyParser::get_instance() {
-    if (m_instance == NULL) {
-        m_instance = new BinLabelPropertyParser();
-    }
-    return m_instance;
+    static BinLabelPropertyParser instance;
+    return &instance;
 }
 void BinLabelPropertyParser::init(const FileStorage& storage, int offset, int size, IParserInfo_Provider* parser_info_provider) {
     m_storage.set_str_provider(parser_info_provider);

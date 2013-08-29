@@ -301,8 +301,6 @@ class AutoPopupConfigureParserImpl {
         SclAutoPopupConfigure m_autopopup_configure;
 };
 
-AutoPopupConfigParser* AutoPopupConfigParser::m_instance = NULL;
-
 AutoPopupConfigParser::AutoPopupConfigParser() {
     m_impl = new AutoPopupConfigureParserImpl;
 }
@@ -317,10 +315,8 @@ AutoPopupConfigParser::~AutoPopupConfigParser() {
 
 AutoPopupConfigParser*
 AutoPopupConfigParser::get_instance() {
-    if (m_instance == NULL) {
-        m_instance = new AutoPopupConfigParser();
-    }
-    return m_instance;
+    static AutoPopupConfigParser instance;
+    return &instance;
 }
 
 int

@@ -233,14 +233,10 @@ class ModifierDecorationParserImpl {
         SclModifierDecoration m_modifier_decoration_table[MAX_SCL_MODIFIER_DECORATION_NUM];
 };
 
-ModifierDecorationParser* ModifierDecorationParser::m_instance = NULL;
-
 ModifierDecorationParser*
 ModifierDecorationParser::get_instance() {
-    if (m_instance == NULL) {
-        m_instance = new ModifierDecorationParser();
-    }
-    return m_instance;
+    static ModifierDecorationParser instance;
+    return &instance;
 }
 
 ModifierDecorationParser::ModifierDecorationParser() {

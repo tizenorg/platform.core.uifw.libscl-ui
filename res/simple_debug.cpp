@@ -23,8 +23,6 @@
 #include <stdarg.h>
 #include <stdio.h>
 
-SclLog* SclLog::m_instance = NULL;
-
 SclLog::SclLog() : m_flog(NULL) {
     char *env = NULL;
     char *scllog = NULL;
@@ -58,11 +56,8 @@ SclLog::~SclLog() {
 
 SclLog*
 SclLog::get_instance() {
-    if(m_instance == NULL) {
-        m_instance = new SclLog();
-    }
-
-    return m_instance;
+    static SclLog instance;
+    return &instance;
 }
 
 void

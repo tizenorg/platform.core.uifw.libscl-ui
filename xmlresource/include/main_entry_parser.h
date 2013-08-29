@@ -72,7 +72,6 @@ class MainEntryParser {
     static MainEntryParser *get_instance();
     private:
     MainEntryParser();
-    static MainEntryParser *m_instance;
 };
 
 #endif

@@ -73,6 +73,15 @@ CSCLWindowsImplEfl::~CSCLWindowsImplEfl()
     SCL_DEBUG();
 }
 
+void CSCLWindowsImplEfl::init()
+{
+
+}
+
+void CSCLWindowsImplEfl::fini()
+{
+
+}
 
 /**
  * Create a content window and binds it into given parent window as a child

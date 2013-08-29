@@ -32,7 +32,6 @@ class ModifierDecorationParser {
         static ModifierDecorationParser *get_instance();
     private:
         ModifierDecorationParser();
-        static ModifierDecorationParser *m_instance;
 };
 
 

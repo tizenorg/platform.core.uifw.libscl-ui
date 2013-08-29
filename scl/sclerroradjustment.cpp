@@ -27,14 +27,11 @@
 #define TWO 				2
 
 using namespace scl;
-CSCLErrorAdjustment* CSCLErrorAdjustment::m_instance = NULL; /* For singleton */
 
 CSCLErrorAdjustment* CSCLErrorAdjustment::get_instance()
 {
-    if (!m_instance) {
-        m_instance = new CSCLErrorAdjustment();
-    }
-    return (CSCLErrorAdjustment*)m_instance;
+    static CSCLErrorAdjustment instance;
+    return &instance;
 }
 
 CSCLErrorAdjustment::CSCLErrorAdjustment()

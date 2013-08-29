@@ -37,9 +37,6 @@ namespace scl
  */
 class CSCLFeedback
 {
-private:
-    static CSCLFeedback* m_instance; /* For singleton */
-
 public:
     CSCLFeedback();
     CSCLFeedback(sclwindow parent);

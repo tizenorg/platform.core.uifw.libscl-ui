@@ -36,20 +36,10 @@ private:
     void parsing_autopopup_configure();
     void decode_color(SclColor&, int width);
 private:
-    static BinAutoPopupConfigParser *m_instance;
     SclAutoPopupConfigure m_autopopup_configure;
     StringCollector m_string_collector;
     FileStorage m_storage;
     IParserInfo_Provider* parser_info_provider;
-private:
-    class DestructHelper {
-    public:
-        ~DestructHelper() {
-            if (BinAutoPopupConfigParser::m_instance != NULL)
-                delete m_instance;
-        }
-    };
-    static DestructHelper des;
 };
 
 

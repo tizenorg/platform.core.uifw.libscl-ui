@@ -94,6 +94,7 @@ pkg_check_modules(pkgs REQUIRED
         libxml-2.0
         utilX
         tts
+        vconf
         )
 
 FOREACH(flag ${pkgs_CFLAGS})

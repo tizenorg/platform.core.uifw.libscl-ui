@@ -21,8 +21,6 @@
 
 using namespace scl;
 
-CSCLFontProxy* CSCLFontProxy::m_instance = NULL; /* For singleton */
-
 /**
 * Constructor
 */
@@ -50,10 +48,8 @@ CSCLFontProxy::~CSCLFontProxy()
 
 CSCLFontProxy* CSCLFontProxy::get_instance()
 {
-    if (!m_instance) {
-        m_instance = new CSCLFontProxy();
-    }
-    return (CSCLFontProxy*)m_instance;
+    static CSCLFontProxy instance;
+    return &instance;
 }
 
 sclfont

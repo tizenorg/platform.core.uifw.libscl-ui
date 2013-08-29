@@ -40,21 +40,11 @@ class BinLabelPropertyParser {
     void decode_color(SclColor& color, int width);
 
     private:
-        static BinLabelPropertyParser *m_instance;
         SclLabelProperties m_label_properties_frame[MAX_SCL_LABEL_PROPERTIES][MAX_SIZE_OF_LABEL_FOR_ONE];
         int m_size;
         IParserInfo_Provider *parser_info_provider;
         FileStorage m_storage;
         StringCollector m_string_collector;
-    private:
-    class DestructHelper {
-        public:
-        ~DestructHelper() {
-            if (BinLabelPropertyParser::m_instance != NULL)
-                delete m_instance;
-        }
-    };
-    static DestructHelper des;
 };
 
 

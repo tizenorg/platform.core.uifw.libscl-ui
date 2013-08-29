@@ -19,8 +19,6 @@
 #include <memory.h>
 #include "put_record.h"
 
-BinModifierDecorationParser* BinModifierDecorationParser::m_instance = NULL;
-
 BinModifierDecorationParser::BinModifierDecorationParser() {
     memset(m_modifier_decoration_table, 0x00, sizeof(SclModifierDecoration) * MAX_SCL_MODIFIER_DECORATION_NUM);
 }
@@ -30,10 +28,8 @@ BinModifierDecorationParser::~BinModifierDecorationParser() {
 
 BinModifierDecorationParser*
 BinModifierDecorationParser::get_instance() {
-    if (m_instance == NULL) {
-        m_instance = new BinModifierDecorationParser();
-    }
-    return m_instance;
+    static BinModifierDecorationParser instance;
+    return &instance;
 }
 void
 BinModifierDecorationParser::init(const FileStorage& storage, int offset, int size, IParserInfo_Provider* parser_info_provider) {

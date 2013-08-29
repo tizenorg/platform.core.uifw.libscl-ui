@@ -28,8 +28,6 @@
 #include <assert.h>
 using namespace scl;
 
-CSCLResourceCache* CSCLResourceCache::m_instance = NULL; /* For singleton */
-
 CSCLResourceCache::CSCLResourceCache()
 {
     SCL_DEBUG();
@@ -45,10 +43,8 @@ CSCLResourceCache::~CSCLResourceCache()
 CSCLResourceCache*
 CSCLResourceCache::get_instance()
 {
-    if (!m_instance) {
-        m_instance = new CSCLResourceCache();
-    }
-    return (CSCLResourceCache*)m_instance;
+    static CSCLResourceCache instance;
+    return &instance;
 }
 
 
@@ -992,10 +988,6 @@ CSCLResourceCache::recompute_layout(sclwindow window)
                             (*pCurLayoutKeyCoordinate)[loop].extract_offset_y *= utils->get_custom_scale_rate_y();
                             (*pCurLayoutKeyCoordinate)[loop].magnifier_offset_x *= utils->get_custom_scale_rate_x();
                             (*pCurLayoutKeyCoordinate)[loop].magnifier_offset_y *= utils->get_custom_scale_rate_y();
-
-                            utils->log("CUSTOM_SCALED_GEOMETRY : %d %d %d %d",
-                                (*pCurLayoutKeyCoordinate)[loop].x, (*pCurLayoutKeyCoordinate)[loop].y,
-                                (*pCurLayoutKeyCoordinate)[loop].width, (*pCurLayoutKeyCoordinate)[loop].height);
                         }
                     }
                 }

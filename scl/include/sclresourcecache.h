@@ -42,7 +42,6 @@ typedef struct _SclButtonContext {
 class CSCLResourceCache
 {
 private:
-    static CSCLResourceCache* m_instance; /* For singleton */
     CSCLResourceCache();
 
 public:

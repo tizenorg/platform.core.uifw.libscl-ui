@@ -19,7 +19,6 @@
 #include <memory.h>
 #include <assert.h>
 #include "put_record.h"
-BinNinePatchFileParser* BinNinePatchFileParser::m_instance = NULL;
 
 BinNinePatchFileParser::BinNinePatchFileParser() {
     m_size = 0;
@@ -30,10 +29,8 @@ BinNinePatchFileParser::~BinNinePatchFileParser() {
     m_size = 0;
 }
 BinNinePatchFileParser* BinNinePatchFileParser::get_instance() {
-    if (m_instance == NULL) {
-        m_instance = new BinNinePatchFileParser();
-    }
-    return m_instance;
+    static BinNinePatchFileParser instance;
+    return &instance;
 }
 void BinNinePatchFileParser::init(const FileStorage& storage, int offset, int size, IParserInfo_Provider* parser_info_provider) {
     m_storage.set_str_provider(parser_info_provider);

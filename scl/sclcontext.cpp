@@ -30,8 +30,6 @@
 
 using namespace scl;
 
-CSCLContext* CSCLContext::m_instance = NULL; /* For singleton */
-
 CSCLContext::CSCLContext()
 {
     SCL_DEBUG();
@@ -47,10 +45,8 @@ CSCLContext::~CSCLContext()
 CSCLContext*
 CSCLContext::get_instance()
 {
-    if (!m_instance) {
-        m_instance = new CSCLContext();
-    }
-    return (CSCLContext*)m_instance;
+    static CSCLContext instance;
+    return &instance;
 }
 
 void

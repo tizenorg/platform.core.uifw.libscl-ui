@@ -49,12 +49,12 @@ Eina_Bool client_message_cb(void *data, int type, void *event);
 CSCLEventsImplEfl::CSCLEventsImplEfl()
 {
     SCL_DEBUG();
-    /* Initializes all window resources */
-    m_mouse_down_handler = ecore_event_handler_add(ECORE_EVENT_MOUSE_BUTTON_DOWN, mouse_press, NULL);
-    m_mouse_move_handler = ecore_event_handler_add(ECORE_EVENT_MOUSE_MOVE, mouse_move, NULL);
-    m_mouse_up_handler = ecore_event_handler_add(ECORE_EVENT_MOUSE_BUTTON_UP, mouse_release, NULL);
 
-    m_xclient_msg_handler = ecore_event_handler_add(ECORE_X_EVENT_CLIENT_MESSAGE, client_message_cb, NULL);
+    m_mouse_down_handler = NULL;
+    m_mouse_move_handler = NULL;
+    m_mouse_up_handler = NULL;
+
+    m_xclient_msg_handler = NULL;
 }
 
 /**
@@ -64,10 +64,29 @@ CSCLEventsImplEfl::~CSCLEventsImplEfl()
 {
     SCL_DEBUG();
 
+    fini();
+}
+
+void CSCLEventsImplEfl::init()
+{
+    /* Initializes all window resources */
+    m_mouse_down_handler = ecore_event_handler_add(ECORE_EVENT_MOUSE_BUTTON_DOWN, mouse_press, NULL);
+    m_mouse_move_handler = ecore_event_handler_add(ECORE_EVENT_MOUSE_MOVE, mouse_move, NULL);
+    m_mouse_up_handler = ecore_event_handler_add(ECORE_EVENT_MOUSE_BUTTON_UP, mouse_release, NULL);
+
+    m_xclient_msg_handler = ecore_event_handler_add(ECORE_X_EVENT_CLIENT_MESSAGE, client_message_cb, NULL);
+}
+
+void CSCLEventsImplEfl::fini()
+{
     if (m_mouse_down_handler) ecore_event_handler_del(m_mouse_down_handler);
+    m_mouse_down_handler = NULL;
     if (m_mouse_move_handler) ecore_event_handler_del(m_mouse_move_handler);
+    m_mouse_move_handler = NULL;
     if (m_mouse_up_handler) ecore_event_handler_del(m_mouse_up_handler);
+    m_mouse_up_handler = NULL;
     if (m_xclient_msg_handler) ecore_event_handler_del(m_xclient_msg_handler);
+    m_xclient_msg_handler = NULL;
 }
 
 sclboolean get_window_rect(const sclwindow window, SclRectangle *rect)

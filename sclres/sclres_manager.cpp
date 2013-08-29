@@ -27,19 +27,14 @@ using namespace sclres;
 
 static sclres::SclRes *_current_parser = NULL;
 
-SclResParserManager* SclResParserManager::m_instance = NULL;
 SclResParserManager::~SclResParserManager() {
-    if (_current_parser)
-        delete _current_parser;
     _current_parser = NULL;
 }
 
 SclResParserManager*
 SclResParserManager::get_instance() {
-    if (m_instance == NULL) {
-        m_instance = new SclResParserManager();
-    }
-    return m_instance;
+    static SclResParserManager instance;
+    return &instance;
 }
 
 SclResParserManager::SclResParserManager() {

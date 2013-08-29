@@ -35,21 +35,11 @@ class BinNinePatchFileParser {
     BinNinePatchFileParser();
     void parsing_nine_patch_file_list();
     private:
-        static BinNinePatchFileParser *m_instance;
         SclNinePatchInfo m_nine_patch_file_list[MAX_NINE_PATCH_FILE_LIST];
         int m_size;
         StringCollector m_string_collector;
         FileStorage m_storage;
         IParserInfo_Provider* parser_info_provider;
-    private:
-    class DestructHelper {
-        public:
-        ~DestructHelper() {
-            if (BinNinePatchFileParser::m_instance != NULL)
-                delete m_instance;
-        }
-    };
-    static DestructHelper des;
 };
 
 

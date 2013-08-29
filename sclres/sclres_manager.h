@@ -55,7 +55,6 @@ class SclResParserManager{
         void destroy();
     private:
         SclResParserManager();
-        static SclResParserManager* m_instance;
 };
 
 #endif

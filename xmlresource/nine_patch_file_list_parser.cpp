@@ -96,8 +96,6 @@ class NinePatchFileListParserImpl {
 
 };
 
-NinePatchFileParser* NinePatchFileParser::m_instance = NULL;
-
 NinePatchFileParser::NinePatchFileParser() {
     m_impl = new NinePatchFileListParserImpl;
 }
@@ -111,10 +109,8 @@ NinePatchFileParser::~NinePatchFileParser() {
 }
 NinePatchFileParser*
 NinePatchFileParser::get_instance() {
-    if (m_instance == NULL) {
-        m_instance = new NinePatchFileParser();
-    }
-    return m_instance;
+    static NinePatchFileParser instance;
+    return &instance;
 }
 
 int

@@ -31,17 +31,38 @@
 
 using namespace scl;
 
-CSCLGraphics* CSCLGraphics::m_instance = NULL; /* For singleton */
-
 CSCLGraphics::CSCLGraphics()
 {
     SCL_DEBUG();
-    m_impl = 0;
+    m_impl = NULL;
 }
 
 CSCLGraphics::~CSCLGraphics()
 {
     SCL_DEBUG();
+
+    fini();
+
+    if (m_impl) {
+        delete m_impl;
+        m_impl = NULL;
+    }
+}
+
+void CSCLGraphics::init()
+{
+    CSCLGraphicsImpl *impl = get_scl_graphics_impl();
+    if (impl) {
+        impl->init();
+    }
+}
+
+void CSCLGraphics::fini()
+{
+    CSCLGraphicsImpl *impl = get_scl_graphics_impl();
+    if (impl) {
+        impl->fini();
+    }
 }
 
 CSCLGraphicsImpl* CSCLGraphics::get_scl_graphics_impl()
@@ -63,9 +84,7 @@ CSCLGraphicsImpl* CSCLGraphics::get_scl_graphics_impl()
 
 CSCLGraphics* CSCLGraphics::get_instance()
 {
-    if (!m_instance) {
-        m_instance = new CSCLGraphics();
-    }
-    return (CSCLGraphics*)m_instance;
+    static CSCLGraphics instance;
+    return &instance;
 }
 

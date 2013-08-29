@@ -41,22 +41,12 @@ class BinLayoutParser {
     void decode_color(SclColor&, int width);
 
     private:
-        static BinLayoutParser *m_instance;
         int m_layout_size;
         SclLayout m_layout_table[MAX_SCL_LAYOUT];
 
         FileStorage m_storage;
         IParserInfo_Provider *parser_info_provider;
         StringCollector m_string_collector;
-    private:
-    class DestructHelper {
-        public:
-        ~DestructHelper() {
-            if (BinLayoutParser::m_instance != NULL)
-                delete m_instance;
-        }
-    };
-    static DestructHelper des;
 };
 
 

@@ -33,7 +33,6 @@ class AutoPopupConfigParser {
         static AutoPopupConfigParser *get_instance();
     private:
         AutoPopupConfigParser();
-        static AutoPopupConfigParser *m_instance;
 };
 
 

@@ -25,14 +25,11 @@
 #include "sclcontext.h"
 
 using namespace scl;
-CSCLFeedback* CSCLFeedback::m_instance = NULL; /* For singleton */
 
 CSCLFeedback* CSCLFeedback::get_instance()
 {
-    if (!m_instance) {
-        m_instance = new CSCLFeedback();
-    }
-    return (CSCLFeedback*)m_instance;
+    static CSCLFeedback instance;
+    return &instance;
 }
 
 CSCLFeedback::CSCLFeedback()

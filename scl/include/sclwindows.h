@@ -69,6 +69,9 @@ typedef struct _SclWindowContext {
 class CSCLWindowsImpl
 {
 public :
+    virtual void init() = 0;
+    virtual void fini() = 0;
+
     virtual sclwindow create_base_window(const sclwindow parent, SclWindowContext *winctx, scl16 width, scl16 height) = 0;
     virtual sclwindow create_window(const sclwindow parent, SclWindowContext *winctx, scl16 width, scl16 height) = 0;
     virtual sclwindow create_magnifier_window(const sclwindow parent, SclWindowContext *winctx, scl16 width, scl16 height) = 0;
@@ -90,12 +93,14 @@ public :
 class CSCLWindows
 {
 private:
-    static CSCLWindows* m_instance; /* For singleton */
     CSCLWindows();
 public :
     ~CSCLWindows();
 
     static CSCLWindows* get_instance();
+
+    void init();
+    void fini();
 
     sclwindow open_popup(const SclWindowOpener opener, const SclRectangle& geometry, sclshort inputmode, sclshort layout, SCLPopupType popup_type, sclboolean is_virtual, sclboolean use_dim_window, sclint img_offset_x = 0, sclint img_offset_y = 0, sclint timeout = 0);
     bool close_popup(sclwindow window);

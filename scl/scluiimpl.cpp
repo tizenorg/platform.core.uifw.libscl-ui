@@ -29,8 +29,6 @@
 
 using namespace scl;
 
-CSCLUIImpl* CSCLUIImpl::m_instance = NULL; /* For singleton */
-
 CSCLUIImpl::CSCLUIImpl()
 {
     SCL_DEBUG();
@@ -56,10 +54,8 @@ CSCLUIImpl::~CSCLUIImpl()
 CSCLUIImpl*
 CSCLUIImpl::get_instance()
 {
-    if (!m_instance) {
-        m_instance = new CSCLUIImpl();
-    }
-    return (CSCLUIImpl*)m_instance;
+    static CSCLUIImpl instance;
+    return &instance;
 }
 
 sclboolean CSCLUIImpl::init(sclwindow parent, const SCLParserType parser_type, const char *entry_filepath)
@@ -72,6 +68,7 @@ sclboolean CSCLUIImpl::init(sclwindow parent, const SCLParserType parser_type, c
     CSCLUIBuilder *builder = CSCLUIBuilder::get_instance();
     CSCLResourceCache *cache = CSCLResourceCache::get_instance();
     CSCLUtils *utils = CSCLUtils::get_instance();
+    CSCLGwes *gwes = CSCLGwes::get_instance();
 
     if (sclres_manager && builder && cache && utils) {
         sclres_manager->init(parser_type, entry_filepath);
@@ -91,6 +88,20 @@ sclboolean CSCLUIImpl::init(sclwindow parent, const SCLParserType parser_type, c
     SCL_DEBUG_ELAPASED_TIME_END();
 
     return TRUE;
+}
+
+void
+CSCLUIImpl::fini()
+{
+    CSCLUtils *utils = CSCLUtils::get_instance();
+    if (utils) {
+        utils->fini();
+    }
+
+    CSCLGwes *gwes = CSCLGwes::get_instance();
+    if (gwes) {
+        gwes->fini();
+    }
 }
 
 /**

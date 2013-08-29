@@ -24,8 +24,6 @@
 
 using namespace xmlresource;
 
-XMLResource* XMLResource::m_instance = NULL;
-
 XMLResource::XMLResource() {
     m_main_entry_parser = NULL;
     m_input_mode_configure_parser = NULL;
@@ -39,45 +37,21 @@ XMLResource::XMLResource() {
 }
 
 XMLResource::~XMLResource() {
-    if (m_main_entry_parser)
-        delete m_main_entry_parser;
     m_main_entry_parser = NULL;
-    if (m_input_mode_configure_parser)
-        delete m_input_mode_configure_parser;
     m_input_mode_configure_parser = NULL;
-    if (m_layout_parser)
-        delete m_layout_parser;
     m_layout_parser = NULL;
-    if (m_modifier_decoration_parser)
-        delete m_modifier_decoration_parser;
     m_modifier_decoration_parser = NULL;
-
-    if (m_label_properties_parser)
-        delete m_label_properties_parser;
     m_label_properties_parser = NULL;
-
-    if (m_default_configure_parser)
-        delete m_default_configure_parser;
     m_default_configure_parser = NULL;
-
-    if (m_autopopup_configure_parser)
-        delete m_autopopup_configure_parser;
     m_autopopup_configure_parser = NULL;
-    if (m_magnifier_configure_parser)
-        delete m_magnifier_configure_parser;
     m_magnifier_configure_parser = NULL;
-
-    if (m_nine_patch_file_list_parser)
-        delete m_nine_patch_file_list_parser;
     m_nine_patch_file_list_parser = NULL;
 }
 
 XMLResource*
 XMLResource::get_instance() {
-    if (m_instance == NULL) {
-        m_instance = new XMLResource();
-    }
-    return m_instance;
+    static XMLResource instance;
+    return &instance;
 }
 
 static void

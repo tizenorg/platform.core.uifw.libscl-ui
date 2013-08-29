@@ -19,7 +19,6 @@
 #include "simple_debug.h"
 #include "put_record.h"
 using namespace std;
-BinInputModeConfigParser* BinInputModeConfigParser::m_instance = NULL;
 
 BinInputModeConfigParser::BinInputModeConfigParser() {
     m_inputmode_size = 0;
@@ -31,10 +30,8 @@ BinInputModeConfigParser::~BinInputModeConfigParser() {
 
 BinInputModeConfigParser*
 BinInputModeConfigParser::get_instance() {
-    if (m_instance == NULL) {
-        m_instance = new BinInputModeConfigParser();
-    }
-    return m_instance;
+    static BinInputModeConfigParser instance;
+    return &instance;
 }
 
 void

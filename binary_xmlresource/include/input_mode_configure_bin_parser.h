@@ -43,10 +43,8 @@ class BinInputModeConfigParser {
 
         StringCollector m_string_collector;
     private:
-        static BinInputModeConfigParser *m_instance;
         int m_inputmode_size;
         SclInputModeConfigure m_input_mode_configure_table[MAX_SCL_INPUT_MODE];
-
 
         FileStorage m_storage;
         IParserInfo_Provider* parser_info_provider;

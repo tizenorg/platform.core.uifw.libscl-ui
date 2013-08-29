@@ -27,6 +27,7 @@
 #include <feedback.h>
 #include <Elementary.h>
 #include <tts.h>
+#include <vconf.h>
 
 #include <dlog.h>
 #ifndef LOG_TAG
@@ -75,6 +76,77 @@ static Eina_Bool _get_default_zone_geometry_info (Ecore_X_Window root, scluint *
     }
 
     return ret;
+}
+
+void accessibility_changed_cb(keynode_t *key, void* data)
+{
+    int r;
+    int enabled;
+    if (vconf_get_int(VCONFKEY_SETAPPL_ACCESSIBILITY_TTS, &enabled)) {
+        LOGD("VCONFKEY_SETAPPL_ACCESSIBILITY_TTS : %d, (%p)", enabled, tts);
+        if (enabled) {
+            if (tts == NULL) {
+                LOGD("Initializing TTS\n");
+
+                r = tts_create(&tts);
+                if (TTS_ERROR_NONE != r) {
+                    LOGD("tts_create FAILED : result(%d)", r);
+                } else {
+                    tts_set_mode (tts, TTS_MODE_SCREEN_READER);
+                }
+                if (TTS_ERROR_NONE != r) {
+                    LOGD("tts_set_mode FAILED : result(%d)", r);
+                }
+
+                tts_state_e current_state;
+                r = tts_get_state(tts, &current_state);
+                if (TTS_ERROR_NONE != r) {
+                    LOGD("tts_get_state FAILED : result(%d)", r);
+                }
+
+                if (TTS_STATE_CREATED == current_state)  {
+                    r = tts_prepare(tts);
+                }
+                if (TTS_ERROR_NONE != r) {
+                    LOGD("tts_prepare FAILED : ret(%d)\n", r);
+                }
+            }
+        } else {
+            if (tts != NULL) {
+                LOGD("Deinitializing TTS\n");
+
+                r = tts_unprepare(tts);
+                if (TTS_ERROR_NONE != r) {
+                    LOGD("tts_unprepare FAILED : result(%d)", r);
+                }
+
+                r = tts_destroy(tts);
+                if (TTS_ERROR_NONE != r) {
+                    LOGD("tts_destroy FAILED : result(%d)", r);
+                }
+
+                tts = NULL;
+            }
+        }
+    }
+}
+
+void
+CSCLUtilsImplLinux::init() {
+    SCL_DEBUG();
+    open_devices();
+
+    vconf_notify_key_changed(VCONFKEY_SETAPPL_ACCESSIBILITY_TTS, accessibility_changed_cb, NULL);
+    accessibility_changed_cb(NULL, NULL);
+}
+
+void
+CSCLUtilsImplLinux::fini() {
+    SCL_DEBUG();
+
+    vconf_ignore_key_changed(VCONFKEY_SETAPPL_ACCESSIBILITY_TTS, accessibility_changed_cb);
+
+    close_devices();
 }
 
 /* FIXME : Currently the screen resolution is locally cached, should be updated when it gets changed */
@@ -229,29 +301,6 @@ CSCLUtilsImplLinux::open_devices() {
         LOGD("FEEDBACK INITIALIZATION SUCCESSFUL : %d\n", r);
     }
 
-    r = tts_create(&tts);
-    if (TTS_ERROR_NONE != r) {
-        LOGD("tts_create FAILED : result(%d)", r);
-    } else {
-        r = tts_set_mode (tts, TTS_MODE_SCREEN_READER);
-    }
-    if (TTS_ERROR_NONE != r) {
-        LOGD("tts_set_mode FAILED : result(%d)", r);
-    }
-
-    tts_state_e current_state;
-    r = tts_get_state(tts, &current_state);
-    if (TTS_ERROR_NONE != r) {
-        LOGD("tts_get_state FAILED : result(%d)", r);
-    }
-
-    if (TTS_STATE_CREATED == current_state)  {
-        r = tts_prepare(tts);
-    }
-    if (TTS_ERROR_NONE != r) {
-        LOGD("tts_prepare FAILED : ret(%d)\n", r);
-    }
-
     return TRUE;
 }
 
@@ -267,15 +316,6 @@ CSCLUtilsImplLinux::close_devices() {
         LOGD("FEEDBACK DEINITIALIZATION SUCCESSFUL : %d\n", r);
     }
 
-    r = tts_unprepare(tts);
-    if (TTS_ERROR_NONE != r) {
-        LOGD("tts_unprepare FAILED : result(%d)", r);
-    }
-
-    r = tts_destroy(tts);
-    if (TTS_ERROR_NONE != r) {
-        LOGD("tts_destroy FAILED : result(%d)", r);
-    }
     return TRUE;
 }
 

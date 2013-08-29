@@ -199,8 +199,6 @@ class MagnifierConfigureParserImpl {
     SclMagnifierWndConfigure m_magnifier_configure;
 };
 
-MagnifierConfigParser* MagnifierConfigParser::m_instance = NULL;
-
 MagnifierConfigParser::MagnifierConfigParser() {
     m_impl = new MagnifierConfigureParserImpl;
 }
@@ -215,10 +213,8 @@ MagnifierConfigParser::~MagnifierConfigParser() {
 
 MagnifierConfigParser*
 MagnifierConfigParser::get_instance() {
-    if (m_instance == NULL) {
-        m_instance = new MagnifierConfigParser();
-    }
-    return m_instance;
+    static MagnifierConfigParser instance;
+    return &instance;
 }
 
 int

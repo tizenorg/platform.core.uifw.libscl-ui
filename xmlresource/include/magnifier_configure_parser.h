@@ -33,7 +33,6 @@ public:
     static MagnifierConfigParser *get_instance();
 private:
     MagnifierConfigParser();
-    static MagnifierConfigParser *m_instance;
 };
 
 

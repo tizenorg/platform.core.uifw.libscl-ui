@@ -26,8 +26,6 @@
 
 using namespace binary_xmlresource;
 
-BinResource* BinResource::m_instance = NULL;
-
 BinResource::BinResource() {
     m_input_mode_configure_parser = NULL;
     m_layout_parser = NULL;
@@ -41,44 +39,20 @@ BinResource::BinResource() {
 }
 
 BinResource::~BinResource() {
-    if (m_input_mode_configure_parser)
-        delete m_input_mode_configure_parser;
     m_input_mode_configure_parser = NULL;
-    if (m_layout_parser)
-        delete m_layout_parser;
     m_layout_parser = NULL;
-    if (m_key_coordinate_frame_parser)
-        delete m_key_coordinate_frame_parser;
     m_key_coordinate_frame_parser = NULL;
-    if (m_modifier_decoration_parser)
-        delete m_modifier_decoration_parser;
     m_modifier_decoration_parser = NULL;
-
-    if (m_label_properties_parser)
-        delete m_label_properties_parser;
     m_label_properties_parser = NULL;
-
-    if (m_default_configure_parser)
-        delete m_default_configure_parser;
     m_default_configure_parser = NULL;
-
-    if (m_autopopup_configure_parser)
-        delete m_autopopup_configure_parser;
     m_autopopup_configure_parser = NULL;
-    if (m_magnifier_configure_parser)
-        delete m_magnifier_configure_parser;
     m_magnifier_configure_parser = NULL;
-
-    if (m_nine_patch_file_list_parser)
-        delete m_nine_patch_file_list_parser;
     m_nine_patch_file_list_parser = NULL;
 }
 
 BinResource* BinResource::get_instance() {
-    if (m_instance == NULL) {
-        m_instance = new BinResource();
-    }
-    return m_instance;
+    static BinResource instance;
+    return &instance;
 }
 
 void BinResource::init(const char *entry_filepath) {

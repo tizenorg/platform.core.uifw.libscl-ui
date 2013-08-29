@@ -34,7 +34,6 @@ namespace scl
 class CSCLEventHandler : public ISCLUIEventCallback
 {
 private:
-    static CSCLEventHandler* m_instance; /* For singleton */
     CSCLEventHandler();
 public:
     ~CSCLEventHandler();

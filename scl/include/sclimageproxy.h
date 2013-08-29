@@ -23,7 +23,6 @@ namespace scl
 class CSCLImageProxy
 {
 private:
-	static CSCLImageProxy* m_instance; /* For singleton */
 	CSCLImageProxy();
 public :
     ~CSCLImageProxy();

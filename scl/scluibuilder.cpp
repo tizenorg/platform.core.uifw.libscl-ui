@@ -34,8 +34,6 @@ using namespace scl;
 
 //extern sclboolean g_key_spacing_off;
 
-CSCLUIBuilder* CSCLUIBuilder::m_instance = NULL; /* For singleton */
-
 CSCLUIBuilder::CSCLUIBuilder()
 {
     SCL_DEBUG();
@@ -47,19 +45,15 @@ CSCLUIBuilder::CSCLUIBuilder()
 CSCLUIBuilder::~CSCLUIBuilder()
 {
     SCL_DEBUG();
-    if (m_gwes) delete m_gwes;
     m_gwes = NULL;
-    if (m_utils) delete m_utils;
     m_utils = NULL;
 }
 
 CSCLUIBuilder*
 CSCLUIBuilder::get_instance()
 {
-    if (!m_instance) {
-        m_instance = new CSCLUIBuilder();
-    }
-    return (CSCLUIBuilder*)m_instance;
+    static CSCLUIBuilder instance;
+    return &instance;
 }
 
 void

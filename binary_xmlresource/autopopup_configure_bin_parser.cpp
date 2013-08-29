@@ -20,8 +20,6 @@
 using namespace std;
 #include "put_record.h"
 
-BinAutoPopupConfigParser* BinAutoPopupConfigParser::m_instance = NULL;
-
 BinAutoPopupConfigParser::BinAutoPopupConfigParser() {
     memset((void*)&m_autopopup_configure, 0x00, sizeof(SclAutoPopupConfigure));
 }
@@ -30,10 +28,9 @@ BinAutoPopupConfigParser::~BinAutoPopupConfigParser() {
 }
 
 BinAutoPopupConfigParser* BinAutoPopupConfigParser::get_instance() {
-    if (m_instance == NULL) {
-        m_instance = new BinAutoPopupConfigParser();
-    }
-    return m_instance;
+    static BinAutoPopupConfigParser instance;
+
+    return &instance;
 }
 
 void

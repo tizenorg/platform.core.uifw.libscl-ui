@@ -33,7 +33,6 @@ public:
     static DefaultConfigParser *get_instance();
 private:
     DefaultConfigParser();
-    static DefaultConfigParser *m_instance;
 };
 
 

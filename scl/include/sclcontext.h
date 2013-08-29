@@ -85,7 +85,6 @@ typedef std::map<MagnifierCustomLabelIdx, std::string, MagnifierCustomLabelIdxCo
 class CSCLContext
 {
 private:
-    static CSCLContext* m_instance; /* For singleton */
     CSCLContext();
 public:
     ~CSCLContext();

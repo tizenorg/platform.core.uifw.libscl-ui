@@ -36,7 +36,6 @@ namespace scl
 class CSCLActionState
 {
 private:
-    static CSCLActionState* m_instance; /* For singleton */
     CSCLActionState();
 public:
     ~CSCLActionState();

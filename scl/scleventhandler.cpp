@@ -23,8 +23,6 @@
 
 using namespace scl;
 
-CSCLEventHandler* CSCLEventHandler::m_instance = NULL; /* For singleton */
-
 CSCLEventHandler::CSCLEventHandler()
 {
     SCL_DEBUG();
@@ -41,10 +39,8 @@ CSCLEventHandler::~CSCLEventHandler()
 CSCLEventHandler*
 CSCLEventHandler::get_instance()
 {
-    if (!m_instance) {
-        m_instance = new CSCLEventHandler();
-    }
-    return (CSCLEventHandler*)m_instance;
+    static CSCLEventHandler instance;
+    return &instance;
 }
 
 static void handle_shift_button_click_event(SclUIEventDesc ui_event_desc)

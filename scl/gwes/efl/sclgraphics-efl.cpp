@@ -71,6 +71,16 @@ CSCLGraphicsImplEfl::~CSCLGraphicsImplEfl()
     SCL_DEBUG();
 }
 
+void CSCLGraphicsImplEfl::init()
+{
+
+}
+
+void CSCLGraphicsImplEfl::fini()
+{
+
+}
+
 Evas_Object* extract_partimage_from_fullimage(
     Evas_Object* fullimage,
     int img_x,int img_y,

@@ -34,6 +34,5 @@ class InputModeConfigParser {
         static InputModeConfigParser *get_instance();
     private:
         InputModeConfigParser();
-        static InputModeConfigParser *m_instance;
 };
 #endif

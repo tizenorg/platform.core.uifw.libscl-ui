@@ -52,7 +52,6 @@ enum SclInternalSignal {
 class CSCLController
 {
 private:
-    static CSCLController* m_instance; /* For singleton */
     CSCLController();
 public:
     ~CSCLController();

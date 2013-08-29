@@ -105,8 +105,6 @@ class MainEntryParserImpl {
         XMLFiles m_xml_files;
 };
 
-MainEntryParser* MainEntryParser::m_instance = NULL;
-
 MainEntryParser::MainEntryParser() {
     m_impl = new MainEntryParserImpl;
 }
@@ -121,10 +119,8 @@ MainEntryParser::~MainEntryParser() {
 
 MainEntryParser*
 MainEntryParser::get_instance() {
-    if (m_instance == NULL) {
-        m_instance = new MainEntryParser();
-    }
-    return m_instance;
+    static MainEntryParser instance;
+    return &instance;
 }
 
 int
