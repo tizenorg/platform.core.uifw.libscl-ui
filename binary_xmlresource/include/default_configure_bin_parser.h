@@ -37,20 +37,10 @@ private:
     void parsing_default_configure();
     void decode_color(SclColor&, int width);
 private:
-    static BinDefaultConfigParser *m_instance;
     SclDefaultConfigure m_default_configure;
     StringCollector m_string_collector;
     IParserInfo_Provider* parser_info_provider;
     FileStorage m_storage;
-private:
-    class DestructHelper {
-    public:
-        ~DestructHelper() {
-            if (BinDefaultConfigParser::m_instance != NULL)
-                delete m_instance;
-        }
-    };
-    static DestructHelper des;
 };
 
 

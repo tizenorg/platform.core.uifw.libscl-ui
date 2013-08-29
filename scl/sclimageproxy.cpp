@@ -21,8 +21,6 @@
 
 using namespace scl;
 
-CSCLImageProxy* CSCLImageProxy::m_instance = NULL; /* For singleton */
-
 /**
 * Constructor
 */
@@ -47,10 +45,8 @@ CSCLImageProxy::~CSCLImageProxy()
 
 CSCLImageProxy* CSCLImageProxy::get_instance()
 {
-    if (!m_instance) {
-        m_instance = new CSCLImageProxy();
-    }
-    return (CSCLImageProxy*)m_instance;
+    static CSCLImageProxy instance;
+    return &instance;
 }
 
 sclimage

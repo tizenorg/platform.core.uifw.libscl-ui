@@ -40,7 +40,6 @@ class LayoutParser {
 
     private:
     LayoutParser();
-    static LayoutParser *m_instance;
 };
 
 

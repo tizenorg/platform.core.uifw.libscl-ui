@@ -75,9 +75,6 @@ _play_tts_for_layout_autopopup_name() {
     return TRUE;
 }
 
-CSCLController* CSCLController::m_instance = NULL; /* For singleton */
-
-
 CSCLController::CSCLController()
 {
     SCL_DEBUG();
@@ -105,10 +102,8 @@ CSCLController::~CSCLController()
 CSCLController*
 CSCLController::get_instance()
 {
-    if (!m_instance) {
-        m_instance = new CSCLController();
-    }
-    return (CSCLController*)m_instance;
+    static CSCLController instance;
+    return &instance;
 }
 
 void

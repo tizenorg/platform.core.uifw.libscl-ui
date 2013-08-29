@@ -54,6 +54,9 @@ typedef enum _SCLMouseEvent {
 class CSCLEventsImpl
 {
 public :
+    virtual void init() = 0;
+    virtual void fini() = 0;
+
     virtual void connect_window_events(const sclwindow wnd, const sclint evt) = 0;
     virtual void create_timer(const scl16 id, const scl32 interval, scl16 value, sclboolean addToMap) = 0;
     virtual void destroy_timer(const scl32 id) = 0;
@@ -68,8 +71,10 @@ public :
     CSCLEvents();
     ~CSCLEvents();
 
-    static CSCLEvents* m_instance; /* For singleton */
     static CSCLEvents* get_instance();
+
+    void init();
+    void fini();
 
     void connect_window_events(sclwindow wnd, const sclint evt);
 

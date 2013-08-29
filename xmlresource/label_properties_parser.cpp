@@ -380,8 +380,6 @@ class LabelPropertiesParserImpl {
     int m_size;
 };
 
-LabelPropertyParser* LabelPropertyParser::m_instance = NULL;
-
 LabelPropertyParser::LabelPropertyParser() {
     m_impl = new LabelPropertiesParserImpl;
 }
@@ -396,10 +394,8 @@ LabelPropertyParser::~LabelPropertyParser() {
 
 LabelPropertyParser*
 LabelPropertyParser::get_instance() {
-    if (m_instance == NULL) {
-        m_instance = new LabelPropertyParser();
-    }
-    return m_instance;
+    static LabelPropertyParser instance;
+    return &instance;
 }
 
 int

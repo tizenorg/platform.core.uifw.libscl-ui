@@ -31,7 +31,6 @@ class LabelPropertyParser {
     static LabelPropertyParser *get_instance();
     private:
     LabelPropertyParser();
-    static LabelPropertyParser *m_instance;
 };
 
 

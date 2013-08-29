@@ -39,21 +39,11 @@ class BinKeyCoordFrameParser {
     void decode_key_coordinate_record(FileStorage& storage, const PSclLayoutKeyCoordinate cur, const Key_coordinate_record_width&);
 
     private:
-        static BinKeyCoordFrameParser *m_instance;
         SclLayoutKeyCoordinate* m_key_coordinate_pointer_frame[MAX_SCL_LAYOUT][MAX_KEY];
 
         IParserInfo_Provider *parser_info_provider;
         StringCollector m_string_collector;
         FileStorage m_storage;
-    private:
-    class DestructHelper {
-        public:
-        ~DestructHelper() {
-            if (BinKeyCoordFrameParser::m_instance != NULL)
-                delete m_instance;
-        }
-    };
-    static DestructHelper des;
 };
 
 

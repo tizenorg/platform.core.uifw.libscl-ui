@@ -34,7 +34,6 @@ class SclLog {
         ~SclLog();
     private:
         SclLog();
-        static SclLog* m_instance;
 
         FILE *m_flog;
 };

@@ -32,8 +32,6 @@
 
 using namespace scl;
 
-CSCLWindows* CSCLWindows::m_instance = NULL; /* For singleton */
-
 CSCLWindows::CSCLWindows()
 {
     SCL_DEBUG();
@@ -57,26 +55,54 @@ CSCLWindows::CSCLWindows()
 CSCLWindows::~CSCLWindows()
 {
     SCL_DEBUG();
-    if (SCLWINDOW_INVALID != m_base_winctx.window) {
-        get_scl_windows_impl()->destroy_window(m_base_winctx.window);
-    }
 
-    if (SCLWINDOW_INVALID != m_magnifier_winctx.window) {
-        get_scl_windows_impl()->destroy_window(m_magnifier_winctx.window);
-    }
+    fini();
 
-    if (SCLWINDOW_INVALID != m_dim_winctx.window) {
-        get_scl_windows_impl()->destroy_window(m_dim_winctx.window);
+    if (m_impl) {
+        delete m_impl;
+        m_impl = NULL;
     }
+}
 
-    for (int loop = 0;loop < MAX_POPUP_WINDOW;loop++) {
-        if (m_popup_winctx[loop].window != SCLWINDOW_INVALID) {
-            if (!m_popup_winctx[loop].is_virtual) {
-                get_scl_windows_impl()->destroy_window(m_popup_winctx[loop].window);
+void CSCLWindows::init()
+{
+    CSCLWindowsImpl *impl = get_scl_windows_impl();
+    if (impl) {
+        impl->init();
+    }
+}
+
+void CSCLWindows::fini()
+{
+    CSCLWindowsImpl* impl = get_scl_windows_impl();
+
+    if (impl) {
+        impl->fini();
+
+        if (SCLWINDOW_INVALID != m_base_winctx.window) {
+            impl->destroy_window(m_base_winctx.window);
+            m_base_winctx.window = SCLWINDOW_INVALID;
+        }
+
+        if (SCLWINDOW_INVALID != m_magnifier_winctx.window) {
+            impl->destroy_window(m_magnifier_winctx.window);
+            m_magnifier_winctx.window = SCLWINDOW_INVALID;
+        }
+
+        if (SCLWINDOW_INVALID != m_dim_winctx.window) {
+            impl->destroy_window(m_dim_winctx.window);
+            m_dim_winctx.window = SCLWINDOW_INVALID;
+        }
+
+        for (int loop = 0;loop < MAX_POPUP_WINDOW;loop++) {
+            if (m_popup_winctx[loop].window != SCLWINDOW_INVALID) {
+                if (!m_popup_winctx[loop].is_virtual) {
+                    impl->destroy_window(m_popup_winctx[loop].window);
+                }
+                m_popup_winctx[loop].window = SCLWINDOW_INVALID;
             }
         }
     }
-
 }
 
 CSCLWindowsImpl*
@@ -97,10 +123,8 @@ CSCLWindows::get_scl_windows_impl()
 CSCLWindows*
 CSCLWindows::get_instance()
 {
-    if (!m_instance) {
-        m_instance = new CSCLWindows();
-    }
-    return (CSCLWindows*)m_instance;
+    static CSCLWindows instance;
+    return &instance;
 }
 
 sclwindow CSCLWindows::open_popup(const SclWindowOpener opener, const SclRectangle &geometry, sclshort inputmode, sclshort layout, SCLPopupType popup_type, sclboolean is_virtual, sclboolean use_dim_window, sclint img_offset_x, sclint img_offset_y, sclint timeout)

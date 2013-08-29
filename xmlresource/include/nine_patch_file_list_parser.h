@@ -33,7 +33,6 @@ class NinePatchFileParser {
     static NinePatchFileParser *get_instance();
     private:
     NinePatchFileParser();
-    static NinePatchFileParser *m_instance;
 };
 
 

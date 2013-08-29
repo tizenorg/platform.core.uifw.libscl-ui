@@ -66,6 +66,9 @@ const SclColor SCLCOLOR_BLUE = {0, 0, 255};
  */
 class CSCLGraphicsImpl
 {
+    virtual void init() = 0;
+    virtual void fini() = 0;
+
     friend class CSCLGraphics;
 private:
     virtual void draw_image(sclwindow window, const scldrawctx draw_ctx, sclchar* image_path,
@@ -96,12 +99,14 @@ class CSCLGraphics
     friend class CSCLFontProxy;
 
 private:
-    static CSCLGraphics* m_instance; /* For singleton */
     CSCLGraphics();
 public :
     ~CSCLGraphics();
 
     static CSCLGraphics* get_instance();
+
+    void init();
+    void fini();
 
     void draw_image(sclwindow window, const scldrawctx draw_ctx, sclchar* image_path, SclImageCachedInfo *cachedinfo, sclint dest_x, sclint dest_y,
                     sclint dest_width = -1, sclint dest_height = -1, sclint src_x = 0, sclint src_y = 0, sclint src_width = -1, sclint src_height = -1, sclboolean extrace_image = FALSE) {

@@ -35,21 +35,10 @@ private:
     void parsing_magnifier_configure();
 
 private:
-    static BinMagnifierConfigParser *m_instance;
     SclMagnifierWndConfigure m_magnifier_configure;
     StringCollector m_string_collector;
     FileStorage m_storage;
     IParserInfo_Provider* parser_info_provider;
-
-private:
-    class DestructHelper {
-    public:
-        ~DestructHelper() {
-            if (BinMagnifierConfigParser::m_instance != NULL)
-                delete m_instance;
-        }
-    };
-    static DestructHelper des;
 };
 
 

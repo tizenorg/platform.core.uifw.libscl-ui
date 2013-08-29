@@ -39,7 +39,6 @@ class CSCLUIBuilder
     friend class CSCLFontProxy;
 
 private:
-    static CSCLUIBuilder* m_instance; /* For singleton */
     CSCLUIBuilder();
 public:
     ~CSCLUIBuilder();

@@ -37,21 +37,11 @@ class BinModifierDecorationParser {
     void parsing_modifier_decoration_table();
 
     private:
-        static BinModifierDecorationParser *m_instance;
         SclModifierDecoration m_modifier_decoration_table[MAX_SCL_MODIFIER_DECORATION_NUM];
         IParserInfo_Provider *parser_info_provider;
 
         StringCollector m_string_collector;
         FileStorage m_storage;
-    private:
-    class DestructHelper {
-        public:
-        ~DestructHelper() {
-            if (BinModifierDecorationParser::m_instance != NULL)
-                delete m_instance;
-        }
-    };
-    static DestructHelper des;
 };
 
 

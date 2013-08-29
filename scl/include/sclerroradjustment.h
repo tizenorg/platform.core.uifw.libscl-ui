@@ -35,9 +35,6 @@ namespace scl
  */
 class CSCLErrorAdjustment
 {
-private:
-    static CSCLErrorAdjustment* m_instance; /* For singleton */
-
 public:
     CSCLErrorAdjustment();
     CSCLErrorAdjustment(sclwindow parent);

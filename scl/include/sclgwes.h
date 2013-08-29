@@ -43,7 +43,6 @@ namespace scl
 class CSCLGwes
 {
 private:
-    static CSCLGwes* m_instance; /* For singleton */
     CSCLGwes();
 public :
     ~CSCLGwes();
@@ -54,6 +53,7 @@ private:
 
 public:
     void init(sclwindow parent, scl16 width, scl16 height);
+    void fini();
 
     CSCLGraphics *m_graphics;
     CSCLWindows *m_windows;

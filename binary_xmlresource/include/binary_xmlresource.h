@@ -92,8 +92,6 @@ class BinResource: public sclres::SclRes{
     BinResource();
 
     private:
-    static BinResource* m_instance;
-
     BinInputModeConfigParser *m_input_mode_configure_parser;
     BinLayoutParser *m_layout_parser;
     BinKeyCoordFrameParser *m_key_coordinate_frame_parser;
@@ -103,19 +101,6 @@ class BinResource: public sclres::SclRes{
     BinAutoPopupConfigParser *m_autopopup_configure_parser;
     BinMagnifierConfigParser *m_magnifier_configure_parser;
     BinNinePatchFileParser *m_nine_patch_file_list_parser;
-
-    private:
-    class DestructHelper {
-        public:
-        ~DestructHelper() {
-            if (BinResource::m_instance != NULL)
-            {
-                delete m_instance;
-                m_instance = NULL;
-            }
-        }
-    };
-    static DestructHelper des;
 };
 }
 

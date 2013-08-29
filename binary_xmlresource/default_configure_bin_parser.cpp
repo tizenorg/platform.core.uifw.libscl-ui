@@ -20,8 +20,6 @@
 using namespace std;
 #include "put_record.h"
 
-BinDefaultConfigParser* BinDefaultConfigParser::m_instance = NULL;
-
 BinDefaultConfigParser::BinDefaultConfigParser() {
     memset((void*)&m_default_configure, 0x00, sizeof(SclDefaultConfigure));
 }
@@ -30,10 +28,8 @@ BinDefaultConfigParser::~BinDefaultConfigParser() {
 }
 
 BinDefaultConfigParser* BinDefaultConfigParser::get_instance() {
-    if (m_instance == NULL) {
-        m_instance = new BinDefaultConfigParser();
-    }
-    return m_instance;
+    static BinDefaultConfigParser instance;
+    return &instance;
 }
 
 void BinDefaultConfigParser::init(const FileStorage& storage, int offset, int size,  IParserInfo_Provider* parser_info_provider) {

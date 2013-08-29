@@ -79,6 +79,9 @@ public :
     CSCLGraphicsImplEfl();
     ~CSCLGraphicsImplEfl();
 
+    void init();
+    void fini();
+
     void draw_image(sclwindow window, const scldrawctx draw_ctx, sclchar* image_path, SclImageCachedInfo *cachedinfo,
                     sclint dest_x, sclint dest_y, sclint dest_width, sclint dest_height,
                     sclint src_x, sclint src_y, sclint src_width, sclint src_height, sclboolean extrace_image);

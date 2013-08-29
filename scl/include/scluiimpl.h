@@ -35,7 +35,6 @@ namespace scl
 class CSCLUIImpl
 {
 private:
-    static CSCLUIImpl* m_instance; /* For singleton */
     CSCLUIImpl();
 
 public:
@@ -43,6 +42,7 @@ public:
     static CSCLUIImpl* get_instance();
 
     sclboolean init(sclwindow parent, SCLParserType parser_type, const char *entry_filepath);
+    void fini();
 
     void show();
     void hide();

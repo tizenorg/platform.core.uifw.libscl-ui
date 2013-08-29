@@ -32,6 +32,9 @@ public :
     CSCLEventsImplEfl();
     ~CSCLEventsImplEfl();
 
+    void init();
+    void fini();
+
     /* Implementation about interface functions */
     void connect_window_events(const sclwindow wnd, const sclint evt);
     void create_timer(const scl16 id, const scl32 interval, scl16 value, sclboolean addToMap);

@@ -1426,9 +1426,6 @@ LayoutParserImpl::parsing_popup_input_mode_record_node(
     }
 }
 
-/* LayoutParser */
-LayoutParser* LayoutParser::m_instance = NULL;
-
 LayoutParser::LayoutParser() {
     m_impl = new LayoutParserImpl;
 }
@@ -1440,10 +1437,8 @@ LayoutParser::~LayoutParser() {
 
 LayoutParser*
 LayoutParser::get_instance() {
-    if (m_instance == NULL) {
-        m_instance = new LayoutParser();
-    }
-    return m_instance;
+    static LayoutParser instance;
+    return &instance;
 }
 
 int

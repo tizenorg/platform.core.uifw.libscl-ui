@@ -46,6 +46,9 @@ public :
     CSCLWindowsImplEfl();
     ~CSCLWindowsImplEfl();
 
+    void init();
+    void fini();
+
     sclwindow create_base_window(const sclwindow parent, SclWindowContext *winctx, scl16 width, scl16 height);
     sclwindow create_window(const sclwindow parent, SclWindowContext *winctx, scl16 width, scl16 height);
     sclwindow create_magnifier_window(const sclwindow parent, SclWindowContext *winctx, scl16 width, scl16 height);

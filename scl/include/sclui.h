@@ -43,13 +43,18 @@ public:
     ~CSCLUI();
 
     /*
-     * @brief This API initializes SCL library and creates new SCL context
+     * @brief This API initializes SCL library
      * @param[in] main_window a pointer to main window object
      * @param[in] parser_type decides which parser should be selected for parsing SCL UI resource file
      * @param[in] entry_filepath a file path to SCL's UI resource entry file
      * @return non-zero value is returned when successful
      */
     sclboolean init(sclwindow main_window, SCLParserType parser_type, const sclchar *entry_filepath);
+
+    /*
+     * @brief This API deinitializes SCL library
+     */
+    void fini();
 
     /**
      * @brief This API requests SCL library to show the S/W keyboard on the screen

@@ -27,7 +27,7 @@ CSCLUI::CSCLUI()
 
 CSCLUI::~CSCLUI()
 {
-    delete m_impl;
+    m_impl = NULL;
 }
 
 sclboolean CSCLUI::init(sclwindow parent, const SCLParserType parser_type, const char *entry_filepath)
@@ -37,6 +37,14 @@ sclboolean CSCLUI::init(sclwindow parent, const SCLParserType parser_type, const
         ret = m_impl->init(parent, parser_type, entry_filepath);
     }
     return ret;
+}
+
+void
+CSCLUI::fini()
+{
+    if (m_impl) {
+        m_impl->fini();
+    }
 }
 
 /**

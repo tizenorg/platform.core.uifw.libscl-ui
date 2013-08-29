@@ -32,7 +32,6 @@ using namespace binary_xmlresource;
 
 using namespace std;
 using namespace scl;
-BinKeyCoordFrameParser* BinKeyCoordFrameParser::m_instance = NULL;
 
 BinKeyCoordFrameParser::BinKeyCoordFrameParser() {
     memset(m_key_coordinate_pointer_frame, 0x00, sizeof(SclLayoutKeyCoordinatePointer) * MAX_SCL_LAYOUT * MAX_KEY);
@@ -46,10 +45,8 @@ BinKeyCoordFrameParser::~BinKeyCoordFrameParser() {
     }
 }
 BinKeyCoordFrameParser* BinKeyCoordFrameParser::get_instance() {
-    if (m_instance == NULL) {
-        m_instance = new BinKeyCoordFrameParser();
-    }
-    return m_instance;
+    static BinKeyCoordFrameParser instance;
+    return &instance;
 }
 
 void

@@ -22,6 +22,18 @@
 
 using namespace scl;
 
+void
+CSCLUtilsImplWin32::init() {
+    SCL_DEBUG();
+    open_devices();
+}
+
+void
+CSCLUtilsImplWin32::fini() {
+    SCL_DEBUG();
+    close_devices();
+}
+
 sclboolean
 CSCLUtilsImplWin32::get_screen_resolution(sclint *x, sclint *y) {
     SCL_DEBUG();

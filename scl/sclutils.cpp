@@ -31,8 +31,6 @@
 
 using namespace scl;
 
-CSCLUtils* CSCLUtils::m_instance = NULL; /* For singleton */
-
 #define SCL_MAX_UNIQUE_ID 1000
 
 CSCLUtils::CSCLUtils()
@@ -44,28 +42,32 @@ CSCLUtils::CSCLUtils()
     m_custom_scale_rate_y = 1.0f;
     m_scn_resolution_x = 0;
     m_scn_resolution_y = 0;
-    open_devices();
 }
 
 CSCLUtils::~CSCLUtils()
 {
     SCL_DEBUG();
-    close_devices();
+
+    /* To make sure everything's cleaned up */
+    fini();
 }
 
 CSCLUtils* CSCLUtils::get_instance()
 {
-    if (!m_instance) {
-        m_instance = new CSCLUtils();
-    }
-    return (CSCLUtils*)m_instance;
+    static CSCLUtils instance;
+    return &instance;
 }
 
 void
 CSCLUtils::init()
 {
     SCL_DEBUG();
-    
+
+    CSCLUtilsImpl *impl = GetCSCLUtilsImpl();
+    if (impl) {
+        impl->init();
+    }
+
     SclResParserManager *sclres_manager = SclResParserManager::get_instance();
     PSclDefaultConfigure default_configure = NULL;
     if (sclres_manager) {
@@ -91,6 +93,16 @@ CSCLUtils::init()
     }
 
     m_nine_patch_info_map.clear();
+}
+
+void CSCLUtils::fini()
+{
+    SCL_DEBUG();
+
+    CSCLUtilsImpl *impl = GetCSCLUtilsImpl();
+    if (impl) {
+        impl->fini();
+    }
 }
 
 /**

@@ -25,8 +25,6 @@
 using namespace std;
 using namespace scl;
 
-BinLayoutParser* BinLayoutParser::m_instance = NULL;
-
 BinLayoutParser::
 BinLayoutParser() {
     m_layout_size = 0;
@@ -37,10 +35,8 @@ BinLayoutParser::
 }
 BinLayoutParser* BinLayoutParser::
 get_instance() {
-    if (m_instance == NULL) {
-        m_instance = new BinLayoutParser();
-    }
-    return m_instance;
+    static BinLayoutParser instance;
+    return &instance;
 }
 void BinLayoutParser::
 init(const FileStorage& storage, int offset, int size, IParserInfo_Provider* parser_info_provider) {

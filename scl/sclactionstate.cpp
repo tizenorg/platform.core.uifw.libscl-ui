@@ -21,8 +21,6 @@
 
 using namespace scl;
 
-CSCLActionState* CSCLActionState::m_instance = NULL; /* For singleton */
-
 CSCLActionState::CSCLActionState()
 {
     SCL_DEBUG();
@@ -38,10 +36,8 @@ CSCLActionState::~CSCLActionState()
 CSCLActionState*
 CSCLActionState::get_instance()
 {
-    if (!m_instance) {
-        m_instance = new CSCLActionState();
-    }
-    return (CSCLActionState*)m_instance;
+    static CSCLActionState instance;
+    return &instance;
 }
 
 

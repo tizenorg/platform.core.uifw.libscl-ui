@@ -187,8 +187,6 @@ class InputModeConfigureParserImpl {
         SclInputModeConfigure m_input_mode_configure_table[MAX_SCL_INPUT_MODE];
 };
 
-InputModeConfigParser* InputModeConfigParser::m_instance = NULL;
-
 InputModeConfigParser::InputModeConfigParser() {
     m_impl = new InputModeConfigureParserImpl;
 }
@@ -203,10 +201,8 @@ InputModeConfigParser::~InputModeConfigParser() {
 
 InputModeConfigParser*
 InputModeConfigParser::get_instance() {
-    if (m_instance == NULL) {
-        m_instance = new InputModeConfigParser();
-    }
-    return m_instance;
+    static InputModeConfigParser instance;
+    return &instance;
 }
 
 int

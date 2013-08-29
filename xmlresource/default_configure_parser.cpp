@@ -202,14 +202,10 @@ class DefaultConfigureParserImpl {
         SclDefaultConfigure m_default_configure;
 };
 
-DefaultConfigParser* DefaultConfigParser::m_instance = NULL;
-
 DefaultConfigParser*
 DefaultConfigParser::get_instance() {
-    if (m_instance == NULL) {
-        m_instance = new DefaultConfigParser();
-    }
-    return m_instance;
+    static DefaultConfigParser instance;
+    return &instance;
 }
 DefaultConfigParser::DefaultConfigParser() {
     m_impl = new DefaultConfigureParserImpl;

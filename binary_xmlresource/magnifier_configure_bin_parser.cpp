@@ -20,7 +20,6 @@
 #include <assert.h>
 using namespace std;
 #include "put_record.h"
-BinMagnifierConfigParser* BinMagnifierConfigParser::m_instance = NULL;
 
 BinMagnifierConfigParser::BinMagnifierConfigParser() {
     memset((void*)&m_magnifier_configure, 0x00, sizeof(SclMagnifierWndConfigure));
@@ -30,10 +29,8 @@ BinMagnifierConfigParser::~BinMagnifierConfigParser() {
 }
 
 BinMagnifierConfigParser* BinMagnifierConfigParser::get_instance() {
-    if (m_instance == NULL) {
-        m_instance = new BinMagnifierConfigParser();
-    }
-    return m_instance;
+    static BinMagnifierConfigParser instance;
+    return &instance;
 }
 
 void BinMagnifierConfigParser::init(const FileStorage& storage, int offset, int size, IParserInfo_Provider* parser_info_provider) {
