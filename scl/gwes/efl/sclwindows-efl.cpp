@@ -467,10 +467,13 @@ CSCLWindowsImplEfl::show_window(const sclwindow window, sclboolean queue)
                 }
             }
         }
-        if (windows->get_magnifier_window() == window) {
+        scl8 popup_index = windows->find_popup_window_index(window);
+        if (windows->get_magnifier_window() == window || popup_index != NOT_USED) {
             /*
              * FIXME a solution to make magnifier window always on top
              * N_SE-17689: magnifier window showing behind of candidate window
+             *
+             * N_SE-52548: ...and modified if() for other popup windows as well...
              */
             ecore_x_icccm_transient_for_set
                 (elm_win_xwindow_get(static_cast<Evas_Object*>(window)), app_window);
