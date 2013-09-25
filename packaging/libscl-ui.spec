@@ -42,6 +42,8 @@ make %{?jobs:-j%jobs}
 
 %install
 rm -rf %{buildroot}
+mkdir -p %{buildroot}/usr/share/license
+cp LICENSE.Flora %{buildroot}/usr/share/license/%{name}
 
 %make_install
 
@@ -55,6 +57,7 @@ rm -rf %{buildroot}
 %defattr(-,root,root,-)
 %{_libdir}/libscl-ui.so
 %{_datadir}/libscl-ui/metadata.xml
+/usr/share/license/%{name}
 
 %files devel
 %defattr(-,root,root,-)
