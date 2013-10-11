@@ -66,10 +66,15 @@ CSCLWindows::~CSCLWindows()
 
 void CSCLWindows::init()
 {
+    int loop;
     CSCLWindowsImpl *impl = get_scl_windows_impl();
     if (impl) {
         impl->init();
     }
+    for (loop = 0;loop < MAX_ZORDER_NUM;loop++) {
+        m_Z_order_list[loop] = SCLWINDOW_INVALID;
+    }
+    m_initialized = TRUE;
 }
 
 void CSCLWindows::fini()
@@ -103,6 +108,8 @@ void CSCLWindows::fini()
             }
         }
     }
+
+    m_initialized = FALSE;
 }
 
 CSCLWindowsImpl*
@@ -295,17 +302,19 @@ CSCLWindows::create_base_window(const sclwindow parent, scl16 width, scl16 heigh
 {
     SCL_DEBUG();
 
-    m_base_winctx.hidden = TRUE;
-    m_base_winctx.geometry.width = width;
-    m_base_winctx.geometry.height = height;
-    m_base_winctx.is_virtual = FALSE;
-    m_base_winctx.popup_type = POPUP_TYPE_NONE;
-    m_base_winctx.opener.window = parent;
-    m_base_winctx.geometry.x = m_base_winctx.geometry.y = 0;
-    m_base_winctx.etc_info = NULL;
-    m_base_winctx.window = get_scl_windows_impl()->create_base_window(parent, &m_base_winctx, width, height);
+    if (m_initialized) {
+        m_base_winctx.hidden = TRUE;
+        m_base_winctx.geometry.width = width;
+        m_base_winctx.geometry.height = height;
+        m_base_winctx.is_virtual = FALSE;
+        m_base_winctx.popup_type = POPUP_TYPE_NONE;
+        m_base_winctx.opener.window = parent;
+        m_base_winctx.geometry.x = m_base_winctx.geometry.y = 0;
+        m_base_winctx.etc_info = NULL;
+        m_base_winctx.window = get_scl_windows_impl()->create_base_window(parent, &m_base_winctx, width, height);
 
-    push_window_in_Z_order_list(m_base_winctx.window);
+        push_window_in_Z_order_list(m_base_winctx.window);
+    }
 
     // Update the position information
     //get_window_context(parent, TRUE);
@@ -385,8 +394,8 @@ CSCLWindows::create_magnifier_window(const sclwindow parent, scl16 x, scl16 y, s
     CSCLWindowsImpl* impl = get_scl_windows_impl();
     sclwindow window = SCLWINDOW_INVALID;
 
-    if (impl) {
-        if (m_magnifier_winctx.window == NULL) {
+    if (impl && m_initialized) {
+        if (m_magnifier_winctx.window == SCLWINDOW_INVALID) {
             window = impl->create_magnifier_window(parent, &m_magnifier_winctx, width, height);
             impl->set_keep_above(window, TRUE);
             if (window) {
@@ -434,7 +443,7 @@ CSCLWindows::create_dim_window(const sclwindow parent, SclWindowContext *winctx,
         default_configure = sclres_manager->get_default_configure();
     }
 
-    if (impl && default_configure) {
+    if (impl && m_initialized && default_configure) {
         if (m_dim_winctx.window == NULL) {
             m_dim_winctx.hidden = TRUE;
             if (default_configure->use_actual_dim_window) {

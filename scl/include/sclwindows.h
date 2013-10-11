@@ -159,6 +159,7 @@ private :
     SclWindowContext m_dim_winctx;
 
     sclboolean m_pending_update;
+    sclboolean m_initialized;
 
     sclwindow m_Z_order_list[MAX_ZORDER_NUM];
 };

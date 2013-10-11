@@ -245,48 +245,49 @@ Eina_Bool mouse_press(void *data, int type, void *event_info)
                 // Update the position of the target window
                 //windows->get_window_context(window, TRUE);
                 SclWindowContext *winctx = windows->get_window_context(window);
-                windows->get_window_rect(window, &(winctx->geometry));
-                if (get_window_rect(window, &rect)) {
-                    int adjustx = ev->root.x;
-                    int adjusty = ev->root.y;
+                if (winctx) {
+                    windows->get_window_rect(window, &(winctx->geometry));
+                    if (get_window_rect(window, &rect)) {
+                        int adjustx = ev->root.x;
+                        int adjusty = ev->root.y;
 
-                    SclResParserManager *sclres_manager = SclResParserManager::get_instance();
-                    PSclDefaultConfigure default_configure = NULL;
-                    if (sclres_manager) {
-                        default_configure = sclres_manager->get_default_configure();
-                    }
-                    if (default_configure) {
-                        SCLDisplayMode display_mode = context->get_display_mode();
-                        CSCLErrorAdjustment *adjustment = CSCLErrorAdjustment::get_instance();
-                        if (adjustment && scl_check_arrindex(display_mode, DISPLAYMODE_MAX)) {
-                            adjustment->apply_touch_offset(default_configure->touch_offset_level[display_mode], &adjustx, &adjusty);
+                        SclResParserManager *sclres_manager = SclResParserManager::get_instance();
+                        PSclDefaultConfigure default_configure = NULL;
+                        if (sclres_manager) {
+                            default_configure = sclres_manager->get_default_configure();
                         }
-                    }
+                        if (default_configure) {
+                            SCLDisplayMode display_mode = context->get_display_mode();
+                            CSCLErrorAdjustment *adjustment = CSCLErrorAdjustment::get_instance();
+                            if (adjustment && scl_check_arrindex(display_mode, DISPLAYMODE_MAX)) {
+                                adjustment->apply_touch_offset(default_configure->touch_offset_level[display_mode], &adjustx, &adjusty);
+                            }
+                        }
 
-                    sclint winwidth = rect.width;
-                    sclint winheight = rect.height;
-                    if (context->get_display_mode() != DISPLAYMODE_PORTRAIT) {
-                        rect.height = winwidth;
-                        rect.width = winheight;
-                    }
+                        sclint winwidth = rect.width;
+                        sclint winheight = rect.height;
+                        if (context->get_display_mode() != DISPLAYMODE_PORTRAIT) {
+                            rect.height = winwidth;
+                            rect.width = winheight;
+                        }
 
-                    sclboolean process_event = FALSE;
-                    if ((adjustx >= rect.x && adjustx <= (rect.x + winwidth)) &&
-                        (adjusty >= rect.y && adjusty <= (rect.y + winheight))) {
-                            process_event = TRUE;
-                    }
-                    if (process_event)
-                    {
-                        // Now convert the global coordinate to appropriate local coordinate
-                        SclPoint coords = get_rotated_local_coords(ev->root.x, ev->root.y, context->get_rotation(), &rect);
-                        controller->mouse_press(window, coords.x, coords.y, ev->multi.device);
-                        mouse_pressed = TRUE;
-                        processed = TRUE;
-                        pressed_window = window;
+                        sclboolean process_event = FALSE;
+                        if ((adjustx >= rect.x && adjustx <= (rect.x + winwidth)) &&
+                            (adjusty >= rect.y && adjusty <= (rect.y + winheight))) {
+                                process_event = TRUE;
+                        }
+                        if (process_event)
+                        {
+                            // Now convert the global coordinate to appropriate local coordinate
+                            SclPoint coords = get_rotated_local_coords(ev->root.x, ev->root.y, context->get_rotation(), &rect);
+                            controller->mouse_press(window, coords.x, coords.y, ev->multi.device);
+                            mouse_pressed = TRUE;
+                            processed = TRUE;
+                            pressed_window = window;
+                        }
                     }
                 }
             }
-
             index++;
         } while (index < MAX_ZORDER_NUM && window != SCLWINDOW_INVALID && !processed);
 
@@ -353,46 +354,47 @@ Eina_Bool mouse_release (void *data, int type, void *event_info)
                 window = windows->get_nth_window_in_Z_order_list(index);
                 if (window) {
                     SclWindowContext *winctx = windows->get_window_context(window);
-                    windows->get_window_rect(window, &(winctx->geometry));
-                    if (get_window_rect(window, &rect)) {
-                        int adjustx = ev->root.x;
-                        int adjusty = ev->root.y;
+                    if (winctx) {
+                        windows->get_window_rect(window, &(winctx->geometry));
+                        if (get_window_rect(window, &rect)) {
+                            int adjustx = ev->root.x;
+                            int adjusty = ev->root.y;
 
-                        SclResParserManager *sclres_manager = SclResParserManager::get_instance();
-                        PSclDefaultConfigure default_configure = NULL;
-                        if (sclres_manager) {
-                            default_configure = sclres_manager->get_default_configure();
-                        }
-                        if (default_configure) {
-                            SCLDisplayMode display_mode = context->get_display_mode();
-                            CSCLErrorAdjustment *adjustment = CSCLErrorAdjustment::get_instance();
-                            if (adjustment && scl_check_arrindex(display_mode, DISPLAYMODE_MAX)) {
-                                adjustment->apply_touch_offset(default_configure->touch_offset_level[display_mode], &adjustx, &adjusty);
+                            SclResParserManager *sclres_manager = SclResParserManager::get_instance();
+                            PSclDefaultConfigure default_configure = NULL;
+                            if (sclres_manager) {
+                                default_configure = sclres_manager->get_default_configure();
                             }
-                        }
+                            if (default_configure) {
+                                SCLDisplayMode display_mode = context->get_display_mode();
+                                CSCLErrorAdjustment *adjustment = CSCLErrorAdjustment::get_instance();
+                                if (adjustment && scl_check_arrindex(display_mode, DISPLAYMODE_MAX)) {
+                                    adjustment->apply_touch_offset(default_configure->touch_offset_level[display_mode], &adjustx, &adjusty);
+                                }
+                            }
 
-                        sclint winwidth = rect.width;
-                        sclint winheight = rect.height;
-                        if (context->get_display_mode() != DISPLAYMODE_PORTRAIT) {
-                            rect.height = winwidth;
-                            rect.width = winheight;
-                        }
+                            sclint winwidth = rect.width;
+                            sclint winheight = rect.height;
+                            if (context->get_display_mode() != DISPLAYMODE_PORTRAIT) {
+                                rect.height = winwidth;
+                                rect.width = winheight;
+                            }
 
-                        sclboolean process_event = FALSE;
-                        if ((adjustx >= rect.x && adjustx <= (rect.x + winwidth)) &&
-                            (adjusty >= rect.y && adjusty <= (rect.y + winheight))) {
-                                process_event = TRUE;
-                        }
-                        if (process_event)
-                        {
-                            /* Now convert the global coordinate to appropriate local coordinate */
-                            SclPoint coords = get_rotated_local_coords(ev->root.x, ev->root.y, context->get_rotation(), &rect);
-                            controller->mouse_release(window, coords.x, coords.y, ev->multi.device);
-                            processed = TRUE;
+                            sclboolean process_event = FALSE;
+                            if ((adjustx >= rect.x && adjustx <= (rect.x + winwidth)) &&
+                                (adjusty >= rect.y && adjusty <= (rect.y + winheight))) {
+                                    process_event = TRUE;
+                            }
+                            if (process_event)
+                            {
+                                /* Now convert the global coordinate to appropriate local coordinate */
+                                SclPoint coords = get_rotated_local_coords(ev->root.x, ev->root.y, context->get_rotation(), &rect);
+                                controller->mouse_release(window, coords.x, coords.y, ev->multi.device);
+                                processed = TRUE;
+                            }
                         }
                     }
                 }
-
                 index++;
             } while (index < MAX_ZORDER_NUM && window != SCLWINDOW_INVALID && !processed);
         }
@@ -462,57 +464,58 @@ Eina_Bool mouse_move (void *data, int type, void *event_info)
                 window = windows->get_nth_window_in_Z_order_list(index);
                 if (window) {
                     SclWindowContext *winctx = windows->get_window_context(window);
-                    windows->get_window_rect(window, &(winctx->geometry));
-                    if (get_window_rect(window, &rect)) {
-                        int adjustx = ev->root.x;
-                        int adjusty = ev->root.y;
+                    if (winctx) {
+                        windows->get_window_rect(window, &(winctx->geometry));
+                        if (get_window_rect(window, &rect)) {
+                            int adjustx = ev->root.x;
+                            int adjusty = ev->root.y;
 
-                        SclResParserManager *sclres_manager = SclResParserManager::get_instance();
-                        PSclDefaultConfigure default_configure = NULL;
-                        if (sclres_manager) {
-                            default_configure = sclres_manager->get_default_configure();
-                        }
-                        if (default_configure) {
-                            SCLDisplayMode display_mode = context->get_display_mode();
-                            CSCLErrorAdjustment *adjustment = CSCLErrorAdjustment::get_instance();
-                            if (adjustment && scl_check_arrindex(display_mode, DISPLAYMODE_MAX)) {
-                                adjustment->apply_touch_offset(default_configure->touch_offset_level[display_mode], &adjustx, &adjusty);
+                            SclResParserManager *sclres_manager = SclResParserManager::get_instance();
+                            PSclDefaultConfigure default_configure = NULL;
+                            if (sclres_manager) {
+                                default_configure = sclres_manager->get_default_configure();
                             }
-                        }
-
-                        sclint winwidth = rect.width;
-                        sclint winheight = rect.height;
-                        if (context->get_display_mode() != DISPLAYMODE_PORTRAIT) {
-                            rect.height = winwidth;
-                            rect.width = winheight;
-                        }
-
-                        sclboolean process_event = FALSE;
-                        if ((adjustx >= rect.x && adjustx <= (rect.x + winwidth)) &&
-                            (adjusty >= rect.y && adjusty <= (rect.y + winheight))) {
-                                process_event = TRUE;
-                        }
-                        /* Process this event regardless of the coordinate if the top window has the POPUP_GRAB layout style */
-                        if (index == SCL_WINDOW_Z_TOP) {
-                            const SclLayout *layout = cache->get_cur_layout(window);
-                            if (layout) {
-                                if (layout->style == LAYOUT_STYLE_POPUP_GRAB) {
-                                    process_event = TRUE;
+                            if (default_configure) {
+                                SCLDisplayMode display_mode = context->get_display_mode();
+                                CSCLErrorAdjustment *adjustment = CSCLErrorAdjustment::get_instance();
+                                if (adjustment && scl_check_arrindex(display_mode, DISPLAYMODE_MAX)) {
+                                    adjustment->apply_touch_offset(default_configure->touch_offset_level[display_mode], &adjustx, &adjusty);
                                 }
                             }
-                        }
-                        if (process_event)
-                        {
-                            /* Now convert the global coordinate to appropriate local coordinate */
-                            SclPoint coords = get_rotated_local_coords(ev->root.x, ev->root.y, context->get_rotation(), &rect);
 
-                            controller->mouse_move(window, coords.x, coords.y, ev->multi.device);
-                            processed = TRUE;
-                        }
+                            sclint winwidth = rect.width;
+                            sclint winheight = rect.height;
+                            if (context->get_display_mode() != DISPLAYMODE_PORTRAIT) {
+                                rect.height = winwidth;
+                                rect.width = winheight;
+                            }
 
-                        index++;
+                            sclboolean process_event = FALSE;
+                            if ((adjustx >= rect.x && adjustx <= (rect.x + winwidth)) &&
+                                (adjusty >= rect.y && adjusty <= (rect.y + winheight))) {
+                                    process_event = TRUE;
+                            }
+                            /* Process this event regardless of the coordinate if the top window has the POPUP_GRAB layout style */
+                            if (index == SCL_WINDOW_Z_TOP) {
+                                const SclLayout *layout = cache->get_cur_layout(window);
+                                if (layout) {
+                                    if (layout->style == LAYOUT_STYLE_POPUP_GRAB) {
+                                        process_event = TRUE;
+                                    }
+                                }
+                            }
+                            if (process_event)
+                            {
+                                /* Now convert the global coordinate to appropriate local coordinate */
+                                SclPoint coords = get_rotated_local_coords(ev->root.x, ev->root.y, context->get_rotation(), &rect);
+
+                                controller->mouse_move(window, coords.x, coords.y, ev->multi.device);
+                                processed = TRUE;
+                            }
+                        }
                     }
                 }
+                index++;
             } while (index < MAX_ZORDER_NUM && window != SCLWINDOW_INVALID && !processed);
         }
 
