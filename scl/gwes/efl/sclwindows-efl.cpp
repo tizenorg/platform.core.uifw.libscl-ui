@@ -358,46 +358,52 @@ CSCLWindowsImplEfl::destroy_window(sclwindow window)
 
     if (windows && utils && winctx) {
         if (winctx->etc_info) {
-            while ((Eina_List*)(winctx->etc_info)) {
-                EFLObject *object = (EFLObject*)eina_list_data_get((Eina_List*)(winctx->etc_info));
-                if (object) {
-                    Evas_Object* eo = object->object;
-                    if (object->extracted) {
-                        //evas_object_image_data_set(eo, NULL);
-                        void *data = evas_object_image_data_get(eo, 1);
-                        if (data) {
-                            free(data);
-                        }
-                    }
-                    if (eo) {
-                        evas_object_del(eo);
-                        object->object = NULL;
-                    }
-                    if (object->type == EFLOBJECT_TEXTBLOCK) {
-                        Evas_Textblock_Style *st = (Evas_Textblock_Style*)(object->data);
-                        if (st) {
-                            evas_textblock_style_free(st);
-                        }
-#ifdef TEST_NEWBACKEND
-                        for(sclint loop = 0;loop < g_TextCache.size();loop++) {
-                            if (g_TextCache[loop].text == object->object) {
-                                g_TextCache[loop].used = FALSE;
+            Eina_List *list = (Eina_List*)(winctx->etc_info);
+            Eina_List *iter = NULL;
+            Eina_List *iter_next = NULL;
+            void *data = NULL;
+
+            EINA_LIST_FOREACH_SAFE(list, iter, iter_next, data) {
+                if (data) {
+                    EFLObject *object = (EFLObject*)(data);
+                    if (object) {
+                        Evas_Object* eo = object->object;
+                        if (object->extracted) {
+                            //evas_object_image_data_set(eo, NULL);
+                            void *data = evas_object_image_data_get(eo, 1);
+                            if (data) {
+                                free(data);
                             }
                         }
-#endif
-                    } else if (object->type == EFLOBJECT_IMAGE) {
-#ifdef TEST_NEWBACKEND
-                        for(sclint loop = 0;loop < g_ImageCache.size();loop++) {
-                            if (g_ImageCache[loop].image == object->object) {
-                                g_ImageCache[loop].used = FALSE;
-                            }
+                        if (eo) {
+                            evas_object_del(eo);
+                            object->object = NULL;
                         }
+                        if (object->type == EFLOBJECT_TEXTBLOCK) {
+                            Evas_Textblock_Style *st = (Evas_Textblock_Style*)(object->data);
+                            if (st) {
+                                evas_textblock_style_free(st);
+                            }
+#ifdef TEST_NEWBACKEND
+                            for(sclint loop = 0;loop < g_TextCache.size();loop++) {
+                                if (g_TextCache[loop].text == object->object) {
+                                    g_TextCache[loop].used = FALSE;
+                                }
+                            }
 #endif
+                        } else if (object->type == EFLOBJECT_IMAGE) {
+#ifdef TEST_NEWBACKEND
+                            for(sclint loop = 0;loop < g_ImageCache.size();loop++) {
+                                if (g_ImageCache[loop].image == object->object) {
+                                    g_ImageCache[loop].used = FALSE;
+                                }
+                            }
+#endif
+                        }
+                        delete object;
                     }
                 }
-                winctx->etc_info = eina_list_remove_list((Eina_List*)(winctx->etc_info), (Eina_List*)(winctx->etc_info));
-                if (object)
-                    delete object;
+                list = eina_list_remove_list(list, iter);
             }
             winctx->etc_info = NULL;
         }

@@ -55,6 +55,7 @@ class SclResParserManager{
         void destroy();
     private:
         SclResParserManager();
+        bool m_initialized;
 };
 
 #endif
