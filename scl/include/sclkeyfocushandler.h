@@ -24,6 +24,10 @@
 
 namespace scl
 {
+
+#define NAVI_INFO_MAX_ROWS  20
+#define NAVI_INFO_MAX_COLS  20
+
 typedef enum _SclKeyFocusNavigationDirection {
 	NAVIGATE_LEFT,
 	NAVIGATE_RIGHT,
@@ -35,7 +39,7 @@ typedef struct _SclKeyboardRowInfo {
 	sclbyte start_index;
 	sclbyte size;
 	sclchar *sub_layout;
-	sclshort col_coord[20];
+	sclshort col_coord[NAVI_INFO_MAX_COLS];
 }SclKeyboardRowInfo;
 
 typedef struct _SclKeyFocusNavigationInfo {
@@ -43,7 +47,7 @@ typedef struct _SclKeyFocusNavigationInfo {
 	sclbyte current_row;
 	sclbyte current_column;
 	sclshort row_coord;
-	SclKeyboardRowInfo* rows[20];
+	SclKeyboardRowInfo* rows[NAVI_INFO_MAX_ROWS];
 }SclKeyFocusNavigationInfo;
 
 /**
@@ -82,7 +86,7 @@ public:
     void finalize_key_navigation_info(void);
 
 	/*Focus navigation API*/
-	void	init_key_index(void);
+	void	init_key_index(bool b_update_window = TRUE);
     sclbyte get_current_key_index(void);
     sclbyte get_next_key_index(SclKeyFocusNavigationDirection direction);
 

@@ -23,6 +23,9 @@
 #include "sclres_type.h"
 #include "scldebug.h"
 #include "sclcontext.h"
+#include "sclresourcecache.h"
+#include "sclwindows.h"
+
 using namespace scl;
 
 /**
@@ -37,7 +40,7 @@ CSCLKeyFocusHandler::CSCLKeyFocusHandler()
     m_key_navi_info.current_column = 0;
     m_key_navi_info.row_coord = 0;
     int i = 0;
-    for(i = 0;i < 20; i++) {
+    for(i = 0;i < NAVI_INFO_MAX_ROWS; i++) {
         m_key_navi_info.rows[i] = NULL;
     }
 #ifdef TARGET_EMULATOR
@@ -331,7 +334,7 @@ CSCLKeyFocusHandler::finalize_key_navigation_info(void)
  * Initializes the key index to first key of first row
  */
 void
-CSCLKeyFocusHandler::init_key_index(void)
+CSCLKeyFocusHandler::init_key_index(bool b_update_window)
 {
     CSCLContext *context = CSCLContext::get_instance();
     sclchar* current_sub_layout = context->get_cur_sublayout();
@@ -351,6 +354,17 @@ CSCLKeyFocusHandler::init_key_index(void)
     m_key_navi_info.current_row = row;
     m_key_navi_info.current_column = 0;
     LOGD("Inside init_key_index m_key_navi_info.current_row = %d \n",m_key_navi_info.current_row);
+
+    CSCLWindows *windows = CSCLWindows::get_instance();
+    sclwindow base_window = windows->get_base_window();
+    sclbyte current_key_index = get_current_key_index();
+    CSCLResourceCache *cache = CSCLResourceCache::get_instance();
+    SclButtonContext *btncontext = cache->get_cur_button_context(base_window, current_key_index);
+    const SclLayoutKeyCoordinate *coordinate = cache->get_cur_layout_key_coordinate(base_window, current_key_index);
+    btncontext->state = BUTTON_STATE_PRESSED;
+    if (b_update_window) {
+        windows->update_window(base_window, coordinate->x, coordinate->y, coordinate->width, coordinate->height);
+    }
 }
 
 /**

@@ -484,8 +484,12 @@ Eina_Bool key_pressed(void *data, int type, void *event_info)
         btncontext->state = BUTTON_STATE_NORMAL;
         controller->mouse_press(window, coordinate->x, coordinate->y, TRUE);
         controller->mouse_release(window, coordinate->x, coordinate->y, TRUE);
-        btncontext->state = BUTTON_STATE_PRESSED;
-        windows->update_window(window, coordinate->x, coordinate->y, coordinate->width, coordinate->height);
+        if (KEY_TYPE_MODECHANGE != coordinate->key_type) {
+            btncontext->state = BUTTON_STATE_PRESSED;
+            windows->update_window(window, coordinate->x, coordinate->y, coordinate->width, coordinate->height);
+        } else {
+            focus_handler->init_key_index();
+        }
         return TRUE;
     }
 
