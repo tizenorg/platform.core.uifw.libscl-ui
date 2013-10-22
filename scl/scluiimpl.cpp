@@ -68,7 +68,6 @@ sclboolean CSCLUIImpl::init(sclwindow parent, const SCLParserType parser_type, c
     CSCLUIBuilder *builder = CSCLUIBuilder::get_instance();
     CSCLResourceCache *cache = CSCLResourceCache::get_instance();
     CSCLUtils *utils = CSCLUtils::get_instance();
-    CSCLGwes *gwes = CSCLGwes::get_instance();
 
     if (sclres_manager && builder && cache && utils) {
         sclres_manager->init(parser_type, entry_filepath);
