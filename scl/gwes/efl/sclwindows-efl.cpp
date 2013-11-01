@@ -73,15 +73,6 @@ CSCLWindowsImplEfl::~CSCLWindowsImplEfl()
     SCL_DEBUG();
 }
 
-void CSCLWindowsImplEfl::init()
-{
-
-}
-
-void CSCLWindowsImplEfl::fini()
-{
-
-}
 
 /**
  * Create a content window and binds it into given parent window as a child
@@ -172,14 +163,24 @@ CSCLWindowsImplEfl::create_window(const sclwindow parent, SclWindowContext *winc
     /*ecore_x_icccm_transient_for_set(elm_win_xwindow_get(static_cast<Evas_Object*>(win)), 
         elm_win_xwindow_get(static_cast<Evas_Object*>(parent)));*/
 
-    utilx_set_window_effect_state((Display*)dpy, elm_win_xwindow_get(static_cast<Evas_Object*>(win)), 0);
-    //utilx_set_window_effect_style((Display*)dpy, elm_win_xwindow_get(static_cast<Evas_Object*>(win)), UTILX_EFFECT_TYPE_MAP, UTILX_EFFECT_STYLE_NONE);
+    Ecore_X_Atom ATOM_WINDOW_EFFECT_ENABLE  = 0;
+    unsigned int effect_state = 0; // 0 -> disable effect 1-> enable effect
+
+    CSCLUtils *utils = CSCLUtils::get_instance();
+    ATOM_WINDOW_EFFECT_ENABLE = ecore_x_atom_get("_NET_CM_WINDOW_EFFECT_ENABLE");
+    if (ATOM_WINDOW_EFFECT_ENABLE) {
+        ecore_x_window_prop_card32_set(elm_win_xwindow_get(static_cast<Evas_Object*>(win)), ATOM_WINDOW_EFFECT_ENABLE, &effect_state, 1);
+    } else {
+        if (utils) {
+            utils->log("Could not get _NET_CM_WINDOW_EFFECT_ENABLE ATOM \n");
+        }
+    }
+
 #endif
 
     set_window_rotation(win, context->get_rotation());
 
     //elm_win_override_set(win, EINA_TRUE);
-    CSCLUtils *utils = CSCLUtils::get_instance();
     if (utils) {
         utils->log("WinEfl_createwin %p %p, %d %d\n",
                 win, elm_win_xwindow_get(static_cast<Evas_Object*>(win)), width, height);
@@ -245,8 +246,18 @@ CSCLWindowsImplEfl::create_magnifier_window(const sclwindow parent, SclWindowCon
     /*ecore_x_icccm_transient_for_set(elm_win_xwindow_get(static_cast<Evas_Object*>(win)), 
         elm_win_xwindow_get(static_cast<Evas_Object*>(parent)));*/
 
-    utilx_set_window_effect_state((Display*)dpy, elm_win_xwindow_get(static_cast<Evas_Object*>(win)), 0);
-    //utilx_set_window_effect_style((Display*)dpy, elm_win_xwindow_get(static_cast<Evas_Object*>(win)), UTILX_EFFECT_TYPE_MAP, UTILX_EFFECT_STYLE_NONE);
+    Ecore_X_Atom ATOM_WINDOW_EFFECT_ENABLE  = 0;
+    unsigned int effect_state = 0; // 0 -> disable effect 1-> enable effect
+
+    CSCLUtils *utils = CSCLUtils::get_instance();
+    ATOM_WINDOW_EFFECT_ENABLE = ecore_x_atom_get("_NET_CM_WINDOW_EFFECT_ENABLE");
+    if (ATOM_WINDOW_EFFECT_ENABLE) {
+        ecore_x_window_prop_card32_set(elm_win_xwindow_get(static_cast<Evas_Object*>(win)), ATOM_WINDOW_EFFECT_ENABLE, &effect_state, 1);
+    } else {
+        if (utils) {
+            utils->log("Could not get _NET_CM_WINDOW_EFFECT_ENABLE ATOM \n");
+        }
+    }
 #endif
 
     //evas_font_path_prepend(evas_object_evas_get(win), "/usr/share/SLP/fonts");
@@ -259,7 +270,6 @@ CSCLWindowsImplEfl::create_magnifier_window(const sclwindow parent, SclWindowCon
     utilx_set_window_effect_state((Display*)dpy, elm_win_xwindow_get(static_cast<Evas_Object*>(win)), EINA_TRUE);*/
 
     //elm_win_override_set(win, EINA_TRUE);
-    CSCLUtils *utils = CSCLUtils::get_instance();
     if (utils) {
         utils->log("WinEfl_createmagwin %p %p, %d %d\n",
             win, elm_win_xwindow_get(static_cast<Evas_Object*>(win)), width, height);
@@ -295,8 +305,18 @@ CSCLWindowsImplEfl::create_dim_window(const sclwindow parent, SclWindowContext *
     /*ecore_x_icccm_transient_for_set(elm_win_xwindow_get(static_cast<Evas_Object*>(win)), 
         elm_win_xwindow_get(static_cast<Evas_Object*>(parent)));*/
 
-    utilx_set_window_effect_state((Display*)dpy, elm_win_xwindow_get(static_cast<Evas_Object*>(win)), 0);
-    //utilx_set_window_effect_style((Display*)dpy, elm_win_xwindow_get(static_cast<Evas_Object*>(win)), UTILX_EFFECT_TYPE_MAP, UTILX_EFFECT_STYLE_NONE);
+    Ecore_X_Atom ATOM_WINDOW_EFFECT_ENABLE  = 0;
+    unsigned int effect_state = 0; // 0 -> disable effect 1-> enable effect
+
+    CSCLUtils *utils = CSCLUtils::get_instance();
+    ATOM_WINDOW_EFFECT_ENABLE = ecore_x_atom_get("_NET_CM_WINDOW_EFFECT_ENABLE");
+    if (ATOM_WINDOW_EFFECT_ENABLE) {
+        ecore_x_window_prop_card32_set(elm_win_xwindow_get(static_cast<Evas_Object*>(win)), ATOM_WINDOW_EFFECT_ENABLE, &effect_state, 1);
+    } else {
+        if (utils) {
+            utils->log("Could not get _NET_CM_WINDOW_EFFECT_ENABLE ATOM \n");
+        }
+    }
 #endif
 
     const char *szProfile[] = {"mobile", ""};
@@ -316,7 +336,6 @@ CSCLWindowsImplEfl::create_dim_window(const sclwindow parent, SclWindowContext *
     //elm_win_override_set(win, EINA_TRUE);
     hide_window(win);
 
-    CSCLUtils *utils = CSCLUtils::get_instance();
     if (utils) {
         utils->log("WinEfl_createdimwin %p %p, %d %d\n",
             win, elm_win_xwindow_get(static_cast<Evas_Object*>(win)), width, height);
@@ -358,52 +377,46 @@ CSCLWindowsImplEfl::destroy_window(sclwindow window)
 
     if (windows && utils && winctx) {
         if (winctx->etc_info) {
-            Eina_List *list = (Eina_List*)(winctx->etc_info);
-            Eina_List *iter = NULL;
-            Eina_List *iter_next = NULL;
-            void *data = NULL;
-
-            EINA_LIST_FOREACH_SAFE(list, iter, iter_next, data) {
-                if (data) {
-                    EFLObject *object = (EFLObject*)(data);
-                    if (object) {
-                        Evas_Object* eo = object->object;
-                        if (object->extracted) {
-                            //evas_object_image_data_set(eo, NULL);
-                            void *data = evas_object_image_data_get(eo, 1);
-                            if (data) {
-                                free(data);
-                            }
+            while ((Eina_List*)(winctx->etc_info)) {
+                EFLObject *object = (EFLObject*)eina_list_data_get((Eina_List*)(winctx->etc_info));
+                if (object) {
+                    Evas_Object* eo = object->object;
+                    if (object->extracted) {
+                        //evas_object_image_data_set(eo, NULL);
+                        void *data = evas_object_image_data_get(eo, 1);
+                        if (data) {
+                            free(data);
                         }
-                        if (eo) {
-                            evas_object_del(eo);
-                            object->object = NULL;
+                    }
+                    if (eo) {
+                        evas_object_del(eo);
+                        object->object = NULL;
+                    }
+                    if (object->type == EFLOBJECT_TEXTBLOCK) {
+                        Evas_Textblock_Style *st = (Evas_Textblock_Style*)(object->data);
+                        if (st) {
+                            evas_textblock_style_free(st);
                         }
-                        if (object->type == EFLOBJECT_TEXTBLOCK) {
-                            Evas_Textblock_Style *st = (Evas_Textblock_Style*)(object->data);
-                            if (st) {
-                                evas_textblock_style_free(st);
-                            }
 #ifdef TEST_NEWBACKEND
-                            for(sclint loop = 0;loop < g_TextCache.size();loop++) {
-                                if (g_TextCache[loop].text == object->object) {
-                                    g_TextCache[loop].used = FALSE;
-                                }
+                        for(sclint loop = 0;loop < g_TextCache.size();loop++) {
+                            if (g_TextCache[loop].text == object->object) {
+                                g_TextCache[loop].used = FALSE;
                             }
-#endif
-                        } else if (object->type == EFLOBJECT_IMAGE) {
-#ifdef TEST_NEWBACKEND
-                            for(sclint loop = 0;loop < g_ImageCache.size();loop++) {
-                                if (g_ImageCache[loop].image == object->object) {
-                                    g_ImageCache[loop].used = FALSE;
-                                }
-                            }
-#endif
                         }
-                        delete object;
+#endif
+                    } else if (object->type == EFLOBJECT_IMAGE) {
+#ifdef TEST_NEWBACKEND
+                        for(sclint loop = 0;loop < g_ImageCache.size();loop++) {
+                            if (g_ImageCache[loop].image == object->object) {
+                                g_ImageCache[loop].used = FALSE;
+                            }
+                        }
+#endif
                     }
                 }
-                list = eina_list_remove_list(list, iter);
+                winctx->etc_info = eina_list_remove_list((Eina_List*)(winctx->etc_info), (Eina_List*)(winctx->etc_info));
+                if (object)
+                    delete object;
             }
             winctx->etc_info = NULL;
         }
@@ -473,8 +486,7 @@ CSCLWindowsImplEfl::show_window(const sclwindow window, sclboolean queue)
                 }
             }
         }
-        scl8 popup_index = windows->find_popup_window_index(window);
-        if (windows->get_magnifier_window() == window || popup_index != NOT_USED) {
+        if (windows->get_magnifier_window() == window) {
             /*
              * FIXME a solution to make magnifier window always on top
              * N_SE-17689: magnifier window showing behind of candidate window
