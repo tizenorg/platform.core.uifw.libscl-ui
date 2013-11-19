@@ -121,8 +121,6 @@ CSCLWindowsImplEfl::create_window(const sclwindow parent, SclWindowContext *winc
 
     Evas_Object *win = NULL;
     win = elm_win_add(static_cast<Evas_Object*>(parent), "SCLPopup", ELM_WIN_BASIC);
-    Ecore_X_Display* dpy;
-    dpy = ecore_x_display_get();
 
     elm_win_borderless_set(win, EINA_TRUE);
     elm_win_alpha_set(win, EINA_TRUE);
@@ -200,8 +198,6 @@ CSCLWindowsImplEfl::create_magnifier_window(const sclwindow parent, SclWindowCon
 
     Evas_Object *win = NULL;
     win = elm_win_add(static_cast<Evas_Object*>(parent), "Magnfier", ELM_WIN_BASIC);
-    Ecore_X_Display* dpy;
-    dpy = ecore_x_display_get();
 
     elm_win_borderless_set(win, EINA_TRUE);
     elm_win_alpha_set(win, EINA_TRUE);
@@ -288,8 +284,6 @@ CSCLWindowsImplEfl::create_dim_window(const sclwindow parent, SclWindowContext *
 
     Evas_Object *win = NULL;
     win = elm_win_add(static_cast<Evas_Object*>(parent), "SCLPopup", ELM_WIN_BASIC);
-    Ecore_X_Display* dpy;
-    dpy = ecore_x_display_get();
 
     elm_win_borderless_set(win, EINA_TRUE);
     elm_win_alpha_set(win, EINA_TRUE);
