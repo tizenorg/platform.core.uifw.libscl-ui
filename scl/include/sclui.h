@@ -387,6 +387,11 @@ public:
      */
     sclint get_autocapital_shift_state();
 
+    /**
+     * @brief This API process the key event received from ISF
+     */
+    sclboolean process_key_event(const char *key);
+
 private:
     CSCLUIImpl *m_impl;
 };

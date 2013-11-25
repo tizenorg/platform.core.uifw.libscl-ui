@@ -84,43 +84,6 @@ CSCLKeyFocusHandler::grab_keyboard(const sclwindow parent)
 
     Display *x_display = (Display *)ecore_x_display_get();
     int grab_result;
-    grab_result = utilx_grab_key(x_display, x_window, "Right", EXCLUSIVE_GRAB);
-    if (0 == grab_result) {
-        LOGD("Right Key Grabbed successfully\n");
-    } else if (EXCLUSIVE_GRABBED_ALREADY == grab_result) {
-        LOGD("Right Key already grabbed in Exclusiv mode\n");
-    } else {
-        LOGD("Failed to Grab Right key\n");
-    }
-
-    grab_result = utilx_grab_key(x_display, x_window, "Left", EXCLUSIVE_GRAB);
-    if(0 == grab_result) {
-        LOGD("Left Key Grabbed successfully\n");
-    } else if (EXCLUSIVE_GRABBED_ALREADY == grab_result) {
-        LOGD("Left Key already grabbed in Exclusiv mode\n");
-    } else {
-        LOGD("Failed to Grab Left key\n");
-    }
-
-    grab_result = utilx_grab_key(x_display, x_window, "Up", EXCLUSIVE_GRAB);
-    if (0 == grab_result) {
-        LOGD("Up Key Grabbed successfully\n");
-    } else if (EXCLUSIVE_GRABBED_ALREADY == grab_result) {
-        LOGD("Up Key already grabbed in Exclusiv mode\n");
-    } else {
-        LOGD("Failed to Grab Up key\n");
-    }
-
-    grab_result = utilx_grab_key(x_display, x_window, "Down", EXCLUSIVE_GRAB);
-    if (0 == grab_result) {
-        LOGD("Down Key Grabbed successfully\n");
-    } else if (EXCLUSIVE_GRABBED_ALREADY == grab_result) {
-        LOGD("Down Key already grabbed in Exclusiv mode\n");
-    } else {
-        LOGD("Failed to Grab Down key\n");
-    }
-
-
 
     grab_result = utilx_grab_key(x_display, x_window, "Return", EXCLUSIVE_GRAB);
     if (0 == grab_result) {
@@ -130,26 +93,6 @@ CSCLKeyFocusHandler::grab_keyboard(const sclwindow parent)
     } else {
         LOGD("Failed to Grab Return key\n");
     }
-/*
-	grab_result = utilx_grab_key(x_display, x_window, KEY_VOLUMEUP, EXCLUSIVE_GRAB);
-	if( 0 == grab_result ) {
-		LOGD("KEY_VOLUMEUP Grabbed successfully\n");
-	} else if(EXCLUSIVE_GRABBED_ALREADY == grab_result) {
-		LOGD("KEY_VOLUMEUP already grabbed in Exclusiv mode\n");
-	} else {
-		LOGD("Failed to Grab KEY_VOLUMEUP\n");
-	}
-
-
-	grab_result = utilx_grab_key(x_display, x_window, KEY_VOLUMEDOWN, EXCLUSIVE_GRAB);
-	if( 0 == grab_result ) {
-		LOGD("KEY_VOLUMEDOWN Grabbed successfully\n");
-	} else if(EXCLUSIVE_GRABBED_ALREADY == grab_result) {
-		LOGD("KEY_VOLUMEDOWN already grabbed in Exclusiv mode\n");
-	} else {
-		LOGD("Failed to Grab KEY_VOLUMEDOWN\n");
-	}
-*/
     m_keyboard_grabbed = TRUE;
     return TRUE;
 }
@@ -164,62 +107,12 @@ CSCLKeyFocusHandler::ungrab_keyboard(const sclwindow parent)
     Ecore_X_Window x_window = elm_win_xwindow_get(window);
     Display *x_display = (Display *)ecore_x_display_get();
     int grab_result;
-    grab_result = utilx_ungrab_key(x_display, x_window, "Right");
-    if (0 == grab_result) {
-        LOGD("Right Key UnGrabbed successfully\n");
-    } else {
-        LOGD("Failed to UnGrab Right key\n");
-    }
-
-    grab_result = utilx_ungrab_key(x_display, x_window, "Left");
-    if (0 == grab_result) {
-        LOGD("Left Key UnGrabbed successfully\n");
-    } else {
-        LOGD("Failed to UnGrab Left key\n");
-    }
-
-    grab_result = utilx_ungrab_key(x_display, x_window, "Up");
-    if (0 == grab_result) {
-        LOGD("Up Key UnGrabbed successfully\n");
-    } else {
-        LOGD("Failed to UnGrab Up key\n");
-    }
-
-    grab_result = utilx_ungrab_key(x_display, x_window, "Down");
-    if (0 == grab_result) {
-        LOGD("Down Key UnGrabbed successfully\n");
-    } else {
-        LOGD("Failed to UnGrab Down key\n");
-    }
-
     grab_result = utilx_ungrab_key(x_display, x_window, "Return");
     if(0 == grab_result) {
         LOGD("Return Key UnGrabbed successfully\n");
     } else {
         LOGD("Failed to UnGrab Return key\n");
     }
-/*
-	grab_result = utilx_ungrab_key(x_display, x_window, "Enter");
-	if( 0 == grab_result ) {
-		LOGD("Enter Key UnGrabbed successfully\n");
-	} else {
-		LOGD("Failed to UnGrab Enter key\n");
-	}
-
-	grab_result = utilx_ungrab_key(x_display, x_window, KEY_VOLUMEUP);
-	if( 0 == grab_result ) {
-		LOGD("KEY_VOLUMEUP UnGrabbed successfully\n");
-	} else {
-		LOGD("Failed to UnGrab KEY_VOLUMEUP\n");
-	}
-
-	grab_result = utilx_ungrab_key(x_display, x_window, KEY_VOLUMEDOWN);
-	if( 0 == grab_result ) {
-		LOGD("KEY_VOLUMEDOWN UnGrabbed successfully\n");
-	} else {
-		LOGD("Failed to UnGrab KEY_VOLUMEDOWN\n");
-	}
-*/
     m_keyboard_grabbed = FALSE;
 }
 

@@ -63,6 +63,7 @@ public :
     virtual void destroy_all_timer() = 0;
 
     virtual void generate_mouse_event(SCLMouseEvent type, scl16 x, scl16 y) = 0;
+
 };
 
 class CSCLEvents
@@ -96,6 +97,8 @@ public :
     virtual void generate_mouse_event(SCLMouseEvent type, scl16 x, scl16 y) {
         get_scl_events_impl()->generate_mouse_event(type, x, y);
     }
+
+    sclboolean process_key_event(const char *key);
 
 protected :
     CSCLEventsImpl* get_scl_events_impl();

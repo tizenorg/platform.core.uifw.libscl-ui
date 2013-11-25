@@ -955,3 +955,13 @@ sclboolean
 CSCLUIImpl::get_autocapital_shift_state() {
     return m_autocapital_shift_state;
 }
+
+sclboolean
+CSCLUIImpl::process_key_event(const char *key)
+{
+    if (m_initialized) {
+        CSCLEvents *events = CSCLEvents::get_instance();
+        return events->process_key_event(key);
+    }
+    return FALSE;
+}

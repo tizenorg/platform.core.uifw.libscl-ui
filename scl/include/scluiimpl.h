@@ -115,6 +115,9 @@ public:
     void unset_string_substitution(const sclchar *original);
     sclboolean get_autocapital_shift_state();
     void set_autocapital_shift_state(sclboolean flag);
+
+    sclboolean process_key_event(const char *key);
+
 private:
     sclboolean m_initialized;
     sclboolean m_autocapital_shift_state;

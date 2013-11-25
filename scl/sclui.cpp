@@ -602,3 +602,12 @@ CSCLUI::get_autocapital_shift_state() {
 
     return flag;
 }
+
+sclboolean
+CSCLUI::process_key_event(const char *key)
+{
+    if (m_impl) {
+        return m_impl->process_key_event(key);
+    }
+    return FALSE;
+}
