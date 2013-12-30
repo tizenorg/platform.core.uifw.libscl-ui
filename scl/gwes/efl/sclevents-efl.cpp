@@ -201,8 +201,16 @@ Eina_Bool mouse_press(void *data, int type, void *event_info)
         sclboolean processed = FALSE;
         sclwindow window = SCLWINDOW_INVALID;
 
+        Ecore_X_Window inputWindow = 0;
+        Ecore_X_Atom inputAtom = ecore_x_atom_get ("DeviceMgr Input Window");
+        ecore_x_window_prop_xid_get (ecore_x_window_root_first_get(),
+            inputAtom, ECORE_X_ATOM_WINDOW, &inputWindow, 1);
+        if (inputWindow == 0) {
+            utils->log("Error : input window NULL!");
+        }
+
         unsigned int touch_input = 0;
-        int res = ecore_x_window_prop_card32_get(ecore_x_window_root_first_get(),
+        int res = ecore_x_window_prop_card32_get(inputWindow,
             ecore_x_atom_get(E_PROP_TOUCH_INPUT), &touch_input, 1);
 
         utils->log("E_PROP_TOUCH_INPUT : %d %d\n", res, touch_input);
