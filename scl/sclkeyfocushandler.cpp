@@ -34,7 +34,9 @@ using namespace scl;
 CSCLKeyFocusHandler::CSCLKeyFocusHandler()
 {
     SCL_DEBUG();
+#ifdef USING_KEY_GRAB
     m_keyboard_grabbed = FALSE;
+#endif
     m_key_navi_info.total_rows = 0;
     m_key_navi_info.current_row = 0;
     m_key_navi_info.current_column = 0;
@@ -73,6 +75,7 @@ CSCLKeyFocusHandler::get_instance()
     return &instance;
 }
 
+#ifdef USING_KEY_GRAB
 /**
  * Grabs the navigation and Return keys
  */
@@ -115,6 +118,8 @@ CSCLKeyFocusHandler::ungrab_keyboard(const sclwindow parent)
     }
     m_keyboard_grabbed = FALSE;
 }
+
+#endif /*USING_KEY_GRAB*/
 
 /**
  * Resets the navigation info

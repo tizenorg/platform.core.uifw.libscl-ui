@@ -88,7 +88,9 @@ static Eina_Bool x_event_window_show_cb (void *data, int ev_type, void *event)
 
     if(e->win == elm_win_xwindow_get(window)) {
         LOGD("INSIDE =-=-=-=- x_event_window_show_cb, Trying to Grab Key Board : \n");
+#ifdef USING_KEY_GRAB
         focus_handler->grab_keyboard(windows->get_base_window());
+#endif
         focus_handler->init_key_index();
     }
     return ECORE_CALLBACK_RENEW;
@@ -554,11 +556,13 @@ CSCLWindowsImplEfl::hide_window(const sclwindow window,  sclboolean fForce)
     SclWindowContext *winctx = NULL;
 
     if (windows && window) {
-		/*CHK_MRUNAL*/
-        if (window == windows->get_base_window()) {
-		    CSCLKeyFocusHandler* focus_handler = CSCLKeyFocusHandler::get_instance();
-		    focus_handler->ungrab_keyboard(window);
-        }
+#ifdef USING_KEY_GRAB
+    /*CHK_MRUNAL*/
+    if (window == windows->get_base_window()) {
+        CSCLKeyFocusHandler* focus_handler = CSCLKeyFocusHandler::get_instance();
+        focus_handler->ungrab_keyboard(window);
+    }
+#endif
 
         winctx = windows->get_window_context(window);
         if (winctx) {

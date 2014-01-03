@@ -34,6 +34,10 @@
 
 using namespace scl;
 
+#ifdef USING_KEY_GRAB
+#define HANDLE_KEY_EVENTS
+#endif
+
 #define E_PROP_TOUCH_INPUT "X_TouchInput"
 
 sclboolean mouse_pressed = FALSE; /* Checks whether mouse is pressed or not */
@@ -47,7 +51,9 @@ Eina_Bool mouse_release (void *data, int type, void *event_info);
 
 Eina_Bool client_message_cb(void *data, int type, void *event);
 
+#ifdef HANDLE_KEY_EVENTS
 Eina_Bool key_pressed(void *data, int type, void *event_info);/*CHK_MRUNAL*/
+#endif
 
 /**
  * Constructor
@@ -82,7 +88,9 @@ void CSCLEventsImplEfl::init()
     m_mouse_up_handler = ecore_event_handler_add(ECORE_EVENT_MOUSE_BUTTON_UP, mouse_release, NULL);
 
     m_xclient_msg_handler = ecore_event_handler_add(ECORE_X_EVENT_CLIENT_MESSAGE, client_message_cb, NULL);
+#ifdef HANDLE_KEY_EVENTS
     m_key_pressed_handler = ecore_event_handler_add(ECORE_EVENT_KEY_DOWN, key_pressed, NULL);/*CHK_MRUNAL*/
+#endif
 }
 
 void CSCLEventsImplEfl::fini()
@@ -95,7 +103,9 @@ void CSCLEventsImplEfl::fini()
     m_mouse_up_handler = NULL;
     if (m_xclient_msg_handler) ecore_event_handler_del(m_xclient_msg_handler);
     m_xclient_msg_handler = NULL;
+#ifdef HANDLE_KEY_EVENTS
     if (m_key_pressed_handler) ecore_event_handler_del(m_key_pressed_handler);
+#endif
     m_key_pressed_handler = NULL;
 
 }
@@ -196,8 +206,8 @@ Eina_Bool mouse_press(void *data, int type, void *event_info)
 {
     SCL_DEBUG();
 
-    //Evas_Event_Mouse_Down *ev = (Evas_Event_Mouse_Down*)event_info;
-    //LOGD("mouse_press : %d %d\n", ev->output.x, ev->output.y);
+    Evas_Event_Mouse_Down *ev1 = (Evas_Event_Mouse_Down*)event_info;
+    LOGD("mouse_press : %d %d\n", ev1->output.x, ev1->output.y);
 
     CSCLController *controller = CSCLController::get_instance();
     CSCLWindows *windows = CSCLWindows::get_instance();
@@ -347,7 +357,7 @@ Eina_Bool mouse_release (void *data, int type, void *event_info)
 
     //Evas_Event_Mouse_Up *ev = (Evas_Event_Mouse_Up*)event_info;
     Ecore_Event_Mouse_Button *ev = (Ecore_Event_Mouse_Button*)event_info;
-    //LOGD("mouse_release : %d %d, %d %d\n", ev->root.x, ev->root.y, ev->x, ev->y);
+    LOGD("mouse_release : %d %d, %d %d\n", ev->root.x, ev->root.y, ev->x, ev->y);
 
     //if (!mouse_pressed) return FALSE;
 
@@ -443,6 +453,7 @@ Eina_Bool mouse_release (void *data, int type, void *event_info)
     //controller->mouse_release((sclwindow)data, (int)ev->x, (int)ev->y);
 }
 
+#ifdef HANDLE_KEY_EVENTS
 /*CHK_MRUNAL*/
 Eina_Bool key_pressed(void *data, int type, void *event_info)
 {
@@ -531,6 +542,7 @@ Eina_Bool key_pressed(void *data, int type, void *event_info)
     
     return TRUE;
 }
+#endif /*HANDLE_KEY_EVENTS*/
 
 //int mouse_move (void *data, Evas *e, Evas_Object *object, void *event_info)
 Eina_Bool mouse_move (void *data, int type, void *event_info)
@@ -544,7 +556,7 @@ Eina_Bool mouse_move (void *data, int type, void *event_info)
 
     //Evas_Event_Mouse_Move *ev = (Evas_Event_Mouse_Move*)event_info;
     Ecore_Event_Mouse_Move *ev = (Ecore_Event_Mouse_Move*)event_info;
-    //LOGD("mouse_move : %d %d, %d %d\n", ev->root.x, ev->root.y, ev->x, ev->y);
+    LOGD("mouse_move : %d %d, %d %d\n", ev->root.x, ev->root.y, ev->x, ev->y);
 
     //if (!mouse_pressed) return FALSE;
 

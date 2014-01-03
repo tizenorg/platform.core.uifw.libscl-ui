@@ -22,6 +22,7 @@
 //#define TARGET_EMULATOR
 //SCL_BEGIN_DECLS
 
+
 namespace scl
 {
 
@@ -29,25 +30,25 @@ namespace scl
 #define NAVI_INFO_MAX_COLS  20
 
 typedef enum _SclKeyFocusNavigationDirection {
-	NAVIGATE_LEFT,
-	NAVIGATE_RIGHT,
-	NAVIGATE_UP,
-	NAVIGATE_DOWN
+    NAVIGATE_LEFT,
+    NAVIGATE_RIGHT,
+    NAVIGATE_UP,
+    NAVIGATE_DOWN
 }SclKeyFocusNavigationDirection;
 
 typedef struct _SclKeyboardRowInfo {
-	sclbyte start_index;
-	sclbyte size;
-	sclchar *sub_layout;
-	sclshort col_coord[NAVI_INFO_MAX_COLS];
+    sclbyte start_index;
+    sclbyte size;
+    sclchar *sub_layout;
+    sclshort col_coord[NAVI_INFO_MAX_COLS];
 }SclKeyboardRowInfo;
 
 typedef struct _SclKeyFocusNavigationInfo {
-	sclbyte total_rows;
-	sclbyte current_row;
-	sclbyte current_column;
-	sclshort row_coord;
-	SclKeyboardRowInfo* rows[NAVI_INFO_MAX_ROWS];
+    sclbyte total_rows;
+    sclbyte current_row;
+    sclbyte current_column;
+    sclshort row_coord;
+    SclKeyboardRowInfo* rows[NAVI_INFO_MAX_ROWS];
 }SclKeyFocusNavigationInfo;
 
 /**
@@ -76,30 +77,35 @@ public:
 
     static CSCLKeyFocusHandler* get_instance();
 
-	/*Focus grab/ungrab API*/
-	bool grab_keyboard(const sclwindow parent);
-	void ungrab_keyboard(const sclwindow parent);
+#ifdef USING_KEY_GRAB
+    /*Focus grab/ungrab API*/
+    bool grab_keyboard(const sclwindow parent);
+    void ungrab_keyboard(const sclwindow parent);
+#endif
 
-	/*Focus navigation info buildig API*/
+    /*Focus navigation info buildig API*/
     void reset_key_navigation_info(void);
     void update_key_navigation_info(SclLayoutKeyCoordinatePointer p_next_key, sclbyte index);
     void finalize_key_navigation_info(void);
 
-	/*Focus navigation API*/
-	void	init_key_index(bool b_update_window = TRUE);
+    /*Focus navigation API*/
+    void init_key_index(bool b_update_window = TRUE);
     sclbyte get_current_key_index(void);
     sclbyte get_next_key_index(SclKeyFocusNavigationDirection direction);
 
 private:
     SclKeyFocusNavigationInfo m_key_navi_info;
-	bool m_keyboard_grabbed;
-	bool sub_layout_match(sclchar *layout1,sclchar *layout2);
+
+#ifdef USING_KEY_GRAB
+    bool m_keyboard_grabbed;
+#endif
+    bool sub_layout_match(sclchar *layout1,sclchar *layout2);
 
     CSCLKeyFocusHandler();
 #ifdef TARGET_EMULATOR
     sclwindow m_sniffer;
     void create_sniffer_window(void);
-	void set_window_accepts_focus(const sclwindow window, sclboolean acceptable);
+    void set_window_accepts_focus(const sclwindow window, sclboolean acceptable);
 #endif
 
 };
