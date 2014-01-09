@@ -77,6 +77,9 @@ static void handle_shift_button_click_event(SclUIEventDesc ui_event_desc)
                     uiimpl->set_shift_state(SCL_SHIFT_STATE_OFF);
                 }
                 break;
+                case SCL_SHIFT_STATE_MAX:
+                default:
+                    break;
             }
         }
     }

@@ -56,12 +56,12 @@ private:
     sclboolean draw_button_bg_by_sw(const sclwindow window, const scldrawctx draw_ctx, const scl16 key_index, const SCLButtonState state);
     sclboolean draw_window_bg_by_sw(const sclwindow window, const scldrawctx draw_ctx, const SclSize size,
         const scldouble line_width, const SclColor line_color, const SclColor fill_color);
-    sclboolean draw_button_bg_by_img(const sclwindow window, const scldrawctx draw_ctx,const scl16 key_index,
-        const SCLButtonState state, const sclboolean shift);
+    sclboolean draw_button_bg_by_img(const sclwindow window, const scldrawctx draw_ctx, const scl16 key_index,
+        SCLButtonState state, SCLShiftState shift);
     sclboolean draw_button_bg_by_layoutimg(const sclwindow window, const scldrawctx draw_ctx, const scl16 key_index,
         const SCLButtonState state, const sclboolean shift);
     sclboolean draw_button_label(const sclwindow window, const scldrawctx draw_ctx, const scl16 key_index,
-                                 const SCLButtonState state, const sclboolean shift);
+                                 SCLButtonState state, SCLShiftState shift);
 
     sclboolean draw_magnifier_label(const sclwindow window, const scldrawctx draw_ctx, const scl16 label_index, const sclchar* label);
 

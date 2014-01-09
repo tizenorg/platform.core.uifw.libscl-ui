@@ -143,7 +143,7 @@ check_storage(int width) {
 inline void ResourceStorage::
 expand_storage() {
     unsigned int _new_size = (unsigned int)(m_capability + __RE_NEW_LENGTH__);
-    if (_new_size > __MAX_NEW_SIZE__) {
+    if (_new_size > (unsigned int)__MAX_NEW_SIZE__) {
         printf("expand_storage failed: size is limited to %d\n", __MAX_NEW_SIZE__);
         return;
     }

@@ -113,8 +113,6 @@ CSCLUIImpl::show()
 {
     SCL_DEBUG();
 
-    sclboolean ret = FALSE;
-
     if (m_initialized) {
         CSCLUtils *utils = CSCLUtils::get_instance();
         CSCLWindows *windows = CSCLWindows::get_instance();
@@ -125,8 +123,6 @@ CSCLUIImpl::show()
             //if (auto_relocate) {
             if (TRUE) {
                 /* Let's relocate our base window - bottomed center aligned */
-                sclint width, height;
-                //get_layout_size(&width, &height);
                 SclRectangle rect = get_main_window_rect();
 
                 sclint scrx, scry;
@@ -154,8 +150,6 @@ CSCLUIImpl::hide()
 {
     SCL_DEBUG();
 
-    sclboolean ret = FALSE;
-
     if (m_initialized) {
         CSCLController *controller = CSCLController::get_instance();
         CSCLWindows *windows = CSCLWindows::get_instance();
@@ -175,8 +169,6 @@ void
 CSCLUIImpl::set_ui_event_callback(ISCLUIEventCallback *callback, const sclchar *input_mode)
 {
     SCL_DEBUG();
-
-    sclboolean ret = FALSE;
 
     if (m_initialized) {
         CSCLEventHandler *handler = CSCLEventHandler::get_instance();
@@ -243,8 +235,6 @@ CSCLUIImpl::set_rotation(SCLRotation rotation)
             //if (auto_relocate) {
             if (TRUE) {
                 /* Let's relocate our base window - bottomed center aligned */
-                sclint width, height;
-                //get_layout_size(&width, &height);
                 SclRectangle rect = get_main_window_rect();
 
                 sclint scrx, scry;
@@ -351,8 +341,6 @@ void
 CSCLUIImpl::unset_private_key(const sclchar* custom_id)
 {
     SCL_DEBUG();
-    sclboolean ret = FALSE;
-
     if (m_initialized) {
         CSCLResourceCache *cache = CSCLResourceCache::get_instance();
         if (cache) {
@@ -453,8 +441,6 @@ void
 CSCLUIImpl::notify_app_focus_changed()
 {
     SCL_DEBUG();
-    sclboolean ret = FALSE;
-
     if (m_initialized) {
         CSCLController *controller = CSCLController::get_instance();
         if (controller) {
@@ -467,8 +453,6 @@ void
 CSCLUIImpl::reset_popup_timeout()
 {
     SCL_DEBUG();
-    sclboolean ret = FALSE;
-
     if (m_initialized) {
         CSCLEvents *events = CSCLEvents::get_instance();
         CSCLWindows *windows = CSCLWindows::get_instance();
@@ -500,8 +484,6 @@ void
 CSCLUIImpl::close_all_popups()
 {
     SCL_DEBUG();
-    sclboolean ret = FALSE;
-
     if (m_initialized) {
         CSCLWindows *windows = CSCLWindows::get_instance();
         if (windows) {
@@ -669,8 +651,6 @@ CSCLUIImpl::get_input_mode_size(const sclchar *input_mode, SCLDisplayMode displa
 void
 CSCLUIImpl::get_screen_resolution(sclint *width, sclint *height)
 {
-    sclboolean ret = FALSE;
-
     if (m_initialized) {
         CSCLUtils *utils = CSCLUtils::get_instance();
         if (utils && width && height) {
@@ -684,8 +664,6 @@ CSCLUIImpl::get_screen_resolution(sclint *width, sclint *height)
 void
 CSCLUIImpl::set_debug_mode(SCLDebugMode mode)
 {
-    sclboolean ret = FALSE;
-
     if (m_initialized) {
         CSCLController *controller = CSCLController::get_instance();
         if (controller) {
@@ -710,8 +688,6 @@ CSCLUIImpl::get_debug_mode()
 void
 CSCLUIImpl::set_update_pending(sclboolean pend)
 {
-    sclboolean ret = FALSE;
-
     if (m_initialized) {
         CSCLWindows *windows = CSCLWindows::get_instance();
         if (windows) {
@@ -723,8 +699,6 @@ CSCLUIImpl::set_update_pending(sclboolean pend)
 void
 CSCLUIImpl::enable_button(const sclchar* custom_id, sclboolean enabled)
 {
-    sclboolean ret = FALSE;
-
     if (m_initialized) {
         CSCLResourceCache *cache = CSCLResourceCache::get_instance();
         if (cache) {
@@ -834,8 +808,6 @@ CSCLUIImpl::set_button_delay_duration(scllong msc)
 void
 CSCLUIImpl::enable_magnifier(sclboolean enabled)
 {
-    sclboolean ret = FALSE;
-
     if (m_initialized) {
         CSCLContext *context = CSCLContext::get_instance();
         if (context) {
@@ -847,8 +819,6 @@ CSCLUIImpl::enable_magnifier(sclboolean enabled)
 void
 CSCLUIImpl::enable_sound(sclboolean enabled)
 {
-    sclboolean ret = FALSE;
-
     if (m_initialized) {
         CSCLContext *context = CSCLContext::get_instance();
         if (context) {
@@ -860,8 +830,6 @@ CSCLUIImpl::enable_sound(sclboolean enabled)
 void
 CSCLUIImpl::enable_vibration(sclboolean enabled)
 {
-    sclboolean ret = FALSE;
-
     if (m_initialized) {
         CSCLContext *context = CSCLContext::get_instance();
         if (context) {
@@ -873,8 +841,6 @@ CSCLUIImpl::enable_vibration(sclboolean enabled)
 void
 CSCLUIImpl::enable_tts(sclboolean enabled)
 {
-    sclboolean ret = FALSE;
-
     if (m_initialized) {
         CSCLContext *context = CSCLContext::get_instance();
         if (context) {
@@ -886,8 +852,6 @@ CSCLUIImpl::enable_tts(sclboolean enabled)
 void
 CSCLUIImpl::enable_shift_multi_touch(sclboolean enabled)
 {
-    sclboolean ret = FALSE;
-
     if (m_initialized) {
         CSCLContext *context = CSCLContext::get_instance();
         if (context) {
@@ -908,8 +872,6 @@ CSCLUIImpl::enable_touch_offset(sclboolean enabled)
 void
 CSCLUIImpl::disable_input_events(sclboolean disabled)
 {
-    sclboolean ret = FALSE;
-
     if (m_initialized) {
         CSCLController *controller = CSCLController::get_instance();
         if (controller) {

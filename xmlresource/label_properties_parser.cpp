@@ -45,7 +45,7 @@ match_alignment(const char* key) {
 
     int value = LABEL_ALIGN_LEFT_TOP;
 
-    for(int i = 0; i < sizeof(table)/sizeof(Match_table_t); ++i) {
+    for(size_t i = 0; i < sizeof(table)/sizeof(Match_table_t); ++i) {
         if (0 == strcmp(key, table[i].key))
         {
             value = table[i].value;
@@ -80,7 +80,7 @@ match_shadow_direction(const char* key) {
 
     int value = SHADOW_DIRECTION_NONE;
 
-    for(int i = 0; i < sizeof(table)/sizeof(Match_table_t); ++i) {
+    for(size_t i = 0; i < sizeof(table)/sizeof(Match_table_t); ++i) {
         if (0 == strcmp(key, table[i].key))
         {
             value = table[i].value;

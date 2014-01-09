@@ -61,8 +61,6 @@ get_layout_files(char **layout_files, int* size) {
 
     InputModeConfigParser *input_mode_configure_parser = InputModeConfigParser::get_instance();
     for(int inputmode = 0; inputmode < MAX_SCL_INPUT_MODE; inputmode++) {
-        int empty_index;
-        const sclchar* cur_layout_file;
         PSclInputModeConfigure configure_table = input_mode_configure_parser->get_input_mode_configure_table();
         SclInputModeConfigure& cur_input_mode_configure = configure_table[inputmode];
 

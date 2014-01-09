@@ -80,7 +80,7 @@ get_key_modifier_state_prop(const char* key ) {
 
     int key_modifier_state = KEY_MODIFIER_NONE;
 
-    for(int i = 0; i < sizeof(table)/sizeof(Key_modifier_state_match_table_t); ++i) {
+    for(size_t i = 0; i < sizeof(table)/sizeof(Key_modifier_state_match_table_t); ++i) {
         if (0 == strcmp(key, table[i].key) )
         {
             key_modifier_state = table[i].key_modifier_state;

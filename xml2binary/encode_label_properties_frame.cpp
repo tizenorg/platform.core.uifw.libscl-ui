@@ -80,10 +80,6 @@ encode_label_properties_record(ResourceStorage& storage, const PSclLabelProperti
     }
 }
 
-static bool isEmptyRecord(const SclLayoutKeyCoordinate& cur) {
-    return (cur.x == 0 && cur.y == 0 && cur.width == 0 && cur.height == 0);
-}
-
 int
 encode_label_properties_frame_file(ResourceStorage& storage, IMetaData_Helper& md_helper) {
 

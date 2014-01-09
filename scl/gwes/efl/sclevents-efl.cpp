@@ -223,7 +223,6 @@ Eina_Bool mouse_press(void *data, int type, void *event_info)
             }
         }
 
-        sclwindow evwin = (sclwindow)(ev->window);
         sclboolean is_scl_window = FALSE;
         if (elm_win_xwindow_get(static_cast<Evas_Object*>(windows->get_base_window())) == ev->window) {
             is_scl_window = TRUE;

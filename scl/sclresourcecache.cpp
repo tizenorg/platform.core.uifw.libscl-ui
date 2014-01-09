@@ -875,7 +875,6 @@ CSCLResourceCache::recompute_layout(sclwindow window)
 
     sclshort layout =  NOT_USED;
     if (windows && context && utils) {
-        sclbyte display = context->get_display_mode();
         sclbyte inputmode = context->get_input_mode();
 
         if (windows->is_base_window(window)) {
@@ -1397,7 +1396,6 @@ CSCLResourceCache::clone_keyproperties(SclPrivateKeyProperties* priv, sclbyte in
         clear_privatekeyproperties(priv);
 
         /* gets the value of the previous key properties */
-        sclint loop;
         SclLayoutKeyCoordinate keyCoordinate = { 0 };
         if (scl_check_arrindex_unsigned(layout_index, MAX_SCL_LAYOUT) &&
             scl_check_arrindex_unsigned(key_index, MAX_KEY)) {

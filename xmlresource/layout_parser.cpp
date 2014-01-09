@@ -324,7 +324,7 @@ LayoutParserImpl::add_layout_string(xmlChar* newstr) {
 
 void
 LayoutParserImpl::release_layout_strings() {
-    for(int loop = 0;loop < m_vec_layout_strings.size();loop++) {
+    for(size_t loop = 0; loop < m_vec_layout_strings.size(); loop++) {
         if (m_vec_layout_strings[loop]) {
             xmlFree(m_vec_layout_strings[loop]);
         }
@@ -341,7 +341,7 @@ LayoutParserImpl::add_key_string(xmlChar* newstr) {
 
 void
 LayoutParserImpl::release_key_strings() {
-    for(int loop = 0;loop < m_vec_key_strings.size();loop++) {
+    for(size_t loop = 0; loop < m_vec_key_strings.size(); loop++) {
         if (m_vec_key_strings[loop]) {
             xmlFree(m_vec_key_strings[loop]);
         }
@@ -675,10 +675,7 @@ LayoutParserImpl::parsing_layout_node(
 
     set_default_layout_value(cur_rec_layout);
 
-    int row_y = 0;
     xmlChar* key;
-
-    SclLayoutKeyCoordinatePointer *cur_key = &m_key_coordinate_pointer_frame[layout_no][0];
 
     if (equal_prop(cur_node, LAYOUT_DIRECTION_ATTRIBUTE,
         LAYOUT_DIRECTION_ATTRIBUTE_LANDSCAPE_VALUE)) {
@@ -759,7 +756,6 @@ LayoutParserImpl::loading_coordinate_resources(
     assert(cur_node != NULL);
 
     int row_y = 0;
-    xmlChar* key;
 
     SclLayoutKeyCoordinatePointer *cur_key = &m_key_coordinate_pointer_frame[layout_no][0];
 
@@ -838,7 +834,7 @@ LayoutParserImpl::get_drag_state_prop(const xmlNodePtr cur_node) {
 
     int drag_state = SCL_DRAG_STATE_NONE;
 
-    for(int i = 0; i < sizeof(table)/sizeof(Match_Struct); ++i) {
+    for(size_t i = 0; i < sizeof(table)/sizeof(Match_Struct); ++i) {
         if (0 == strcmp((const char*)key, table[i].key))
         {
             drag_state = table[i].value;
@@ -901,7 +897,7 @@ LayoutParserImpl::get_multitouch_type_prop(const xmlNodePtr cur_node) {
 
     int type = SCL_MULTI_TOUCH_TYPE_EXCLUSIVE;
 
-    for(int i = 0; i < sizeof(table)/sizeof(Match_Struct); ++i) {
+    for(size_t i = 0; i < sizeof(table)/sizeof(Match_Struct); ++i) {
         if (0 == strcmp((const char*)key, table[i].key))
         {
             type = table[i].value;
@@ -936,7 +932,7 @@ LayoutParserImpl::get_extra_option_prop(
 
     int type = DIRECTION_EXTRA_OPTION_4_DIRECTIONS;
 
-    for(int i = 0; i < sizeof(table)/sizeof(Match_Struct); ++i) {
+    for(size_t i = 0; i < sizeof(table)/sizeof(Match_Struct); ++i) {
         if (0 == strcmp((const char*)key, table[i].key))
         {
             type = table[i].value;

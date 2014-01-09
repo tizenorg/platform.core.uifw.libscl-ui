@@ -527,8 +527,10 @@ CSCLController::process_button_pressed_event(sclwindow window, sclint x, sclint 
                     handler->on_event_key_clicked(key_event_desc);
                 }
                 break;
+                case BUTTON_TYPE_UIITEM: break;
+                case MAX_BUTTON_TYPE: break;
+                default: break;
                 }
-
                 switch (coordinate->popup_type) {
                 case POPUP_TYPE_BTN_PRESS_POPUP_DRAG: {
                     sclint popup_input_mode = sclres_manager->get_inputmode_id(coordinate->popup_input_mode[SCL_DRAG_STATE_NONE]);
@@ -585,6 +587,8 @@ CSCLController::process_button_pressed_event(sclwindow window, sclint x, sclint 
                 case POPUP_TYPE_BTN_LONGPRESS_POPUP_ONCE:
                 case POPUP_TYPE_AUTO_POPUP:
                 case POPUP_TYPE_NONE:
+                case MAX_POPUP_TYPE:
+                default:
                     /* Nothing to do in here */
                     break;
                 }
@@ -1008,6 +1012,9 @@ CSCLController::process_button_repeat_pressed_event(sclwindow window, sclbyte ke
                     }
                 }
                 break;
+                case BUTTON_TYPE_UIITEM: break;
+                case MAX_BUTTON_TYPE: break;
+                default: break;
             }
         }
     }
@@ -1266,6 +1273,17 @@ CSCLController::process_button_move_event(sclwindow window, sclint x, sclint y, 
                             }
                         }
                         break;
+                        case BUTTON_TYPE_NORMAL: break;
+                        case BUTTON_TYPE_GRAB: break;
+                        case BUTTON_TYPE_SELFISH: break;
+                        case BUTTON_TYPE_MULTITAP: break;
+                        case BUTTON_TYPE_ROTATION: break;
+                        case BUTTON_TYPE_DIRECTION: break;
+                        case BUTTON_TYPE_RELATIVE_DIRECTION: break;
+                        case BUTTON_TYPE_UIITEM: break;
+                        case MAX_BUTTON_TYPE: break;
+                        default:
+                            break;
                         }
 
 #ifdef DIRECTLY_DRAW_ON_EVENTS
@@ -1377,7 +1395,6 @@ CSCLController::process_button_over_event(sclwindow window, sclint x, sclint y, 
             if (keyindex != highlighted_key || window != highlighted_window ) {
                 printf("%d != %d || %p != %p\n", keyindex, highlighted_key, window, highlighted_window);
                 if(layout) {
-                    SclPoint pos = {0,};
                     sclfloat scale_rate_x, scale_rate_y;
                     if(layout->display_mode == DISPLAYMODE_PORTRAIT) {
                         scale_rate_x = utils->get_scale_rate_x();
@@ -1446,7 +1463,7 @@ CSCLController::get_drag_key_modifier(sclint deltax, sclint deltay, sclfloat dis
                     { 5 * (M_PI / 8),  7 * (M_PI / 8), KEY_MODIFIER_DIRECTION_DOWN_LEFT},
                     { 7 * (M_PI / 8),  8 * (M_PI / 8), KEY_MODIFIER_DIRECTION_LEFT},
                 };
-                for (sclint loop = 0;loop < sizeof(info) / sizeof(DIRECTIONINFO);loop++) {
+                for (size_t loop = 0; loop < sizeof(info) / sizeof(DIRECTIONINFO); loop++) {
                     if (theta >= info[loop].lowerbound && theta <= info[loop].upperbound) {
                         key_modifier = info[loop].modifier;
                     }
@@ -1483,7 +1500,7 @@ CSCLController::get_drag_key_modifier(sclint deltax, sclint deltay, sclfloat dis
                     { 1 * (M_PI / 4),  3 * (M_PI / 4), KEY_MODIFIER_DIRECTION_DOWN},
                     { 3 * (M_PI / 4),  4 * (M_PI / 4), KEY_MODIFIER_DIRECTION_LEFT},
                 };
-                for (sclint loop = 0;loop < sizeof(info) / sizeof(DIRECTIONINFO);loop++) {
+                for (size_t loop = 0; loop < sizeof(info) / sizeof(DIRECTIONINFO); loop++) {
                     if (theta >= info[loop].lowerbound && theta <= info[loop].upperbound) {
                         key_modifier = info[loop].modifier;
                     }
@@ -1772,8 +1789,11 @@ CSCLController::process_button_release_event(sclwindow window, sclint x, sclint 
                     case BUTTON_TYPE_DRAG : {
                     }
                     break;
-                    }
+                    case BUTTON_TYPE_UIITEM: break;
+                    case MAX_BUTTON_TYPE: break;
+                    default: break;
 
+                    }
                     switch (coordinate->popup_type) {
                     case POPUP_TYPE_BTN_RELEASE_POPUP:
                     case POPUP_TYPE_BTN_RELEASE_POPUP_ONCE: {
@@ -1854,6 +1874,10 @@ CSCLController::process_button_release_event(sclwindow window, sclint x, sclint 
                     case POPUP_TYPE_NONE:
                         /* Nothing to do in here */
                         break;
+                    case POPUP_TYPE_BTN_LONGPRESS_POPUP_ONCE: break;
+                    case POPUP_TYPE_BTN_LONGPRESS_POPUP: break;
+                    case MAX_POPUP_TYPE: break;
+                    default: break;
                     }
                 }
 
@@ -2454,15 +2478,22 @@ CSCLController::mouse_release(sclwindow window, sclint x, sclint y, scltouchdevi
         sclboolean signaled = FALSE;
         if (coordinate) {
             switch (coordinate->popup_type) {
-            case POPUP_TYPE_BTN_RELEASE_POPUP:
-            case POPUP_TYPE_BTN_RELEASE_POPUP_ONCE:
-            case POPUP_TYPE_BTN_LONGPRESS_POPUP:
-            case POPUP_TYPE_BTN_LONGPRESS_POPUP_ONCE:
-                /* Fix me : We should consider z-order */
-                skipwindow = windows->get_nth_window_in_Z_order_list(SCL_WINDOW_Z_TOP);
-                handle_engine_signal(SCL_SIG_MOUSE_RELEASE, skipwindow);
-                signaled = TRUE;
-                break;
+                case POPUP_TYPE_BTN_RELEASE_POPUP:
+                case POPUP_TYPE_BTN_RELEASE_POPUP_ONCE:
+                case POPUP_TYPE_BTN_LONGPRESS_POPUP:
+                case POPUP_TYPE_BTN_LONGPRESS_POPUP_ONCE:
+                    {
+                        /* Fix me : We should consider z-order */
+                        skipwindow = windows->get_nth_window_in_Z_order_list(SCL_WINDOW_Z_TOP);
+                        handle_engine_signal(SCL_SIG_MOUSE_RELEASE, skipwindow);
+                        signaled = TRUE;
+                    }
+                    break;
+                case POPUP_TYPE_NONE: break;
+                case POPUP_TYPE_BTN_PRESS_POPUP_DRAG: break;
+                case POPUP_TYPE_AUTO_POPUP: break;
+                case MAX_POPUP_TYPE: break;
+                default: break;
             }
         }
         if (!signaled) {
@@ -3120,10 +3151,6 @@ CSCLController::mouse_over(sclwindow window, sclint x, sclint y)
 sclboolean
 CSCLController::timer_event(const scl32 data)
 {
-    struct my_srtuct {
-        struct typeA {short x; short y;};
-        struct typeB {short x; short y;};
-    } strt;
     SCL_DEBUG();
     CSCLWindows *windows = CSCLWindows::get_instance();
     CSCLContext *context = CSCLContext::get_instance();
@@ -3328,7 +3355,6 @@ CSCLController::timer_event(const scl32 data)
     break;
     case SCL_TIMER_AUTOTEST: {
         CSCLResourceCache *cache = CSCLResourceCache::get_instance();
-        SCLDisplayMode display_mode =  context->get_display_mode();
 
         sclint rnd = rand() % 100;
         sclint x = (rand() % (cache->get_cur_layout(windows->get_base_window())->width));
@@ -3426,6 +3452,17 @@ void CSCLController::handle_engine_signal( SclInternalSignal signal, sclwindow t
                 context->set_hidden_state(TRUE);
                 windows->close_all_popups();
             }
+            break;
+        case SCL_SIG_START:
+        case SCL_SIG_INPMODE_CHANGE:
+        case SCL_SIG_DISP_CHANGE:
+        case SCL_SIG_POPUP_SHOW:
+        case SCL_SIG_POPUP_HIDE:
+        case SCL_SIG_MOUSE_PRESS:
+        case SCL_SIG_MOUSE_LONG_PRESS:
+        case SCL_SIG_MOUSE_RELEASE:
+        case SCL_SIG_KEYEVENT:
+        default:
             break;
     }
 

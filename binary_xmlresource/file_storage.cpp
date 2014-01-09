@@ -18,10 +18,10 @@
 #include "file_storage_impl.h"
 
 FileStorage::FileStorage(const IString_Provider* string_provider):
-    m_string_provider(string_provider),
     m_storage(NULL),
+    m_offset(0),
     m_size(0),
-    m_offset(0) {
+    m_string_provider(string_provider) {
     }
 
 FileStorage::~FileStorage() {

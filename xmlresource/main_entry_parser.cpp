@@ -33,19 +33,16 @@ class MainEntryParserImpl {
 
             doc = xmlReadFile(input_file, NULL, 0);
             if (doc == NULL) {
-                SCLLOG(SclLog::DEBUG, "Could not load file: %s.", input_file);
                 return -1;
             }
 
             cur_node = xmlDocGetRootElement(doc);
             if (cur_node == NULL) {
-                SCLLOG(SclLog::DEBUG, "MainEntryParser: empty document.\n");
                 xmlFreeDoc(doc);
                 return -1;
             }
             if (0 != xmlStrcmp(cur_node->name, (const xmlChar*)"main-entry"))
             {
-                SCLLOG(SclLog::DEBUG, "MainEntryParser: root name error: %s\n!", (char *)cur_node->name);
                 xmlFreeDoc(doc);
                 return -1;
             }
@@ -111,9 +108,7 @@ MainEntryParser::MainEntryParser() {
 
 MainEntryParser::~MainEntryParser() {
     if (m_impl) {
-        SCLLOG(SclLog::MESSAGE, "~MainEntryParser() has called");
         delete m_impl;
-        m_impl = NULL;
     }
 }
 

@@ -54,7 +54,6 @@ BinKeyCoordFrameParser::
 load(int layout_id)
 {
     BinResource *bin_xmlres = BinResource::get_instance();
-    int layout_data_offset = bin_xmlres->info[LAYOUT].offset;
 
     char path[_POSIX_PATH_MAX] = {0};
 
@@ -160,8 +159,6 @@ BinKeyCoordFrameParser::get_key_coordinate_pointer_frame() {
 
 void
 BinKeyCoordFrameParser::decode_key_coordinate_record(FileStorage& storage, const PSclLayoutKeyCoordinate cur, const Key_coordinate_record_width& record_width) {
-    int width = 0;
-
     cur->valid = (sclboolean)true;
     //x
     cur->x = storage.get<sint_t>(record_width.x);

@@ -669,6 +669,8 @@ CSCLWindowsImplEfl::move_window(const sclwindow window, scl16 x, scl16 y)
                 rotatey = orgx;
             }
             break;
+            case ROTATION_0: break;
+            default: break;
         }
 
     #ifdef DO_NOT_MOVE_MAGNIFIER_WINDOW

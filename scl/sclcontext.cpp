@@ -300,8 +300,6 @@ CSCLContext::set_farthest_move_point(scltouchdevice touch_id, sclint x, sclint y
     MultiTouchContext *ctx = find_multi_touch_context(touch_id);
     if (ctx) {
         CSCLUtils *utils = CSCLUtils::get_instance();
-        sclint deltax = ctx->cur_pressed_point.x - x;
-        sclint deltay = ctx->cur_pressed_point.y - y;
         ctx->farthest_move_dist = utils->get_approximate_distance(x, y, ctx->cur_pressed_point.x, ctx->cur_pressed_point.y);
 
         ctx->farthest_move_point.x = x;

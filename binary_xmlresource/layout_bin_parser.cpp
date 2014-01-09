@@ -99,7 +99,7 @@ parsing_layout_table() {
     m_layout_size = m_storage.get<sint_t>(REC_NUM_BYTES);
 
     // layout_rec_data_size
-    int layout_rec_data_size = m_storage.get<sint_t>(LAYOUT_REC_DATA_SIZE_BYTES);
+    m_storage.advance(LAYOUT_REC_DATA_SIZE_BYTES);
 
     for (int i = 0; i < m_layout_size; ++i) {
         SclLayout& cur = m_layout_table[i];

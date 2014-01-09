@@ -378,7 +378,7 @@ CSCLUIBuilder::draw_button(const sclwindow window, scldrawctx draw_ctx, const sc
  * @remark draw_button
  */
 sclboolean
-CSCLUIBuilder::draw_button_label(const sclwindow window, const scldrawctx draw_ctx, const scl16 key_index, const SCLButtonState state, const sclboolean shift)
+CSCLUIBuilder::draw_button_label(const sclwindow window, const scldrawctx draw_ctx, const scl16 key_index, SCLButtonState state, SCLShiftState shift)
 {
     SCL_DEBUG();
 
@@ -675,7 +675,7 @@ CSCLUIBuilder::draw_button_bg_by_sw(const sclwindow window, const scldrawctx dra
  * @remark draw_button
  */
 sclboolean
-CSCLUIBuilder::draw_button_bg_by_img(const sclwindow window, const scldrawctx draw_ctx,const scl16 key_index, const SCLButtonState state, const sclboolean shift)
+CSCLUIBuilder::draw_button_bg_by_img(const sclwindow window, const scldrawctx draw_ctx, scl16 key_index, SCLButtonState state, SCLShiftState shift)
 {
     SCL_DEBUG();
 
@@ -1035,7 +1035,7 @@ CSCLUIBuilder::show_magnifier(const sclwindow window, scldrawctx draw_ctx)
                     if (magnifier_configure->show_shift_label) {
                         shiftidx = SCL_SHIFT_STATE_ON;
                     }
-                    if (coordinate->use_long_key_magnifier && state->get_cur_action_state() == ACTION_STATE_BASE_LONGKEY ||
+                    if ((coordinate->use_long_key_magnifier && state->get_cur_action_state() == ACTION_STATE_BASE_LONGKEY) ||
                         state->get_cur_action_state() == ACTION_STATE_POPUP_LONGKEY) {
                             const sclchar* targetstr = coordinate->long_key_value;
                             const sclchar* customstr = context->get_custom_magnifier_label(context->get_last_touch_device_id(), loop);

@@ -64,7 +64,7 @@ get_width(const char* field_name) const{
     if (field_name == NULL) return 0;
 
     int idx = m_current_metadata_record_id;
-    if (idx < 0 || idx > metadata.m_vec_metadata_record.size()) return 0;
+    if (idx < 0 || idx > (int)metadata.m_vec_metadata_record.size()) return 0;
 
     const MetaData_Record&  metadata_record = metadata.m_vec_metadata_record.at(idx);
 
@@ -76,7 +76,7 @@ get_width(const char* field_name) const{
 const unsigned short MetaData_Handler::
 get_width(const char* name, const MetaData_Record& metadata_record) const{
     assert(name);
-    for (int i = 0; i < metadata_record.vField.size(); ++i) {
+    for (size_t i = 0; i < metadata_record.vField.size(); ++i) {
         if ( 0 == strcmp(name, metadata_record.vField.at(i).m_name)) {
             return metadata_record.vField.at(i).m_width;
         }
@@ -88,7 +88,7 @@ const int MetaData_Handler::
 find_metadata_record_index(const char* name)const{
     assert(name);
 
-    for ( int i = 0; i < metadata.m_vec_metadata_record.size(); ++i) {
+    for ( size_t i = 0; i < metadata.m_vec_metadata_record.size(); ++i) {
         const MetaData_Record& metadata_record = metadata.m_vec_metadata_record.at(i);
 
         if (0 == strcmp(metadata_record.m_name, name)) {

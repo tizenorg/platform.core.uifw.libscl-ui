@@ -40,7 +40,6 @@ static tts_h tts = NULL;
 static Eina_Bool _get_default_zone_geometry_info (Ecore_X_Window root, scluint *x, scluint *y, scluint *w, scluint *h)
 {
     Ecore_X_Atom zone_geometry_atom;
-    Ecore_X_Window default_zone;
     Ecore_X_Window* zone_lists;
     sclint num_zone_lists;
     sclint num_ret;
@@ -160,6 +159,7 @@ CSCLUtilsImplLinux::get_screen_resolution(sclint *x, sclint *y) {
     static Evas_Coord scr_w = 0, scr_h = 0;
     if (scr_w == 0 || scr_h == 0) {
         scluint w, h;
+        w = h = 0;
         if (_get_default_zone_geometry_info(ecore_x_window_root_first_get(), NULL, NULL, &w, &h)) {
             scr_w = w;
             scr_h = h;

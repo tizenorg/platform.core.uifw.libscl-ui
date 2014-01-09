@@ -24,11 +24,11 @@
 class String_Provider: public IString_Provider{
     public:
         String_Provider(const String_Bin_Parser* sp): m_sp(sp) {}
-        const char* get_string_by_id(const int id)const{
+        const char* get_string_by_id(int id)const{
             if (m_sp == NULL) return NULL;
 
             const std::vector<const char*>& string_depository = m_sp->get_string_depository();
-            if (id >= 0 && id < string_depository.size())
+            if (id >= 0 && id < (int)string_depository.size())
                 return string_depository.at(id);
 
             return NULL;
