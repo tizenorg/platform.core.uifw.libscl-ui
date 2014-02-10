@@ -125,8 +125,7 @@ CSCLUIBuilder::init(sclwindow parent)
         /* Creates the dim window */
         /* FIXME */
         //if (scl_check_arrindex(defaultLayoutIdx, MAX_LAYOUT)) {
-        /* FIXME:Dim window creation should be blocked by setting dim_ise_window_flag to false in default_configure.xml*/
-        //m_gwes->m_windows->create_dim_window(window, NULL, sclres_layout[layout].width, sclres_layout[layout].height);
+        m_gwes->m_windows->create_dim_window(window, NULL, sclres_layout[layout].width, sclres_layout[layout].height);
 
         /* m_gwes->m_events->set_touch_event_offset(scl_default_configure.touch_offset);*/
         /*Moved to Show Layout*/
