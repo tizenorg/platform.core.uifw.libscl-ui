@@ -209,8 +209,8 @@ CSCLUIBuilder::show_layout(const sclwindow window, const scl16 x, const scl16 y,
                     }
                 } else if (layout->image_path[BUTTON_STATE_NORMAL]) {
                     /* If the target window is virtual window, let's draw it on the base window */
-                    sclint targetx = 0;
-                    sclint targety = 0;
+                    sclint targetx = cache->get_custom_starting_coordinates().x;
+                    sclint targety = cache->get_custom_starting_coordinates().y;
                     sclwindow targetwin = window;
                     if (winctx) {
                         if (winctx->is_virtual) {
@@ -598,8 +598,9 @@ CSCLUIBuilder::draw_window_bg_by_sw(const sclwindow window, const scldrawctx dra
 
     CSCLWindows *windows = CSCLWindows::get_instance();
     CSCLGraphics *graphics = CSCLGraphics::get_instance();
+    CSCLResourceCache *cache = CSCLResourceCache::get_instance();
 
-    if (graphics && windows) {
+    if (graphics && windows && cache) {
         /* If the target window is virtual window, let's draw it on the base window */
         sclwindow targetwin = window;
         //SclWindowContext *winctx = windows->get_window_context(window, FALSE);
@@ -610,7 +611,9 @@ CSCLUIBuilder::draw_window_bg_by_sw(const sclwindow window, const scldrawctx dra
             }
         }
 
-        graphics->draw_rectangle(targetwin, draw_ctx, 0, 0, size.width, size.height, line_width, line_color, TRUE, fill_color);
+        graphics->draw_rectangle(targetwin, draw_ctx,
+            cache->get_custom_starting_coordinates().x, cache->get_custom_starting_coordinates().x,
+            size.width, size.height, line_width, line_color, TRUE, fill_color);
     }
 
     return TRUE;

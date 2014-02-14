@@ -58,6 +58,9 @@ CSCLResourceCache::init()
 
     resize_resource_elements_by_resolution();
 
+    mCurStartingCoordinates.x = 0;
+    mCurStartingCoordinates.y = 0;
+
     return TRUE;
 }
 
@@ -970,15 +973,20 @@ CSCLResourceCache::recompute_layout(sclwindow window)
                             }
 
                             /* If this button's custom id is in the disabled key list, make it disabled */
+                            sclboolean found = false;
                             if ((*pCurLayoutKeyCoordinate)[loop].custom_id) {
                                 for (sclint inner_loop = 0;inner_loop < MAX_DISABLED_KEY;inner_loop++) {
                                     if (!(mDisabledKeyList[inner_loop].empty())) {
                                         if (mDisabledKeyList[inner_loop].compare(
                                             (*pCurLayoutKeyCoordinate)[loop].custom_id) == 0) {
                                                 (*pCurButtonContext)[loop].state = BUTTON_STATE_DISABLED;
+                                                found = true;
                                         }
                                     }
                                 }
+                            }
+                            if (!found) {
+                                (*pCurButtonContext)[loop].state = BUTTON_STATE_NORMAL;
                             }
 
                             /* Apply the custom scale rate value */
@@ -996,6 +1004,12 @@ CSCLResourceCache::recompute_layout(sclwindow window)
                             (*pCurLayoutKeyCoordinate)[loop].extract_offset_y *= utils->get_custom_scale_rate_y();
                             (*pCurLayoutKeyCoordinate)[loop].magnifier_offset_x *= utils->get_custom_scale_rate_x();
                             (*pCurLayoutKeyCoordinate)[loop].magnifier_offset_y *= utils->get_custom_scale_rate_y();
+
+                            if (windows->is_base_window(window)) {
+                                /* Apply the custom starting coordinates */
+                                (*pCurLayoutKeyCoordinate)[loop].x += mCurStartingCoordinates.x;
+                                (*pCurLayoutKeyCoordinate)[loop].y += mCurStartingCoordinates.y;
+                            }
                         }
                     }
                     //finalize navigation info:mrunal.s
@@ -1644,4 +1658,17 @@ CSCLResourceCache::find_substituted_string(const sclchar *original)
     }
 
     return ret;
+}
+
+void
+CSCLResourceCache::set_custom_starting_coordinates(sclint x, sclint y)
+{
+    mCurStartingCoordinates.x = x;
+    mCurStartingCoordinates.y = y;
+}
+
+SclPoint
+CSCLResourceCache::get_custom_starting_coordinates()
+{
+    return mCurStartingCoordinates;
 }

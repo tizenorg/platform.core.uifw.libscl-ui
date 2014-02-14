@@ -251,6 +251,13 @@ public:
     void set_custom_scale_rate(sclfloat x, sclfloat y);
 
     /**
+     * @brief This API sets the starting coordinates for drawing keyboard's contents
+     * @param[in] x the starting coordinate x
+     * @param[in] y the starting coordinate y
+     */
+    void set_custom_starting_coordinates(sclint x, sclint y);
+
+    /**
      * @brief This API returns the number of current multi touch contexts,
      *        which means how many fingers are currently pressing the touch device
      * @return number of touch contexts

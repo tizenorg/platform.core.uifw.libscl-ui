@@ -592,6 +592,20 @@ CSCLUIImpl::set_custom_scale_rate(sclfloat x, sclfloat y)
 }
 
 /**
+ * Sets the custom starting coordinates for drawing the keyboard's content
+ */
+void
+CSCLUIImpl::set_custom_starting_coordinates(sclint x, sclint y)
+{
+    if (m_initialized) {
+        CSCLResourceCache *cache = CSCLResourceCache::get_instance();
+        if (cache) {
+            cache->set_custom_starting_coordinates(x, y);
+        }
+    }
+}
+
+/**
  * Returns the scl base window size
  */
 SclRectangle

@@ -83,6 +83,9 @@ public:
     void set_string_substitution(const sclchar *original, const sclchar *substitute);
     void unset_string_substitution(const sclchar *original);
     const sclchar* find_substituted_string(const sclchar *original);
+
+    void set_custom_starting_coordinates(sclint x, sclint y);
+    SclPoint get_custom_starting_coordinates();
 private:
     sclboolean resize_resource_elements_by_resolution();
     sclboolean resize_layout_by_resolution(sclbyte layout_index, sclboolean resize_key_only = FALSE);
@@ -110,6 +113,8 @@ protected:
     std::map<std::string, std::string> mStringSubstitutor;
 
     sclchar mCurThemename[_POSIX_PATH_MAX];
+
+    SclPoint mCurStartingCoordinates;
 };
 
 }

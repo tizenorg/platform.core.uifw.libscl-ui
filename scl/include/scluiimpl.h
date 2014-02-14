@@ -88,6 +88,8 @@ public:
     sclfloat get_custom_scale_rate_y();
     void set_custom_scale_rate(sclfloat x, sclfloat y);
 
+    void set_custom_starting_coordinates(sclint x, sclint y);
+
     sclint get_multi_touch_context_num();
     sclboolean get_multi_touch_event(sclint seqorder, SclUIEventDesc *desc);
 
