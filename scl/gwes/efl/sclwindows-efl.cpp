@@ -91,7 +91,6 @@ static Eina_Bool x_event_window_show_cb (void *data, int ev_type, void *event)
 #ifdef USING_KEY_GRAB
         focus_handler->grab_keyboard(windows->get_base_window());
 #endif
-        focus_handler->init_key_index();
     }
     return ECORE_CALLBACK_RENEW;
 }
@@ -392,6 +391,13 @@ CSCLWindowsImplEfl::set_parent(const sclwindow parent, const sclwindow window)
     }
 }
 
+Eina_Bool destroy_later(void *data)
+{
+    evas_object_hide((Evas_Object*)data);
+    evas_object_del((Evas_Object*)data);
+    return ECORE_CALLBACK_CANCEL;
+}
+
 /**
  * Destroys the given window
  */
@@ -402,6 +408,10 @@ CSCLWindowsImplEfl::destroy_window(sclwindow window)
 
     CSCLWindows *windows = CSCLWindows::get_instance();
     CSCLUtils *utils = CSCLUtils::get_instance();
+
+    utils->log("WinEfl_destroywin %p %p (basewin %p mag %p)\n",
+        window, elm_win_xwindow_get(static_cast<Evas_Object*>(window)),
+        windows->get_base_window(), windows->get_magnifier_window());
 
     SclWindowContext *winctx = NULL;
     if (windows && window) {
@@ -461,9 +471,15 @@ CSCLWindowsImplEfl::destroy_window(sclwindow window)
         }
 
         if (!(winctx->is_virtual)) {
-            Evas_Object *win = (Evas_Object*)window;
-            evas_object_hide(win);
-            evas_object_del(win);
+            /* FIXME : A workaround for the bug that event on a window being hidden is delivered to
+                e17, instead of the window itself or the window right below - Should report to WM */
+            if (window == windows->get_nth_popup_window(SCL_WINDOW_Z_TOP)) {
+                ecore_timer_add(0.1f, destroy_later, (void*)window);
+            } else {
+                Evas_Object *win = (Evas_Object*)window;
+                evas_object_hide(win);
+                evas_object_del(win);
+            }
         }
         utils->log("WinEfl_destroywin %p %p (basewin %p mag %p)\n",
             window, elm_win_xwindow_get(static_cast<Evas_Object*>(window)),
@@ -573,7 +589,13 @@ CSCLWindowsImplEfl::hide_window(const sclwindow window,  sclboolean fForce)
                     elm_win_keyboard_mode_set(win, ELM_WIN_KEYBOARD_OFF);
                 } else {
 #endif
-                    evas_object_hide(win);
+                    /* FIXME : A workaround for the bug that event on a window being hidden is delivered to
+                        e17, instead of the window itself or the window right below - Should report to WM */
+                    if (window == windows->get_nth_popup_window(SCL_WINDOW_Z_TOP)) {
+                        evas_object_move(win, -10000, -10000);
+                    } else {
+                        evas_object_hide(win);
+                    }
 #ifdef APPLY_WINDOW_MANAGER_CHANGE
                 }
 #endif
