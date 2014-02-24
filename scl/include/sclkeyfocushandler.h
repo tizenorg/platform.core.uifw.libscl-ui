@@ -22,20 +22,18 @@
 //#define TARGET_EMULATOR
 //SCL_BEGIN_DECLS
 
-
 namespace scl
 {
 
 #define NAVI_INFO_MAX_ROWS  20
 #define NAVI_INFO_MAX_COLS  20
 
-typedef enum _SclKeyFocusNavigationDirection {
-    NAVIGATE_LEFT,
-    NAVIGATE_RIGHT,
-    NAVIGATE_UP,
-    NAVIGATE_DOWN
-}SclKeyFocusNavigationDirection;
+typedef struct {
+    scl8 candidate;
+    scl8 candidate_otherside;
+} NEXT_CANDIDATE_INFO;
 
+/*
 typedef struct _SclKeyboardRowInfo {
     sclbyte start_index;
     sclbyte size;
@@ -45,11 +43,28 @@ typedef struct _SclKeyboardRowInfo {
 
 typedef struct _SclKeyFocusNavigationInfo {
     sclbyte total_rows;
-    sclbyte current_row;
-    sclbyte current_column;
     sclshort row_coord;
     SclKeyboardRowInfo* rows[NAVI_INFO_MAX_ROWS];
 }SclKeyFocusNavigationInfo;
+
+typedef struct _SclPopupRelativeKeyInfo {
+    sclbyte index;
+    sclwindow window;
+}SclPopupRelativeKeyInfo;
+
+typedef struct _SclPopupRowInfo {
+    sclbyte start_index;
+    sclbyte size;
+    sclshort col_coord[NAVI_INFO_MAX_COLS];
+    SclPopupRelativeKeyInfo nexts[NAVI_INFO_MAX_COLS][NAVIGATE_MAX];
+}SclPopupRowInfo;
+
+typedef struct _SclPopupNavigationInfo {
+    sclbyte total_rows;
+    sclshort row_coord;
+    SclPopupRowInfo* rows[NAVI_INFO_MAX_ROWS];
+}SclPopupNavigationInfo;
+*/
 
 /**
 * @brief The class to store key focus navigation information
@@ -84,17 +99,24 @@ public:
 #endif
 
     /*Focus navigation info buildig API*/
-    void reset_key_navigation_info(void);
-    void update_key_navigation_info(SclLayoutKeyCoordinatePointer p_next_key, sclbyte index);
-    void finalize_key_navigation_info(void);
+    void reset_key_navigation_info(sclwindow window);
+    void update_key_navigation_info(sclwindow window, scl8 index, SclLayoutKeyCoordinatePointer p_next_key);
+    void finalize_key_navigation_info(sclwindow window);
+
+    void popup_opened(sclwindow window);
+    void popup_closed(sclwindow window);
 
     /*Focus navigation API*/
-    void init_key_index(bool b_update_window = TRUE);
-    sclbyte get_current_key_index(void);
-    sclbyte get_next_key_index(SclKeyFocusNavigationDirection direction);
+    void init_key_index();
+    scl8 get_current_focus_key(void);
+    sclwindow get_current_focus_window(void);
+    void process_navigation(SCLHighlightNavigationDirection direction);
 
 private:
-    SclKeyFocusNavigationInfo m_key_navi_info;
+    NEXT_CANDIDATE_INFO get_next_candidate_key(SCLHighlightNavigationDirection direction, SclRectangle cur, sclwindow window);
+
+    sclwindow m_focus_window;
+    scl8 m_focus_key;
 
 #ifdef USING_KEY_GRAB
     bool m_keyboard_grabbed;

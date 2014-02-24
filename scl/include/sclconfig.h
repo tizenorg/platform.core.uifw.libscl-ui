@@ -320,6 +320,16 @@ typedef enum _SCLWindowDecorator {
     MAX_WND_DECORATOR,
 }SCLWindowDecorator;
 
+/**@brief  Highligh moving direction */
+typedef enum _SCLHighlightNavigationDirection {
+    HIGHLIGHT_NAVIGATE_NONE,
+    HIGHLIGHT_NAVIGATE_LEFT,
+    HIGHLIGHT_NAVIGATE_RIGHT,
+    HIGHLIGHT_NAVIGATE_UP,
+    HIGHLIGHT_NAVIGATE_DOWN,
+    HIGHLIGHT_NAVIGATE_MAX
+}SCLHighlightNavigationDirection;
+
 /**@brief  SCL Notification to ISEs */
 typedef enum _SCLUINotiType {
     SCL_UINOTITYPE_POPUP_TIMEOUT, // The layout of popup window will be passed as etc_info data

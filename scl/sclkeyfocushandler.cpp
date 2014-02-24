@@ -25,6 +25,8 @@
 #include "sclcontext.h"
 #include "sclresourcecache.h"
 #include "sclwindows.h"
+#include "scleventhandler.h"
+#include "sclres_manager.h"
 
 using namespace scl;
 
@@ -37,14 +39,9 @@ CSCLKeyFocusHandler::CSCLKeyFocusHandler()
 #ifdef USING_KEY_GRAB
     m_keyboard_grabbed = FALSE;
 #endif
-    m_key_navi_info.total_rows = 0;
-    m_key_navi_info.current_row = 0;
-    m_key_navi_info.current_column = 0;
-    m_key_navi_info.row_coord = 0;
-    int i = 0;
-    for(i = 0;i < NAVI_INFO_MAX_ROWS; i++) {
-        m_key_navi_info.rows[i] = NULL;
-    }
+    m_focus_key = NOT_USED;
+    m_focus_window = SCLWINDOW_INVALID;
+
 #ifdef TARGET_EMULATOR
     create_sniffer_window();
 #endif
@@ -56,16 +53,6 @@ CSCLKeyFocusHandler::CSCLKeyFocusHandler()
 CSCLKeyFocusHandler::~CSCLKeyFocusHandler()
 {
     SCL_DEBUG();
-    for(int counter = 0; counter < m_key_navi_info.total_rows; counter++) {
-        if (m_key_navi_info.rows[counter]) {
-            if (m_key_navi_info.rows[counter]->sub_layout) {
-                delete m_key_navi_info.rows[counter]->sub_layout;
-                m_key_navi_info.rows[counter]->sub_layout = NULL;
-            }
-            delete m_key_navi_info.rows[counter];
-            m_key_navi_info.rows[counter] = NULL;
-        }
-    }
 }
 
 CSCLKeyFocusHandler*
@@ -121,31 +108,56 @@ CSCLKeyFocusHandler::ungrab_keyboard(const sclwindow parent)
 
 #endif /*USING_KEY_GRAB*/
 
+
+void
+CSCLKeyFocusHandler::popup_opened(sclwindow window)
+{
+
+}
+
+void
+CSCLKeyFocusHandler::popup_closed(sclwindow window)
+{
+    sclshort layout = NOT_USED;
+    CSCLContext *context = CSCLContext::get_instance();
+    CSCLWindows *windows = CSCLWindows::get_instance();
+    SclResParserManager *sclres_manager = SclResParserManager::get_instance();
+    PSclLayoutKeyCoordinatePointerTable sclres_layout_key_coordinate_pointer_frame = NULL;
+
+    if (context && windows && sclres_manager) {
+        sclres_layout_key_coordinate_pointer_frame = sclres_manager->get_key_coordinate_pointer_frame();
+        layout = context->get_popup_layout(m_focus_window);
+    }
+    if (sclres_layout_key_coordinate_pointer_frame &&
+        scl_check_arrindex(layout, MAX_SCL_LAYOUT) && scl_check_arrindex(m_focus_key, MAX_KEY)) {
+            SclLayoutKeyCoordinatePointer cur = sclres_layout_key_coordinate_pointer_frame[layout][m_focus_key];
+            SclWindowContext *winctx = windows->get_window_context(m_focus_window);
+            SclRectangle cur_key_coordinate;
+            if (winctx) {
+                cur_key_coordinate.x = cur->x + winctx->geometry.x;
+                cur_key_coordinate.y = cur->y + winctx->geometry.y;
+                cur_key_coordinate.width = cur->width;
+                cur_key_coordinate.height = cur->height;
+            }
+
+            m_focus_window = windows->get_base_window();
+            m_focus_key = get_next_candidate_key(HIGHLIGHT_NAVIGATE_NONE, cur_key_coordinate, windows->get_base_window()).candidate;
+    }
+}
+
 /**
  * Resets the navigation info
  */
 void
-CSCLKeyFocusHandler::reset_key_navigation_info(void)
+CSCLKeyFocusHandler::reset_key_navigation_info(sclwindow window)
 {
-    LOGD("Inside reset_key_navigation_info");
-    LOGD("Total rows = %d \n",m_key_navi_info.total_rows);
-    for(int counter = 0; counter < m_key_navi_info.total_rows; counter++) {
-        if (m_key_navi_info.rows[counter]) {
-            if (m_key_navi_info.rows[counter]->sub_layout) {
-                delete m_key_navi_info.rows[counter]->sub_layout;
-                m_key_navi_info.rows[counter]->sub_layout = NULL;
-            }
-            delete m_key_navi_info.rows[counter];
-            m_key_navi_info.rows[counter] = NULL;
+    CSCLWindows *windows = CSCLWindows::get_instance();
+    if (windows) {
+        if (windows->is_base_window(window)) {
+            m_focus_window = window;
+            m_focus_key = 0;
         }
     }
-
-    m_key_navi_info.total_rows = 0;
-    m_key_navi_info.current_row = 0;
-    m_key_navi_info.current_column = 0;
-    m_key_navi_info.row_coord = 0;
-
-    LOGD("reset_key_navigation_info executed succesfully \n");
 }
 
 /**
@@ -172,221 +184,401 @@ CSCLKeyFocusHandler::sub_layout_match(sclchar *layout1,sclchar *layout2)
  * Builds the key navigation info
  */
 void
-CSCLKeyFocusHandler::update_key_navigation_info(SclLayoutKeyCoordinatePointer p_next_key, sclbyte index)
+CSCLKeyFocusHandler::update_key_navigation_info(sclwindow window, scl8 index, SclLayoutKeyCoordinatePointer p_next_key)
 {
-    //LOGD("Inside update_key_navigation_info for index = %d \n",index);
-    //check for new row..
-    //LOGD("y coordinate = %d \n",p_next_key->y);
-    bool allocate_row = FALSE;
-    if (!m_key_navi_info.total_rows || m_key_navi_info.row_coord != p_next_key->y) {
-        allocate_row = TRUE;
-    } else {
-        if (!sub_layout_match(m_key_navi_info.rows[m_key_navi_info.current_row]->sub_layout,p_next_key->sub_layout)) {
-            allocate_row = TRUE;
-        }
-    }
 
-    if (allocate_row) {
-        //allocate new row..
-        //LOGD("allocate new row.. = \n");
-        m_key_navi_info.rows[m_key_navi_info.total_rows++] = new SclKeyboardRowInfo;
-        //preserving the y-coordinate temprorily in row_coord for comparision in next call..
-        m_key_navi_info.row_coord = p_next_key->y;
-        //update the current_row to keep updating the size in next calls
-        m_key_navi_info.current_row = m_key_navi_info.total_rows - 1;
-        //set up the start index of row
-        m_key_navi_info.rows[m_key_navi_info.current_row]->start_index = index;
-        //update sub_layout info if any..
-        if (p_next_key->sub_layout) {
-            int size = strlen(p_next_key->sub_layout);
-            m_key_navi_info.rows[m_key_navi_info.current_row]->sub_layout = new sclchar[size + 1];
-            strcpy(m_key_navi_info.rows[m_key_navi_info.current_row]->sub_layout,p_next_key->sub_layout);
-        } else {
-            m_key_navi_info.rows[m_key_navi_info.current_row]->sub_layout = NULL;
-        }
-        //reset size, will be increamented afterwards..
-        m_key_navi_info.rows[m_key_navi_info.current_row]->size = 0;
-    }
-    //update the start of this column
-    m_key_navi_info.rows[m_key_navi_info.current_row]->col_coord[m_key_navi_info.rows[m_key_navi_info.current_row]->size] = p_next_key->x;
-    //update the row size..
-    m_key_navi_info.rows[m_key_navi_info.current_row]->size++;
-    //LOGD("update_key_navigation_info executed succesfully for index = %d \n",index);
 }
 
 /**
  * Finalize the navigation info
  */
 void
-CSCLKeyFocusHandler::finalize_key_navigation_info(void)
+CSCLKeyFocusHandler::finalize_key_navigation_info(sclwindow window)
 {
-    LOGD("Inside finalize_key_navigation_info");
 
-    m_key_navi_info.current_row = 0;
-    m_key_navi_info.current_column = 0;
-    LOGD("Total rows = %d \n",m_key_navi_info.total_rows);
-    LOGD("finalize_key_navigation_info executed succesfully \n");
 }
 
 /**
  * Initializes the key index to first key of first row
  */
 void
-CSCLKeyFocusHandler::init_key_index(bool b_update_window)
+CSCLKeyFocusHandler::init_key_index()
 {
-    CSCLContext *context = CSCLContext::get_instance();
-    sclchar* current_sub_layout = context->get_cur_sublayout();
-    int row = 0;
-    for(row = 0; row <= m_key_navi_info.total_rows - 1; row++) {
-        if (m_key_navi_info.rows[row]->sub_layout) {
-            if (strcmp(m_key_navi_info.rows[row]->sub_layout, current_sub_layout) == 0) {
-                break;
-            }
-        } else {
-            break;
-        }
-    }
-    if (row > m_key_navi_info.total_rows - 1) {
-        row = 0;
-    }
-    m_key_navi_info.current_row = row;
-    m_key_navi_info.current_column = 0;
-    LOGD("Inside init_key_index m_key_navi_info.current_row = %d \n",m_key_navi_info.current_row);
 
-    CSCLWindows *windows = CSCLWindows::get_instance();
-    sclwindow base_window = windows->get_base_window();
-    sclbyte current_key_index = get_current_key_index();
-    CSCLResourceCache *cache = CSCLResourceCache::get_instance();
-    SclButtonContext *btncontext = cache->get_cur_button_context(base_window, current_key_index);
-    const SclLayoutKeyCoordinate *coordinate = cache->get_cur_layout_key_coordinate(base_window, current_key_index);
-    btncontext->state = BUTTON_STATE_PRESSED;
-    if (b_update_window) {
-        windows->update_window(base_window, coordinate->x, coordinate->y, coordinate->width, coordinate->height);
-    }
 }
 
 /**
- * Returns the currently focussed key index
+ * Returns the currently focused key index
  */
-sclbyte
-CSCLKeyFocusHandler::get_current_key_index(void)
+scl8
+CSCLKeyFocusHandler::get_current_focus_key(void)
 {
-    LOGD("Inside get_current_key_index m_key_navi_info.current_row = %d \n",m_key_navi_info.current_row);
-    sclbyte index = m_key_navi_info.rows[m_key_navi_info.current_row]->start_index + m_key_navi_info.current_column;
-    LOGD("Inside get_current_key_index index = %d \n",index);
-    return index;
+    return m_focus_key;
+}
+
+/**
+ * Returns the currently focused window
+ */
+sclwindow
+CSCLKeyFocusHandler::get_current_focus_window(void)
+{
+    return m_focus_window;
+}
+
+#ifndef min
+#define min(a,b)    (((a) < (b)) ? (a) : (b))
+#endif
+#ifndef max
+#define max(a,b)    (((a) > (b)) ? (a) : (b))
+#endif
+/* If 2 lines overlap, this will return minus value of overlapping length,
+    and return positive distance value otherwise */
+int calculate_distance(int start_1, int end_1, int start_2, int end_2)
+{
+    return -1 * (min(end_1, end_2) - max(start_1, start_2));
 }
 
 /**
  * Computes and Returns the key index for next focussed key depending upon the navigation direction
  */
-sclbyte
-CSCLKeyFocusHandler::get_next_key_index(SclKeyFocusNavigationDirection direction)
+NEXT_CANDIDATE_INFO
+CSCLKeyFocusHandler::get_next_candidate_key(SCLHighlightNavigationDirection direction, SclRectangle cur, sclwindow window)
 {
-    LOGD("Inside get_next_key_index m_key_navi_info.current_row = %d \n",m_key_navi_info.current_row);
-    sclbyte index = 0;
-    bool row_found = FALSE;
-    int row = 0;
-    int col = 0;	
-    switch(direction) {
-        case NAVIGATE_LEFT:
-            if (m_key_navi_info.current_column) {
-                m_key_navi_info.current_column--;
-            } else {
-                m_key_navi_info.current_column = m_key_navi_info.rows[m_key_navi_info.current_row]->size - 1;
-            }
-        break;
-        case NAVIGATE_RIGHT:
-            if (m_key_navi_info.current_column < m_key_navi_info.rows[m_key_navi_info.current_row]->size - 1) {
-                m_key_navi_info.current_column++;
-            } else {
-                m_key_navi_info.current_column = 0;
-            }
-            LOGD("Inside get_next_key_index m_key_navi_info.current_column = %d \n",m_key_navi_info.current_column);
-        break;
-        case NAVIGATE_UP:
-            if (m_key_navi_info.current_row) {
-                CSCLContext *context = CSCLContext::get_instance();
-                sclchar* current_sub_layout = context->get_cur_sublayout();
-                for(row = m_key_navi_info.current_row - 1; row >= 0; row--) {
-                    if (m_key_navi_info.rows[row]->sub_layout) {
-                        if (strcmp(m_key_navi_info.rows[row]->sub_layout, current_sub_layout) == 0) {
-                            row_found = TRUE;
-                            break;
-                        }
-                    } else {
-                        row_found = TRUE;
-                        break;
+    NEXT_CANDIDATE_INFO ret;
+    ret.candidate = NOT_USED;
+    ret.candidate_otherside = NOT_USED;
+
+    int candidate = NOT_USED;
+    int candidate_distance_x = INT_MAX;
+    int candidate_distance_y = INT_MAX;
+
+    int otherside_candidate = NOT_USED;
+
+    sclshort layout = NOT_USED;
+
+    CSCLContext *context = CSCLContext::get_instance();
+    CSCLWindows *windows = CSCLWindows::get_instance();
+
+    SclResParserManager *sclres_manager = SclResParserManager::get_instance();
+    PSclLayoutKeyCoordinatePointerTable sclres_layout_key_coordinate_pointer_frame = NULL;
+
+    if (context && windows && sclres_manager) {
+        sclres_layout_key_coordinate_pointer_frame = sclres_manager->get_key_coordinate_pointer_frame();
+
+        if (windows->is_base_window(window)) {
+            layout = context->get_base_layout();
+        } else {
+            layout = context->get_popup_layout(window);
+        }
+    }
+    if (sclres_layout_key_coordinate_pointer_frame) {
+        for (sclint loop = 0;loop < MAX_KEY; loop++) {
+            SclLayoutKeyCoordinatePointer p = sclres_layout_key_coordinate_pointer_frame[layout][loop];
+            if (p && (loop != m_focus_key || window != m_focus_window)) {
+                if (p->sub_layout && context->get_cur_sublayout()) {
+                    if (!sub_layout_match(p->sub_layout, context->get_cur_sublayout())) {
+                        continue;
                     }
                 }
-            }
-        break;
-        case NAVIGATE_DOWN:
-            if (m_key_navi_info.current_row < m_key_navi_info.total_rows - 1) {
-                CSCLContext *context = CSCLContext::get_instance();
-                sclchar* current_sub_layout = context->get_cur_sublayout();
-                for(row = m_key_navi_info.current_row + 1; row <= m_key_navi_info.total_rows - 1; row++) {
-                    if (m_key_navi_info.rows[row]->sub_layout) {
-                        if (strcmp(m_key_navi_info.rows[row]->sub_layout, current_sub_layout) == 0) {
-                            row_found = TRUE;
-                            break;
+                SclWindowContext *winctx = windows->get_window_context(window);
+                SclRectangle btn;
+                if (winctx) {
+                    btn.x = p->x + winctx->geometry.x;
+                    btn.y = p->y + winctx->geometry.y;
+                    btn.width = p->width;
+                    btn.height = p->height;
+                }
+
+                int temp_distance_x;
+                int temp_distance_y;
+
+                switch(direction) {
+                    case HIGHLIGHT_NAVIGATE_LEFT:
+                        temp_distance_y = calculate_distance(btn.y, btn.y + btn.height, cur.y, cur.y + cur.height);
+                        //if (temp_distance_y <= candidate_distance_y) {
+                        if (temp_distance_y <= candidate_distance_y && temp_distance_y < 0) {
+                            /* If the button is closer in Y axis, consider this to be the closer regardless of X */
+                            if (temp_distance_y < candidate_distance_y) {
+                                candidate_distance_x = INT_MAX;
+                            }
+                            /* Save for otherside */
+                            otherside_candidate = loop;
+                            int temp_distance_x = calculate_distance(btn.x, btn.x + btn.width, cur.x, cur.x + cur.width);
+                            if (temp_distance_x < candidate_distance_x) {
+                                if (btn.x < cur.x) {
+                                    candidate = loop;
+                                    candidate_distance_x = temp_distance_x;
+                                    candidate_distance_y = temp_distance_y;
+                                }
+                            }
                         }
-                    } else {
-                        row_found = TRUE;
                         break;
-                    }
+                    case HIGHLIGHT_NAVIGATE_RIGHT:
+                        temp_distance_y = calculate_distance(btn.y, btn.y + btn.height, cur.y, cur.y + cur.height);
+                        //if (temp_distance_y <= candidate_distance_y) {
+                        if (temp_distance_y <= candidate_distance_y && temp_distance_y < 0) {
+                            /* If the button is closer in Y axis, consider this to be the closer regardless of X */
+                            if (temp_distance_y < candidate_distance_y) {
+                                candidate_distance_x = INT_MAX;
+                            }
+                            /* Save for otherside */
+                            if (otherside_candidate == NOT_USED) {
+                                otherside_candidate = loop;
+                            }
+                            temp_distance_x = calculate_distance(btn.x, btn.x + btn.width, cur.x, cur.x + cur.width);
+                            if (temp_distance_x < candidate_distance_x) {
+                                if (btn.x > cur.x) {
+                                    candidate = loop;
+                                    candidate_distance_x = temp_distance_x;
+                                    candidate_distance_y = temp_distance_y;
+                                }
+                            }
+                        }
+                        break;
+                    case HIGHLIGHT_NAVIGATE_UP:
+                        temp_distance_x = calculate_distance(btn.x, btn.x + btn.width, cur.x, cur.x + cur.width);
+                        if (temp_distance_x <= candidate_distance_x) {
+                            /* If the button is closer in X axis, consider this to be the closer regardless of Y */
+                            if (temp_distance_x < candidate_distance_x) {
+                                candidate_distance_y = INT_MAX;
+                            }
+                            temp_distance_y = calculate_distance(btn.y, btn.y + btn.height, cur.y, cur.y + cur.height);
+                            if (temp_distance_y < candidate_distance_y) {
+                                if (btn.y < cur.y) {
+                                    candidate = loop;
+                                    candidate_distance_x = temp_distance_x;
+                                    candidate_distance_y = temp_distance_y;
+                                }
+                            }
+                        }
+                        break;
+                    case HIGHLIGHT_NAVIGATE_DOWN:
+                        temp_distance_x = calculate_distance(btn.x, btn.x + btn.width, cur.x, cur.x + cur.width);
+                        if (temp_distance_x <= candidate_distance_x) {
+                            /* If the button is closer in X axis, consider this to be the closer regardless of Y */
+                            if (temp_distance_x < candidate_distance_x) {
+                                candidate_distance_y = INT_MAX;
+                            }
+                            temp_distance_y = calculate_distance(btn.y, btn.y + btn.height, cur.y, cur.y + cur.height);
+                            if (temp_distance_y < candidate_distance_y) {
+                                if (btn.y > cur.y) {
+                                    candidate = loop;
+                                    candidate_distance_x = temp_distance_x;
+                                    candidate_distance_y = temp_distance_y;
+                                }
+                            }
+                        }
+                        break;
+                    default:
+                        temp_distance_y = calculate_distance(btn.y, btn.y + btn.height, cur.y, cur.y + cur.height);
+                        if (temp_distance_y <= candidate_distance_y) {
+                            int temp_distance_x = calculate_distance(btn.x, btn.x + btn.width, cur.x, cur.x + cur.width);
+                            if (temp_distance_x <= candidate_distance_x) {
+                                candidate = loop;
+                                candidate_distance_x = temp_distance_x;
+                                candidate_distance_y = temp_distance_y;
+                            }
+                        }
+                        break;
                 }
             }
-        break;
-        default:
-        break;
+        }
+
+        ret.candidate = candidate;
+        ret.candidate_otherside = otherside_candidate;
     }
 
-    if (row_found) {
-        //get x xoordinate of the currently focused key
-        int cur_row = m_key_navi_info.current_row;
-        int cur_col = m_key_navi_info.current_column;
-        sclshort cur_col_coodinate = m_key_navi_info.rows[cur_row]->col_coord[cur_col];
-        //check if the current colum is within the size range of target row
-        if (cur_col <= m_key_navi_info.rows[row]->size - 1) {
-            //check if the x coordinate of current column is greater than the same column in the target row
-            if (m_key_navi_info.rows[row]->col_coord[cur_col] <= cur_col_coodinate) {
-                //check for a match from current column to last column
-                for(col = cur_col; col <= m_key_navi_info.rows[row]->size - 1; col++) {
-                    if (m_key_navi_info.rows[row]->col_coord[col] == cur_col_coodinate) {
-                        break;
-                    } else if (m_key_navi_info.rows[row]->col_coord[col] > cur_col_coodinate) {
-                        col--;
-                        break;
-                    }
-                }
-            } else {
-                //check for a match from current column to first column
-                for(col = cur_col - 1; col >= 0; col--) {
-                    if (m_key_navi_info.rows[row]->col_coord[col] <= cur_col_coodinate) {
-                        break;
-                    }
-                }
-            }
+    return ret;
+}
+
+void
+CSCLKeyFocusHandler::process_navigation(SCLHighlightNavigationDirection direction)
+{
+    CSCLContext *context = CSCLContext::get_instance();
+    CSCLWindows *windows = CSCLWindows::get_instance();
+    CSCLEventHandler *handler = CSCLEventHandler::get_instance();
+    SclResParserManager *sclres_manager = SclResParserManager::get_instance();
+    sclshort layout = NOT_USED;
+
+    sclwindow prev_window = m_focus_window;
+    scl8 prev_key = m_focus_key;
+    sclwindow next_window = m_focus_window;
+    scl8 next_key = m_focus_key;
+
+    PSclLayoutKeyCoordinatePointerTable sclres_layout_key_coordinate_pointer_frame = NULL;
+    
+    if (context && windows && handler && sclres_manager) {
+        sclres_layout_key_coordinate_pointer_frame = sclres_manager->get_key_coordinate_pointer_frame();
+
+        if (windows->is_base_window(m_focus_window)) {
+            layout = context->get_base_layout();
         } else {
-            for(col = m_key_navi_info.rows[row]->size - 1; col >= 0; col--) {
-                if (m_key_navi_info.rows[row]->col_coord[col] <= cur_col_coodinate) {
-                    break;
-                }
-            }
+            layout = context->get_popup_layout(m_focus_window);
         }
-        if (col < 0) {
-            col = 0;
-        } else if (col > m_key_navi_info.rows[row]->size - 1) {
-            col = m_key_navi_info.rows[row]->size - 1;
-        } else {
-        }
-        m_key_navi_info.current_row = row;		
-        m_key_navi_info.current_column = col;
     }
-    index = m_key_navi_info.rows[m_key_navi_info.current_row]->start_index + m_key_navi_info.current_column;
-    LOGD("Inside get_next_key_index index = %d \n",index);
-    return index;
+
+    if (sclres_layout_key_coordinate_pointer_frame &&
+        scl_check_arrindex(layout, MAX_SCL_LAYOUT) && scl_check_arrindex(m_focus_key, MAX_KEY)) {
+        SclLayoutKeyCoordinatePointer cur = sclres_layout_key_coordinate_pointer_frame[layout][m_focus_key];
+
+        /* To compare with buttons in popup window, let's convert to global coordinates */
+        SclWindowContext *winctx = windows->get_window_context(m_focus_window);
+        SclRectangle cur_key_coordinate;
+        if (winctx && cur) {
+            cur_key_coordinate.x = cur->x + winctx->geometry.x;
+            cur_key_coordinate.y = cur->y + winctx->geometry.y;
+            cur_key_coordinate.width = cur->width;
+            cur_key_coordinate.height = cur->height;
+        }
+
+        NEXT_CANDIDATE_INFO base_candidate;
+        base_candidate.candidate = base_candidate.candidate_otherside = NOT_USED;
+        NEXT_CANDIDATE_INFO popup_candidate;
+        popup_candidate.candidate = popup_candidate.candidate_otherside = NOT_USED;
+        sclboolean search_in_base_window = TRUE;
+        sclboolean exclude_popup_covered_area = FALSE;
+
+        if (!windows->is_base_window(windows->get_nth_window_in_Z_order_list(SCL_WINDOW_Z_TOP))) {
+            CSCLResourceCache *cache = CSCLResourceCache::get_instance();
+            if (cache) {
+                const SclLayout *layout =
+                    cache->get_cur_layout(windows->get_nth_window_in_Z_order_list(SCL_WINDOW_Z_TOP));
+                if (!(layout->use_sw_background) || layout->bg_color.a != 0) {
+                    const PSclInputModeConfigure sclres_input_mode_configure =
+                        sclres_manager->get_input_mode_configure_table();
+                    if (sclres_input_mode_configure[winctx->inputmode].use_dim_window) {
+                        search_in_base_window = FALSE;
+                    } else {
+                        exclude_popup_covered_area = TRUE;
+                    }
+                }
+            }
+            popup_candidate = get_next_candidate_key(direction, cur_key_coordinate,
+                windows->get_nth_window_in_Z_order_list(SCL_WINDOW_Z_TOP));
+        }
+        /* Now search buttons in base window */
+        if (search_in_base_window) {
+            base_candidate = get_next_candidate_key(direction, cur_key_coordinate, windows->get_base_window());
+        }
+
+        if (popup_candidate.candidate == NOT_USED && base_candidate.candidate != NOT_USED) {
+            next_window = windows->get_base_window();
+            next_key = base_candidate.candidate;
+        } else if (popup_candidate.candidate != NOT_USED && base_candidate.candidate == NOT_USED) {
+            next_window = windows->get_nth_window_in_Z_order_list(SCL_WINDOW_Z_TOP);
+            next_key = popup_candidate.candidate;
+        } else if (popup_candidate.candidate == NOT_USED && base_candidate.candidate == NOT_USED) {
+            if (base_candidate.candidate_otherside != NOT_USED) {
+                next_window = windows->get_base_window();
+                next_key = base_candidate.candidate_otherside;
+            } else if (popup_candidate.candidate_otherside != NOT_USED) {
+                next_window = windows->get_nth_window_in_Z_order_list(SCL_WINDOW_Z_TOP);
+                next_key = popup_candidate.candidate;
+            }
+        } else {
+            /* Compare those 2 candidates */
+            sclwindow popup_window = windows->get_nth_window_in_Z_order_list(SCL_WINDOW_Z_TOP);
+            sclshort base_layout = context->get_base_layout();
+            sclshort popup_layout = context->get_popup_layout(popup_window);
+
+            SclLayoutKeyCoordinatePointer base_key =
+                sclres_layout_key_coordinate_pointer_frame[base_layout][base_candidate.candidate];
+            SclLayoutKeyCoordinatePointer popup_key =
+                sclres_layout_key_coordinate_pointer_frame[popup_layout][popup_candidate.candidate];
+
+            SclWindowContext *base_winctx = windows->get_window_context(windows->get_base_window());
+            SclWindowContext *popup_winctx = windows->get_window_context(popup_window);
+
+            SclRectangle base_key_coordinate;
+            if (base_winctx) {
+                base_key_coordinate.x = base_key->x + base_winctx->geometry.x;
+                base_key_coordinate.y = base_key->y + base_winctx->geometry.y;
+                base_key_coordinate.width = base_key->width;
+                base_key_coordinate.height = base_key->height;
+            }
+
+            SclRectangle popup_key_coordinate;
+            if (popup_winctx) {
+                popup_key_coordinate.x = popup_key->x + popup_winctx->geometry.x;
+                popup_key_coordinate.y = popup_key->y + popup_winctx->geometry.y;
+                popup_key_coordinate.width = popup_key->width;
+                popup_key_coordinate.height = popup_key->height;
+            }
+
+            if (exclude_popup_covered_area) {
+                CSCLUtils *utils = CSCLUtils::get_instance();
+                if (utils) {
+                    /* If the base candidate key is covered by popup window, do not choose it */
+                    if (utils->is_rect_overlap(base_key_coordinate, popup_winctx->geometry)) {
+                        base_candidate.candidate = NOT_USED;
+                    }
+                }
+            }
+            /* If the base candidate key wasn't excluded */
+            if (base_candidate.candidate != NOT_USED) {
+                int base_distance_x = INT_MAX;
+                int base_distance_y = INT_MAX;
+                int popup_distance_x = INT_MAX;
+                int popup_distance_y = INT_MAX;
+
+                base_distance_x = calculate_distance(
+                    cur_key_coordinate.x, cur_key_coordinate.x + cur_key_coordinate.width,
+                    base_key_coordinate.x, base_key_coordinate.x + base_key_coordinate.width);
+                base_distance_y = calculate_distance(
+                    cur_key_coordinate.y, cur_key_coordinate.y + cur_key_coordinate.height,
+                    base_key_coordinate.y, base_key_coordinate.y + base_key_coordinate.height);
+
+                popup_distance_x = calculate_distance(
+                    cur_key_coordinate.x, cur_key_coordinate.x + cur_key_coordinate.width,
+                    popup_key_coordinate.x, popup_key_coordinate.x + popup_key_coordinate.width);
+                popup_distance_y = calculate_distance(
+                    cur_key_coordinate.y, cur_key_coordinate.y + cur_key_coordinate.height,
+                    popup_key_coordinate.y, popup_key_coordinate.y + popup_key_coordinate.height);
+
+                if (direction == HIGHLIGHT_NAVIGATE_LEFT || direction == HIGHLIGHT_NAVIGATE_RIGHT) {
+                    int minimum_distance = -1 * (cur_key_coordinate.height / 3);
+                    if (base_distance_y > minimum_distance && popup_distance_y > minimum_distance) {
+                        minimum_distance = 0;
+                    }
+                    if (base_distance_y < minimum_distance && popup_distance_y < minimum_distance) {
+                        if (base_distance_x < popup_distance_x) {
+                            next_window = windows->get_base_window();
+                            next_key = base_candidate.candidate;
+                        } else {
+                            next_window = windows->get_nth_window_in_Z_order_list(SCL_WINDOW_Z_TOP);
+                            next_key = popup_candidate.candidate;
+                        }
+                    } else if (base_distance_y < minimum_distance) {
+                        next_window = windows->get_base_window();
+                        next_key = base_candidate.candidate;
+                    } else {
+                        next_window = windows->get_nth_window_in_Z_order_list(SCL_WINDOW_Z_TOP);
+                        next_key = popup_candidate.candidate;
+                    }
+                } else if (direction == HIGHLIGHT_NAVIGATE_UP || direction == HIGHLIGHT_NAVIGATE_DOWN) {
+                    int minimum_distance = -1 * (cur_key_coordinate.width / 3);
+                    if (base_distance_x > minimum_distance && popup_distance_x > minimum_distance) {
+                        minimum_distance = 0;
+                    }
+                    if (base_distance_x < minimum_distance && popup_distance_x < minimum_distance) {
+                        if (base_distance_y < popup_distance_y) {
+                            next_window = windows->get_base_window();
+                            next_key = base_candidate.candidate;
+                        } else {
+                            next_window = windows->get_nth_window_in_Z_order_list(SCL_WINDOW_Z_TOP);
+                            next_key = popup_candidate.candidate;
+                        }
+                    } else if (base_distance_x < minimum_distance) {
+                        next_window = windows->get_base_window();
+                        next_key = base_candidate.candidate;
+                    } else {
+                        next_window = windows->get_nth_window_in_Z_order_list(SCL_WINDOW_Z_TOP);
+                        next_key = popup_candidate.candidate;
+                    }
+                }
+            }
+        }
+    }
 }
 
 #ifdef TARGET_EMULATOR

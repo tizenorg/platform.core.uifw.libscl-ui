@@ -44,8 +44,6 @@ CSCLEvents::~CSCLEvents()
 {
     SCL_DEBUG();
 
-    fini();
-
     if (m_impl) {
         delete m_impl;
         m_impl = NULL;
@@ -129,29 +127,38 @@ CSCLEvents::process_key_event(const char *key)
     const SclLayoutKeyCoordinate *coordinate = NULL;
 
     CSCLWindows *windows = CSCLWindows::get_instance();
-    sclwindow window = windows->get_base_window();
     CSCLKeyFocusHandler* focus_handler = CSCLKeyFocusHandler::get_instance();
 
-    sclbyte current_key_index = focus_handler->get_current_key_index();
-    sclbyte key_index = current_key_index;
+    sclwindow current_focus_window = focus_handler->get_current_focus_window();
+    scl8 current_key_index = focus_handler->get_current_focus_key();
+    sclwindow focus_window = current_focus_window;
+    scl8 key_index = current_key_index;
 
     if (strcmp(keyname, "Right") == 0) {
-        key_index = focus_handler->get_next_key_index(NAVIGATE_RIGHT);
+        focus_handler->process_navigation(HIGHLIGHT_NAVIGATE_RIGHT);
+        focus_window = focus_handler->get_current_focus_window();
+        key_index = focus_handler->get_current_focus_key();
     } else if (strcmp(keyname, "Left") == 0) {
-        key_index = focus_handler->get_next_key_index(NAVIGATE_LEFT);
+        focus_handler->process_navigation(HIGHLIGHT_NAVIGATE_LEFT);
+        focus_window = focus_handler->get_current_focus_window();
+        key_index = focus_handler->get_current_focus_key();
     } else if (strcmp(keyname, "Up") == 0) {
-        key_index = focus_handler->get_next_key_index(NAVIGATE_UP);
+        focus_handler->process_navigation(HIGHLIGHT_NAVIGATE_UP);
+        focus_window = focus_handler->get_current_focus_window();
+        key_index = focus_handler->get_current_focus_key();
     } else if (strcmp(keyname, "Down") == 0) {
-        key_index = focus_handler->get_next_key_index(NAVIGATE_DOWN);
+        focus_handler->process_navigation(HIGHLIGHT_NAVIGATE_DOWN);
+        focus_window = focus_handler->get_current_focus_window();
+        key_index = focus_handler->get_current_focus_key();
     } else if ((strcmp(keyname, "Return") == 0)||(strcmp(keyname, "Enter") == 0)) {
-        btncontext = cache->get_cur_button_context(window, current_key_index);
-        coordinate = cache->get_cur_layout_key_coordinate(window, current_key_index);
-        btncontext->state = BUTTON_STATE_NORMAL;
-        controller->mouse_press(window, coordinate->x, coordinate->y, TRUE);
-        controller->mouse_release(window, coordinate->x, coordinate->y, TRUE);
+        btncontext = cache->get_cur_button_context(current_focus_window, current_key_index);
+        coordinate = cache->get_cur_layout_key_coordinate(current_focus_window, current_key_index);
+        //btncontext->state = BUTTON_STATE_NORMAL;
+        controller->mouse_press(current_focus_window, coordinate->x, coordinate->y, TRUE);
+        controller->mouse_release(current_focus_window, coordinate->x, coordinate->y, TRUE);
         if (KEY_TYPE_MODECHANGE != coordinate->key_type) {
-            btncontext->state = BUTTON_STATE_PRESSED;
-            windows->update_window(window, coordinate->x, coordinate->y, coordinate->width, coordinate->height);
+            //btncontext->state = BUTTON_STATE_PRESSED;
+            //windows->update_window(window, coordinate->x, coordinate->y, coordinate->width, coordinate->height);
         } else {
             focus_handler->init_key_index();
         }
@@ -160,39 +167,43 @@ CSCLEvents::process_key_event(const char *key)
         return FALSE;
     }
 
-    if (current_key_index != key_index) {
-        btncontext = cache->get_cur_button_context(window, key_index);
-        prevbtncontext = cache->get_cur_button_context(window, current_key_index);
-        prevcoordinate = cache->get_cur_layout_key_coordinate(window, current_key_index);
-        coordinate = cache->get_cur_layout_key_coordinate(window, key_index);
-        prevbtncontext->state = BUTTON_STATE_NORMAL;
-        btncontext->state = BUTTON_STATE_PRESSED;
-        sclshort x,y,width,height;
-        if (prevcoordinate->x < coordinate->x) {
-            x = prevcoordinate->x;
-        } else {
-            x = coordinate->x;
-        }
+    if (current_key_index != key_index || current_focus_window != focus_window) {
+        prevcoordinate = cache->get_cur_layout_key_coordinate(current_focus_window, current_key_index);
+        coordinate = cache->get_cur_layout_key_coordinate(focus_window, key_index);
+        //prevbtncontext->state = BUTTON_STATE_NORMAL;
+        //btncontext->state = BUTTON_STATE_PRESSED;
+        if (current_focus_window == focus_window) {
+            sclshort x,y,width,height;
+            if (prevcoordinate->x < coordinate->x) {
+                x = prevcoordinate->x;
+            } else {
+                x = coordinate->x;
+            }
 
-        if (prevcoordinate->y < coordinate->y) {
-            y = prevcoordinate->y;
-        } else {
-            y = coordinate->y;
-        }
+            if (prevcoordinate->y < coordinate->y) {
+                y = prevcoordinate->y;
+            } else {
+                y = coordinate->y;
+            }
 
-        if (prevcoordinate->x + prevcoordinate->width > coordinate->x + coordinate->width) {
-            width = prevcoordinate->x + prevcoordinate->width - x;
-        } else {
-            width = coordinate->x + coordinate->width - x;
-        }
+            if (prevcoordinate->x + prevcoordinate->width > coordinate->x + coordinate->width) {
+                width = prevcoordinate->x + prevcoordinate->width - x;
+            } else {
+                width = coordinate->x + coordinate->width - x;
+            }
 
-        if (prevcoordinate->y + prevcoordinate->height > coordinate->y + coordinate->height) {
-            height = prevcoordinate->y + prevcoordinate->height - y;
+            if (prevcoordinate->y + prevcoordinate->height > coordinate->y + coordinate->height) {
+                height = prevcoordinate->y + prevcoordinate->height - y;
+            } else {
+                height = coordinate->y + coordinate->height - y;
+            }
+            windows->update_window(focus_window, x, y, width, height);
         } else {
-            height = coordinate->y + coordinate->height - y;
+            windows->update_window(focus_window,
+                coordinate->x, coordinate->y, coordinate->width, coordinate->height);
+            windows->update_window(current_focus_window,
+                prevcoordinate->x, prevcoordinate->y, prevcoordinate->width, prevcoordinate->height);
         }
-        windows->update_window(window, x, y, width, height);
-
     } else {
     }
     return TRUE;
