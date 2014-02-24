@@ -425,6 +425,9 @@ typedef enum _SCLParserType {
 
 #define SCL_AUTO_DETECT_PORTRAIT_LANDSCAPE TRUE
 
+/* FIXME : This should be configurable also */
+#define SCL_HIGHLIGHT_UI_IMAGE "B09_icon_cue.png"
+
 typedef enum _SCLDebugMode {
     DEBUGMODE_DISABLED,
     DEBUGMODE_DISPLAY_INTERNAL,

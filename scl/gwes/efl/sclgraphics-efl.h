@@ -23,6 +23,8 @@
 //#define DO_NOT_MOVE_MAGNIFIER_WINDOW
 //#define FULL_SCREEN_TEST
 
+#include <Evas.h>
+
 /* Still an experimental feature.. Will be refined after being stabilized */
 //#define TEST_NEWBACKEND
 #ifdef TEST_NEWBACKEND
@@ -101,6 +103,7 @@ public :
     SclSize get_image_size(sclchar* image_path);
     SclSize get_text_size(const SclFontInfo &fontinfo, const sclchar *str);
 private:
+    Evas_Object *m_highlight_ui_object;
 };
 } /* End of scl namespace */
 #endif
