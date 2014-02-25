@@ -29,6 +29,7 @@
 #include "sclcontroller.h"
 #include "sclactionstate.h"
 #include "sclres_manager.h"
+#include "sclkeyfocushandler.h"
 
 using namespace scl;
 
@@ -266,6 +267,10 @@ bool CSCLWindows::close_popup(sclwindow window)
 {
     printf("close_popup window (%p) \n",window);
 
+    CSCLKeyFocusHandler *focus_handler = CSCLKeyFocusHandler::get_instance();
+    if (focus_handler) {
+        focus_handler->popup_closed(window);
+    }
     pop_window_in_Z_order_list(window);
 
     hide_window(get_dim_window());

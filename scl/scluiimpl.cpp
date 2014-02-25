@@ -26,6 +26,7 @@
 #include "sclerroradjustment.h"
 #include "sclres_manager.h"
 #include "scleventhandler.h"
+#include "sclkeyfocushandler.h"
 
 using namespace scl;
 
@@ -195,6 +196,7 @@ CSCLUIImpl::set_input_mode(const sclchar *input_mode)
         CSCLController *controller = CSCLController::get_instance();
         CSCLWindows *windows = CSCLWindows::get_instance();
         CSCLEventHandler *handler = CSCLEventHandler::get_instance();
+        CSCLKeyFocusHandler* focus_handler = CSCLKeyFocusHandler::get_instance();
 
         scl8 mode = NOT_USED;
 
@@ -203,10 +205,11 @@ CSCLUIImpl::set_input_mode(const sclchar *input_mode)
             mode = sclres_manager->get_inputmode_id(input_mode);
         }
 
-        if (controller && windows && handler && mode != NOT_USED) {
+        if (controller && windows && handler && focus_handler && mode != NOT_USED) {
             handler->set_input_mode(input_mode);
             ret = controller->process_input_mode_change(mode);
             windows->update_window(windows->get_base_window());
+            focus_handler->init_key_index();
         }
     }
 
@@ -406,7 +409,11 @@ CSCLUIImpl::set_shift_state(SCLShiftState state)
         /*inform the client that the shift state changed */
         CSCLEventHandler *handler = CSCLEventHandler::get_instance();
         if (handler) {
-            SCLEventReturnType ret = handler->on_event_notification(SCL_UINOTITYPE_SHIFT_STATE_CHANGE, state);
+            SclNotiShiftStateChangeDesc desc;
+            desc.ui_event_desc = NULL;
+            desc.shift_state = state;
+
+            SCLEventReturnType ret = handler->on_event_notification(SCL_UINOTITYPE_SHIFT_STATE_CHANGE, &desc);
             if (ret == SCL_EVENT_DONE) {
                 return;
             }

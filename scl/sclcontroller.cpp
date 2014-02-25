@@ -533,50 +533,57 @@ CSCLController::process_button_pressed_event(sclwindow window, sclint x, sclint 
                 }
                 switch (coordinate->popup_type) {
                 case POPUP_TYPE_BTN_PRESS_POPUP_DRAG: {
-                    sclint popup_input_mode = sclres_manager->get_inputmode_id(coordinate->popup_input_mode[SCL_DRAG_STATE_NONE]);
-                    SCLDisplayMode display_mode = context->get_display_mode();
-                    /* FIXME */
-                    //if (scl_check_arrindex(popup_input_mode, MAX_INPUT_MODE_POPUP) &&
-                    if (scl_check_arrindex(popup_input_mode, MAX_SCL_INPUT_MODE) &&
-                        scl_check_arrindex(display_mode, DISPLAYMODE_MAX)) {
-                        sclshort popupLayoutId =
-                            sclres_manager->get_layout_id(sclres_input_mode_configure[popup_input_mode].layouts[display_mode]);
-                        SclRectangle popupRect;
-                        SclRectangle baseWndRect;
-                        SclLayout *layout = NULL;
+                    SclNotiPopupOpenDesc desc;
+                    desc.ui_event_desc = &key_event_desc;
+                    desc.input_mode = coordinate->popup_input_mode[SCL_DRAG_STATE_NONE];
+                    if (SCL_EVENT_PASS_ON == handler->on_event_notification(SCL_UINOTITYPE_POPUP_OPEN, &desc)) {
+                        sclint popup_input_mode = sclres_manager->get_inputmode_id(desc.input_mode);
+                        SCLDisplayMode display_mode = context->get_display_mode();
                         /* FIXME */
-                        //if (scl_check_arrindex(popupLayoutId, MAX_LAYOUT)) {
-                        if (scl_check_arrindex(popupLayoutId, MAX_SCL_LAYOUT)) {
-                            layout = &sclres_layout[popupLayoutId];
-                        }
-                        if (layout) {
-                            windows->get_window_rect(windows->get_base_window(), &baseWndRect);
-                            popupRect.x = coordinate->x + coordinate->popup_relative_x + baseWndRect.x;
-                            popupRect.y = coordinate->y + coordinate->popup_relative_y + baseWndRect.y;
-                            //popupRect.width = utils->get_scale_x(layout->width);
-                            //popupRect.height= utils->get_scale_y(layout->height);
-                            popupRect.width = layout->width;
-                            popupRect.height= layout->height;
-                            windows->close_all_popups();
-                            SclWindowOpener opener;
-                            opener.window = window;
-                            opener.key = key_index;
-                            windows->open_popup(opener,
-                                                popupRect,
-                                                popup_input_mode,
-                                                popupLayoutId,
-                                                coordinate->popup_type,
-                                                sclres_input_mode_configure[popup_input_mode].use_virtual_window,
-                                                sclres_input_mode_configure[popup_input_mode].use_dim_window,
-                                                coordinate->extract_offset_x,
-                                                coordinate->extract_offset_y,
-                                                sclres_input_mode_configure[popup_input_mode].timeout
-                                               );
-                            windows->hide_window(windows->get_magnifier_window());
-                            /* FIXME : The parent key should be turned back to NORMAL state when RELEASED,
-                                in case of POPUP_TYPE_BTN_PRESS_POPUP_DRAG type. Temporariliy setting NORMAL here. */
-                            btncontext->state = BUTTON_STATE_NORMAL;
-                            _play_tts_for_input_mode_name(popup_input_mode);
+                        //if (scl_check_arrindex(popup_input_mode, MAX_INPUT_MODE_POPUP) &&
+                        if (scl_check_arrindex(popup_input_mode, MAX_SCL_INPUT_MODE) &&
+                            scl_check_arrindex(display_mode, DISPLAYMODE_MAX)) {
+                            sclshort popupLayoutId =
+                                sclres_manager->get_layout_id(sclres_input_mode_configure[popup_input_mode].layouts[display_mode]);
+                            SclRectangle popupRect;
+                            SclRectangle baseWndRect;
+                            SclLayout *layout = NULL;
+                            /* FIXME */
+                            //if (scl_check_arrindex(popupLayoutId, MAX_LAYOUT)) {
+                            if (scl_check_arrindex(popupLayoutId, MAX_SCL_LAYOUT)) {
+                                layout = &sclres_layout[popupLayoutId];
+                            }
+                            if (layout) {
+                                windows->get_window_rect(windows->get_base_window(), &baseWndRect);
+                                popupRect.x = coordinate->x + coordinate->popup_relative_x + baseWndRect.x;
+                                popupRect.y = coordinate->y + coordinate->popup_relative_y + baseWndRect.y;
+                                //popupRect.width = utils->get_scale_x(layout->width);
+                                //popupRect.height= utils->get_scale_y(layout->height);
+                                popupRect.width = layout->width;
+                                popupRect.height= layout->height;
+                                windows->close_all_popups();
+
+                                SclWindowOpener opener;
+                                opener.window = window;
+                                opener.key = key_index;
+                                windows->open_popup(opener,
+                                    popupRect,
+                                    popup_input_mode,
+                                    popupLayoutId,
+                                    coordinate->popup_type,
+                                    sclres_input_mode_configure[popup_input_mode].use_virtual_window,
+                                    sclres_input_mode_configure[popup_input_mode].use_dim_window,
+                                    coordinate->extract_offset_x,
+                                    coordinate->extract_offset_y,
+                                    sclres_input_mode_configure[popup_input_mode].timeout
+                                    );
+
+                                windows->hide_window(windows->get_magnifier_window());
+                                /* FIXME : The parent key should be turned back to NORMAL state when RELEASED,
+                                    in case of POPUP_TYPE_BTN_PRESS_POPUP_DRAG type. Temporariliy setting NORMAL here. */
+                                btncontext->state = BUTTON_STATE_NORMAL;
+                                _play_tts_for_input_mode_name(popup_input_mode);
+                            }
                         }
                     }
                 }
@@ -819,44 +826,51 @@ CSCLController::process_button_long_pressed_event(sclwindow window, sclbyte key_
                         windows->get_window_rect(windows->get_base_window(), &baseWndRect);
                         popupRect.x = coordinate->x + coordinate->popup_relative_x + baseWndRect.x;
                         popupRect.y = coordinate->y + coordinate->popup_relative_y + baseWndRect.y;
-                        sclint popup_input_mode = sclres_manager->get_inputmode_id(coordinate->popup_input_mode[SCL_DRAG_STATE_NONE]);
-                        SCLDisplayMode display_mode = context->get_display_mode();
-                        /* FIXME */
-                        //if (scl_check_arrindex(popup_input_mode, MAX_INPUT_MODE_POPUP) &&
-                        if (scl_check_arrindex(popup_input_mode, MAX_SCL_INPUT_MODE) &&
-                            scl_check_arrindex(display_mode, DISPLAYMODE_MAX)) {
-                            SclLayout *layout = NULL;
-                            sclshort popupLayoutId =
-                                sclres_manager->get_layout_id(sclres_input_mode_configure[popup_input_mode].layouts[display_mode]);
-                            /* FIXME */
-                            //if (scl_check_arrindex(popupLayoutId, MAX_LAYOUT)) {
-                            if (scl_check_arrindex(popupLayoutId, MAX_SCL_LAYOUT)) {
-                                layout = &sclres_layout[popupLayoutId];
-                            }
-                            if (layout) {
-                                //popupRect.width = utils->get_scale_x(layout->width);
-                                //popupRect.height= utils->get_scale_y(layout->height);
-                                popupRect.width = layout->width;
-                                popupRect.height= layout->height;
 
-                                SclWindowOpener opener;
-                                opener.window = window;
-                                opener.key = key_index;
-                                windows->open_popup(
-                                    opener,
-                                    popupRect,
-                                    popup_input_mode,
-                                    popupLayoutId,
-                                    coordinate->popup_type,
-                                    sclres_input_mode_configure[popup_input_mode].use_virtual_window,
-                                    sclres_input_mode_configure[popup_input_mode].use_dim_window,
-                                    coordinate->extract_offset_x,
-                                    coordinate->extract_offset_y,
-                                    sclres_input_mode_configure[popup_input_mode].timeout
-                                    );
-                                windows->hide_window(windows->get_magnifier_window());
-                                _play_tts_for_input_mode_name(popup_input_mode);
-                                ret = TRUE;
+                        SclNotiPopupOpenDesc desc;
+                        desc.ui_event_desc = &key_event_desc;
+                        desc.input_mode = coordinate->popup_input_mode[SCL_DRAG_STATE_NONE];
+                        if (SCL_EVENT_PASS_ON == handler->on_event_notification(SCL_UINOTITYPE_POPUP_OPEN, &desc)) {
+                            sclint popup_input_mode = sclres_manager->get_inputmode_id(desc.input_mode);
+                            SCLDisplayMode display_mode = context->get_display_mode();
+                            /* FIXME */
+                            //if (scl_check_arrindex(popup_input_mode, MAX_INPUT_MODE_POPUP) &&
+                            if (scl_check_arrindex(popup_input_mode, MAX_SCL_INPUT_MODE) &&
+                                scl_check_arrindex(display_mode, DISPLAYMODE_MAX)) {
+                                SclLayout *layout = NULL;
+                                sclshort popupLayoutId =
+                                    sclres_manager->get_layout_id(sclres_input_mode_configure[popup_input_mode].layouts[display_mode]);
+                                /* FIXME */
+                                //if (scl_check_arrindex(popupLayoutId, MAX_LAYOUT)) {
+                                if (scl_check_arrindex(popupLayoutId, MAX_SCL_LAYOUT)) {
+                                    layout = &sclres_layout[popupLayoutId];
+                                }
+                                if (layout) {
+                                    //popupRect.width = utils->get_scale_x(layout->width);
+                                    //popupRect.height= utils->get_scale_y(layout->height);
+                                    popupRect.width = layout->width;
+                                    popupRect.height= layout->height;
+
+                                    SclWindowOpener opener;
+                                    opener.window = window;
+                                    opener.key = key_index;
+                                    windows->open_popup(
+                                        opener,
+                                        popupRect,
+                                        popup_input_mode,
+                                        popupLayoutId,
+                                        coordinate->popup_type,
+                                        sclres_input_mode_configure[popup_input_mode].use_virtual_window,
+                                        sclres_input_mode_configure[popup_input_mode].use_dim_window,
+                                        coordinate->extract_offset_x,
+                                        coordinate->extract_offset_y,
+                                        sclres_input_mode_configure[popup_input_mode].timeout
+                                        );
+
+                                    windows->hide_window(windows->get_magnifier_window());
+                                    _play_tts_for_input_mode_name(popup_input_mode);
+                                    ret = TRUE;
+                                }
                             }
                         }
                     }
@@ -1799,72 +1813,80 @@ CSCLController::process_button_release_event(sclwindow window, sclint x, sclint 
                     case POPUP_TYPE_BTN_RELEASE_POPUP_ONCE: {
                         SCLDragState dragstate = context->get_cur_drag_state(touch_id);
                         sclint popup_input_mode = NOT_USED;
+
+                        SclNotiPopupOpenDesc desc;
+                        desc.ui_event_desc = &key_event_desc;
+
                         if (scl_check_arrindex(dragstate, SCL_DRAG_STATE_MAX)) {
+                            desc.input_mode = coordinate->popup_input_mode[dragstate];
                             popup_input_mode = sclres_manager->get_inputmode_id(coordinate->popup_input_mode[dragstate]);
                             /* FIXME */
                             //if (!scl_check_arrindex(popup_input_mode, MAX_INPUT_MODE_POPUP)) {
                             if (!scl_check_arrindex(popup_input_mode, MAX_SCL_INPUT_MODE)) {
-                                popup_input_mode =
-                                    sclres_manager->get_inputmode_id(coordinate->popup_input_mode[SCL_DRAG_STATE_NONE]);
+                                desc.input_mode = coordinate->popup_input_mode[SCL_DRAG_STATE_NONE];
                             }
                         }
-                        SCLDisplayMode display_mode = context->get_display_mode();
-                        /* FIXME */
-                        //if (scl_check_arrindex(popup_input_mode, MAX_INPUT_MODE_POPUP) &&
-                        if (scl_check_arrindex(popup_input_mode, MAX_SCL_INPUT_MODE) &&
-                            scl_check_arrindex(display_mode, DISPLAYMODE_MAX)) {
-                            sclshort popupLayoutId =
-                                sclres_manager->get_layout_id(sclres_input_mode_configure[popup_input_mode].layouts[display_mode]);
-                            if (popupLayoutId == NOT_USED){
-                                // deal with NOT_USED
-                                printf("popupLayoutID is not used.\n");
-                            }
-                            SclLayout *layout = NULL;
+                        if (SCL_EVENT_PASS_ON == handler->on_event_notification(SCL_UINOTITYPE_POPUP_OPEN, &desc)) {
+                            popup_input_mode = sclres_manager->get_inputmode_id(desc.input_mode);
+                            SCLDisplayMode display_mode = context->get_display_mode();
                             /* FIXME */
-                            //if (scl_check_arrindex(popupLayoutId, MAX_LAYOUT)) {
-                            if (scl_check_arrindex(popupLayoutId, MAX_SCL_LAYOUT)) {
-                                layout = &sclres_layout[popupLayoutId];
-                            }
-                            if (layout) {
-                                SclRectangle popupRect;
-                                SclRectangle baseWndRect;
-                                windows->get_window_rect(windows->get_base_window(), &baseWndRect);
-                                popupRect.x = coordinate->x + coordinate->popup_relative_x + baseWndRect.x;
-                                popupRect.y = coordinate->y + coordinate->popup_relative_y + baseWndRect.y;
-
-                                //popupRect.width = utils->get_scale_x(layout->width);
-                                //popupRect.height= utils->get_scale_y(layout->height);
-                                popupRect.width = layout->width;
-                                popupRect.height= layout->height;
-
-                                /* Let's make sure this popup window does not go beyond the screen area */
-                                sclint scr_w, scr_h;
-                                utils->get_screen_resolution(&scr_w, &scr_h);
-
-                                if (popupRect.x + popupRect.width > scr_w) {
-                                    popupRect.x = scr_w - popupRect.width;
+                            //if (scl_check_arrindex(popup_input_mode, MAX_INPUT_MODE_POPUP) &&
+                            if (scl_check_arrindex(popup_input_mode, MAX_SCL_INPUT_MODE) &&
+                                scl_check_arrindex(display_mode, DISPLAYMODE_MAX)) {
+                                sclshort popupLayoutId =
+                                    sclres_manager->get_layout_id(sclres_input_mode_configure[popup_input_mode].layouts[display_mode]);
+                                if (popupLayoutId == NOT_USED){
+                                    // deal with NOT_USED
+                                    printf("popupLayoutID is not used.\n");
                                 }
-                                if (popupRect.y + popupRect.height > scr_h) {
-                                    popupRect.y = scr_h - popupRect.height;
+                                SclLayout *layout = NULL;
+                                /* FIXME */
+                                //if (scl_check_arrindex(popupLayoutId, MAX_LAYOUT)) {
+                                if (scl_check_arrindex(popupLayoutId, MAX_SCL_LAYOUT)) {
+                                    layout = &sclres_layout[popupLayoutId];
                                 }
+                                if (layout) {
+                                    SclRectangle popupRect;
+                                    SclRectangle baseWndRect;
+                                    windows->get_window_rect(windows->get_base_window(), &baseWndRect);
+                                    popupRect.x = coordinate->x + coordinate->popup_relative_x + baseWndRect.x;
+                                    popupRect.y = coordinate->y + coordinate->popup_relative_y + baseWndRect.y;
 
-                                SclWindowOpener opener;
-                                opener.window = window;
-                                opener.key = key_index;
-                                windows->open_popup(
-                                    opener,
-                                    popupRect,
-                                    popup_input_mode,
-                                    popupLayoutId,
-                                    coordinate->popup_type,
-                                    sclres_input_mode_configure[popup_input_mode].use_virtual_window,
-                                    sclres_input_mode_configure[popup_input_mode].use_dim_window,
-                                    coordinate->extract_offset_x,
-                                    coordinate->extract_offset_y,
-                                    sclres_input_mode_configure[popup_input_mode].timeout
-                                );
-                                windows->hide_window(windows->get_magnifier_window());
-                                _play_tts_for_input_mode_name(popup_input_mode);
+                                    //popupRect.width = utils->get_scale_x(layout->width);
+                                    //popupRect.height= utils->get_scale_y(layout->height);
+                                    popupRect.width = layout->width;
+                                    popupRect.height= layout->height;
+
+                                    /* Let's make sure this popup window does not go beyond the screen area */
+                                    sclint scr_w, scr_h;
+                                    utils->get_screen_resolution(&scr_w, &scr_h);
+
+                                    if (popupRect.x + popupRect.width > scr_w) {
+                                        popupRect.x = scr_w - popupRect.width;
+                                    }
+                                    if (popupRect.y + popupRect.height > scr_h) {
+                                        popupRect.y = scr_h - popupRect.height;
+                                    }
+
+                                    SclWindowOpener opener;
+                                    opener.window = window;
+                                    opener.key = key_index;
+                                    windows->open_popup(
+                                        opener,
+                                        popupRect,
+                                        popup_input_mode,
+                                        popupLayoutId,
+                                        coordinate->popup_type,
+                                        sclres_input_mode_configure[popup_input_mode].use_virtual_window,
+                                        sclres_input_mode_configure[popup_input_mode].use_dim_window,
+                                        coordinate->extract_offset_x,
+                                        coordinate->extract_offset_y,
+                                        sclres_input_mode_configure[popup_input_mode].timeout
+                                        );
+
+                                    windows->hide_window(windows->get_magnifier_window());
+                                    _play_tts_for_input_mode_name(popup_input_mode);
+                                }
                             }
                         }
                     }
@@ -2067,52 +2089,74 @@ CSCLController::mouse_press(sclwindow window, sclint x, sclint y, scltouchdevice
         }
 
         if (!isSubEvent) {
-            /* Iterate all the buttons and inform the event */
-            sclboolean ended = FALSE;
-            for (int loop = 0;loop < MAX_KEY && !ended;loop++) {
-                SclButtonContext *btncontext = cache->get_cur_button_context(window, loop);
-                const SclLayoutKeyCoordinate *coordinate = cache->get_cur_layout_key_coordinate(window, loop);
-                if (btncontext && coordinate) {
-                    if (!(btncontext->used)) {
-                        ended = TRUE;
-                    } else if (btncontext->state != BUTTON_STATE_DISABLED &&
-                                coordinate->button_type != BUTTON_TYPE_UIITEM) {
-                        if (process_button_pressed_event(window, x, y, loop, touch_id, actual_event)) {
-                            if (windows->is_base_window(window)) {
-                                state->set_cur_action_state(ACTION_STATE_BASE_PRESS);
-                            } else {
-                                state->set_cur_action_state(ACTION_STATE_POPUP_PRESS);
-                            }
-                            btnIndex = loop;
-                            ret = TRUE;
-                        }
-                    }
-                }
-            }
-
-            /* For covering a missing area about 1 pixel */
-            if (!ret) {
-                for (int loop = 0;loop < MAX_KEY;loop++) {
+            sclboolean process_finished = FALSE;
+            do {
+                /* Iterate all the buttons and inform the event */
+                sclboolean ended = FALSE;
+                for (int loop = 0;loop < MAX_KEY && !ended;loop++) {
                     SclButtonContext *btncontext = cache->get_cur_button_context(window, loop);
-                    const SclLayoutKeyCoordinate* coordinate = cache->get_cur_layout_key_coordinate(window, loop);
+                    const SclLayoutKeyCoordinate *coordinate = cache->get_cur_layout_key_coordinate(window, loop);
                     if (btncontext && coordinate) {
                         if (!(btncontext->used)) {
-                            break;
+                            ended = TRUE;
                         } else if (btncontext->state != BUTTON_STATE_DISABLED &&
                                     coordinate->button_type != BUTTON_TYPE_UIITEM) {
-                            if (process_button_pressed_event(window, x+1, y+1, loop, touch_id, actual_event)) {
+                            if (process_button_pressed_event(window, x, y, loop, touch_id, actual_event)) {
                                 if (windows->is_base_window(window)) {
                                     state->set_cur_action_state(ACTION_STATE_BASE_PRESS);
                                 } else {
                                     state->set_cur_action_state(ACTION_STATE_POPUP_PRESS);
                                 }
                                 btnIndex = loop;
-                                break;
+                                ret = TRUE;
                             }
                         }
                     }
                 }
-            }
+
+                /* For covering a missing area about 1 pixel */
+                if (!ret) {
+                    for (int loop = 0;loop < MAX_KEY;loop++) {
+                        SclButtonContext *btncontext = cache->get_cur_button_context(window, loop);
+                        const SclLayoutKeyCoordinate* coordinate = cache->get_cur_layout_key_coordinate(window, loop);
+                        if (btncontext && coordinate) {
+                            if (!(btncontext->used)) {
+                                break;
+                            } else if (btncontext->state != BUTTON_STATE_DISABLED &&
+                                        coordinate->button_type != BUTTON_TYPE_UIITEM) {
+                                if (process_button_pressed_event(window, x+1, y+1, loop, touch_id, actual_event)) {
+                                    if (windows->is_base_window(window)) {
+                                        state->set_cur_action_state(ACTION_STATE_BASE_PRESS);
+                                    } else {
+                                        state->set_cur_action_state(ACTION_STATE_POPUP_PRESS);
+                                    }
+                                    btnIndex = loop;
+                                    break;
+                                }
+                            }
+                        }
+                    }
+                }
+
+                if (windows->is_base_window(window)) {
+                    process_finished = TRUE;
+                } else if (btnIndex != NOT_USED) {
+                    process_finished = TRUE;
+                } else {
+                    const SclLayout *layout = cache->get_cur_layout(window);
+                    if (layout->use_sw_background && layout->bg_color.a == 0) {
+                        /* If we could not find appropriate button in this popup window and the popup is transparent */
+                        SclWindowContext *basectx = windows->get_window_context(windows->get_base_window());
+                        if (basectx) {
+                            x = (winctx->geometry.x + x - basectx->geometry.x);
+                            y = (winctx->geometry.y + y - basectx->geometry.y);
+                        }
+                        window = windows->get_base_window();
+                    } else {
+                        process_finished = TRUE;
+                    }
+                }
+            } while (!process_finished);
         }
 
         sclwindow skipwindow = window;
@@ -2254,20 +2298,33 @@ CSCLController::mouse_release(sclwindow window, sclint x, sclint y, scltouchdevi
                 float etime;
                 etime = ((t1.tv_sec * 1000000 + t1.tv_usec) - (t0.tv_sec * 1000000 + t0.tv_usec))/1000.0;
                 if (etime < SCL_FLICK_GESTURE_RECOG_TIME) {
-                    sclint direction = DRAG_NONE;
+                    SCLDragType drag_type = DRAG_NONE;
                     if (x > context->get_cur_pressed_point(touch_id).x + utils->get_scaled_x(SCL_FLICK_GESTURE_RECOG_THRESHOLD)) {
-                        direction = DRAG_RIGHT;
+                        drag_type = DRAG_RIGHT;
                     }
                     if (x < context->get_cur_pressed_point(touch_id).x - utils->get_scaled_x(SCL_FLICK_GESTURE_RECOG_THRESHOLD)) {
-                        direction = DRAG_LEFT;
+                        drag_type = DRAG_LEFT;
                     }
                     if (y > context->get_cur_pressed_point(touch_id).y + utils->get_scaled_y(SCL_FLICK_GESTURE_RECOG_THRESHOLD)) {
-                        direction = DRAG_DOWN;
+                        drag_type = DRAG_DOWN;
                     }
                     if (y < context->get_cur_pressed_point(touch_id).y - utils->get_scaled_y(SCL_FLICK_GESTURE_RECOG_THRESHOLD)) {
-                        direction = DRAG_UP;
+                        drag_type = DRAG_UP;
                     }
-                    if (handler->on_event_notification(SCL_UINOTITYPE_GESTURE_FLICK, direction)) {
+                    SclNotiGestureFlickDesc desc;
+                    SclUIEventDesc ui_event_desc = {0};
+                    ui_event_desc.key_value = NULL;
+                    ui_event_desc.key_event = NOT_USED;
+                    ui_event_desc.key_modifier = KEY_MODIFIER_NONE;
+                    ui_event_desc.event_type = EVENT_TYPE_RELEASE;
+                    ui_event_desc.touch_id = touch_id;
+                    ui_event_desc.mouse_pressed_point = context->get_cur_pressed_point(touch_id);
+                    ui_event_desc.mouse_current_point = context->get_cur_move_point(touch_id);
+                    ui_event_desc.mouse_farthest_point = context->get_farthest_move_point(touch_id);
+                    ui_event_desc.touch_event_order = context->get_multi_touch_event_order(touch_id);
+                    desc.ui_event_desc = &ui_event_desc;
+                    desc.drag_type = drag_type;
+                    if (handler->on_event_notification(SCL_UINOTITYPE_GESTURE_FLICK, &desc)) {
                         ended = TRUE;
                     }
                 }
@@ -2276,7 +2333,6 @@ CSCLController::mouse_release(sclwindow window, sclint x, sclint y, scltouchdevi
 
         /* FIXME : We should consider this kind of action in general manner, not only specific to autopopup */
         /* And also, this kind of implementation only selects button that was highlighted at least once. */
-        /* iPhone supports highlighting autopopup buttons with its direction, even if the pointer never goes up on the button */
         // {
         //SclWindowContext *pressedCtx = windows->get_window_context(pressed_window, FALSE);
         SclWindowContext *pressedCtx = windows->get_window_context(pressed_window);
@@ -2365,86 +2421,109 @@ CSCLController::mouse_release(sclwindow window, sclint x, sclint y, scltouchdevi
             }
         }
 
-        MultiTouchContext *mulctx = context->find_multi_touch_context(touch_id);
-        if (mulctx) {
-            if (!(mulctx->is_sub_event)) {
-                /* First check if the event occured in pressed key's threshold area */
-                if (btncontext && coordinate && !ended) {
-                    if (btncontext->used && btncontext->state != BUTTON_STATE_DISABLED) {
-                        if (process_button_release_event(pressed_window, x, y, pressed_key, touch_id, actual_event)) {
-                            btnIndex = pressed_key;
-                            ret = TRUE;
-                            x = coordinate->x + (coordinate->width / 2);
-                            y = coordinate->y + (coordinate->height / 2);
+        sclboolean process_finished = FALSE;
+        do {
+            MultiTouchContext *mulctx = context->find_multi_touch_context(touch_id);
+            if (mulctx) {
+                if (!(mulctx->is_sub_event)) {
+                    /* First check if the event occured in pressed key's threshold area */
+                    if (btncontext && coordinate && !ended) {
+                        if (btncontext->used && btncontext->state != BUTTON_STATE_DISABLED) {
+                            if (process_button_release_event(pressed_window, x, y, pressed_key, touch_id, actual_event)) {
+                                btnIndex = pressed_key;
+                                ret = TRUE;
+                                x = coordinate->x + (coordinate->width / 2);
+                                y = coordinate->y + (coordinate->height / 2);
+                            }
                         }
                     }
-                }
-                for (int loop = 0;loop < MAX_KEY && !ended;loop++) {
-                    SclButtonContext *btncontext = cache->get_cur_button_context(window, loop);
-                    const SclLayoutKeyCoordinate *coordinate = cache->get_cur_layout_key_coordinate(window, loop);
-                    if (btncontext && coordinate) {
-                        if (!(btncontext->used)) {
-                            ended = TRUE;
-                        } else if (btncontext->state != BUTTON_STATE_DISABLED &&
-                                    coordinate->button_type != BUTTON_TYPE_UIITEM) {
-                            if (window != pressed_window || loop != pressed_key) {
-                                if (process_button_release_event(window, x, y, loop, touch_id, actual_event)) {
-                                    btnIndex = loop;
-                                    ret = TRUE;
+                    for (int loop = 0;loop < MAX_KEY && !ended;loop++) {
+                        SclButtonContext *btncontext = cache->get_cur_button_context(window, loop);
+                        const SclLayoutKeyCoordinate *coordinate = cache->get_cur_layout_key_coordinate(window, loop);
+                        if (btncontext && coordinate) {
+                            if (!(btncontext->used)) {
+                                ended = TRUE;
+                            } else if (btncontext->state != BUTTON_STATE_DISABLED &&
+                                        coordinate->button_type != BUTTON_TYPE_UIITEM) {
+                                if (window != pressed_window || loop != pressed_key) {
+                                    if (process_button_release_event(window, x, y, loop, touch_id, actual_event)) {
+                                        btnIndex = loop;
+                                        ret = TRUE;
+                                    }
                                 }
                             }
                         }
                     }
-                }
-            } else {
-                SclUIEventDesc key_event_desc = {0};
-                key_event_desc.key_value = NULL;
-                key_event_desc.key_event = NOT_USED;
-                key_event_desc.key_modifier = KEY_MODIFIER_NONE;
-                key_event_desc.event_type = EVENT_TYPE_NONE;
-                key_event_desc.touch_id = touch_id;
-                key_event_desc.mouse_pressed_point = context->get_cur_pressed_point(touch_id);
-                key_event_desc.mouse_current_point = context->get_cur_move_point(touch_id);
-                key_event_desc.mouse_farthest_point = context->get_farthest_move_point(touch_id);
+                } else {
+                    process_finished = TRUE;
 
-                key_event_desc.touch_event_order = context->get_multi_touch_event_order(touch_id);
+                    SclUIEventDesc key_event_desc = {0};
+                    key_event_desc.key_value = NULL;
+                    key_event_desc.key_event = NOT_USED;
+                    key_event_desc.key_modifier = KEY_MODIFIER_NONE;
+                    key_event_desc.event_type = EVENT_TYPE_NONE;
+                    key_event_desc.touch_id = touch_id;
+                    key_event_desc.mouse_pressed_point = context->get_cur_pressed_point(touch_id);
+                    key_event_desc.mouse_current_point = context->get_cur_move_point(touch_id);
+                    key_event_desc.mouse_farthest_point = context->get_farthest_move_point(touch_id);
 
-                handler->on_event_key_clicked(key_event_desc);
-            }
-        }
+                    key_event_desc.touch_event_order = context->get_multi_touch_event_order(touch_id);
 
-        /* For covering a missing area about 1 pixel */
-        if (!ret) {
-            ended = FALSE;
-
-            if (state->get_cur_action_state() == ACTION_STATE_POPUP_INIT ||
-                    state->get_cur_action_state() == ACTION_STATE_POPUP_PRESS ||
-                    state->get_cur_action_state() == ACTION_STATE_POPUP_MOVING ||
-                    state->get_cur_action_state() == ACTION_STATE_POPUP_RELEASE ||
-                    state->get_cur_action_state() == ACTION_STATE_POPUP_REPEATKEY ||
-                    state->get_cur_action_state() == ACTION_STATE_POPUP_LONGKEY) {
-                if (windows->is_base_window(window)) {
-                    ended = TRUE;
+                    handler->on_event_key_clicked(key_event_desc);
                 }
             }
 
-            for (int loop = 0;loop < MAX_KEY && !ended;loop++) {
-                SclButtonContext *btncontext = cache->get_cur_button_context(window, loop);
-                if (btncontext && coordinate) {
-                    if (!(btncontext->used)) {
+            /* For covering a missing area about 1 pixel */
+            if (!ret) {
+                ended = FALSE;
+
+                if (state->get_cur_action_state() == ACTION_STATE_POPUP_INIT ||
+                        state->get_cur_action_state() == ACTION_STATE_POPUP_PRESS ||
+                        state->get_cur_action_state() == ACTION_STATE_POPUP_MOVING ||
+                        state->get_cur_action_state() == ACTION_STATE_POPUP_RELEASE ||
+                        state->get_cur_action_state() == ACTION_STATE_POPUP_REPEATKEY ||
+                        state->get_cur_action_state() == ACTION_STATE_POPUP_LONGKEY) {
+                    if (windows->is_base_window(window)) {
                         ended = TRUE;
-                        break;
-                    } else if (btncontext->state != BUTTON_STATE_DISABLED &&
-                                coordinate->button_type != BUTTON_TYPE_UIITEM) {
-                        if (process_button_release_event(window, x+1, y+1, loop, touch_id)) {
-                            btnIndex = loop;
-                            ret = TRUE;
+                    }
+                }
+
+                for (int loop = 0;loop < MAX_KEY && !ended;loop++) {
+                    SclButtonContext *btncontext = cache->get_cur_button_context(window, loop);
+                    if (btncontext && coordinate) {
+                        if (!(btncontext->used)) {
+                            ended = TRUE;
                             break;
+                        } else if (btncontext->state != BUTTON_STATE_DISABLED &&
+                                    coordinate->button_type != BUTTON_TYPE_UIITEM) {
+                            if (process_button_release_event(window, x+1, y+1, loop, touch_id)) {
+                                btnIndex = loop;
+                                ret = TRUE;
+                                break;
+                            }
                         }
                     }
                 }
             }
-        }
+            if (windows->is_base_window(window)) {
+                process_finished = TRUE;
+            } else if (btnIndex != NOT_USED) {
+                process_finished = TRUE;
+            } else {
+                const SclLayout *layout = cache->get_cur_layout(window);
+                if (layout->use_sw_background && layout->bg_color.a == 0) {
+                    /* If we could not find appropriate button in this popup window and the popup is transparent */
+                    SclWindowContext *basectx = windows->get_window_context(windows->get_base_window());
+                    if (basectx) {
+                        x = (winctx->geometry.x + x - basectx->geometry.x);
+                        y = (winctx->geometry.y + y - basectx->geometry.y);
+                    }
+                    window = windows->get_base_window();
+                } else {
+                    process_finished = TRUE;
+                }
+            }
+        } while (!process_finished);
 
         if (windows->is_base_window(window)) {
             state->set_cur_action_state(ACTION_STATE_BASE_INIT);
@@ -3047,35 +3126,60 @@ CSCLController::mouse_move(sclwindow window, sclint x, sclint y, scltouchdevice 
             } else {
                 MultiTouchContext *mulctx = context->find_multi_touch_context(touch_id);
                 if (mulctx) {
+                    sclint btnIndex = NOT_USED;
                     if (!(mulctx->is_sub_event)) {
-                        /* First check if the event occured in pressed key's threshold area */
-                        if (btncontext && coordinate) {
-                            if (pressed_window == window) { // Check only when the window is the one initally pressed
-                                if (btncontext->used && btncontext->state != BUTTON_STATE_DISABLED) {
-                                    if (process_button_move_event(pressed_window, x, y, pressed_key, touch_id, actual_event)) {
-                                        ret = TRUE;
-                                        x = coordinate->x + (coordinate->width / 2);
-                                        y = coordinate->y + (coordinate->height / 2);
-                                    }
-                                }
-                            }
-                        }
-                        for (int loop = 0;loop < MAX_KEY && !ended && !ret;loop++) {
-                            btncontext = cache->get_cur_button_context(window, loop);
-                            const SclLayoutKeyCoordinate *coordinate = cache->get_cur_layout_key_coordinate(window, loop);
+                        sclboolean process_finished = FALSE;
+                        do {
+                            /* First check if the event occured in pressed key's threshold area */
                             if (btncontext && coordinate) {
-                                if (!(btncontext->used)) {
-                                    ended = TRUE;
-                                } else if (btncontext->state != BUTTON_STATE_DISABLED &&
-                                            coordinate->button_type != BUTTON_TYPE_UIITEM) {
-                                    if (window != pressed_window || loop != pressed_key) {
-                                        if (process_button_move_event(window, x, y, loop, touch_id, actual_event)) {
+                                if (pressed_window == window) { // Check only when the window is the one initally pressed
+                                    if (btncontext->used && btncontext->state != BUTTON_STATE_DISABLED) {
+                                        if (process_button_move_event(pressed_window, x, y, pressed_key, touch_id, actual_event)) {
                                             ret = TRUE;
+                                            x = coordinate->x + (coordinate->width / 2);
+                                            y = coordinate->y + (coordinate->height / 2);
+                                            btnIndex = pressed_key;
                                         }
                                     }
                                 }
                             }
-                        }
+                            for (int loop = 0;loop < MAX_KEY && !ended && !ret;loop++) {
+                                btncontext = cache->get_cur_button_context(window, loop);
+                                const SclLayoutKeyCoordinate *coordinate = cache->get_cur_layout_key_coordinate(window, loop);
+                                if (btncontext && coordinate) {
+                                    if (!(btncontext->used)) {
+                                        ended = TRUE;
+                                    } else if (btncontext->state != BUTTON_STATE_DISABLED &&
+                                                coordinate->button_type != BUTTON_TYPE_UIITEM) {
+                                        if (window != pressed_window || loop != pressed_key) {
+                                            if (process_button_move_event(window, x, y, loop, touch_id, actual_event)) {
+                                                ret = TRUE;
+                                                btnIndex = loop;
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+
+                            if (windows->is_base_window(window)) {
+                                process_finished = TRUE;
+                            } else if (btnIndex != NOT_USED) {
+                                process_finished = TRUE;
+                            } else {
+                                const SclLayout *layout = cache->get_cur_layout(window);
+                                if (layout->use_sw_background && layout->bg_color.a == 0) {
+                                    /* If we could not find appropriate button in this popup window and the popup is transparent */
+                                    SclWindowContext *basectx = windows->get_window_context(windows->get_base_window());
+                                    if (basectx) {
+                                        x = (winctx->geometry.x + x - basectx->geometry.x);
+                                        y = (winctx->geometry.y + y - basectx->geometry.y);
+                                    }
+                                    window = windows->get_base_window();
+                                } else {
+                                    process_finished = TRUE;
+                                }
+                            }
+                        } while (!process_finished);
                     }
                 }
             }
@@ -3202,18 +3306,28 @@ CSCLController::timer_event(const scl32 data)
             }
             /* Hide magnifier window when opening autopopup window */
             windows->hide_window(windows->get_magnifier_window());
-            /* Currently, window does not support virtual window */
-            SclWindowOpener opener;
-            opener.window = window;
-            opener.key = keyIndex;
-            sclwindow popup_window = windows->open_popup(
-                opener,
-                rect,
-                NOT_USED,
-                SCL_LAYOUT_AUTOPOPUP, POPUP_TYPE_AUTO_POPUP,
-                FALSE,
-                FALSE
-            );
+
+            sclwindow popup_window = SCLWINDOW_INVALID;
+
+            SclNotiPopupOpenDesc desc;
+            desc.ui_event_desc = NULL;
+            desc.input_mode = SCL_LAYOUT_AUTOPOPUP_NAME;
+            if (SCL_EVENT_PASS_ON ==
+                handler->on_event_notification(SCL_UINOTITYPE_POPUP_OPEN, &desc)) {
+                    /* Currently, window does not support virtual window */
+                    SclWindowOpener opener;
+                    opener.window = window;
+                    opener.key = keyIndex;
+                    popup_window = windows->open_popup(
+                        opener,
+                        rect,
+                        NOT_USED,
+                        SCL_LAYOUT_AUTOPOPUP, POPUP_TYPE_AUTO_POPUP,
+                        FALSE,
+                        FALSE
+                        );
+            }
+
             windows->hide_window(windows->get_magnifier_window());
             _play_tts_for_layout_autopopup_name();
 
@@ -3349,9 +3463,26 @@ CSCLController::timer_event(const scl32 data)
     }
     break;
     case SCL_TIMER_POPUP_TIMEOUT: {
-        windows->close_all_popups();
+        SclNotiPopupCloseTimeoutDesc desc;
+        desc.ui_event_desc = NULL;
+        desc.input_mode = NULL;
+        SclResParserManager *sclres_manager = SclResParserManager::get_instance();
+        CSCLWindows *windows = CSCLWindows::get_instance();
+        if (windows && sclres_manager) {
+            const PSclInputModeConfigure sclres_input_mode_configure =
+                sclres_manager->get_input_mode_configure_table();
+            sclwindow window = windows->get_nth_popup_window(SCL_WINDOW_Z_TOP);
+            SclWindowContext *winctx = windows->get_window_context(window);
+            if (winctx && sclres_input_mode_configure) {
+                if (scl_check_arrindex(winctx->inputmode, MAX_SCL_INPUT_MODE)) {
+                    desc.input_mode = sclres_input_mode_configure[winctx->inputmode].name;
+                }
+            }
+        }
 
-        handler->on_event_notification(SCL_UINOTITYPE_POPUP_TIMEOUT, data);
+        if (SCL_EVENT_PASS_ON == handler->on_event_notification(SCL_UINOTITYPE_POPUP_CLOSE_TIMEOUT, &desc)) {
+            windows->close_all_popups();
+        }
         events->destroy_timer(id);
         return FALSE;
     }
@@ -3510,8 +3641,13 @@ void CSCLController::handle_engine_signal( SclInternalSignal signal, sclwindow t
             case SIGACTION_UNSET_SHIFT: {
                 CSCLEventHandler *handler = CSCLEventHandler::get_instance();
                 if (handler) {
+
+                    SclNotiShiftStateChangeDesc desc;
+                    desc.ui_event_desc = NULL;
+                    desc.shift_state = SCL_SHIFT_STATE_OFF;
+
                     if (SCL_EVENT_PASS_ON ==
-                        handler->on_event_notification(SCL_UINOTITYPE_SHIFT_STATE_CHANGE, SCL_SHIFT_STATE_OFF)) {
+                        handler->on_event_notification(SCL_UINOTITYPE_SHIFT_STATE_CHANGE, &desc)) {
                         context->set_shift_state(SCL_SHIFT_STATE_OFF);
                     }
                 }

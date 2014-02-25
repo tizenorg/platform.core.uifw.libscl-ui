@@ -45,7 +45,7 @@ public:
 
     SCLEventReturnType on_event_key_clicked(SclUIEventDesc ui_event_desc);
     SCLEventReturnType on_event_drag_state_changed(SclUIEventDesc ui_event_desc);
-    SCLEventReturnType on_event_notification(SCLUINotiType noti_type, sclint etc_info);
+    SCLEventReturnType on_event_notification(SCLUINotiType noti_type, SclNotiDesc *etc_info);
 
     void pre_process_ui_event(SclUIEventDesc &ui_event_desc);
 

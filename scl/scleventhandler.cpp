@@ -212,7 +212,7 @@ CSCLEventHandler::on_event_drag_state_changed(SclUIEventDesc ui_event_desc)
 }
 
 SCLEventReturnType
-CSCLEventHandler::on_event_notification(SCLUINotiType noti_type, sclint etc_info)
+CSCLEventHandler::on_event_notification(SCLUINotiType noti_type, SclNotiDesc *etc_info)
 {
     SCLEventReturnType ret = SCL_EVENT_PASS_ON;
 
@@ -238,18 +238,22 @@ CSCLEventHandler::set_input_mode(const sclchar *input_mode)
     SCL_DEBUG();
 
     sclboolean ret = FALSE;
-    m_cur_input_mode_event_callback = NULL;
+    SclNotiInputModeChangeDesc desc;
+    desc.input_mode = input_mode;
+    if (SCL_EVENT_PASS_ON == on_event_notification(SCL_UINOTITYPE_INPUT_MODE_CHANGE, &desc)) {
+        m_cur_input_mode_event_callback = NULL;
 
-    if (input_mode) {
-        std::string id = input_mode;
-        std::map<std::string, ISCLUIEventCallback*>::iterator iter = m_input_mode_event_callbacks.find(input_mode);
-        if (iter != m_input_mode_event_callbacks.end()) {
-            m_cur_input_mode_event_callback = (iter->second);
+        if (input_mode) {
+            std::string id = input_mode;
+            std::map<std::string, ISCLUIEventCallback*>::iterator iter = m_input_mode_event_callbacks.find(input_mode);
+            if (iter != m_input_mode_event_callbacks.end()) {
+                m_cur_input_mode_event_callback = (iter->second);
+            }
         }
-    }
 
-    if (m_cur_input_mode_event_callback) {
-        ret = TRUE;
+        if (m_cur_input_mode_event_callback) {
+            ret = TRUE;
+        }
     }
 
     return ret;

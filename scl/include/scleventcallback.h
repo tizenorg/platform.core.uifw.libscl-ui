@@ -45,6 +45,42 @@ typedef struct {
     SCLEventType event_type;
 } SclUIEventDesc;
 
+struct SclNotiDesc {
+    SclUIEventDesc *ui_event_desc;
+};
+
+struct SclNotiPopupOpenDesc : SclNotiDesc {
+    const char *input_mode;
+}; // SCL_UINOTITYPE_POPUP_OPEN
+
+struct SclNotiPopupCloseDesc : SclNotiDesc {
+    const char *input_mode;
+}; // SCL_UINOTITYPE_POPUP_CLOSE
+
+struct SclNotiPopupCloseTimeoutDesc : SclNotiDesc {
+    const char *input_mode;
+}; // SCL_UINOTITYPE_POPUP_CLOSE_TIMEOUT
+
+struct SclNotiGestureFlickDesc : SclNotiDesc {
+    SCLDragType drag_type;
+}; // SCL_UINOTITYPE_GESTURE_FLICK
+
+struct SclNotiShiftStateChangeDesc : SclNotiDesc {
+    SCLShiftState shift_state;
+}; // SCL_UINOTITYPE_SHIFT_STATE_CHANGE
+
+struct SclNotiInputModeChangeDesc : SclNotiDesc {
+    const char *input_mode;
+}; // SCL_UINOTITYPE_INPUT_MODE_CHANGE
+
+struct SclNotiHighlighNavigateDesc : SclNotiDesc {
+    SCLHighlightNavigationDirection direction;
+    sclwindow window_from;
+    scl8 key_from;
+    sclwindow window_to;
+    scl8 key_to;
+}; // SCL_UINOTITYPE_HIGHLIGHT_NAVIGATE
+
 /**
 * @brief The callback interface to handle SCL events
 *
@@ -54,7 +90,7 @@ typedef struct {
 struct ISCLUIEventCallback {
     virtual SCLEventReturnType on_event_key_clicked(SclUIEventDesc ui_event_desc) { return SCL_EVENT_PASS_ON; }
     virtual SCLEventReturnType on_event_drag_state_changed(SclUIEventDesc ui_event_desc) { return SCL_EVENT_PASS_ON; }
-    virtual SCLEventReturnType on_event_notification(SCLUINotiType noti_type, sclint etc_info) { return SCL_EVENT_PASS_ON; }
+    virtual SCLEventReturnType on_event_notification(SCLUINotiType noti_type, SclNotiDesc *etc_info) { return SCL_EVENT_PASS_ON; }
 };
 
 }

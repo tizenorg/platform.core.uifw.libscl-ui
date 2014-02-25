@@ -579,6 +579,17 @@ CSCLKeyFocusHandler::process_navigation(SCLHighlightNavigationDirection directio
             }
         }
     }
+
+    SclNotiHighlighNavigateDesc desc;
+    desc.direction = direction;
+    desc.window_from = prev_window;
+    desc.key_from = prev_key;
+    desc.window_to = next_window;
+    desc.key_to = next_key;
+    if (SCL_EVENT_PASS_ON == handler->on_event_notification(SCL_UINOTITYPE_HIGHLIGHT_NAVIGATE, &desc)) {
+        m_focus_window = desc.window_to;
+        m_focus_key = desc.key_to;
+    }
 }
 
 #ifdef TARGET_EMULATOR
