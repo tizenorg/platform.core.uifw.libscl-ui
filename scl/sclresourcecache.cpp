@@ -933,6 +933,7 @@ CSCLResourceCache::recompute_layout(sclwindow window)
         }
 
         if (pCurLayout && pCurLayoutKeyCoordinate && pCurButtonContext) {
+            memset(pCurButtonContext, 0x00, sizeof(SclButtonContext) * MAX_KEY);
             /* If the layout index represents system-defined autopopup, generate layout and key properties data */
             if (layout == SCL_LAYOUT_AUTOPOPUP) {
                 const SclLayoutKeyCoordinate *coordinate =
@@ -950,7 +951,6 @@ CSCLResourceCache::recompute_layout(sclwindow window)
                         if (!p) break;
                         memcpy((SclLayoutKeyCoordinatePointer)pCurLayoutKeyCoordinate + i, p, sizeof(SclLayoutKeyCoordinate));
                     }
-                    memset(pCurButtonContext, 0x00, sizeof(SclButtonContext) * MAX_KEY);
 
                     CSCLKeyFocusHandler* focus_handler = CSCLKeyFocusHandler::get_instance();
                     //reset navigation info:mrunal.s
