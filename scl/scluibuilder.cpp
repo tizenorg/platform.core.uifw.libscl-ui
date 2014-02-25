@@ -25,6 +25,7 @@
 #include "sclcontext.h"
 #include "sclimageproxy.h"
 #include "sclactionstate.h"
+#include "sclkeyfocushandler.h"
 
 //#include "sclresource.h"
 #include <assert.h>
@@ -157,13 +158,14 @@ CSCLUIBuilder::show_layout(const sclwindow window, const scl16 x, const scl16 y,
     CSCLGraphics *graphics = CSCLGraphics::get_instance();
     CSCLResourceCache *cache = CSCLResourceCache::get_instance();
     CSCLContext *context = CSCLContext::get_instance();
+    CSCLKeyFocusHandler* focus_handler = CSCLKeyFocusHandler::get_instance();
 
     SclResParserManager *sclres_manager = SclResParserManager::get_instance();
     PSclDefaultConfigure default_configure = NULL;
     if (sclres_manager) {
         default_configure = sclres_manager->get_default_configure();
     }
-    if (events && windows && graphics && cache && context && default_configure) {
+    if (events && windows && graphics && cache && context && focus_handler && default_configure) {
     /* FIXME : The draw_ctx should be acquired from the base window also, if the target window is virtual
        However, for ease of developement, leave the drawctx to be acquired from the target window for now
        Should modify the EFLObject list management routine after fixing the issue described above
@@ -234,13 +236,33 @@ CSCLUIBuilder::show_layout(const sclwindow window, const scl16 x, const scl16 y,
                             // Temporary testing for EFL backend.. Otherwise the background image covers other buttons
                             if (winctx && (x + y + width + height == 0)) {
                                 //graphics->draw_image(targetwin, draw_ctx, composed_path, &cached_info, targetx, targety, layout->width, layout->height, winctx->layout_image_offset.x, winctx->layout_image_offset.y, -1, -1, layout->extract_background);
-                                graphics->draw_image(targetwin, draw_ctx, composed_path, NULL, targetx, targety, layout->width, layout->height,
-                                                        winctx->layout_image_offset.x, winctx->layout_image_offset.y, -1, -1, layout->extract_background);
+                                graphics->draw_image(targetwin, draw_ctx, composed_path, NULL,
+                                    targetx, targety, layout->width, layout->height,
+                                    winctx->layout_image_offset.x, winctx->layout_image_offset.y,
+                                    -1, -1, layout->extract_background);
                             }
                         }
                     }
                 }
                 draw_button_all(window, draw_ctx, x, y, width, height);
+
+                //if (highlight_ui_enabled)
+                if (focus_handler->get_current_focus_window() == window) {
+                    // if (highlight_animation_enabled)
+                    // else {
+                        sclchar composed_path[_POSIX_PATH_MAX] = {0,};
+                        const SclLayoutKeyCoordinate *coordinate = NULL;
+                        scl8 current_key_index = focus_handler->get_current_focus_key();
+                        coordinate = cache->get_cur_layout_key_coordinate(window, current_key_index);
+                        /* FIXME : Need to use highlight image */
+                        m_utils->get_composed_path(composed_path, IMG_PATH_PREFIX, SCL_HIGHLIGHT_UI_IMAGE);
+                        if (coordinate) {
+                            // Draw highlight
+                            graphics->draw_image(window, draw_ctx, composed_path, NULL,
+                                coordinate->x, coordinate->y, coordinate->width, coordinate->height);
+                        }
+                    //}
+                }
             }
         }
         graphics->end_paint(window, draw_ctx);
