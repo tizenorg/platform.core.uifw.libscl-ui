@@ -41,8 +41,6 @@ CSCLGraphics::~CSCLGraphics()
 {
     SCL_DEBUG();
 
-    fini();
-
     if (m_impl) {
         delete m_impl;
         m_impl = NULL;

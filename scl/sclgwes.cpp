@@ -32,8 +32,6 @@ CSCLGwes::CSCLGwes()
 CSCLGwes::~CSCLGwes()
 {
     SCL_DEBUG();
-
-    fini();
 }
 
 void CSCLGwes::init(sclwindow parent, scl16 width, scl16 height)

@@ -47,9 +47,6 @@ CSCLUtils::CSCLUtils()
 CSCLUtils::~CSCLUtils()
 {
     SCL_DEBUG();
-
-    /* To make sure everything's cleaned up */
-    fini();
 }
 
 CSCLUtils* CSCLUtils::get_instance()
