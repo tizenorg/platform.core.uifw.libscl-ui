@@ -409,14 +409,15 @@ CSCLWindowsImplEfl::destroy_window(sclwindow window)
     CSCLWindows *windows = CSCLWindows::get_instance();
     CSCLUtils *utils = CSCLUtils::get_instance();
 
-    utils->log("WinEfl_destroywin %p %p (basewin %p mag %p)\n",
-        window, elm_win_xwindow_get(static_cast<Evas_Object*>(window)),
-        windows->get_base_window(), windows->get_magnifier_window());
-
     SclWindowContext *winctx = NULL;
     if (windows && window) {
         winctx = windows->get_window_context(window);
     }
+
+    utils->log("WinEfl_destroywin %p %p (basewin %p mag %p)\n",
+        window,
+        (winctx && !(winctx->is_virtual)) ? elm_win_xwindow_get(static_cast<Evas_Object*>(window)) : 0x01,
+        windows->get_base_window(), windows->get_magnifier_window());
 
     if (windows && utils && winctx) {
         if (winctx->etc_info) {
@@ -482,7 +483,8 @@ CSCLWindowsImplEfl::destroy_window(sclwindow window)
             }
         }
         utils->log("WinEfl_destroywin %p %p (basewin %p mag %p)\n",
-            window, elm_win_xwindow_get(static_cast<Evas_Object*>(window)),
+            window,
+            (winctx && !(winctx->is_virtual)) ? elm_win_xwindow_get(static_cast<Evas_Object*>(window)) : 0x01,
             windows->get_base_window(), windows->get_magnifier_window());
     }
 
@@ -549,13 +551,16 @@ CSCLWindowsImplEfl::show_window(const sclwindow window, sclboolean queue)
              *
              * N_SE-52548: ...and modified if() for other popup windows as well...
              */
-            ecore_x_icccm_transient_for_set
-                (elm_win_xwindow_get(static_cast<Evas_Object*>(window)), app_window);
-            elm_win_raise((Evas_Object *)window);
+            if (winctx && !(winctx->is_virtual)) {
+                ecore_x_icccm_transient_for_set
+                    (elm_win_xwindow_get(static_cast<Evas_Object*>(window)), app_window);
+                elm_win_raise((Evas_Object *)window);
+            }
         }
 #endif
         utils->log("WinEfl_showwin %p %p (basewin %p mag %p)\n",
-            window, elm_win_xwindow_get(static_cast<Evas_Object*>(window)),
+            window,
+            (winctx && !(winctx->is_virtual)) ? elm_win_xwindow_get(static_cast<Evas_Object*>(window)) : 0x01,
             windows->get_base_window(), windows->get_magnifier_window());
     }
 }
@@ -675,7 +680,8 @@ CSCLWindowsImplEfl::hide_window(const sclwindow window,  sclboolean fForce)
             malloc_trim(0);
         }
         utils->log("WinEfl_hidewin %p %p (basewin %p mag %p)\n",
-            window, elm_win_xwindow_get(static_cast<Evas_Object*>(window)),
+            window,
+            (winctx && !(winctx->is_virtual)) ? elm_win_xwindow_get(static_cast<Evas_Object*>(window)) : 0x01,
             windows->get_base_window(), windows->get_magnifier_window());
     }
 }
@@ -766,7 +772,8 @@ CSCLWindowsImplEfl::move_window(const sclwindow window, scl16 x, scl16 y)
         //evas_render_idle_flush(evas);
 
         utils->log("WinEfl_movewin %p %p %d %d %d %d (basewin %p mag %p)\n",
-            window, elm_win_xwindow_get(static_cast<Evas_Object*>(window)),
+            window,
+            (winctx && !(winctx->is_virtual)) ? elm_win_xwindow_get(static_cast<Evas_Object*>(window)) : 0x01,
             x, y, rotatex, rotatey,
             windows->get_base_window(), windows->get_magnifier_window());
     }
@@ -803,8 +810,10 @@ CSCLWindowsImplEfl::resize_window(const sclwindow window, scl16 width, scl16 hei
     Evas_Object *win = (Evas_Object*)window;
 #ifndef FULL_SCREEN_TEST
     if (windows && utils && window) {
+        SclWindowContext *winctx = windows->get_window_context(window);
         utils->log("WinEfl_resizewin %p %p %d %d (basewin %p mag %p)\n",
-            window, elm_win_xwindow_get(static_cast<Evas_Object*>(window)), width, height,
+            window,
+            (winctx && !(winctx->is_virtual)) ? elm_win_xwindow_get(static_cast<Evas_Object*>(window)) : 0x01,
             windows->get_base_window(), windows->get_magnifier_window());
     }
 #endif

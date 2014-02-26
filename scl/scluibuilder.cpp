@@ -248,6 +248,18 @@ CSCLUIBuilder::show_layout(const sclwindow window, const scl16 x, const scl16 y,
 
                 //if (highlight_ui_enabled)
                 if (focus_handler->get_current_focus_window() == window) {
+                    sclint startx = cache->get_custom_starting_coordinates().x;
+                    sclint starty = cache->get_custom_starting_coordinates().y;
+
+                    SclWindowContext *winctx = windows->get_window_context(window);
+                    SclWindowContext *basectx = windows->get_window_context(windows->get_base_window());
+                    if (winctx && basectx) {
+                        if (winctx->is_virtual) {
+                            startx += (winctx->geometry.x - basectx->geometry.x);
+                            starty += (winctx->geometry.y - basectx->geometry.y);
+                        }
+                    }
+
                     // if (highlight_animation_enabled)
                     // else {
                         sclchar composed_path[_POSIX_PATH_MAX] = {0,};
@@ -259,7 +271,7 @@ CSCLUIBuilder::show_layout(const sclwindow window, const scl16 x, const scl16 y,
                         if (coordinate) {
                             // Draw highlight
                             graphics->draw_image(window, draw_ctx, composed_path, NULL,
-                                coordinate->x, coordinate->y, coordinate->width, coordinate->height);
+                                startx + coordinate->x, starty + coordinate->y, coordinate->width, coordinate->height);
                         }
                     //}
                 }
