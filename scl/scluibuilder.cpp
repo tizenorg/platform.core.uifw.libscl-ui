@@ -751,7 +751,7 @@ CSCLUIBuilder::draw_button_bg_by_img(const sclwindow window, const scldrawctx dr
         /* Check if we need to decorate the button's drag state */
         //if (context->get_cur_drag_state(context->get_last_touch_device_id()) != SCL_DRAG_STATE_NONE &&
         if (context->get_cur_key_modifier(context->get_last_touch_device_id()) != KEY_MODIFIER_NONE &&
-            context->get_cur_pressed_window(context->get_last_touch_device_id()) == window && 
+            context->get_cur_pressed_window(context->get_last_touch_device_id()) == window &&
             context->get_cur_pressed_key(context->get_last_touch_device_id()) == key_index &&
             coordinate->modifier_decorator) {
                 sclchar *decoration_bg_img = NULL;
@@ -863,7 +863,7 @@ CSCLUIBuilder::draw_button_bg_by_layoutimg(const sclwindow window, const scldraw
         /* Check if we need to decorate the button's drag state */
         //if (context->get_cur_drag_state(context->get_last_touch_device_id()) != SCL_DRAG_STATE_NONE &&
         if (context->get_cur_key_modifier(context->get_last_touch_device_id()) != KEY_MODIFIER_NONE &&
-            context->get_cur_pressed_window(context->get_last_touch_device_id()) == window && 
+            context->get_cur_pressed_window(context->get_last_touch_device_id()) == window &&
             context->get_cur_pressed_key(context->get_last_touch_device_id()) == key_index &&
             coordinate->modifier_decorator) {
                 sclchar *decoration_bg_img = NULL;

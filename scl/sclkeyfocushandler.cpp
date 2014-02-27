@@ -417,7 +417,7 @@ CSCLKeyFocusHandler::process_navigation(SCLHighlightNavigationDirection directio
     scl8 next_key = m_focus_key;
 
     PSclLayoutKeyCoordinatePointerTable sclres_layout_key_coordinate_pointer_frame = NULL;
-    
+
     if (context && windows && handler && sclres_manager) {
         sclres_layout_key_coordinate_pointer_frame = sclres_manager->get_key_coordinate_pointer_frame();
 
@@ -724,7 +724,7 @@ static Eina_Bool x_event_sniffer_window_show_cb (void *data, int ev_type, void *
 void
 CSCLKeyFocusHandler::create_sniffer_window(void)
 {
-    LOGD("CSCLKeyFocusHandler : INSIDE =-=-=-=- create_sniffer_window : \n");	
+    LOGD("CSCLKeyFocusHandler : INSIDE =-=-=-=- create_sniffer_window : \n");
     Evas_Object *win = NULL;
 
     win = elm_win_add(NULL, "KEY_SNIFFER", ELM_WIN_UTILITY);

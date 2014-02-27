@@ -2238,7 +2238,7 @@ CSCLController::mouse_release(sclwindow window, sclint x, sclint y, scltouchdevi
 
         sclwindow skipwindow = SCLWINDOW_INVALID;
         SCLDisplayMode display_mode = context->get_display_mode();
-        
+
         SclResParserManager *sclres_manager = SclResParserManager::get_instance();
         PSclDefaultConfigure default_configure = NULL;
         if (sclres_manager) {

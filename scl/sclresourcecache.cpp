@@ -201,7 +201,7 @@ CSCLResourceCache::resize_resource_elements_by_resolution()
         const PSclLabelPropertiesTable sclres_label_properties = sclres_manager->get_label_properties_frame();
         const PSclAutoPopupConfigure sclres_autopopup_configure = sclres_manager->get_autopopup_configure();
         const PSclMagnifierWndConfigure sclres_magnifier_configure = sclres_manager->get_magnifier_configure();
-        
+
         assert(sclres_default_configure != NULL);
         assert(sclres_input_mode_configure != NULL);
         assert(sclres_modifier_decoration != NULL);
@@ -1369,7 +1369,7 @@ void CSCLResourceCache::generate_autopopup_layout( const SclLayoutKeyCoordinate 
                                     autopopup_configure->decoration_size * utils->get_smallest_custom_scale_rate();
                                 break;
                         }
-                        
+
                         (*pCurButtonContext)[loop + decoidx].used = TRUE;
                         (*pCurLayoutKeyCoordinates)[loop + decoidx].valid = TRUE;
                         (*pCurLayoutKeyCoordinates)[loop + decoidx].button_type = BUTTON_TYPE_UIITEM;

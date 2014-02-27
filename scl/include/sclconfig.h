@@ -104,7 +104,7 @@ typedef enum _SCLKeyModifier {
     KEY_MODIFIER_LONGKEY,						/**< longkey event */
     KEY_MODIFIER_MULTITAP_START,				/**< multitap started */
     KEY_MODIFIER_MULTITAP_REPEAT,				/**< multitap repeated */
-    
+
     KEY_MODIFIER_DIRECTION_LEFT,				/**< drag left */
     KEY_MODIFIER_DIRECTION_RIGHT,				/**< drag right */
     KEY_MODIFIER_DIRECTION_UP,					/**< drag up */
