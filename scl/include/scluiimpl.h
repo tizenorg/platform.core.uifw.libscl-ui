@@ -107,6 +107,8 @@ public:
     void enable_vibration(sclboolean enabled);
     void enable_tts(sclboolean enabled);
     void enable_shift_multi_touch(sclboolean enabled);
+    void enable_highlight_ui(sclboolean enabled);
+    void enable_highlight_ui_animation(sclboolean enabled);
 
     void enable_touch_offset(sclboolean enabled);
     void disable_input_events(sclboolean disabled);

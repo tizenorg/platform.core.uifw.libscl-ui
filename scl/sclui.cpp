@@ -537,6 +537,22 @@ CSCLUI::enable_shift_multi_touch(sclboolean enabled)
 }
 
 void
+CSCLUI::enable_highlight_ui(sclboolean enabled)
+{
+    if (m_impl) {
+        m_impl->enable_highlight_ui(enabled);
+    }
+}
+
+void
+CSCLUI::enable_highlight_ui_animation(sclboolean enabled)
+{
+    if (m_impl) {
+        m_impl->enable_highlight_ui_animation(enabled);
+    }
+}
+
+void
 CSCLUI::enable_touch_offset(sclboolean enabled)
 {
     if (m_impl) {

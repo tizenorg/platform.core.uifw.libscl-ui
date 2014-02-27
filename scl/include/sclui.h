@@ -349,6 +349,18 @@ public:
     void enable_shift_multi_touch(sclboolean enabled);
 
     /**
+     * @brief This API requests SCL library to enable/disable highlight ui
+     * @param[in] enabled indicates whether to show highlight ui
+     */
+    void enable_highlight_ui(sclboolean enabled);
+
+    /**
+     * @brief This API requests SCL library to enable/disable animation effect for highlight ui
+     * @param[in] enabled indicates whether to display animation effect when moving highlight ui
+     */
+    void enable_highlight_ui_animation(sclboolean enabled);
+
+    /**
      * @brief This API requests SCL library to apply the touch offset adjustment
      * @param[in] enabled indicates whether the touch offset adjustment should applied or not
      */

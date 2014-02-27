@@ -277,6 +277,7 @@ typedef enum _SCLTimer {
     SCL_TIMER_USERAREA,
     SCL_TIMER_BUTTON_DELAY,
     SCL_TIMER_POPUP_TIMEOUT,
+    SCL_TIMER_ANIMATION,
     SCL_TIMER_AUTOTEST,
 }SCLTimer;
 
@@ -441,6 +442,9 @@ typedef enum _SCLParserType {
 
 /* FIXME : This should be configurable also */
 #define SCL_HIGHLIGHT_UI_IMAGE "B09_icon_cue.png"
+
+#define SCL_ANIMATION_TIMER_INTERVAL (1000 / 30) // 30 frames per second
+#define SCL_ANIMATION_TIME 300 // Animation for 1 second
 
 typedef enum _SCLDebugMode {
     DEBUGMODE_DISABLED,

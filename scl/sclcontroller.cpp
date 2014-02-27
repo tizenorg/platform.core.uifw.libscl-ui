@@ -31,6 +31,7 @@
 #include "sclimageproxy.h"
 #include "sclres_manager.h"
 #include "scleventhandler.h"
+#include "sclanimator.h"
 
 //#define DIRECTLY_DRAW_ON_EVENTS
 
@@ -3511,6 +3512,13 @@ CSCLController::timer_event(const scl32 data)
         return FALSE;
     }
     break;
+    case SCL_TIMER_ANIMATION: {
+        CSCLAnimator *animator = CSCLAnimator::get_instance();
+        if (animator) {
+            return animator->animator_timer();
+        }
+        return TRUE;
+    }
 
     default: {
         events->destroy_timer(id);

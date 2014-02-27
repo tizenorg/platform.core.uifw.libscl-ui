@@ -27,6 +27,7 @@
 #include "sclwindows.h"
 #include "scleventhandler.h"
 #include "sclres_manager.h"
+#include "sclanimator.h"
 
 using namespace scl;
 
@@ -391,6 +392,16 @@ CSCLKeyFocusHandler::get_next_candidate_key(SCLHighlightNavigationDirection dire
     return ret;
 }
 
+static void copy_rectangle(SclLayoutKeyCoordinatePointer src, SclRectangle *dest)
+{
+    if (src && dest) {
+        (dest)->x = (src)->x;
+        (dest)->y = (src)->y;
+        (dest)->width = (src)->width;
+        (dest)->height = (src)->height;
+    }
+}
+
 void
 CSCLKeyFocusHandler::process_navigation(SCLHighlightNavigationDirection direction)
 {
@@ -417,7 +428,7 @@ CSCLKeyFocusHandler::process_navigation(SCLHighlightNavigationDirection directio
         }
     }
 
-    if (sclres_layout_key_coordinate_pointer_frame &&
+    if (sclres_layout_key_coordinate_pointer_frame && context->get_highlight_ui_enabled() &&
         scl_check_arrindex(layout, MAX_SCL_LAYOUT) && scl_check_arrindex(m_focus_key, MAX_KEY)) {
         SclLayoutKeyCoordinatePointer cur = sclres_layout_key_coordinate_pointer_frame[layout][m_focus_key];
 
@@ -578,17 +589,90 @@ CSCLKeyFocusHandler::process_navigation(SCLHighlightNavigationDirection directio
                 }
             }
         }
-    }
 
-    SclNotiHighlighNavigateDesc desc;
-    desc.direction = direction;
-    desc.window_from = prev_window;
-    desc.key_from = prev_key;
-    desc.window_to = next_window;
-    desc.key_to = next_key;
-    if (SCL_EVENT_PASS_ON == handler->on_event_notification(SCL_UINOTITYPE_HIGHLIGHT_NAVIGATE, &desc)) {
-        m_focus_window = desc.window_to;
-        m_focus_key = desc.key_to;
+        SclNotiHighlighNavigateDesc desc;
+        desc.direction = direction;
+        desc.window_from = prev_window;
+        desc.key_from = prev_key;
+        desc.window_to = next_window;
+        desc.key_to = next_key;
+        if (SCL_EVENT_PASS_ON == handler->on_event_notification(SCL_UINOTITYPE_HIGHLIGHT_NAVIGATE, &desc)) {
+            CSCLAnimator *animator = CSCLAnimator::get_instance();
+            if (animator) {
+                sclboolean start_animation = FALSE;
+                if (windows->is_base_window(desc.window_to) && windows->is_base_window(desc.window_from)) {
+                    if(desc.key_to != desc.key_from) {
+                        start_animation = TRUE;
+                    }
+                } else {
+                    SclWindowContext *winctx_from = windows->get_window_context(desc.window_from);
+                    SclWindowContext *winctx_to = windows->get_window_context(desc.window_to);
+                    if (winctx_from && winctx_to) {
+                        if ((windows->is_base_window(desc.window_from) || winctx_from->is_virtual) &&
+                            (windows->is_base_window(desc.window_to) || winctx_to->is_virtual)) {
+                                start_animation = TRUE;
+                        }
+                    }
+                }
+                if (start_animation &&
+                    context->get_highlight_ui_enabled() &&
+                    context->get_highlight_ui_animation_enabled() &&
+                    animator->check_animation_supported()) {
+                        sclshort layout_from = NOT_USED;
+                        sclshort layout_to = NOT_USED;
+                        if (windows->is_base_window(desc.window_from)) {
+                            layout_from = context->get_base_layout();
+                        } else {
+                            layout_from = context->get_popup_layout(desc.window_from);
+                        }
+                        if (windows->is_base_window(desc.window_to)) {
+                            layout_to = context->get_base_layout();
+                        } else {
+                            layout_to = context->get_popup_layout(desc.window_to);
+                        }
+
+                        SclLayoutKeyCoordinatePointer prev_coordinate =
+                            sclres_layout_key_coordinate_pointer_frame[layout_from][desc.key_from];
+                        SclLayoutKeyCoordinatePointer next_coordinate =
+                            sclres_layout_key_coordinate_pointer_frame[layout_to][desc.key_to];
+
+                        sclint id = animator->find_animator_by_type(ANIMATION_TYPE_HIGHLIGHT_UI);
+                        if (id == NOT_USED) {
+                            SclAnimationDesc animdesc;
+                            animdesc.type = ANIMATION_TYPE_HIGHLIGHT_UI;
+                            animdesc.length = SCL_ANIMATION_TIME;
+
+                            copy_rectangle( prev_coordinate, &(animdesc.rect_from) );
+                            copy_rectangle( next_coordinate, &(animdesc.rect_to) );
+
+                            animdesc.window_from = desc.window_from;
+                            animdesc.window_to = desc.window_to;
+
+                            id = animator->create_animator(&animdesc);
+                            animator->start_animator(id);
+                        } else {
+                            SclAnimationState *state = animator->get_animation_state(id);
+                            if (state) {
+                                if (state->active) {
+                                    state->desc.rect_from = state->rect_cur;
+                                } else {
+                                    state->active = TRUE;
+                                    copy_rectangle( prev_coordinate, &(state->desc.rect_from) );
+                                }
+                                state->step = 0;
+
+                                copy_rectangle( next_coordinate, &(state->desc.rect_to) );
+
+                                state->desc.window_from = desc.window_from;
+                                state->desc.window_to = desc.window_to;
+                            }
+                            animator->start_animator(id);
+                        }
+                }
+            }
+            m_focus_window = desc.window_to;
+            m_focus_key = desc.key_to;
+        }
     }
 }
 

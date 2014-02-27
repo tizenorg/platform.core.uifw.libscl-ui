@@ -80,6 +80,7 @@ public :
     void connect_window_events(sclwindow wnd, const sclint evt);
 
     void create_timer(const scl16 id, const scl32 interval, scl16 value, sclboolean addToMap = TRUE) {
+        get_scl_events_impl()->destroy_timer(id);
         get_scl_events_impl()->create_timer(id, interval, value, addToMap);
     }
 

@@ -26,6 +26,7 @@
 #include "sclimageproxy.h"
 #include "sclactionstate.h"
 #include "sclkeyfocushandler.h"
+#include "sclanimator.h"
 
 //#include "sclresource.h"
 #include <assert.h>
@@ -260,8 +261,21 @@ CSCLUIBuilder::show_layout(const sclwindow window, const scl16 x, const scl16 y,
                         }
                     }
 
-                    // if (highlight_animation_enabled)
-                    // else {
+                    sclboolean draw_highlight_ui = TRUE;
+                    SclAnimationState *state = NULL;
+                    CSCLAnimator *animator = CSCLAnimator::get_instance();
+                    if (animator) {
+                        sclint id = animator->find_animator_by_type(ANIMATION_TYPE_HIGHLIGHT_UI);
+                        state = animator->get_animation_state(id);
+                    }
+                    if (state) {
+                        // If currently the highlight UI is being animated, don't draw it here
+                        if (state->active) {
+                            draw_highlight_ui = FALSE;
+                        }
+                    }
+
+                    if (draw_highlight_ui && context->get_highlight_ui_enabled()) {
                         sclchar composed_path[_POSIX_PATH_MAX] = {0,};
                         const SclLayoutKeyCoordinate *coordinate = NULL;
                         scl8 current_key_index = focus_handler->get_current_focus_key();
@@ -273,7 +287,7 @@ CSCLUIBuilder::show_layout(const sclwindow window, const scl16 x, const scl16 y,
                             graphics->draw_image(window, draw_ctx, composed_path, NULL,
                                 startx + coordinate->x, starty + coordinate->y, coordinate->width, coordinate->height);
                         }
-                    //}
+                    }
                 }
             }
         }

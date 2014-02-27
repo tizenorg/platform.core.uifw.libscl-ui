@@ -27,6 +27,7 @@
 #include "sclres_manager.h"
 #include "scleventhandler.h"
 #include "sclkeyfocushandler.h"
+#include "sclanimator.h"
 
 using namespace scl;
 
@@ -877,6 +878,43 @@ CSCLUIImpl::enable_shift_multi_touch(sclboolean enabled)
         CSCLContext *context = CSCLContext::get_instance();
         if (context) {
             context->set_shift_multi_touch_enabled(enabled);
+        }
+    }
+}
+
+void
+CSCLUIImpl::enable_highlight_ui(sclboolean enabled)
+{
+    if (m_initialized) {
+        CSCLContext *context = CSCLContext::get_instance();
+        CSCLWindows *windows = CSCLWindows::get_instance();
+        if (context) {
+            context->set_highlight_ui_enabled(enabled);
+
+            sclwindow window = windows->get_nth_window_in_Z_order_list(SCL_WINDOW_Z_TOP);
+            windows->update_window(window);
+            if (!(windows->is_base_window(window))) {
+                windows->update_window(windows->get_base_window());
+            }
+        }
+    }
+}
+
+void
+CSCLUIImpl::enable_highlight_ui_animation(sclboolean enabled)
+{
+    if (m_initialized) {
+        CSCLContext *context = CSCLContext::get_instance();
+        CSCLAnimator *animator = CSCLAnimator::get_instance();
+        if (context && animator) {
+            context->set_highlight_ui_animation_enabled(enabled);
+
+            if (!enabled) {
+                sclint id = animator->find_animator_by_type(ANIMATION_TYPE_HIGHLIGHT_UI);
+                if (id != NOT_USED) {
+                    animator->destroy_animator(id);
+                }
+            }
         }
     }
 }

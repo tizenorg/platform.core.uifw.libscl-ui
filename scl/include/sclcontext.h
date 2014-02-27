@@ -168,6 +168,18 @@ public:
     sclboolean get_shift_multi_touch_enabled() {
         return m_shift_multi_touch_enabled;
     }
+    void set_highlight_ui_enabled(sclboolean enabled) {
+        m_highlight_ui_enabled = enabled;
+    }
+    sclboolean get_highlight_ui_enabled() {
+        return m_highlight_ui_enabled;
+    }
+    void set_highlight_ui_animation_enabled(sclboolean enabled) {
+        m_highlight_ui_animation_enabled = enabled;
+    }
+    sclboolean get_highlight_ui_animation_enabled() {
+        return m_highlight_ui_animation_enabled;
+    }
 
     scl8 get_last_pressed_key() {
         return m_last_pressed_key;
@@ -282,6 +294,8 @@ protected:
     sclboolean m_sounce_enabled;
     sclboolean m_vibration_enabled;
     sclboolean m_shift_multi_touch_enabled;
+    sclboolean m_highlight_ui_enabled;
+    sclboolean m_highlight_ui_animation_enabled;
 
     sclwindow m_last_pressed_window;
     scl8 m_last_pressed_key;
