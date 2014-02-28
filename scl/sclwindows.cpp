@@ -152,7 +152,7 @@ sclwindow CSCLWindows::open_popup(const SclWindowOpener opener, const SclRectang
             }
         }
 
-        sclwindow window = create_window(opener, geometry, inputmode, layout, popup_type, is_virtual, img_offset_x, img_offset_y, timeout);
+        window = create_window(opener, geometry, inputmode, layout, popup_type, is_virtual, img_offset_x, img_offset_y, timeout);
         events->destroy_timer(SCL_TIMER_POPUP_TIMEOUT);
         if (timeout > 0) {
             events->create_timer(SCL_TIMER_POPUP_TIMEOUT, timeout, layout);

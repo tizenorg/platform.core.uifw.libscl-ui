@@ -219,6 +219,103 @@ CSCLUIImpl::set_input_mode(const sclchar *input_mode)
 }
 
 /**
+ * Returns the current input mode
+ */
+const sclchar*
+CSCLUIImpl::get_input_mode()
+{
+    SCL_DEBUG();
+
+    const sclchar *ret = NULL;
+    if (m_initialized) {
+        CSCLContext *context = CSCLContext::get_instance();
+        SclResParserManager *sclres_manager = SclResParserManager::get_instance();
+        if (context && sclres_manager) {
+            scl8 inputmode_id = context->get_input_mode();
+            ret = sclres_manager->get_inputmode_name(inputmode_id);
+        }
+    }
+    return ret;
+}
+
+
+/**
+ * Sets the given popup window's input mode to the given mode
+ * @Usage
+ * gCore->set_input_mode("INPUT_MODE_SYMBOL");
+ */
+sclboolean
+CSCLUIImpl::set_popup_input_mode(sclwindow window, const sclchar *input_mode)
+{
+    SCL_DEBUG();
+    SCL_DEBUG_ELAPASED_TIME_START();
+
+    sclboolean ret = FALSE;
+
+    if (m_initialized) {
+        CSCLWindows *windows = CSCLWindows::get_instance();
+        CSCLResourceCache *cache = CSCLResourceCache::get_instance();
+        CSCLContext *context = CSCLContext::get_instance();
+
+        scl8 mode = NOT_USED;
+        sclshort layout = NOT_USED;
+        SclWindowContext *winctx = NULL;
+
+        SclResParserManager *sclres_manager = SclResParserManager::get_instance();
+        if (sclres_manager && windows && context) {
+            SCLDisplayMode display_mode = context->get_display_mode();
+            PSclInputModeConfigure sclres_input_mode_configure = sclres_manager->get_input_mode_configure_table();
+            mode = sclres_manager->get_inputmode_id(input_mode);
+            winctx = windows->get_window_context(window);
+            if (sclres_input_mode_configure &&
+                scl_check_arrindex(mode, MAX_SCL_INPUT_MODE) &&
+                scl_check_arrindex(display_mode, DISPLAYMODE_MAX)) {
+                    layout = sclres_manager->get_layout_id(sclres_input_mode_configure[mode].layouts[display_mode]);
+            }
+        }
+
+        if (cache && windows && winctx) {
+            if (mode != NOT_USED && mode != winctx->inputmode && layout != NOT_USED) {
+                winctx->inputmode = mode;
+                winctx->layout = layout;
+                cache->recompute_layout(window);
+                windows->update_window(window);
+                ret = TRUE;
+            }
+        }
+    }
+
+    SCL_DEBUG_ELAPASED_TIME_END();
+    return ret;
+}
+
+/**
+ * Returns the given window's input mode
+ */
+const sclchar*
+CSCLUIImpl::get_popup_input_mode(sclwindow window)
+{
+    SCL_DEBUG();
+
+    const sclchar *ret = NULL;
+
+    if (m_initialized) {
+        CSCLWindows *windows = CSCLWindows::get_instance();
+        SclResParserManager *sclres_manager = SclResParserManager::get_instance();
+        if (windows && sclres_manager) {
+            SclWindowContext *winctx = windows->get_window_context(window);
+            if (winctx) {
+                if (scl_check_arrindex(winctx->inputmode, MAX_SCL_INPUT_MODE)) {
+                    ret = sclres_manager->get_inputmode_name(winctx->inputmode);
+                }
+            }
+        }
+    }
+
+    return ret;
+}
+
+/**
  * Sets the current rotation
  */
 sclboolean
@@ -290,28 +387,6 @@ CSCLUIImpl::get_display_mode()
     }
     return ret;
 }
-
-/**
- * Returns the current input mode
- */
-const sclchar*
-CSCLUIImpl::get_input_mode()
-{
-    SCL_DEBUG();
-
-    const sclchar *ret = NULL;
-    if (m_initialized) {
-        CSCLContext *context = CSCLContext::get_instance();
-        SclResParserManager *sclres_manager = SclResParserManager::get_instance();
-        if (context && sclres_manager) {
-            scl8 inputmode_id = context->get_input_mode();
-            ret = sclres_manager->get_inputmode_name(inputmode_id);
-        }
-    }
-    return ret;
-}
-
-
 
 /**
  * Sets a private key to the current context

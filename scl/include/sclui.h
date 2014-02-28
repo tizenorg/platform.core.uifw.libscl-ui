@@ -111,6 +111,21 @@ public:
     const sclchar* get_input_mode();
 
     /**
+     * @brief This API request SCL library to change the given popup window's input mode
+     * @param[in] window the handle for the popup window that we want to change the input mode
+     * @param[in] input_mode the name of the desired input mode
+     * @return non-zero value is returned when successful
+     */
+    sclboolean set_popup_input_mode(sclwindow window, const sclchar *input_mode);
+
+    /**
+     * @brief This API retrieves the current input mode
+     * @param[in] window the handle for the popup window that we want to retrieve the input mode
+     * @return a string pointer that indicates the name of current input mode
+     */
+    const sclchar* get_popup_input_mode(sclwindow window);
+
+    /**
      * @brief This API request SCL library to suspend screen updates
      * @param[in] pend whether to suspend screen updates
      */

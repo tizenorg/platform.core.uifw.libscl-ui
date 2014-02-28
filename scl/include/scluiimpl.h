@@ -56,6 +56,8 @@ public:
 
     sclboolean set_input_mode(const sclchar *input_mode);
     const sclchar* get_input_mode();
+    sclboolean set_popup_input_mode(sclwindow window, const sclchar *input_mode);
+    const sclchar* get_popup_input_mode(sclwindow window);
 
     void set_update_pending(sclboolean pend);
 

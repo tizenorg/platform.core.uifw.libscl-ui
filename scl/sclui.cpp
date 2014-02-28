@@ -103,6 +103,54 @@ CSCLUI::set_input_mode(const sclchar *input_mode)
 }
 
 /**
+ * Returns the current input mode
+ */
+const sclchar*
+CSCLUI::get_input_mode()
+{
+    const sclchar *ret = NULL;
+
+    if (m_impl) {
+        ret = m_impl->get_input_mode();
+    }
+
+    return ret;
+}
+
+/**
+ * Sets the given popup window's input mode to the given mode
+ * @Usage
+ * gCore->set_input_mode("INPUT_MODE_SYMBOL");
+ */
+sclboolean
+CSCLUI::set_popup_input_mode(sclwindow window, const sclchar *input_mode)
+{
+    sclboolean ret = FALSE;
+
+    if (m_impl) {
+        ret = m_impl->set_popup_input_mode(window, input_mode);
+    }
+
+    return ret;
+}
+
+/**
+ * Returns the given popup window's input mode
+ */
+const sclchar*
+CSCLUI::get_popup_input_mode(sclwindow window)
+{
+    const sclchar *ret = NULL;
+
+    if (m_impl) {
+        ret = m_impl->get_popup_input_mode(window);
+    }
+
+    return ret;
+}
+
+
+/**
  * Sets the current rotation
  */
 sclboolean
@@ -146,23 +194,6 @@ CSCLUI::get_display_mode()
 
     return ret;
 }
-
-/**
- * Returns the current input mode
- */
-const sclchar*
-CSCLUI::get_input_mode()
-{
-    const sclchar *ret = NULL;
-
-    if (m_impl) {
-        ret = m_impl->get_input_mode();
-    }
-
-    return ret;
-}
-
-
 
 /**
  * Sets a private key to the current context

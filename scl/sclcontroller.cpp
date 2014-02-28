@@ -534,10 +534,10 @@ CSCLController::process_button_pressed_event(sclwindow window, sclint x, sclint 
                 }
                 switch (coordinate->popup_type) {
                 case POPUP_TYPE_BTN_PRESS_POPUP_DRAG: {
-                    SclNotiPopupOpenDesc desc;
+                    SclNotiPopupOpeningDesc desc;
                     desc.ui_event_desc = &key_event_desc;
                     desc.input_mode = coordinate->popup_input_mode[SCL_DRAG_STATE_NONE];
-                    if (SCL_EVENT_PASS_ON == handler->on_event_notification(SCL_UINOTITYPE_POPUP_OPEN, &desc)) {
+                    if (SCL_EVENT_PASS_ON == handler->on_event_notification(SCL_UINOTITYPE_POPUP_OPENING, &desc)) {
                         sclint popup_input_mode = sclres_manager->get_inputmode_id(desc.input_mode);
                         SCLDisplayMode display_mode = context->get_display_mode();
                         /* FIXME */
@@ -567,7 +567,8 @@ CSCLController::process_button_pressed_event(sclwindow window, sclint x, sclint 
                                 SclWindowOpener opener;
                                 opener.window = window;
                                 opener.key = key_index;
-                                windows->open_popup(opener,
+
+                                sclwindow popup_window = windows->open_popup(opener,
                                     popupRect,
                                     popup_input_mode,
                                     popupLayoutId,
@@ -578,6 +579,12 @@ CSCLController::process_button_pressed_event(sclwindow window, sclint x, sclint 
                                     coordinate->extract_offset_y,
                                     sclres_input_mode_configure[popup_input_mode].timeout
                                     );
+
+                                SclNotiPopupOpenedDesc opened_desc;
+                                opened_desc.ui_event_desc = &key_event_desc;
+                                opened_desc.input_mode = desc.input_mode;
+                                opened_desc.window = popup_window;
+                                handler->on_event_notification(SCL_UINOTITYPE_POPUP_OPENED, &opened_desc);
 
                                 windows->hide_window(windows->get_magnifier_window());
                                 /* FIXME : The parent key should be turned back to NORMAL state when RELEASED,
@@ -828,10 +835,10 @@ CSCLController::process_button_long_pressed_event(sclwindow window, sclbyte key_
                         popupRect.x = coordinate->x + coordinate->popup_relative_x + baseWndRect.x;
                         popupRect.y = coordinate->y + coordinate->popup_relative_y + baseWndRect.y;
 
-                        SclNotiPopupOpenDesc desc;
+                        SclNotiPopupOpeningDesc desc;
                         desc.ui_event_desc = &key_event_desc;
                         desc.input_mode = coordinate->popup_input_mode[SCL_DRAG_STATE_NONE];
-                        if (SCL_EVENT_PASS_ON == handler->on_event_notification(SCL_UINOTITYPE_POPUP_OPEN, &desc)) {
+                        if (SCL_EVENT_PASS_ON == handler->on_event_notification(SCL_UINOTITYPE_POPUP_OPENING, &desc)) {
                             sclint popup_input_mode = sclres_manager->get_inputmode_id(desc.input_mode);
                             SCLDisplayMode display_mode = context->get_display_mode();
                             /* FIXME */
@@ -855,7 +862,8 @@ CSCLController::process_button_long_pressed_event(sclwindow window, sclbyte key_
                                     SclWindowOpener opener;
                                     opener.window = window;
                                     opener.key = key_index;
-                                    windows->open_popup(
+
+                                    sclwindow popup_window = windows->open_popup(
                                         opener,
                                         popupRect,
                                         popup_input_mode,
@@ -867,6 +875,12 @@ CSCLController::process_button_long_pressed_event(sclwindow window, sclbyte key_
                                         coordinate->extract_offset_y,
                                         sclres_input_mode_configure[popup_input_mode].timeout
                                         );
+
+                                    SclNotiPopupOpenedDesc opened_desc;
+                                    opened_desc.ui_event_desc = &key_event_desc;
+                                    opened_desc.input_mode = desc.input_mode;
+                                    opened_desc.window = popup_window;
+                                    handler->on_event_notification(SCL_UINOTITYPE_POPUP_OPENED, &opened_desc);
 
                                     windows->hide_window(windows->get_magnifier_window());
                                     _play_tts_for_input_mode_name(popup_input_mode);
@@ -1815,7 +1829,7 @@ CSCLController::process_button_release_event(sclwindow window, sclint x, sclint 
                         SCLDragState dragstate = context->get_cur_drag_state(touch_id);
                         sclint popup_input_mode = NOT_USED;
 
-                        SclNotiPopupOpenDesc desc;
+                        SclNotiPopupOpeningDesc desc;
                         desc.ui_event_desc = &key_event_desc;
 
                         if (scl_check_arrindex(dragstate, SCL_DRAG_STATE_MAX)) {
@@ -1827,7 +1841,7 @@ CSCLController::process_button_release_event(sclwindow window, sclint x, sclint 
                                 desc.input_mode = coordinate->popup_input_mode[SCL_DRAG_STATE_NONE];
                             }
                         }
-                        if (SCL_EVENT_PASS_ON == handler->on_event_notification(SCL_UINOTITYPE_POPUP_OPEN, &desc)) {
+                        if (SCL_EVENT_PASS_ON == handler->on_event_notification(SCL_UINOTITYPE_POPUP_OPENING, &desc)) {
                             popup_input_mode = sclres_manager->get_inputmode_id(desc.input_mode);
                             SCLDisplayMode display_mode = context->get_display_mode();
                             /* FIXME */
@@ -1872,7 +1886,8 @@ CSCLController::process_button_release_event(sclwindow window, sclint x, sclint 
                                     SclWindowOpener opener;
                                     opener.window = window;
                                     opener.key = key_index;
-                                    windows->open_popup(
+
+                                    sclwindow popup_window = windows->open_popup(
                                         opener,
                                         popupRect,
                                         popup_input_mode,
@@ -1884,6 +1899,12 @@ CSCLController::process_button_release_event(sclwindow window, sclint x, sclint 
                                         coordinate->extract_offset_y,
                                         sclres_input_mode_configure[popup_input_mode].timeout
                                         );
+
+                                    SclNotiPopupOpenedDesc opened_desc;
+                                    opened_desc.ui_event_desc = &key_event_desc;
+                                    opened_desc.input_mode = desc.input_mode;
+                                    opened_desc.window = popup_window;
+                                    handler->on_event_notification(SCL_UINOTITYPE_POPUP_OPENED, &opened_desc);
 
                                     windows->hide_window(windows->get_magnifier_window());
                                     _play_tts_for_input_mode_name(popup_input_mode);
@@ -3310,15 +3331,16 @@ CSCLController::timer_event(const scl32 data)
 
             sclwindow popup_window = SCLWINDOW_INVALID;
 
-            SclNotiPopupOpenDesc desc;
+            SclNotiPopupOpeningDesc desc;
             desc.ui_event_desc = NULL;
             desc.input_mode = SCL_LAYOUT_AUTOPOPUP_NAME;
             if (SCL_EVENT_PASS_ON ==
-                handler->on_event_notification(SCL_UINOTITYPE_POPUP_OPEN, &desc)) {
+                handler->on_event_notification(SCL_UINOTITYPE_POPUP_OPENING, &desc)) {
                     /* Currently, window does not support virtual window */
                     SclWindowOpener opener;
                     opener.window = window;
                     opener.key = keyIndex;
+
                     popup_window = windows->open_popup(
                         opener,
                         rect,
@@ -3327,6 +3349,12 @@ CSCLController::timer_event(const scl32 data)
                         FALSE,
                         FALSE
                         );
+
+                    SclNotiPopupOpenedDesc opened_desc;
+                    opened_desc.ui_event_desc = NULL;
+                    opened_desc.input_mode = desc.input_mode;
+                    opened_desc.window = popup_window;
+                    handler->on_event_notification(SCL_UINOTITYPE_POPUP_OPENED, &opened_desc);
             }
 
             windows->hide_window(windows->get_magnifier_window());
@@ -3464,9 +3492,11 @@ CSCLController::timer_event(const scl32 data)
     }
     break;
     case SCL_TIMER_POPUP_TIMEOUT: {
-        SclNotiPopupCloseTimeoutDesc desc;
+        SclNotiPopupClosingDesc desc;
         desc.ui_event_desc = NULL;
         desc.input_mode = NULL;
+        desc.timed_out = TRUE;
+
         SclResParserManager *sclres_manager = SclResParserManager::get_instance();
         CSCLWindows *windows = CSCLWindows::get_instance();
         if (windows && sclres_manager) {
@@ -3481,8 +3511,14 @@ CSCLController::timer_event(const scl32 data)
             }
         }
 
-        if (SCL_EVENT_PASS_ON == handler->on_event_notification(SCL_UINOTITYPE_POPUP_CLOSE_TIMEOUT, &desc)) {
+        if (SCL_EVENT_PASS_ON == handler->on_event_notification(SCL_UINOTITYPE_POPUP_CLOSING, &desc)) {
             windows->close_all_popups();
+
+            SclNotiPopupClosedDesc closed_desc;
+            closed_desc.ui_event_desc = desc.ui_event_desc;
+            closed_desc.input_mode = desc.input_mode;
+            closed_desc.timed_out = desc.timed_out;
+            handler->on_event_notification(SCL_UINOTITYPE_POPUP_CLOSED, &desc);
         }
         events->destroy_timer(id);
         return FALSE;

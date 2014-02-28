@@ -49,17 +49,26 @@ struct SclNotiDesc {
     SclUIEventDesc *ui_event_desc;
 };
 
-struct SclNotiPopupOpenDesc : SclNotiDesc {
+struct SclNotiPopupOpeningDesc : SclNotiDesc {
     const char *input_mode;
-}; // SCL_UINOTITYPE_POPUP_OPEN
+}; // SCL_UINOTITYPE_POPUP_OPENING
 
-struct SclNotiPopupCloseDesc : SclNotiDesc {
+struct SclNotiPopupOpenedDesc : SclNotiDesc {
+    sclwindow window;
     const char *input_mode;
-}; // SCL_UINOTITYPE_POPUP_CLOSE
+}; // SCL_UINOTITYPE_POPUP_OPENED
 
-struct SclNotiPopupCloseTimeoutDesc : SclNotiDesc {
+struct SclNotiPopupClosingDesc : SclNotiDesc {
+    sclwindow window;
     const char *input_mode;
-}; // SCL_UINOTITYPE_POPUP_CLOSE_TIMEOUT
+    sclboolean timed_out;
+}; // SCL_UINOTITYPE_POPUP_CLOSING
+
+struct SclNotiPopupClosedDesc : SclNotiDesc {
+    sclwindow window;
+    const char *input_mode;
+    sclboolean timed_out;
+}; // SCL_UINOTITYPE_POPUP_CLOSED
 
 struct SclNotiGestureFlickDesc : SclNotiDesc {
     SCLDragType drag_type;
