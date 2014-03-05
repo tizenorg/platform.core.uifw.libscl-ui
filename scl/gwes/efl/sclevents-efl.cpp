@@ -711,11 +711,18 @@ client_message_cb(void *data, int type, void *event)
 Eina_Bool timer_event(void *data)
 {
     SCL_DEBUG();
+    CSCLUtils *utils = CSCLUtils::get_instance();
+    CSCLController *controller = CSCLController::get_instance();
+
     scl32 sendData = (scl32)data;
-    CSCLController *controller;
-    controller = CSCLController::get_instance();
-    if (controller) {
-        return controller->timer_event(sendData);
+
+    if (controller && utils) {
+        scl16 id = SCL_LOWORD(sendData); /* Timer ID */
+        Eina_Bool ret = controller->timer_event(sendData);
+        if (!ret) {
+            utils->log("Returning Timer : %d %d\n", id, ret);
+        }
+        return ret;
     }
     return TRUE;
 }
@@ -731,6 +738,10 @@ CSCLEventsImplEfl::create_timer(const scl16 id, const scl32 interval, scl16 valu
     sclint data = SCL_MAKELONG(id, value);
     Ecore_Timer *pTimer = ecore_timer_add((double)interval / 1000.0, timer_event, (void*)data);
     if (pTimer) {
+        CSCLUtils *utils = CSCLUtils::get_instance();
+        if (utils) {
+            utils->log("Created Timer : %d %p\n", id, pTimer);
+        }
         if (addToMap) {
             idMap[id] = pTimer;
         }
@@ -748,6 +759,10 @@ CSCLEventsImplEfl::destroy_timer(const scl32 id)
         std::map<int, Ecore_Timer*>::iterator idx = idMap.find(id);
         //if ((*idx).first == id) {
         if (idx != idMap.end()) {
+            CSCLUtils *utils = CSCLUtils::get_instance();
+            if (utils) {
+                utils->log("Destoyed Timer : %d %p\n", (*idx).first, (*idx).second);
+            }
             ecore_timer_del((*idx).second);
             idMap.erase((*idx).first);
             //break;
@@ -764,6 +779,11 @@ CSCLEventsImplEfl::destroy_all_timer()
     SCL_DEBUG();
     for ( std::map<int, Ecore_Timer*>::iterator idx = idMap.begin(); idx != idMap.end(); ++idx) {
         ecore_timer_del((*idx).second);
+
+        CSCLUtils *utils = CSCLUtils::get_instance();
+        if (utils) {
+            utils->log("Destoyed Timer : %d %p\n", (*idx).first, (*idx).second);
+        }
     }
     idMap.clear();
 }

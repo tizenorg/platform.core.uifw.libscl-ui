@@ -378,6 +378,12 @@ CSCLAnimator::animator_timer()
                 }
             }
     }
-    return !(destroy_timer);
+    if (destroy_timer) {
+        CSCLEvents *events = CSCLEvents::get_instance();
+        if (events) {
+            events->destroy_timer(SCL_TIMER_ANIMATION);
+        }
+    }
+    return TRUE;
 }
 
