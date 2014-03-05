@@ -602,9 +602,9 @@ CSCLUIBuilder::draw_button_label(const sclwindow window, const scldrawctx draw_c
                             (sclint)coordinate->height,
                             labelproperties->alignment,
                             labelproperties->padding_x * utils->get_custom_scale_rate_x(),
-                            labelproperties->padding_y * utils->get_custom_scale_rate_x(),
+                            labelproperties->padding_y * utils->get_custom_scale_rate_y(),
                             labelproperties->inner_width * utils->get_custom_scale_rate_x(),
-                            labelproperties->inner_height * utils->get_custom_scale_rate_x()
+                            labelproperties->inner_height * utils->get_custom_scale_rate_y()
                         );
                     }
                     graphics->draw_text(
@@ -620,9 +620,9 @@ CSCLUIBuilder::draw_button_label(const sclwindow window, const scldrawctx draw_c
                         (sclint)coordinate->height,
                         labelproperties->alignment,
                         labelproperties->padding_x * utils->get_custom_scale_rate_x(),
-                        labelproperties->padding_y * utils->get_custom_scale_rate_x(),
+                        labelproperties->padding_y * utils->get_custom_scale_rate_y(),
                         labelproperties->inner_width * utils->get_custom_scale_rate_x(),
-                        labelproperties->inner_height * utils->get_custom_scale_rate_x()
+                        labelproperties->inner_height * utils->get_custom_scale_rate_y()
                     );
                 }
             }
@@ -660,7 +660,7 @@ CSCLUIBuilder::draw_window_bg_by_sw(const sclwindow window, const scldrawctx dra
         }
 
         graphics->draw_rectangle(targetwin, draw_ctx,
-            cache->get_custom_starting_coordinates().x, cache->get_custom_starting_coordinates().x,
+            cache->get_custom_starting_coordinates().x, cache->get_custom_starting_coordinates().y,
             size.width, size.height, line_width, line_color, TRUE, fill_color);
     }
 
