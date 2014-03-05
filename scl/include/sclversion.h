@@ -18,7 +18,7 @@
 #ifndef __SCL_VERSION_H__
 #define __SCL_VERSION_H__
 
-#define SCL_VERSION "0.3.4-1"
+#define SCL_VERSION "0.3.5-1"
 
 #endif //__SCL_VERSION_H
 
