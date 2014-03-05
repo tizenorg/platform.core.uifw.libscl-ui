@@ -49,6 +49,8 @@ typedef struct {
 
     SclRectangle rect_from;
     SclRectangle rect_to;
+
+    sclboolean circular;
 }SclAnimationDesc;
 
 typedef struct {
@@ -105,6 +107,7 @@ public :
 protected :
     CSCLAnimatorImpl* get_scl_animator_impl();
 
+    sclboolean animator_timer_highlight_ui(SclAnimationState *state);
 private :
     CSCLAnimatorImpl* m_impl;
 

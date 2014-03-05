@@ -270,6 +270,77 @@ CSCLAnimator::stop_animator(sclint id)
 }
 
 sclboolean
+CSCLAnimator::animator_timer_highlight_ui(SclAnimationState *state)
+{
+    sclboolean ret = TRUE;
+
+    CSCLWindows *windows = CSCLWindows::get_instance();
+    if (state && windows) {
+        SclRectangle rect_from = state->desc.rect_from;
+        SclRectangle rect_to = state->desc.rect_to;
+
+        /* Convert popup window coordinates relative to base window */
+        if (!(windows->is_base_window(state->desc.window_from))) {
+            SclWindowContext *base_winctx = windows->get_window_context(windows->get_base_window());
+            SclWindowContext *prev_winctx = windows->get_window_context(state->desc.window_from);
+            if (base_winctx && prev_winctx) {
+                rect_from.x += (prev_winctx->geometry.x - base_winctx->geometry.x);
+                rect_from.y += (prev_winctx->geometry.y - base_winctx->geometry.y);
+            }
+        }
+        if (!(windows->is_base_window(state->desc.window_to))) {
+            SclWindowContext *base_winctx = windows->get_window_context(windows->get_base_window());
+            SclWindowContext *next_winctx = windows->get_window_context(state->desc.window_to);
+            if (base_winctx && next_winctx) {
+                rect_to.x += (next_winctx->geometry.x - base_winctx->geometry.x);
+                rect_to.y += (next_winctx->geometry.y - base_winctx->geometry.y);
+            }
+        }
+
+        sclint delta_x = 0; /* We will calculate the X considering circulation */
+        sclint delta_y = rect_to.y - rect_from.y;
+        sclint delta_width = rect_to.width - rect_from.width;
+        sclint delta_height = rect_to.height - rect_from.height;
+
+        state->rect_cur.y = rect_from.y +
+            ((delta_y) * state->step * SCL_ANIMATION_TIMER_INTERVAL) / state->desc.length;
+        state->rect_cur.width = rect_from.width +
+            ((delta_width) * state->step * SCL_ANIMATION_TIMER_INTERVAL) / state->desc.length;
+        state->rect_cur.height = rect_from.height +
+            ((delta_height) * state->step * SCL_ANIMATION_TIMER_INTERVAL) / state->desc.length;
+
+        if (state->desc.circular) {
+            SclWindowContext *base_winctx = windows->get_window_context(windows->get_base_window());
+            if (base_winctx) {
+                if (rect_from.x > rect_to.x) {
+                    delta_x = rect_to.x;
+                    delta_x += (base_winctx->geometry.width - rect_from.x);
+                } else {
+                    delta_x = -(rect_from.x);
+                    delta_x -= (base_winctx->geometry.width - rect_to.x);
+                }
+
+                state->rect_cur.x = rect_from.x +
+                    ((delta_x) * state->step * SCL_ANIMATION_TIMER_INTERVAL) / state->desc.length;
+
+                if (state->rect_cur.x + state->rect_cur.width <= 0) {
+                    /* Make the highlight UI come out from the right side of the window */
+                    state->rect_cur.x += base_winctx->geometry.width;
+                } else if (state->rect_cur.x > base_winctx->geometry.width) {
+                    state->rect_cur.x -= base_winctx->geometry.width;
+                }
+            }
+        } else {
+            delta_x = rect_to.x - rect_from.x;
+
+            state->rect_cur.x = rect_from.x +
+                ((delta_x) * state->step * SCL_ANIMATION_TIMER_INTERVAL) / state->desc.length;
+        }
+    }
+
+    return ret;
+}
+sclboolean
 CSCLAnimator::animator_timer()
 {
     sclboolean destroy_timer = TRUE;
@@ -284,39 +355,9 @@ CSCLAnimator::animator_timer()
                     if (SCL_ANIMATION_TIMER_INTERVAL * state->step >= state->desc.length) {
                         state->active = FALSE;
                     } else {
-                        SclRectangle rect_from = state->desc.rect_from;
-                        SclRectangle rect_to = state->desc.rect_to;
-
-                        /* Convert popup window coordinates relative to base window */
-                        if (!(windows->is_base_window(state->desc.window_from))) {
-                            SclWindowContext *base_winctx = windows->get_window_context(windows->get_base_window());
-                            SclWindowContext *prev_winctx = windows->get_window_context(state->desc.window_from);
-                            if (base_winctx && prev_winctx) {
-                                rect_from.x += (prev_winctx->geometry.x - base_winctx->geometry.x);
-                                rect_from.y += (prev_winctx->geometry.y - base_winctx->geometry.y);
-                            }
+                        if (state->desc.type == ANIMATION_TYPE_HIGHLIGHT_UI) {
+                            animator_timer_highlight_ui(state);
                         }
-                        if (!(windows->is_base_window(state->desc.window_to))) {
-                            SclWindowContext *base_winctx = windows->get_window_context(windows->get_base_window());
-                            SclWindowContext *next_winctx = windows->get_window_context(state->desc.window_to);
-                            if (base_winctx && next_winctx) {
-                                rect_to.x += (next_winctx->geometry.x - base_winctx->geometry.x);
-                                rect_to.y += (next_winctx->geometry.y - base_winctx->geometry.y);
-                            }
-                        }
-
-                        sclint delta_x = rect_to.x - rect_from.x;
-                        sclint delta_y = rect_to.y - rect_from.y;
-                        sclint delta_width = rect_to.width - rect_from.width;
-                        sclint delta_height = rect_to.height - rect_from.height;
-                        state->rect_cur.x = rect_from.x +
-                            ((delta_x) * state->step * SCL_ANIMATION_TIMER_INTERVAL) / state->desc.length;
-                        state->rect_cur.y = rect_from.y +
-                            ((delta_y) * state->step * SCL_ANIMATION_TIMER_INTERVAL) / state->desc.length;
-                        state->rect_cur.width = rect_from.width +
-                            ((delta_width) * state->step * SCL_ANIMATION_TIMER_INTERVAL) / state->desc.length;
-                        state->rect_cur.height = rect_from.height +
-                            ((delta_height) * state->step * SCL_ANIMATION_TIMER_INTERVAL) / state->desc.length;
                     }
 
                     CSCLAnimatorImpl *impl = get_scl_animator_impl();

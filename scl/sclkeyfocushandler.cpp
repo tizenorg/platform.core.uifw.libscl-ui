@@ -636,6 +636,18 @@ CSCLKeyFocusHandler::process_navigation(SCLHighlightNavigationDirection directio
                         SclLayoutKeyCoordinatePointer next_coordinate =
                             sclres_layout_key_coordinate_pointer_frame[layout_to][desc.key_to];
 
+                        /* Let's check if the navigation animation should be in circular movement */
+                        sclboolean circular = FALSE;
+                        /* If our 2 buttons overlap in Y axis */
+                        if (calculate_distance(
+                            prev_coordinate->y, prev_coordinate->y + prev_coordinate->height,
+                            next_coordinate->y, next_coordinate->y + next_coordinate->height) < 0) {
+                                /* And if those 2 buttons are side buttons, let's run the animation in circular mode */
+                                if (prev_coordinate->is_side_button && next_coordinate->is_side_button) {
+                                    circular = TRUE;
+                                }
+                        }
+
                         sclint id = animator->find_animator_by_type(ANIMATION_TYPE_HIGHLIGHT_UI);
                         if (id == NOT_USED) {
                             SclAnimationDesc animdesc;
@@ -647,6 +659,7 @@ CSCLKeyFocusHandler::process_navigation(SCLHighlightNavigationDirection directio
 
                             animdesc.window_from = desc.window_from;
                             animdesc.window_to = desc.window_to;
+                            animdesc.circular = circular;
 
                             id = animator->create_animator(&animdesc);
                             animator->start_animator(id);
@@ -660,6 +673,7 @@ CSCLKeyFocusHandler::process_navigation(SCLHighlightNavigationDirection directio
                                     copy_rectangle( prev_coordinate, &(state->desc.rect_from) );
                                 }
                                 state->step = 0;
+                                state->desc.circular = circular;
 
                                 copy_rectangle( next_coordinate, &(state->desc.rect_to) );
 

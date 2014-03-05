@@ -34,6 +34,7 @@ CSCLAnimatorImplEfl::CSCLAnimatorImplEfl()
     SCL_DEBUG();
 
     m_highlight_ui_object = NULL;
+    m_highlight_ui_object_alternate = NULL;
 }
 
 /**
@@ -54,6 +55,10 @@ void CSCLAnimatorImplEfl::fini()
     if (m_highlight_ui_object) {
         evas_object_del(m_highlight_ui_object);
         m_highlight_ui_object = NULL;
+    }
+    if (m_highlight_ui_object_alternate) {
+        evas_object_del(m_highlight_ui_object_alternate);
+        m_highlight_ui_object_alternate = NULL;
     }
 }
 
@@ -89,6 +94,56 @@ CSCLAnimatorImplEfl::animator_timer(SclAnimationState *state)
                     evas_object_resize(m_highlight_ui_object, rect.width, rect.height);
                     evas_object_raise(m_highlight_ui_object);
                     evas_object_show(m_highlight_ui_object);
+
+                    sclboolean circular = FALSE;
+                    if (state->desc.circular) {
+                        if (m_highlight_ui_object_alternate == NULL) {
+                            Evas_Object *window_object = static_cast<Evas_Object*>(windows->get_base_window());
+                            Evas *evas = evas_object_evas_get(window_object);
+                            m_highlight_ui_object_alternate = evas_object_image_add(evas);
+                            sclchar composed_path[_POSIX_PATH_MAX] = {0,};
+                            utils->get_composed_path(composed_path, IMG_PATH_PREFIX, SCL_HIGHLIGHT_UI_IMAGE);
+                            evas_object_image_file_set(m_highlight_ui_object_alternate, composed_path, NULL);
+                        }
+                        SclWindowContext *winctx = windows->get_window_context(windows->get_base_window());
+                        if (winctx) {
+                            if (rect.x < 0) {
+                                evas_object_move(m_highlight_ui_object_alternate,
+                                    winctx->geometry.width + rect.x, rect.y);
+                                evas_object_image_fill_set(m_highlight_ui_object_alternate,
+                                    0, 0, rect.width, rect.height);
+                                evas_object_resize(m_highlight_ui_object_alternate,
+                                    rect.width, rect.height);
+                                evas_object_raise(m_highlight_ui_object_alternate);
+                                evas_object_show(m_highlight_ui_object_alternate);
+                                circular = TRUE;
+                            } else if (rect.x + rect.width > winctx->geometry.width) {
+                                evas_object_move(m_highlight_ui_object_alternate,
+                                    -(winctx->geometry.width - rect.x), rect.y);
+                                evas_object_image_fill_set(m_highlight_ui_object_alternate,
+                                    0, 0, rect.width, rect.height);
+                                evas_object_resize(m_highlight_ui_object_alternate,
+                                    rect.width, rect.height);
+                                evas_object_raise(m_highlight_ui_object_alternate);
+                                evas_object_show(m_highlight_ui_object_alternate);
+                                circular = TRUE;
+                            }
+                        }
+                    }
+                    if (!circular) {
+                        if (m_highlight_ui_object_alternate) {
+                            evas_object_hide(m_highlight_ui_object_alternate);
+                        }
+                    } else {
+                        if (m_highlight_ui_object_alternate) {
+                            sclint window_layer = 29000;
+                            if (!windows->is_base_window(state->desc.window_from) ||
+                                !windows->is_base_window(state->desc.window_to)) {
+                                    window_layer = 29010;
+                            }
+                            evas_object_layer_set(m_highlight_ui_object_alternate, window_layer + 1);
+                        }
+                    }
 
                     sclint window_layer = 29000;
                     if (!windows->is_base_window(state->desc.window_from) ||

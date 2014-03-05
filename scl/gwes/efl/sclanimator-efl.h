@@ -38,6 +38,7 @@ public :
 
 private:
     Evas_Object *m_highlight_ui_object;
+    Evas_Object *m_highlight_ui_object_alternate;
 };
 } /* End of scl namespace */
 #endif //__SCL_ANIMATOR_EFL_H__
