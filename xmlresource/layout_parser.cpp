@@ -183,7 +183,7 @@ class LayoutParserImpl {
         int get_multitouch_type_prop(const xmlNodePtr cur_node);
         int get_extra_option_prop(const xmlNodePtr cur_node);
 
-        int parsing_layout_table(char **layout_files, int size);
+        int parsing_layout_table(const vector<string> &layout_file_name);
         void parsing_layout_node(const xmlNodePtr cur_node, const PSclLayout cur_rec_layout, int layout_no);
         void loading_coordinate_resources(const xmlNodePtr cur_node, const PSclLayout cur_rec_layout, int layout_no);
         void parsing_background(const xmlNodePtr cur_node, const PSclLayout);
@@ -219,7 +219,7 @@ class LayoutParserImpl {
     private:
         int m_layout_size;
         SclLayout m_layout_table[MAX_SCL_LAYOUT];
-        sclchar *m_layout_files[MAX_SCL_LAYOUT];
+        vector<string> m_file_names;
         SclLayoutKeyCoordinate* m_key_coordinate_pointer_frame[MAX_SCL_LAYOUT][MAX_KEY];
 
         std::vector<xmlChar*> m_vec_layout_strings;
@@ -230,7 +230,6 @@ class LayoutParserImpl {
 
 LayoutParserImpl::LayoutParserImpl() {
     m_layout_size = 0;
-    memset(m_layout_files, 0x00, sizeof(char*) * MAX_SCL_LAYOUT);
     memset(m_layout_table, 0x00, sizeof(SclLayout) * MAX_SCL_LAYOUT);
     memset(m_key_coordinate_pointer_frame, 0x00, sizeof(SclLayoutKeyCoordinatePointer) * MAX_SCL_LAYOUT * MAX_KEY);
 }
@@ -240,11 +239,6 @@ LayoutParserImpl::~LayoutParserImpl() {
         for (int j = 0; j < MAX_KEY; ++j) {
             free(m_key_coordinate_pointer_frame[i][j]);
             m_key_coordinate_pointer_frame[i][j] = NULL;
-        }
-
-        if (m_layout_files[i]) {
-            free(m_layout_files[i]);
-            m_layout_files[i] = NULL;
         }
     }
 
@@ -258,12 +252,10 @@ LayoutParserImpl::load(int layout_id) {
         xmlDocPtr doc;
         xmlNodePtr cur_node;
 
-        char input_file[_POSIX_PATH_MAX] = {0};
-        snprintf(input_file, _POSIX_PATH_MAX, "%s/%s", m_dir.c_str(), m_layout_files[layout_id]);
-
-        doc = xmlReadFile(input_file, NULL, 0);
+        string input_file = m_dir + "/" + m_file_names[layout_id];
+        doc = xmlReadFile(input_file.c_str(), NULL, 0);
         if (doc == NULL) {
-            SCLLOG(SclLog::ERROR, "Could not load file: %s.", input_file);
+            SCLLOG(SclLog::ERROR, "Could not load file: %s.", input_file.c_str());
             exit(1);
         }
 
@@ -352,18 +344,13 @@ LayoutParserImpl::release_key_strings() {
 
 int
 LayoutParserImpl::get_layout_index(const char *name) {
-    int ret = NOT_USED;
-    if (name) {
-        for(int loop = 0;loop < MAX_SCL_LAYOUT && ret == NOT_USED;loop++) {
-            if (m_layout_table[loop].name) {
-                if (strcmp(m_layout_table[loop].name, name) == 0) {
-                    ret = loop;
-                    break;
-                }
-            }
-        }
+    string strName = (string)name;
+    vector<string>::iterator it;
+    it = find(m_file_names.begin(), m_file_names.end(), strName);
+    if (it != m_file_names.end()) {
+        return it-m_file_names.begin();
     }
-    return ret;
+    return NOT_USED;
 }
 
 PSclLayout
@@ -382,14 +369,15 @@ LayoutParserImpl::get_key_coordinate_pointer_frame() {
 }
 
 int
-LayoutParserImpl::parsing_layout_table(char** file, int file_num) {
-    m_layout_size = file_num;
-    for (int index = 0; index < file_num; ++index) {
-        m_layout_files[index] = strdup(file[index]);
+LayoutParserImpl::parsing_layout_table(const vector<string> &vec_file) {
+    m_file_names = vec_file;
+    m_layout_size = vec_file.size();
+    vector<string>::const_iterator it;
+    for (it = vec_file.begin(); it != vec_file.end(); it++) {
         xmlDocPtr doc;
         xmlNodePtr cur_node;
 
-        string input_file = m_dir + "/" + m_layout_files[index];
+        string input_file = m_dir + "/" + *it;
         doc = xmlReadFile(input_file.c_str(), NULL, 0);
         if (doc == NULL) {
             SCLLOG(SclLog::DEBUG, "Could not load file: %s.", input_file.c_str());
@@ -409,9 +397,10 @@ LayoutParserImpl::parsing_layout_table(char** file, int file_num) {
             return -1;
         }
 
-        PSclLayout cur_rec_layout = m_layout_table + index;
-        parsing_layout_node(cur_node, cur_rec_layout, index);
-        cur_rec_layout->name = (sclchar*)strdup(m_layout_files[index]);
+        int layout_id = it - vec_file.begin();
+        PSclLayout cur_rec_layout = &(m_layout_table[layout_id]);
+        parsing_layout_node(cur_node, cur_rec_layout, layout_id);
+        cur_rec_layout->name = (sclchar*)strdup(it->c_str());
 
         xmlFreeDoc(doc);
     }
@@ -1442,11 +1431,11 @@ LayoutParser::get_instance() {
 }
 
 int
-LayoutParser::init(const char* dir, char **layout_files, int size) {
+LayoutParser::init(const char* dir, const vector<string> &vec_file) {
     int ret = -1;
-    if (dir && layout_files) {
+    if (dir) {
         m_impl->set_directory(dir);
-        ret = m_impl->parsing_layout_table(layout_files, size);
+        ret = m_impl->parsing_layout_table(vec_file);
     }
 
     return ret;

@@ -19,6 +19,7 @@
 #define __LAYOUT_PARSER__H__
 
 #include "sclres_type.h"
+#include <vector>
 
 class LayoutParserImpl;
 
@@ -27,7 +28,8 @@ class LayoutParser {
     public:
     ~LayoutParser();
     static LayoutParser *get_instance();
-    int init(const char *dir, char **layout_files, int size);
+    int init(const char *dir,
+        const std::vector<std::string> &vec_layout_file_name);
 
     void load(int layout_id);
     void unload();

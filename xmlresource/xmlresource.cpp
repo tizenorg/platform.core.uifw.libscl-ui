@@ -19,9 +19,12 @@
 #include <assert.h>
 #include <limits.h>
 #include <string.h>
+#include <string>
+#include <vector>
+#include <algorithm>
 #include "xmlresource.h"
 #include "simple_debug.h"
-
+using namespace std;
 using namespace xmlresource;
 
 XMLResource::XMLResource() {
@@ -55,54 +58,28 @@ XMLResource::get_instance() {
 }
 
 static void
-get_layout_files(char **layout_files, int* size) {
-    if (layout_files == NULL) return;
-    int layout_file_size = 0;
-
-    InputModeConfigParser *input_mode_configure_parser = InputModeConfigParser::get_instance();
-    for(int inputmode = 0; inputmode < MAX_SCL_INPUT_MODE; inputmode++) {
-        PSclInputModeConfigure configure_table = input_mode_configure_parser->get_input_mode_configure_table();
-        SclInputModeConfigure& cur_input_mode_configure = configure_table[inputmode];
-
-        for(int display = 0; display < DISPLAYMODE_MAX; display++) {
-            char *cur_layout_file = cur_input_mode_configure.layouts[display];
-            if (cur_layout_file == NULL) {
-                continue;
-            }
-            bool found = false;
-            int empty_index = NOT_USED;
-
-            for(int checkidx = 0; checkidx < MAX_SCL_LAYOUT; checkidx++) {
-                // not found (assert array end with null)
-                if (layout_files[checkidx] == NULL) {
-                    empty_index = checkidx;
-                    break;
-                }
-                // found layout
-                else if (strncmp(layout_files[checkidx], cur_layout_file, _POSIX_PATH_MAX) == 0) {
-                    found = true;
-                    break;
-                }
-            }
-
-            if (found) {
-                continue;
-            }
-
-            if (empty_index == NOT_USED) {
-                SCLLOG(SclLog::ERROR, "No space for new layout %s\n", cur_layout_file);
-            }
-
-            if (empty_index != NOT_USED) {
-                layout_file_size++;
-                layout_files[empty_index] = strdup(cur_layout_file);
+get_layout_files(PSclInputModeConfigure input_mode_table,
+    size_t input_mode_size, vector<string> &vec_file) {
+    vec_file.clear();
+    for (int mode = 0; mode < input_mode_size; mode++) {
+        SclInputModeConfigure &input_mode = input_mode_table[mode];
+        for (int direct = 0; direct < DISPLAYMODE_MAX; direct++) {
+            char * layout_file_path = input_mode.layouts[direct];
+            if (layout_file_path
+                    && 0 != strcmp(layout_file_path, "")) {
+                vec_file.push_back(layout_file_path);
             }
         }
     }
-    if (size) {
-        *size = layout_file_size;
-    }
+
+    // quick sort
+    std::sort(vec_file.begin(), vec_file.end());
+    // use std::unique() to puts duplicates to the [last, end)
+    vector<string>::iterator last = std::unique(vec_file.begin(), vec_file.end());
+    // remove the duplicated items, [last, end)
+    vec_file.erase(last, vec_file.end());
 }
+
 void
 XMLResource::init(const char *entry_filepath) {
     if (m_main_entry_parser == NULL) {
@@ -201,26 +178,17 @@ XMLResource::init(const char *entry_filepath) {
     SCLLOG(SclLog::MESSAGE, "init layout\n\n");
     if (m_layout_parser == NULL) {
         m_layout_parser = LayoutParser::get_instance();
-        char **layout_files = NULL;
-        int layout_file_size = 0;
 
-        layout_files = (char**)malloc(sizeof(char*) * MAX_SCL_LAYOUT);
-        if (layout_files == NULL) {
-            SCLLOG(SclLog::ERROR, "layout init");
-            exit(1);
-        }
-        memset(layout_files, 0, sizeof(char*) * MAX_SCL_LAYOUT);
-
-        get_layout_files(layout_files, &layout_file_size);
-        if ( 0 != m_layout_parser->init(get_resource_directory(), layout_files, layout_file_size)) {
+        vector<string> vec_layout_file_name;
+        get_layout_files(
+            m_input_mode_configure_parser->get_input_mode_configure_table(),
+            m_input_mode_configure_parser->get_inputmode_size(),
+            vec_layout_file_name);
+        if ( 0 != m_layout_parser->init(get_resource_directory(),
+            vec_layout_file_name)) {
             /* layout is necessary */
             SCLLOG(SclLog::ERROR, "layout init");
         }
-        for (int i = 0; i < layout_file_size; ++i) {
-            free(layout_files[i]);
-        }
-
-        free(layout_files);
     }
 
     SCLLOG(SclLog::MESSAGE, "init Text XML resources OK.\n\n");
