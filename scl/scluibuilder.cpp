@@ -249,8 +249,8 @@ CSCLUIBuilder::show_layout(const sclwindow window, const scl16 x, const scl16 y,
 
                 //if (highlight_ui_enabled)
                 if (focus_handler->get_current_focus_window() == window) {
-                    sclint startx = cache->get_custom_starting_coordinates().x;
-                    sclint starty = cache->get_custom_starting_coordinates().y;
+                    sclint startx = 0;
+                    sclint starty = 0;
 
                     SclWindowContext *winctx = windows->get_window_context(window);
                     SclWindowContext *basectx = windows->get_window_context(windows->get_base_window());

@@ -259,6 +259,7 @@ CSCLKeyFocusHandler::get_next_candidate_key(SCLHighlightNavigationDirection dire
 
     CSCLContext *context = CSCLContext::get_instance();
     CSCLWindows *windows = CSCLWindows::get_instance();
+    CSCLResourceCache *cache = CSCLResourceCache::get_instance();
 
     SclResParserManager *sclres_manager = SclResParserManager::get_instance();
     PSclLayoutKeyCoordinatePointerTable sclres_layout_key_coordinate_pointer_frame = NULL;
@@ -272,7 +273,7 @@ CSCLKeyFocusHandler::get_next_candidate_key(SCLHighlightNavigationDirection dire
             layout = context->get_popup_layout(window);
         }
     }
-    if (sclres_layout_key_coordinate_pointer_frame) {
+    if (sclres_layout_key_coordinate_pointer_frame && cache) {
         for (sclint loop = 0;loop < MAX_KEY; loop++) {
             SclLayoutKeyCoordinatePointer p = sclres_layout_key_coordinate_pointer_frame[layout][loop];
             if (p && (loop != m_focus_key || window != m_focus_window)) {
@@ -288,6 +289,10 @@ CSCLKeyFocusHandler::get_next_candidate_key(SCLHighlightNavigationDirection dire
                     btn.y = p->y + winctx->geometry.y;
                     btn.width = p->width;
                     btn.height = p->height;
+                }
+                if (windows->is_base_window(window)) {
+                    btn.x += cache->get_custom_starting_coordinates().x;
+                    btn.y += cache->get_custom_starting_coordinates().y;
                 }
 
                 int temp_distance_x;
@@ -408,6 +413,7 @@ CSCLKeyFocusHandler::process_navigation(SCLHighlightNavigationDirection directio
     CSCLContext *context = CSCLContext::get_instance();
     CSCLWindows *windows = CSCLWindows::get_instance();
     CSCLEventHandler *handler = CSCLEventHandler::get_instance();
+    CSCLResourceCache *cache = CSCLResourceCache::get_instance();
     SclResParserManager *sclres_manager = SclResParserManager::get_instance();
     sclshort layout = NOT_USED;
 
@@ -435,11 +441,16 @@ CSCLKeyFocusHandler::process_navigation(SCLHighlightNavigationDirection directio
         /* To compare with buttons in popup window, let's convert to global coordinates */
         SclWindowContext *winctx = windows->get_window_context(m_focus_window);
         SclRectangle cur_key_coordinate;
-        if (winctx && cur) {
+        if (winctx && cur && cache) {
             cur_key_coordinate.x = cur->x + winctx->geometry.x;
             cur_key_coordinate.y = cur->y + winctx->geometry.y;
             cur_key_coordinate.width = cur->width;
             cur_key_coordinate.height = cur->height;
+
+            if (windows->is_base_window(m_focus_window)) {
+                cur_key_coordinate.x += cache->get_custom_starting_coordinates().x;
+                cur_key_coordinate.y += cache->get_custom_starting_coordinates().y;
+            }
         }
 
         NEXT_CANDIDATE_INFO base_candidate;
@@ -506,6 +517,9 @@ CSCLKeyFocusHandler::process_navigation(SCLHighlightNavigationDirection directio
                 base_key_coordinate.y = base_key->y + base_winctx->geometry.y;
                 base_key_coordinate.width = base_key->width;
                 base_key_coordinate.height = base_key->height;
+
+                base_key_coordinate.x += cache->get_custom_starting_coordinates().x;
+                base_key_coordinate.y += cache->get_custom_starting_coordinates().y;
             }
 
             SclRectangle popup_key_coordinate;
@@ -636,12 +650,41 @@ CSCLKeyFocusHandler::process_navigation(SCLHighlightNavigationDirection directio
                         SclLayoutKeyCoordinatePointer next_coordinate =
                             sclres_layout_key_coordinate_pointer_frame[layout_to][desc.key_to];
 
+                        SclRectangle prev_rect;
+                        SclRectangle next_rect;
+                        copy_rectangle( prev_coordinate, &(prev_rect) );
+                        copy_rectangle( next_coordinate, &(next_rect) );
+
+                        if (windows->is_base_window(desc.window_from)) {
+                            prev_rect.x += cache->get_custom_starting_coordinates().x;
+                            prev_rect.y += cache->get_custom_starting_coordinates().y;
+                        } else {
+                            /* Convert popup window coordinates relative to base window */
+                            SclWindowContext *base_winctx = windows->get_window_context(windows->get_base_window());
+                            SclWindowContext *prev_winctx = windows->get_window_context(desc.window_from);
+                            if (base_winctx && prev_winctx) {
+                                prev_rect.x += (prev_winctx->geometry.x - base_winctx->geometry.x);
+                                prev_rect.y += (prev_winctx->geometry.y - base_winctx->geometry.y);
+                            }
+                        }
+                        if (windows->is_base_window(desc.window_to)) {
+                            next_rect.x += cache->get_custom_starting_coordinates().x;
+                            next_rect.y += cache->get_custom_starting_coordinates().y;
+                        } else {
+                            /* Convert popup window coordinates relative to base window */
+                            SclWindowContext *base_winctx = windows->get_window_context(windows->get_base_window());
+                            SclWindowContext *next_winctx = windows->get_window_context(desc.window_to);
+                            if (base_winctx && next_winctx) {
+                                next_rect.x += (next_winctx->geometry.x - base_winctx->geometry.x);
+                                next_rect.y += (next_winctx->geometry.y - base_winctx->geometry.y);
+                            }
+                        }
                         /* Let's check if the navigation animation should be in circular movement */
                         sclboolean circular = FALSE;
                         /* If our 2 buttons overlap in Y axis */
                         if (calculate_distance(
-                            prev_coordinate->y, prev_coordinate->y + prev_coordinate->height,
-                            next_coordinate->y, next_coordinate->y + next_coordinate->height) < 0) {
+                            prev_rect.y, prev_rect.y + prev_rect.height,
+                            next_rect.y, next_rect.y + next_rect.height) < 0) {
                                 /* And if those 2 buttons are side buttons, let's run the animation in circular mode */
                                 if (prev_coordinate->is_side_button && next_coordinate->is_side_button) {
                                     circular = TRUE;
@@ -654,8 +697,8 @@ CSCLKeyFocusHandler::process_navigation(SCLHighlightNavigationDirection directio
                             animdesc.type = ANIMATION_TYPE_HIGHLIGHT_UI;
                             animdesc.length = SCL_ANIMATION_TIME;
 
-                            copy_rectangle( prev_coordinate, &(animdesc.rect_from) );
-                            copy_rectangle( next_coordinate, &(animdesc.rect_to) );
+                            animdesc.rect_from = prev_rect;
+                            animdesc.rect_to = next_rect;
 
                             animdesc.window_from = desc.window_from;
                             animdesc.window_to = desc.window_to;
@@ -667,15 +710,19 @@ CSCLKeyFocusHandler::process_navigation(SCLHighlightNavigationDirection directio
                             SclAnimationState *state = animator->get_animation_state(id);
                             if (state) {
                                 if (state->active) {
-                                    state->desc.rect_from = state->rect_cur;
+                                    /* FIXME : When we have time later,
+                                        let's use the currect rect so that the animation starts from the current position,
+                                        considering the circular movement case */
+                                    //state->desc.rect_from = state->rect_cur;
+                                    state->desc.rect_from = prev_rect;
                                 } else {
                                     state->active = TRUE;
-                                    copy_rectangle( prev_coordinate, &(state->desc.rect_from) );
+                                    state->desc.rect_from = prev_rect;
                                 }
                                 state->step = 0;
                                 state->desc.circular = circular;
 
-                                copy_rectangle( next_coordinate, &(state->desc.rect_to) );
+                                state->desc.rect_to = next_rect;
 
                                 state->desc.window_from = desc.window_from;
                                 state->desc.window_to = desc.window_to;
