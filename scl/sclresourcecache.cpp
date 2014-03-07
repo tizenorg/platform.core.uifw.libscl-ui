@@ -988,6 +988,7 @@ CSCLResourceCache::recompute_layout(sclwindow window)
                             if (!found) {
                                 (*pCurButtonContext)[loop].state = BUTTON_STATE_NORMAL;
                             }
+                            (*pCurButtonContext)[loop].toggled = FALSE;
 
                             /* Apply the custom scale rate value */
                             (*pCurLayoutKeyCoordinate)[loop].x *= utils->get_custom_scale_rate_x();

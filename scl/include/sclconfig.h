@@ -62,6 +62,7 @@ typedef enum _SCLButtonType {
     BUTTON_TYPE_ROTATION,			/**< Rotation key */
     BUTTON_TYPE_DIRECTION,			/**< Direction decided by whole mouse movement from inital point */
     BUTTON_TYPE_RELATIVE_DIRECTION,	/**< Direction decided by recent mouse movement */
+    BUTTON_TYPE_TOGGLE,				/** A button that has toggled state */
     BUTTON_TYPE_UIITEM,				/** Not a button, just for displaying image */
     MAX_BUTTON_TYPE					/* maximum number of Key type */
 }SCLButtonType;
@@ -141,6 +142,8 @@ typedef enum _SCLKeyModifier {
     KEY_MODIFIER_DIRECTION_CURVE_RIGHT_UP,		/**< drag right up */
     KEY_MODIFIER_DIRECTION_CURVE_RIGHT_DOWN,	/**< drage right down */
 
+    KEY_MODIFIER_TOGGLED,						/**< toggled state */
+
     KEY_MODIFIER_MAX			/* maximum number of Key type */
 }SCLKeyModifier;
 
@@ -219,6 +222,7 @@ typedef enum _SCLButtonState {
     BUTTON_STATE_NORMAL = 0,	/**< normal state */
     BUTTON_STATE_PRESSED,		/**< pressed state */
     BUTTON_STATE_DISABLED,		/**< disabled state */
+    BUTTON_STATE_TOGGLED,		/**< toggled state */
     //BUTTON_STATE_HIGHLIGHT,	/**< highlighed state */
     //BUTTON_STATE_LONGKEY,		/**< londkey state */
     SCL_BUTTON_STATE_MAX		/* maximum number of button state */
@@ -445,7 +449,7 @@ typedef enum _SCLParserType {
 #define SCL_HIGHLIGHT_UI_IMAGE "B09_icon_cue.png"
 
 #define SCL_ANIMATION_TIMER_INTERVAL (1000 / 30) // 30 frames per second
-#define SCL_ANIMATION_TIME 300 // Animation for 1 second
+#define SCL_ANIMATION_TIME 300 // Animation for 300 ms
 
 typedef enum _SCLDebugMode {
     DEBUGMODE_DISABLED,

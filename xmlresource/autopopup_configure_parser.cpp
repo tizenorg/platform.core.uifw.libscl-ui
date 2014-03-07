@@ -275,9 +275,10 @@ class AutoPopupConfigureParserImpl {
                 button_state = BUTTON_STATE_PRESSED;
             } else if (equal_prop(cur_node, "button_state", "normal")) {
                 button_state = BUTTON_STATE_NORMAL;
-            }
-            else if (equal_prop(cur_node, "button_state", "disabled")) {
+            } else if (equal_prop(cur_node, "button_state", "disabled")) {
                 button_state = BUTTON_STATE_DISABLED;
+            } else if (equal_prop(cur_node, "button_state", "toggled")) {
+                button_state = BUTTON_STATE_TOGGLED;
             }
             return button_state;
 

@@ -82,6 +82,7 @@ const string ButtonTypeHelper::pcMultitap = "multitap";
 const string ButtonTypeHelper::pcRotation = "rotation";
 const string ButtonTypeHelper::pcDirection = "direction";
 const string ButtonTypeHelper::pcRelative_Direction = "relative_direction";
+const string ButtonTypeHelper::pcToggle = "toggle";
 const string ButtonTypeHelper::pcUiitem = "uiitem";
 
 const string ButtonTypeHelper::toString(const int val) {
@@ -126,6 +127,8 @@ const int ButtonTypeHelper::Int(const string str) {
         return DIRECTION;
     } else if (str ==  pcRelative_Direction) {
         return RELATIVE_DIRECTION;
+    } else if (str ==  pcToggle) {
+        return TOGGLE;
     } else if (str ==  pcUiitem) {
         return UIITEM;
     } else {

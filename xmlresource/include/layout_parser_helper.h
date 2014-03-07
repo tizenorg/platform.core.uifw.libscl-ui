@@ -57,8 +57,9 @@ class ButtonTypeHelper{
         static const int ROTATION = 5;
         static const int DIRECTION = 6;
         static const int RELATIVE_DIRECTION = 7;
-        static const int UIITEM = 8;
-        static const int MAX = 9;
+        static const int TOGGLE = 8;
+        static const int UIITEM = 9;
+        static const int MAX = 10;
         static const int DEFAULT = 0;
 
         static const std::string pcNormal;
@@ -69,6 +70,7 @@ class ButtonTypeHelper{
         static const std::string pcRotation;
         static const std::string pcDirection;
         static const std::string pcRelative_Direction;
+        static const std::string pcToggle;
         static const std::string pcUiitem;
 
         static const std::string toString(const int val);

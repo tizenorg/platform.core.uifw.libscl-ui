@@ -81,6 +81,7 @@ using namespace std;
 #define LAYOUT_BACKGROUND_NORMAL_TAG "button_normal"
 #define LAYOUT_BACKGROUND_PRESSED_TAG "button_pressed"
 #define LAYOUT_BACKGROUND_DISABLED_TAG "button_disabled"
+#define LAYOUT_BACKGROUND_TOGGLED_TAG "button_toggled"
 
 #define LAYOUT_ROW_TAG "row"
 #define LAYOUT_ROW_SUBLAYOUT_ID_ATTRIBUTE "sub_layout"
@@ -426,19 +427,21 @@ LayoutParserImpl::parsing_background(
 
     xmlNodePtr child_node = cur_node->xmlChildrenNode;
     while ( child_node != NULL) {
-        if ( 0 == xmlStrcmp(child_node->name, (const xmlChar* )"button_normal") ) {
+        if ( 0 == xmlStrcmp(child_node->name, (const xmlChar* )LAYOUT_BACKGROUND_NORMAL_TAG) ) {
             xmlChar *key = xmlNodeGetContent(child_node);
             cur_layout->image_path[BUTTON_STATE_NORMAL] = (char *)key;
             add_layout_string(key);
-        }
-        else if ( 0 == xmlStrcmp(child_node->name, (const xmlChar* )"button_pressed") ) {
+        } else if ( 0 == xmlStrcmp(child_node->name, (const xmlChar* )LAYOUT_BACKGROUND_PRESSED_TAG) ) {
             xmlChar *key = xmlNodeGetContent(child_node);
             cur_layout->image_path[BUTTON_STATE_PRESSED] = (char *)key;
             add_layout_string(key);
-        }
-        else if ( 0 == xmlStrcmp(child_node->name, (const xmlChar* )"button_disabled") ) {
+        } else if ( 0 == xmlStrcmp(child_node->name, (const xmlChar* )LAYOUT_BACKGROUND_DISABLED_TAG ) ) {
             xmlChar *key = xmlNodeGetContent(child_node);
             cur_layout->image_path[BUTTON_STATE_DISABLED] = (char *)key;
+            add_layout_string(key);
+        } else if ( 0 == xmlStrcmp(child_node->name, (const xmlChar* )LAYOUT_BACKGROUND_TOGGLED_TAG ) ) {
+            xmlChar *key = xmlNodeGetContent(child_node);
+            cur_layout->image_path[BUTTON_STATE_TOGGLED] = (char *)key;
             add_layout_string(key);
         }
 
@@ -499,6 +502,7 @@ LayoutParserImpl::set_default_layout_value(const PSclLayout cur_layout) {
     cur_layout->image_path[BUTTON_STATE_NORMAL]      = NULL;
     cur_layout->image_path[BUTTON_STATE_PRESSED]     = NULL;
     cur_layout->image_path[BUTTON_STATE_DISABLED]    = NULL;
+    cur_layout->image_path[BUTTON_STATE_TOGGLED]     = NULL;
 
     cur_layout->use_sw_button = false;
     cur_layout->use_magnifier_window = false;
@@ -856,7 +860,6 @@ LayoutParserImpl::get_shift_state_prop(const xmlNodePtr cur_node) {
         shift_state = SCL_SHIFT_STATE_ON;
     } else if (equal_prop(cur_node, "shift", "off")) {
         shift_state = SCL_SHIFT_STATE_OFF;
-
     } else if (equal_prop(cur_node, "shift", "loc")) {
         shift_state = SCL_SHIFT_STATE_LOCK;
     }
@@ -871,9 +874,10 @@ LayoutParserImpl::get_button_state_prop(const xmlNodePtr cur_node) {
         button_state = BUTTON_STATE_PRESSED;
     } else if (equal_prop(cur_node, "button", "normal")) {
         button_state = BUTTON_STATE_NORMAL;
-    }
-    else if (equal_prop(cur_node, "button", "disabled")) {
+    } else if (equal_prop(cur_node, "button", "disabled")) {
         button_state = BUTTON_STATE_DISABLED;
+    } else if (equal_prop(cur_node, "button", "toggled")) {
+        button_state = BUTTON_STATE_TOGGLED;
     }
     return button_state;
 }

@@ -369,9 +369,10 @@ class LabelPropertiesParserImpl {
             button_state = BUTTON_STATE_PRESSED;
         } else if (equal_prop(cur_node, "button", "normal")) {
             button_state = BUTTON_STATE_NORMAL;
-        }
-        else if (equal_prop(cur_node, "button", "disabled")) {
+        } else if (equal_prop(cur_node, "button", "disabled")) {
             button_state = BUTTON_STATE_DISABLED;
+        } else if (equal_prop(cur_node, "button", "toggled")) {
+            button_state = BUTTON_STATE_TOGGLED;
         }
         return button_state;
     }

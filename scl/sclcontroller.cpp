@@ -1818,6 +1818,23 @@ CSCLController::process_button_release_event(sclwindow window, sclint x, sclint 
                     case BUTTON_TYPE_DRAG : {
                     }
                     break;
+                    case BUTTON_TYPE_TOGGLE : {
+                        SclButtonContext *pressed_context = cache->get_cur_button_context(pressed_window, pressed_key);
+                        if (pressed_context) {
+                            if (!(targetCoordinate->use_repeat_key) && pressed_context->state == BUTTON_STATE_PRESSED) {
+                                key_event_desc.key_value = targetCoordinate->key_value[shiftidx][0];
+                                key_event_desc.key_event = targetCoordinate->key_event[shiftidx][0];
+                                if (pressed_context->toggled) {
+                                    key_event_desc.key_modifier = KEY_MODIFIER_NONE;
+                                } else {
+                                    key_event_desc.key_modifier = KEY_MODIFIER_TOGGLED;
+                                }
+                                if (SCL_EVENT_PASS_ON == handler->on_event_key_clicked(key_event_desc)) {
+                                    pressed_context->toggled = !(pressed_context->toggled);
+                                }
+                            }
+                        }
+                    }
                     case BUTTON_TYPE_UIITEM: break;
                     case MAX_BUTTON_TYPE: break;
                     default: break;
@@ -3899,25 +3916,27 @@ CSCLController::check_event_transition_enabled(const SclLayoutKeyCoordinate *btn
     sclbyte typeTo = MAX_BUTTON_TYPE;
 
     const sclboolean TRANSITION_TABLE[MAX_BUTTON_TYPE][MAX_BUTTON_TYPE] = {
-        //	NORMAL	GRAB	SELFISH	DRAG	MULTITAP	ROTATION	DIRECTION	R_DIRECTION	UIITEM
+        //	NORMAL	GRAB	SELFISH	DRAG	MULTITAP	ROTATION	DIRECTION	R_DIRECTION	TOGGLE	UIITEM
         //	From : NORMAL
-        {	TRUE,	0,	0,		TRUE,	TRUE,		TRUE,		0,			0,			0},
+        {	TRUE,	0,	0,		TRUE,	TRUE,		TRUE,		0,			0,			TRUE,		0},
         //	From : GRAB
-        {	0,		0,	0,		0,		0,			0,			0,			0,			0},
+        {	0,		0,	0,		0,		0,			0,			0,			0,			0,			0},
         //	From : SELFISH
-        {	0,		0,	0,		0,		0,			0,			0,			0,			0},
+        {	0,		0,	0,		0,		0,			0,			0,			0,			0,			0},
         //	From : DRAG
-        {	TRUE,	0,	0,		TRUE,	TRUE,		TRUE,		0,			0,			0},
+        {	TRUE,	0,	0,		TRUE,	TRUE,		TRUE,		0,			0,			TRUE,		0},
         //	From : MULTITAP
-        {	TRUE,	0,	0,		TRUE,	TRUE,		TRUE,		0,			0,			0},
+        {	TRUE,	0,	0,		TRUE,	TRUE,		TRUE,		0,			0,			TRUE,		0},
         //	From : ROTATION
-        {	TRUE,	0,	0,		TRUE,	TRUE,		TRUE,		0,			0,			0},
+        {	TRUE,	0,	0,		TRUE,	TRUE,		TRUE,		0,			0,			TRUE,		0},
         //	From : DIRECTION
-        {	0,		0,	0,		0,		0,			0,			0,			0,			0},
+        {	0,		0,	0,		0,		0,			0,			0,			0,			0,			0},
         //	From : R_DIRECTION
-        {	0,		0,	0,		0,		0,			0,			0,			0,			0},
+        {	0,		0,	0,		0,		0,			0,			0,			0,			0,			0},
         //	From : UIITEM
-        {	0,		0,	0,		0,		0,			0,			0,			0,			0},
+        {	0,		0,	0,		0,		0,			0,			0,			0,			0,			0},
+        //	From : TOGGLE
+        {	TRUE,	0,	0,		TRUE,	TRUE,		TRUE,		0,			0,			TRUE,		0},
     };
 
     if (btnFrom) typeFrom = btnFrom->button_type;

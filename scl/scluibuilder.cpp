@@ -332,7 +332,11 @@ CSCLUIBuilder::draw_button_all(const sclwindow window, const scldrawctx draw_ctx
                 if (coordinate->valid && subLayoutMatch) {
                     SclRectangle itemrect = {coordinate->x, coordinate->y, coordinate->width, coordinate->height};
                     if (drawall || utils->is_rect_overlap(itemrect, updatearea)) {
-                        if (!draw_button(window, draw_ctx, idx, btncontext->state)) {
+                        SCLButtonState state = btncontext->state;
+                        if (btncontext->toggled) {
+                            state = BUTTON_STATE_TOGGLED;
+                        }
+                        if (!draw_button(window, draw_ctx, idx, state)) {
                             break;
                         }
                     }
