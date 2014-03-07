@@ -273,7 +273,7 @@ CSCLKeyFocusHandler::get_next_candidate_key(SCLHighlightNavigationDirection dire
             layout = context->get_popup_layout(window);
         }
     }
-    if (sclres_layout_key_coordinate_pointer_frame && cache) {
+    if (sclres_layout_key_coordinate_pointer_frame && cache && scl_check_arrindex(layout, MAX_SCL_LAYOUT)) {
         for (sclint loop = 0;loop < MAX_KEY; loop++) {
             SclLayoutKeyCoordinatePointer p = sclres_layout_key_coordinate_pointer_frame[layout][loop];
             if (p && (loop != m_focus_key || window != m_focus_window)) {
@@ -462,7 +462,7 @@ CSCLKeyFocusHandler::process_navigation(SCLHighlightNavigationDirection directio
 
         if (!windows->is_base_window(windows->get_nth_window_in_Z_order_list(SCL_WINDOW_Z_TOP))) {
             CSCLResourceCache *cache = CSCLResourceCache::get_instance();
-            if (cache) {
+            if (cache && scl_check_arrindex(winctx->inputmode, MAX_SCL_INPUT_MODE)) {
                 const SclLayout *layout =
                     cache->get_cur_layout(windows->get_nth_window_in_Z_order_list(SCL_WINDOW_Z_TOP));
                 if (!(layout->use_sw_background) || layout->bg_color.a != 0) {
