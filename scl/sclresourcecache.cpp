@@ -1149,11 +1149,14 @@ void CSCLResourceCache::generate_autopopup_layout( const SclLayoutKeyCoordinate 
     }
 
     int loop;
-    if (coordinate && autopopup_configure) {
+    if (utils && context && coordinate && autopopup_configure) {
         sclbyte num_keys, num_columns, num_rows;
         sclint x, y, width, height;
         SCLShiftState shiftidx = context->get_shift_state();
         if (shiftidx < 0 || shiftidx >= SCL_SHIFT_STATE_MAX) shiftidx = SCL_SHIFT_STATE_OFF;
+        if (context->get_caps_lock_mode()) {
+            shiftidx = (shiftidx == SCL_SHIFT_STATE_OFF) ? SCL_SHIFT_STATE_ON : SCL_SHIFT_STATE_OFF;
+        }
         if (utils->get_autopopup_window_variables(coordinate->autopopup_key_labels[shiftidx], &num_keys, &num_columns, &num_rows, &width, &height)) {
             int row = 0, column = 0;
 
@@ -1229,9 +1232,21 @@ void CSCLResourceCache::generate_autopopup_layout( const SclLayoutKeyCoordinate 
 
                 (*pCurLayoutKeyCoordinates)[loop].valid = TRUE;
                 (*pCurLayoutKeyCoordinates)[loop].label_count = 1;
-                (*pCurLayoutKeyCoordinates)[loop].label[0][0] = coordinate->autopopup_key_labels[0][loop];
-                (*pCurLayoutKeyCoordinates)[loop].label[1][0] = coordinate->autopopup_key_labels[1][loop];
-                (*pCurLayoutKeyCoordinates)[loop].label[2][0] = coordinate->autopopup_key_labels[2][loop];
+                if (context->get_caps_lock_mode()) {
+                    (*pCurLayoutKeyCoordinates)[loop].label[SCL_SHIFT_STATE_OFF][0] =
+                        coordinate->autopopup_key_labels[SCL_SHIFT_STATE_ON][loop];
+                    (*pCurLayoutKeyCoordinates)[loop].label[SCL_SHIFT_STATE_ON][0] =
+                        coordinate->autopopup_key_labels[SCL_SHIFT_STATE_OFF][loop];
+                    (*pCurLayoutKeyCoordinates)[loop].label[SCL_SHIFT_STATE_LOCK][0] =
+                        coordinate->autopopup_key_labels[SCL_SHIFT_STATE_OFF][loop];
+                } else {
+                    (*pCurLayoutKeyCoordinates)[loop].label[SCL_SHIFT_STATE_OFF][0] =
+                        coordinate->autopopup_key_labels[SCL_SHIFT_STATE_OFF][loop];
+                    (*pCurLayoutKeyCoordinates)[loop].label[SCL_SHIFT_STATE_ON][0] =
+                        coordinate->autopopup_key_labels[SCL_SHIFT_STATE_ON][loop];
+                    (*pCurLayoutKeyCoordinates)[loop].label[SCL_SHIFT_STATE_LOCK][0] =
+                        coordinate->autopopup_key_labels[SCL_SHIFT_STATE_LOCK][loop];
+                }
                 //(*pCurLayoutKeyProperties)[loop].labelPropId = SCL_LABEL_PROPERTY_AUTOPOPUP;
                 (*pCurLayoutKeyCoordinates)[loop].label_type = autopopup_configure->label_type;
                 memset((*pCurLayoutKeyCoordinates)[loop].image_label_path, 0x00, sizeof((*pCurLayoutKeyCoordinates)[loop].image_label_path));

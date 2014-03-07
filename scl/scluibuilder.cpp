@@ -980,6 +980,9 @@ CSCLUIBuilder::show_magnifier(const sclwindow window, scldrawctx draw_ctx)
     SclButtonContext* btncontext = cache->get_cur_button_context(pressed_window, pressed_key);
     SCLShiftState shiftidx = context->get_shift_state();
     if (shiftidx < 0 || shiftidx >= SCL_SHIFT_STATE_MAX) shiftidx = SCL_SHIFT_STATE_OFF;
+    if (context->get_caps_lock_mode()) {
+        shiftidx = (shiftidx == SCL_SHIFT_STATE_OFF) ? SCL_SHIFT_STATE_ON : SCL_SHIFT_STATE_OFF;
+    }
 
     /* Do not show if current layout does not allow magnifier */
     if (!(layout->use_magnifier_window)) {
@@ -1062,12 +1065,12 @@ CSCLUIBuilder::show_magnifier(const sclwindow window, scldrawctx draw_ctx)
                 magnifier_configure->width * utils->get_custom_scale_rate_x(),
                 magnifier_configure->height * utils->get_custom_scale_rate_y());
         } else {
-            if (context->get_shift_state() == SCL_SHIFT_STATE_LOCK) {
+            if (shiftidx == SCL_SHIFT_STATE_LOCK) {
                 m_utils->get_composed_path(composed_path, IMG_PATH_PREFIX, magnifier_configure->bg_shift_lock_image_path);
                 m_gwes->m_graphics->draw_image(window, draw_ctx, composed_path, NULL, 0, 0,
                     magnifier_configure->width * utils->get_custom_scale_rate_x(),
                     magnifier_configure->height * utils->get_custom_scale_rate_y());
-            } else if (context->get_shift_state() == SCL_SHIFT_STATE_ON) {
+            } else if (shiftidx == SCL_SHIFT_STATE_ON) {
                 m_utils->get_composed_path(composed_path, IMG_PATH_PREFIX, magnifier_configure->bg_shift_image_path);
                 m_gwes->m_graphics->draw_image(window, draw_ctx, composed_path, NULL, 0, 0,
                     magnifier_configure->width * utils->get_custom_scale_rate_x(),
@@ -1085,8 +1088,6 @@ CSCLUIBuilder::show_magnifier(const sclwindow window, scldrawctx draw_ctx)
             const SclLabelProperties *labelproperties = cache->get_label_properties(magnifier_configure->label_type, loop);
             if (labelproperties) {
                 if (labelproperties->valid) {
-                    SCLShiftState shiftidx = context->get_shift_state();
-                    if (shiftidx < 0 || shiftidx >= SCL_SHIFT_STATE_MAX) shiftidx = SCL_SHIFT_STATE_OFF;
                     if (magnifier_configure->show_shift_label) {
                         shiftidx = SCL_SHIFT_STATE_ON;
                     }
@@ -1175,6 +1176,9 @@ CSCLUIBuilder::draw_magnifier_label(const sclwindow window, const scldrawctx dra
 
             SCLShiftState shiftstate = context->get_shift_state();
             if (scl_check_arrindex(shiftstate, SCL_SHIFT_STATE_MAX)) {
+                if (context->get_caps_lock_mode()) {
+                    shiftstate = (shiftstate == SCL_SHIFT_STATE_OFF) ? SCL_SHIFT_STATE_ON : SCL_SHIFT_STATE_OFF;
+                }
                 graphics->draw_text(
                     window,
                     draw_ctx,

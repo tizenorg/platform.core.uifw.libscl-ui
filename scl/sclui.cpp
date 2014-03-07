@@ -263,6 +263,25 @@ CSCLUI::set_shift_state(SCLShiftState state)
     }
 }
 
+sclboolean
+CSCLUI::get_caps_lock_mode()
+{
+    sclboolean ret = FALSE;
+    if (m_impl) {
+        ret = m_impl->get_caps_lock_mode();
+    }
+    return ret;
+}
+
+void
+CSCLUI::set_caps_lock_mode(sclboolean state)
+{
+    if (m_impl) {
+        m_impl->set_caps_lock_mode(state);
+    }
+}
+
+
 /**
  * This function will be called by the user which uses SCL when the context of the focus application is changed
  * ISE user should explicitly call this function when the context of application is changed.

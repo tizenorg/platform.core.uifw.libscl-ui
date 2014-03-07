@@ -120,6 +120,9 @@ public:
     SCLShiftState get_shift_state() const;
     void set_shift_state(SCLShiftState val);
 
+    sclboolean get_caps_lock_mode() const;
+    void set_caps_lock_mode(sclboolean val);
+
     SCLShiftMultitouchState get_shift_multi_touch_state() const;
     void set_shift_multi_touch_state(SCLShiftMultitouchState val);
 
@@ -284,6 +287,7 @@ protected:
 
     sclboolean m_hidden;
     SCLShiftState m_shift_state;
+    sclboolean m_caps_lock_mode;
     SCLShiftMultitouchState m_shift_multi_touch_state;
 
     sclchar m_cur_sub_layout[MAX_SIZE_OF_SUBLAYOUT_STRING];

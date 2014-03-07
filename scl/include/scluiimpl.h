@@ -74,6 +74,9 @@ public:
     void set_shift_state(SCLShiftState state);
     SCLShiftState get_shift_state();
 
+    void set_caps_lock_mode(sclboolean mode);
+    sclboolean get_caps_lock_mode();
+
     void notify_app_focus_changed();
     void reset_popup_timeout();
     void close_all_popups();

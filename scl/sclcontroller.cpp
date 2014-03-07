@@ -329,6 +329,9 @@ CSCLController::check_magnifier_available(sclwindow window, sclbyte key_index, s
 
         SCLShiftState shiftidx = context->get_shift_state();
         if (!scl_check_arrindex(shiftidx, SCL_SHIFT_STATE_MAX)) shiftidx = SCL_SHIFT_STATE_OFF;
+        if (context->get_caps_lock_mode()) {
+            shiftidx = (shiftidx == SCL_SHIFT_STATE_OFF) ? SCL_SHIFT_STATE_ON : SCL_SHIFT_STATE_OFF;
+        }
 
         if (layout && coordinate && btncontext && context->get_magnifier_enabled() ) {
             if (coordinate->key_type != KEY_TYPE_CONTROL &&
@@ -484,6 +487,9 @@ CSCLController::process_button_pressed_event(sclwindow window, sclint x, sclint 
 
             SCLShiftState shiftidx = context->get_shift_state();
             if (!scl_check_arrindex(shiftidx, SCL_SHIFT_STATE_MAX)) shiftidx = SCL_SHIFT_STATE_OFF;
+            if (context->get_caps_lock_mode()) {
+                shiftidx = (shiftidx == SCL_SHIFT_STATE_OFF) ? SCL_SHIFT_STATE_ON : SCL_SHIFT_STATE_OFF;
+            }
 
             SclUIEventDesc key_event_desc = {0};
             key_event_desc.key_value = coordinate->key_value[shiftidx][0];
@@ -808,6 +814,9 @@ CSCLController::process_button_long_pressed_event(sclwindow window, sclbyte key_
                     if (coordinate->long_key_value == NULL && coordinate->long_key_event == 0) {
                         SCLShiftState shiftidx = context->get_shift_state();
                         if (!scl_check_arrindex(shiftidx, SCL_SHIFT_STATE_MAX)) shiftidx = SCL_SHIFT_STATE_OFF;
+                        if (context->get_caps_lock_mode()) {
+                            shiftidx = (shiftidx == SCL_SHIFT_STATE_OFF) ? SCL_SHIFT_STATE_ON : SCL_SHIFT_STATE_OFF;
+                        }
 
                         key_event_desc.key_value = coordinate->key_value[shiftidx][0];
                         key_event_desc.key_event = coordinate->key_event[shiftidx][0];
@@ -992,6 +1001,9 @@ CSCLController::process_button_repeat_pressed_event(sclwindow window, sclbyte ke
 
         SCLShiftState shiftidx = context->get_shift_state();
         if (!scl_check_arrindex(shiftidx, SCL_SHIFT_STATE_MAX)) shiftidx = SCL_SHIFT_STATE_OFF;
+        if (context->get_caps_lock_mode()) {
+            shiftidx = (shiftidx == SCL_SHIFT_STATE_OFF) ? SCL_SHIFT_STATE_ON : SCL_SHIFT_STATE_OFF;
+        }
 
         if (coordinate) {
             switch (coordinate->button_type) {
@@ -1102,6 +1114,9 @@ CSCLController::process_button_move_event(sclwindow window, sclint x, sclint y, 
 
             SCLShiftState shiftidx = context->get_shift_state();
             if (!scl_check_arrindex(shiftidx, SCL_SHIFT_STATE_MAX)) shiftidx = SCL_SHIFT_STATE_OFF;
+            if (context->get_caps_lock_mode()) {
+                shiftidx = (shiftidx == SCL_SHIFT_STATE_OFF) ? SCL_SHIFT_STATE_ON : SCL_SHIFT_STATE_OFF;
+            }
 
             const SclLayout* layout = cache->get_cur_layout(windows->get_base_window());
 
@@ -1411,6 +1426,9 @@ CSCLController::process_button_over_event(sclwindow window, sclint x, sclint y, 
 
             SCLShiftState shiftidx = context->get_shift_state();
             if (!scl_check_arrindex(shiftidx, SCL_SHIFT_STATE_MAX)) shiftidx = SCL_SHIFT_STATE_OFF;
+            if (context->get_caps_lock_mode()) {
+                shiftidx = (shiftidx == SCL_SHIFT_STATE_OFF) ? SCL_SHIFT_STATE_ON : SCL_SHIFT_STATE_OFF;
+            }
 
             const SclLayout* layout = cache->get_cur_layout(windows->get_base_window());
 
@@ -1755,6 +1773,9 @@ CSCLController::process_button_release_event(sclwindow window, sclint x, sclint 
                 if (targetCoordinate) {
                     SCLShiftState shiftidx = context->get_shift_state();
                     if (!scl_check_arrindex(shiftidx, SCL_SHIFT_STATE_MAX)) shiftidx = SCL_SHIFT_STATE_OFF;
+                    if (context->get_caps_lock_mode()) {
+                        shiftidx = (shiftidx == SCL_SHIFT_STATE_OFF) ? SCL_SHIFT_STATE_ON : SCL_SHIFT_STATE_OFF;
+                    }
 
                     SclUIEventDesc key_event_desc = {0};
                     key_event_desc.key_type = targetCoordinate->key_type;
@@ -1949,6 +1970,9 @@ CSCLController::process_button_release_event(sclwindow window, sclint x, sclint 
             if (targetCoordinate) {
                 SCLShiftState shiftidx = context->get_shift_state();
                 if (!scl_check_arrindex(shiftidx, SCL_SHIFT_STATE_MAX)) shiftidx = SCL_SHIFT_STATE_OFF;
+                if (context->get_caps_lock_mode()) {
+                    shiftidx = (shiftidx == SCL_SHIFT_STATE_OFF) ? SCL_SHIFT_STATE_ON : SCL_SHIFT_STATE_OFF;
+                }
 
                 SclUIEventDesc key_event_desc = {0};
                 key_event_desc.key_type = targetCoordinate->key_type;
@@ -2957,6 +2981,9 @@ CSCLController::mouse_move(sclwindow window, sclint x, sclint y, scltouchdevice 
                 if (dist > direction_recog_dist) {
                     SclUIEventDesc desc = {0};
                     SCLShiftState shiftidx = context->get_shift_state();
+                    if (context->get_caps_lock_mode()) {
+                        shiftidx = (shiftidx == SCL_SHIFT_STATE_OFF) ? SCL_SHIFT_STATE_ON : SCL_SHIFT_STATE_OFF;
+                    }
                     desc.key_type = coordinate->key_type;
                     desc.key_value = coordinate->key_value[shiftidx][0];
                     desc.key_event = coordinate->key_event[shiftidx][0];
@@ -3030,6 +3057,9 @@ CSCLController::mouse_move(sclwindow window, sclint x, sclint y, scltouchdevice 
 
                         SclUIEventDesc desc = {0};
                         SCLShiftState shiftidx = context->get_shift_state();
+                        if (context->get_caps_lock_mode()) {
+                            shiftidx = (shiftidx == SCL_SHIFT_STATE_OFF) ? SCL_SHIFT_STATE_ON : SCL_SHIFT_STATE_OFF;
+                        }
                         desc.key_type = coordinate->key_type;
                         desc.key_value = coordinate->key_value[shiftidx][0];
                         desc.key_event = coordinate->key_event[shiftidx][0];
@@ -3843,6 +3873,9 @@ CSCLController::configure_autopopup_window(sclwindow window, sclbyte key_index, 
     if (utils && context && windows && cache && coordinate && rect && autopopup_configure) {
         SCLShiftState shiftidx = context->get_shift_state();
         if (!scl_check_arrindex(shiftidx, SCL_SHIFT_STATE_MAX)) shiftidx = SCL_SHIFT_STATE_OFF;
+        if (context->get_caps_lock_mode()) {
+            shiftidx = (shiftidx == SCL_SHIFT_STATE_OFF) ? SCL_SHIFT_STATE_ON : SCL_SHIFT_STATE_OFF;
+        }
 
         if (utils->get_autopopup_window_variables(coordinate->autopopup_key_labels[shiftidx],
                 &num_keys, &num_columns, &num_rows, &rect->width, &rect->height)) {

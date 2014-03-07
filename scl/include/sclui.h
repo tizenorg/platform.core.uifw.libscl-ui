@@ -190,6 +190,18 @@ public:
     SCLShiftState get_shift_state();
 
     /**
+     * @brief This API sets the current caps lock mode, which reverses the effect of shift mode
+     * @param[in] mode whether the cap lock mode is enabled or not
+     */
+    void set_caps_lock_mode(sclboolean mode);
+
+    /**
+     * @brief This API retrieves the current caps lock mode
+     * @return current caps lock mode
+     */
+    sclboolean get_caps_lock_mode();
+
+    /**
      * @brief This API notifies the SCL library that the application's focus was moved to another input context
      */
     void notify_app_focus_changed();

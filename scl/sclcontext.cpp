@@ -658,6 +658,16 @@ void CSCLContext::set_shift_state(SCLShiftState val)
     }
 }
 
+sclboolean CSCLContext::get_caps_lock_mode() const
+{
+    return m_caps_lock_mode;
+}
+
+void CSCLContext::set_caps_lock_mode(sclboolean val)
+{
+    m_caps_lock_mode = val;
+}
+
 SCLShiftMultitouchState CSCLContext::get_shift_multi_touch_state() const
 {
     SCLShiftMultitouchState ret = SCL_SHIFT_MULTITOUCH_OFF;
