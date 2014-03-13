@@ -346,8 +346,9 @@ int
 LayoutParserImpl::get_layout_index(const char *name) {
     string strName = (string)name;
     vector<string>::iterator it;
-    it = find(m_file_names.begin(), m_file_names.end(), strName);
-    if (it != m_file_names.end()) {
+    // make sure that the m_file_names are sorted.
+    it = lower_bound(m_file_names.begin(), m_file_names.end(), strName);
+    if (it != m_file_names.end() && *it == strName) {
         return it-m_file_names.begin();
     }
     return NOT_USED;
