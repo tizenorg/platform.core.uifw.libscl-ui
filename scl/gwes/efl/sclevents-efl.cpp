@@ -592,7 +592,8 @@ client_message_cb(void *data, int type, void *event)
 Eina_Bool timer_event(void *data)
 {
     SCL_DEBUG();
-    scl32 sendData = (scl32)data;
+
+    scl32 sendData = static_cast<scl32>(reinterpret_cast<uintptr_t>(data) & 0xffffffff);
     CSCLController *controller;
     controller = CSCLController::get_instance();
     if (controller) {
