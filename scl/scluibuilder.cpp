@@ -549,7 +549,7 @@ CSCLUIBuilder::draw_button_label(const sclwindow window, const scldrawctx draw_c
                             label,
                             NULL,
                             (sclint)coordinate->x + deltax + targetaddx,
-                            (sclint)coordinate->y + deltay + targetaddy,
+                            (sclint)coordinate->y + deltax + targetaddy,
                             (sclint)coordinate->width,
                             (sclint)coordinate->height,
                             labelproperties->alignment,

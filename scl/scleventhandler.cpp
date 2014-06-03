@@ -290,6 +290,7 @@ CSCLEventHandler::pre_process_ui_event(SclUIEventDesc &ui_event_desc)
         {"Right",       MVK_Right       },
         {"Up",          MVK_Up          },
         {"Down",        MVK_Down        },
+        {"Escape",      MVK_Escape      },
     };
 
     /* Translate key_values only when key_event is 0 and key_value is not NULL */

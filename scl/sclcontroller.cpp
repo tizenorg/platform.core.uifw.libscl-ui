@@ -3178,6 +3178,7 @@ CSCLController::timer_event(const scl32 data)
                 state->get_cur_action_state() == ACTION_STATE_POPUP_REPEATKEY
            ) {
             /* Ignores if the event id is different */
+            events->destroy_timer(id);
             return FALSE;
         }
 
@@ -3252,6 +3253,7 @@ CSCLController::timer_event(const scl32 data)
                 state->get_cur_action_state() == ACTION_STATE_POPUP_REPEATKEY
            ) {
             /* Ignores if the event id is different */
+            events->destroy_timer(id);
             return FALSE;
         }
         /* Ignores if the event id is different */
@@ -3311,6 +3313,7 @@ CSCLController::timer_event(const scl32 data)
                  state->get_cur_action_state() != ACTION_STATE_POPUP_REPEATKEY)
            ) {
             /* Ignores if the event id is different */
+            events->destroy_timer(id);
             return FALSE;
         }
         sclwindow window = context->get_cur_pressed_window(context->get_last_touch_device_id());

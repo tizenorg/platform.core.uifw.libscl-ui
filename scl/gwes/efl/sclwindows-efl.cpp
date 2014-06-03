@@ -29,6 +29,10 @@
 #include <malloc.h>
 #include <X11/Xlib.h>
 #include <X11/Xatom.h>
+#include <X11/Xutil.h>
+#include <utilX.h>
+#include <dlog.h>/*CHK_MRUNAL*/
+#include "sclkeyfocushandler.h"
 
 using namespace scl;
 
@@ -73,6 +77,33 @@ CSCLWindowsImplEfl::~CSCLWindowsImplEfl()
     SCL_DEBUG();
 }
 
+static Ecore_Event_Handler *_candidate_show_handler         = NULL;
+
+static Eina_Bool x_event_window_show_cb (void *data, int ev_type, void *event)
+{
+    CSCLWindows *windows = CSCLWindows::get_instance();
+    Evas_Object *window = (Evas_Object *)windows->get_base_window();
+    Ecore_X_Event_Window_Show *e = (Ecore_X_Event_Window_Show*)event;
+    CSCLKeyFocusHandler* focus_handler = CSCLKeyFocusHandler::get_instance();
+
+    if(e->win == elm_win_xwindow_get(window)) {
+        LOGD("INSIDE =-=-=-=- x_event_window_show_cb, Trying to Grab Key Board : \n");
+        focus_handler->grab_keyboard(windows->get_base_window());
+        focus_handler->init_key_index();
+    }
+    return ECORE_CALLBACK_RENEW;
+}
+
+
+void CSCLWindowsImplEfl::init()
+{
+
+}
+
+void CSCLWindowsImplEfl::fini()
+{
+
+}
 
 /**
  * Create a content window and binds it into given parent window as a child
@@ -87,6 +118,10 @@ CSCLWindowsImplEfl::create_base_window(const sclwindow parent, SclWindowContext 
     if (winctx) {
         winctx->etc_info = NULL;
         winctx->window = parent;
+    
+    //Adding window show event handler:mrunal.s
+    _candidate_show_handler = ecore_event_handler_add (ECORE_X_EVENT_WINDOW_SHOW, x_event_window_show_cb, NULL);
+
 
 #ifndef APPLY_WINDOW_MANAGER_CHANGE
         ecore_x_icccm_name_class_set(elm_win_xwindow_get(static_cast<Evas_Object*>(parent)), "Virtual Keyboard", "ISF" );
@@ -146,6 +181,8 @@ CSCLWindowsImplEfl::create_window(const sclwindow parent, SclWindowContext *winc
     ecore_x_e_window_rotation_geometry_set(elm_win_xwindow_get(win),
         rotation_values_EFL[ROTATION_90_CCW], 0, 0, new_width, new_height);
 
+    int rots[4] = {0, 90, 180, 270};
+    elm_win_wm_rotation_available_rotations_set(win, rots, 4);
 #ifndef FULL_SCREEN_TEST
     //evas_object_resize(win, width, height);
 #endif
@@ -371,46 +408,52 @@ CSCLWindowsImplEfl::destroy_window(sclwindow window)
 
     if (windows && utils && winctx) {
         if (winctx->etc_info) {
-            while ((Eina_List*)(winctx->etc_info)) {
-                EFLObject *object = (EFLObject*)eina_list_data_get((Eina_List*)(winctx->etc_info));
-                if (object) {
-                    Evas_Object* eo = object->object;
-                    if (object->extracted) {
-                        //evas_object_image_data_set(eo, NULL);
-                        void *data = evas_object_image_data_get(eo, 1);
-                        if (data) {
-                            free(data);
-                        }
-                    }
-                    if (eo) {
-                        evas_object_del(eo);
-                        object->object = NULL;
-                    }
-                    if (object->type == EFLOBJECT_TEXTBLOCK) {
-                        Evas_Textblock_Style *st = (Evas_Textblock_Style*)(object->data);
-                        if (st) {
-                            evas_textblock_style_free(st);
-                        }
-#ifdef TEST_NEWBACKEND
-                        for(sclint loop = 0;loop < g_TextCache.size();loop++) {
-                            if (g_TextCache[loop].text == object->object) {
-                                g_TextCache[loop].used = FALSE;
+            Eina_List *list = (Eina_List*)(winctx->etc_info);
+            Eina_List *iter = NULL;
+            Eina_List *iter_next = NULL;
+            void *data = NULL;
+
+            EINA_LIST_FOREACH_SAFE(list, iter, iter_next, data) {
+                if (data) {
+                    EFLObject *object = (EFLObject*)(data);
+                    if (object) {
+                        Evas_Object* eo = object->object;
+                        if (object->extracted) {
+                            //evas_object_image_data_set(eo, NULL);
+                            void *data = evas_object_image_data_get(eo, 1);
+                            if (data) {
+                                free(data);
                             }
                         }
-#endif
-                    } else if (object->type == EFLOBJECT_IMAGE) {
-#ifdef TEST_NEWBACKEND
-                        for(sclint loop = 0;loop < g_ImageCache.size();loop++) {
-                            if (g_ImageCache[loop].image == object->object) {
-                                g_ImageCache[loop].used = FALSE;
-                            }
+                        if (eo) {
+                            evas_object_del(eo);
+                            object->object = NULL;
                         }
+                        if (object->type == EFLOBJECT_TEXTBLOCK) {
+                            Evas_Textblock_Style *st = (Evas_Textblock_Style*)(object->data);
+                            if (st) {
+                                evas_textblock_style_free(st);
+                            }
+#ifdef TEST_NEWBACKEND
+                            for(sclint loop = 0;loop < g_TextCache.size();loop++) {
+                                if (g_TextCache[loop].text == object->object) {
+                                    g_TextCache[loop].used = FALSE;
+                                }
+                            }
 #endif
+                        } else if (object->type == EFLOBJECT_IMAGE) {
+#ifdef TEST_NEWBACKEND
+                            for(sclint loop = 0;loop < g_ImageCache.size();loop++) {
+                                if (g_ImageCache[loop].image == object->object) {
+                                    g_ImageCache[loop].used = FALSE;
+                                }
+                            }
+#endif
+                        }
+                        delete object;
                     }
                 }
-                winctx->etc_info = eina_list_remove_list((Eina_List*)(winctx->etc_info), (Eina_List*)(winctx->etc_info));
-                if (object)
-                    delete object;
+                list = eina_list_remove_list(list, iter);
             }
             winctx->etc_info = NULL;
         }
@@ -480,7 +523,8 @@ CSCLWindowsImplEfl::show_window(const sclwindow window, sclboolean queue)
                 }
             }
         }
-        if (windows->get_magnifier_window() == window) {
+        scl8 popup_index = windows->find_popup_window_index(window);
+        if (windows->get_magnifier_window() == window || popup_index != NOT_USED) {
             /*
              * FIXME a solution to make magnifier window always on top
              * N_SE-17689: magnifier window showing behind of candidate window
@@ -510,6 +554,12 @@ CSCLWindowsImplEfl::hide_window(const sclwindow window,  sclboolean fForce)
     SclWindowContext *winctx = NULL;
 
     if (windows && window) {
+		/*CHK_MRUNAL*/
+        if (window == windows->get_base_window()) {
+		    CSCLKeyFocusHandler* focus_handler = CSCLKeyFocusHandler::get_instance();
+		    focus_handler->ungrab_keyboard(window);
+        }
+
         winctx = windows->get_window_context(window);
         if (winctx) {
             if (!(winctx->is_virtual)) {

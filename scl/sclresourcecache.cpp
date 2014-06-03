@@ -26,6 +26,9 @@
 #include "scluibuilder.h"
 #include "sclres_manager.h"
 #include <assert.h>
+
+//Includes for CSCLKeyFocusHandler
+#include "sclkeyfocushandler.h"
 using namespace scl;
 
 CSCLResourceCache::CSCLResourceCache()
@@ -946,9 +949,15 @@ CSCLResourceCache::recompute_layout(sclwindow window)
                     }
                     memset(pCurButtonContext, 0x00, sizeof(SclButtonContext) * MAX_KEY);
 
+                    CSCLKeyFocusHandler* focus_handler = CSCLKeyFocusHandler::get_instance();
+                    //reset navigation info:mrunal.s
+                    focus_handler->reset_key_navigation_info();
                     for (loop = 0;loop < MAX_KEY;loop++) {
                         SclLayoutKeyCoordinatePointer p = sclres_layout_key_coordinate_pointer_frame[layout][loop];
                         if (p && p->valid) {
+                            //BUILDING KEY NAVIGATION INFO:mrunal.s
+                            focus_handler->update_key_navigation_info(p,loop);
+                            //BUILDING KEY NAVIGATION INFO COMPLETED:mrunal.s
                             (*pCurButtonContext)[loop].used = TRUE;
                             if (popupindex != NOT_USED) {
                                 change_by_privatekey(inputmode, layout, loop, &(mCurPopupLayoutKeyCoordinates[popupindex][loop]));
@@ -989,6 +998,8 @@ CSCLResourceCache::recompute_layout(sclwindow window)
                             (*pCurLayoutKeyCoordinate)[loop].magnifier_offset_y *= utils->get_custom_scale_rate_y();
                         }
                     }
+                    //finalize navigation info:mrunal.s
+                    focus_handler->finalize_key_navigation_info();
                 }
             }
 

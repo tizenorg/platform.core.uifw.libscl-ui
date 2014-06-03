@@ -91,7 +91,7 @@ void accessibility_changed_cb(keynode_t *key, void* data)
                 if (TTS_ERROR_NONE != r) {
                     LOGD("tts_create FAILED : result(%d)", r);
                 } else {
-                    tts_set_mode (tts, TTS_MODE_SCREEN_READER);
+                    r = tts_set_mode (tts, TTS_MODE_SCREEN_READER);
                 }
                 if (TTS_ERROR_NONE != r) {
                     LOGD("tts_set_mode FAILED : result(%d)", r);

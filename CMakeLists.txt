@@ -55,6 +55,7 @@ SET(SRCS
     scl/sclcontext.cpp
     scl/sclactionstate.cpp
     scl/sclresourcecache.cpp
+    scl/sclkeyfocushandler.cpp
     res/sclresource.cpp
     res/simple_debug.cpp
 )

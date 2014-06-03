@@ -27,6 +27,10 @@
 
 #include <Elementary.h>
 #include <Ecore_X.h>
+#include <dlog.h> /*CHK_MRUNAL*/
+#include <utilX.h>
+
+#include "sclkeyfocushandler.h"
 
 using namespace scl;
 
@@ -43,6 +47,8 @@ Eina_Bool mouse_release (void *data, int type, void *event_info);
 
 Eina_Bool client_message_cb(void *data, int type, void *event);
 
+Eina_Bool key_pressed(void *data, int type, void *event_info);/*CHK_MRUNAL*/
+
 /**
  * Constructor
  */
@@ -55,6 +61,7 @@ CSCLEventsImplEfl::CSCLEventsImplEfl()
     m_mouse_up_handler = NULL;
 
     m_xclient_msg_handler = NULL;
+    m_key_pressed_handler = NULL;
 }
 
 /**
@@ -75,6 +82,7 @@ void CSCLEventsImplEfl::init()
     m_mouse_up_handler = ecore_event_handler_add(ECORE_EVENT_MOUSE_BUTTON_UP, mouse_release, NULL);
 
     m_xclient_msg_handler = ecore_event_handler_add(ECORE_X_EVENT_CLIENT_MESSAGE, client_message_cb, NULL);
+    m_key_pressed_handler = ecore_event_handler_add(ECORE_EVENT_KEY_DOWN, key_pressed, NULL);/*CHK_MRUNAL*/
 }
 
 void CSCLEventsImplEfl::fini()
@@ -87,6 +95,9 @@ void CSCLEventsImplEfl::fini()
     m_mouse_up_handler = NULL;
     if (m_xclient_msg_handler) ecore_event_handler_del(m_xclient_msg_handler);
     m_xclient_msg_handler = NULL;
+    if (m_key_pressed_handler) ecore_event_handler_del(m_key_pressed_handler);
+    m_key_pressed_handler = NULL;
+
 }
 
 sclboolean get_window_rect(const sclwindow window, SclRectangle *rect)
@@ -432,6 +443,91 @@ Eina_Bool mouse_release (void *data, int type, void *event_info)
     //controller->mouse_release((sclwindow)data, (int)ev->x, (int)ev->y);
 }
 
+/*CHK_MRUNAL*/
+Eina_Bool key_pressed(void *data, int type, void *event_info)
+{
+    LOGD("=-=-=-=- key_pressed \n");
+    CSCLController *controller = CSCLController::get_instance();
+    Ecore_Event_Key *ev = (Ecore_Event_Key *)event_info;
+    const char *ckey_val = ev->key;
+    LOGD("=-=-=-=- ev->key(char) = %c \n",ev->key);
+    LOGD("=-=-=-=- ev->key(string) = %s \n",ev->key);
+    LOGD("=-=-=-=- ev->keyname(char) = %c \n",ev->keyname);
+    LOGD("=-=-=-=- ev->keyname(string) = %s \n",ev->keyname);
+    LOGD("=-=-=-=- ev->string(char) = %c \n",ev->string);
+    LOGD("=-=-=-=- ev->string(string) = %s \n",ev->string);
+
+    CSCLResourceCache *cache = CSCLResourceCache::get_instance();
+    SclButtonContext *prevbtncontext = NULL;
+    const SclLayoutKeyCoordinate *prevcoordinate = NULL;
+    SclButtonContext *btncontext = NULL;
+    const SclLayoutKeyCoordinate *coordinate = NULL;
+
+    CSCLWindows *windows = CSCLWindows::get_instance();
+    sclwindow window = windows->get_base_window();
+    CSCLKeyFocusHandler* focus_handler = CSCLKeyFocusHandler::get_instance();
+
+    sclbyte current_key_index = focus_handler->get_current_key_index();
+    sclbyte key_index = current_key_index;
+
+    if (strcmp(ev->keyname, "Right") == 0) {
+        key_index = focus_handler->get_next_key_index(NAVIGATE_RIGHT);
+    } else if (strcmp(ev->keyname, "Left") == 0) {
+        key_index = focus_handler->get_next_key_index(NAVIGATE_LEFT);
+    } else if (strcmp(ev->keyname, "Up") == 0) {
+        key_index = focus_handler->get_next_key_index(NAVIGATE_UP);
+    } else if (strcmp(ev->keyname, "Down") == 0) {
+        key_index = focus_handler->get_next_key_index(NAVIGATE_DOWN);
+    } else if ((strcmp(ev->keyname, "Return") == 0)||(strcmp(ev->keyname, "Enter") == 0)) {
+        btncontext = cache->get_cur_button_context(window, current_key_index);
+        coordinate = cache->get_cur_layout_key_coordinate(window, current_key_index);
+        btncontext->state = BUTTON_STATE_NORMAL;
+        controller->mouse_press(window, coordinate->x, coordinate->y, TRUE);
+        controller->mouse_release(window, coordinate->x, coordinate->y, TRUE);
+        btncontext->state = BUTTON_STATE_PRESSED;
+        windows->update_window(window, coordinate->x, coordinate->y, coordinate->width, coordinate->height);
+        return TRUE;
+    }
+
+    if (current_key_index != key_index) {
+        btncontext = cache->get_cur_button_context(window, key_index);
+        prevbtncontext = cache->get_cur_button_context(window, current_key_index);
+        prevcoordinate = cache->get_cur_layout_key_coordinate(window, current_key_index);
+        coordinate = cache->get_cur_layout_key_coordinate(window, key_index);
+        prevbtncontext->state = BUTTON_STATE_NORMAL;
+        btncontext->state = BUTTON_STATE_PRESSED;
+        sclshort x,y,width,height;
+        if (prevcoordinate->x < coordinate->x) {
+            x = prevcoordinate->x;
+        } else { 
+            x = coordinate->x;
+        }
+
+        if (prevcoordinate->y < coordinate->y) {
+            y = prevcoordinate->y;
+        } else { 
+            y = coordinate->y;
+        }
+
+        if (prevcoordinate->x + prevcoordinate->width > coordinate->x + coordinate->width) {
+            width = prevcoordinate->x + prevcoordinate->width - x;
+        } else { 
+            width = coordinate->x + coordinate->width - x;
+        }
+
+        if (prevcoordinate->y + prevcoordinate->height > coordinate->y + coordinate->height) {
+            height = prevcoordinate->y + prevcoordinate->height - y;
+        } else { 
+            height = coordinate->y + coordinate->height - y;
+        }
+        windows->update_window(window, x, y, width, height);
+
+    } else {
+    }
+    
+    return TRUE;
+}
+
 //int mouse_move (void *data, Evas *e, Evas_Object *object, void *event_info)
 Eina_Bool mouse_move (void *data, int type, void *event_info)
 {
@@ -599,8 +695,7 @@ client_message_cb(void *data, int type, void *event)
 Eina_Bool timer_event(void *data)
 {
     SCL_DEBUG();
-
-    scl32 sendData = static_cast<scl32>(reinterpret_cast<uintptr_t>(data) & 0xffffffff);
+    scl32 sendData = (scl32)data;
     CSCLController *controller;
     controller = CSCLController::get_instance();
     if (controller) {
