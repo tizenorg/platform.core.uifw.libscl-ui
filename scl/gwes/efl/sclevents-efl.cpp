@@ -714,7 +714,7 @@ Eina_Bool timer_event(void *data)
     CSCLUtils *utils = CSCLUtils::get_instance();
     CSCLController *controller = CSCLController::get_instance();
 
-    scl32 sendData = (scl32)data;
+	scl32 sendData = static_cast<scl32>(reinterpret_cast<uintptr_t>(data) & 0xffffffff);
 
     if (controller && utils) {
         scl16 id = SCL_LOWORD(sendData); /* Timer ID */
