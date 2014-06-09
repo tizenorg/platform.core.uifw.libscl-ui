@@ -115,6 +115,7 @@ CSCLUIBuilder::init(sclwindow parent)
         sclwindow window = m_gwes->m_windows->get_base_window();
         cache->recompute_layout(window);
 
+#ifndef WAYLAND
         /* Creates the magnifier window */
         if (default_configure && magnifier_configure) {
             if (default_configure->use_magnifier_window) {
@@ -128,6 +129,7 @@ CSCLUIBuilder::init(sclwindow parent)
         /* FIXME */
         //if (scl_check_arrindex(defaultLayoutIdx, MAX_LAYOUT)) {
         m_gwes->m_windows->create_dim_window(window, NULL, sclres_layout[layout].width, sclres_layout[layout].height);
+#endif
 
         /* m_gwes->m_events->set_touch_event_offset(scl_default_configure.touch_offset);*/
         /*Moved to Show Layout*/

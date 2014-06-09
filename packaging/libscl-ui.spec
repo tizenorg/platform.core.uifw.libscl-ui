@@ -1,3 +1,6 @@
+%bcond_with x
+%bcond_with wayland
+
 %define _optdir /opt
 %define _appdir %{_optdir}/apps
 
@@ -11,12 +14,15 @@ Source0:    libscl-ui-%{version}.tar.gz
 BuildRequires:  gettext-tools
 BuildRequires:  cmake
 BuildRequires:  pkgconfig(elementary)
+%if %{with wayland}
+%else
 BuildRequires:  pkgconfig(utilX)
+BuildRequires:  pkgconfig(x11)
+%endif
 BuildRequires:  pkgconfig(vconf)
 BuildRequires:  pkgconfig(feedback)
 BuildRequires:  pkgconfig(sensor)
 BuildRequires:  pkgconfig(dlog)
-BuildRequires:  pkgconfig(x11)
 BuildRequires:  pkgconfig(libxml-2.0)
 BuildRequires:  pkgconfig(tts)
 
@@ -37,7 +43,11 @@ A devel pacakge of libscl-ui library that helps developing S/W Keyboard
 
 
 %build
+%if %{with wayland}
+cmake . -DCMAKE_INSTALL_PREFIX=%{_prefix} -Dwith_wayland=TRUE
+%else
 cmake . -DCMAKE_INSTALL_PREFIX=%{_prefix}
+%endif
 make %{?jobs:-j%jobs}
 
 %install
