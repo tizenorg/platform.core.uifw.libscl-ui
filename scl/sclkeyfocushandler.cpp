@@ -18,8 +18,10 @@
 #include <Elementary.h>
 #include <Evas.h>
 #include <dlog.h>
+#ifndef WAYLAND
 #include <Ecore_X.h>
 #include <utilX.h>
+#endif
 #include "sclres_type.h"
 #include "scldebug.h"
 #include "sclcontext.h"
@@ -70,6 +72,7 @@ CSCLKeyFocusHandler::get_instance()
 bool
 CSCLKeyFocusHandler::grab_keyboard(const sclwindow parent)
 {
+#ifndef WAYLAND
     Evas_Object *window = (Evas_Object *)parent;
     Ecore_X_Window x_window = elm_win_xwindow_get(window);
 
@@ -84,6 +87,7 @@ CSCLKeyFocusHandler::grab_keyboard(const sclwindow parent)
     } else {
         LOGD("Failed to Grab Return key\n");
     }
+#endif
     m_keyboard_grabbed = TRUE;
     return TRUE;
 }
@@ -94,6 +98,7 @@ CSCLKeyFocusHandler::grab_keyboard(const sclwindow parent)
 void
 CSCLKeyFocusHandler::ungrab_keyboard(const sclwindow parent)
 {
+#ifndef WAYLAND
     Evas_Object *window = (Evas_Object *)parent;
     Ecore_X_Window x_window = elm_win_xwindow_get(window);
     Display *x_display = (Display *)ecore_x_display_get();
@@ -104,6 +109,7 @@ CSCLKeyFocusHandler::ungrab_keyboard(const sclwindow parent)
     } else {
         LOGD("Failed to UnGrab Return key\n");
     }
+#endif
     m_keyboard_grabbed = FALSE;
 }
 
@@ -760,9 +766,9 @@ static void delete_sniffer_win_show_handler (void)
 /**
  * callback for window show event (sniffer window)
  */
+#ifndef WAYLAND
 static Eina_Bool x_event_sniffer_window_show_cb (void *data, int ev_type, void *event)
 {
-
     Evas_Object *evas_window = (Evas_Object *)data;
     Ecore_X_Window x_window = elm_win_xwindow_get(evas_window);
     Ecore_X_Event_Window_Show *e = (Ecore_X_Event_Window_Show*)event;
@@ -783,6 +789,7 @@ static Eina_Bool x_event_sniffer_window_show_cb (void *data, int ev_type, void *
     LOGD("Wrong window .. renewing callback\n");
     return ECORE_CALLBACK_RENEW;
 }
+#endif
 
 /**
  * sniffer window creation function, the keyboard would be grabbed by this window in case of Tizen Emulator
@@ -803,12 +810,15 @@ CSCLKeyFocusHandler::create_sniffer_window(void)
     evas_object_show(win);
     evas_object_resize(win, 100, 100);
     m_sniffer = win;
+#ifndef WAYLAND
     _sniffer_win_show_handler = ecore_event_handler_add (ECORE_X_EVENT_WINDOW_SHOW, x_event_sniffer_window_show_cb, m_sniffer);
+#endif
 }
 
 void
 CSCLKeyFocusHandler::set_window_accepts_focus(const sclwindow window, sclboolean acceptable)
 {
+#ifndef WAYLAND
     Eina_Bool accepts_focus;
     Ecore_X_Window_State_Hint initial_state;
     Ecore_X_Pixmap icon_pixmap;
@@ -823,6 +833,7 @@ CSCLKeyFocusHandler::set_window_accepts_focus(const sclwindow window, sclboolean
         ecore_x_icccm_hints_set(elm_win_xwindow_get(static_cast<Evas_Object*>(window)),
             acceptable, initial_state, icon_pixmap, icon_mask, icon_window, window_group, is_urgent);
     }
+#endif
 }
 
 

@@ -26,9 +26,13 @@
 #include "sclres_manager.h"
 
 #include <Elementary.h>
-#include <Ecore_X.h>
 #include <dlog.h>
+#ifdef WAYLAND
+#include <Ecore_Wayland.h>
+#else
+#include <Ecore_X.h>
 #include <utilX.h>
+#endif
 
 #include "sclkeyfocushandler.h"
 
@@ -87,7 +91,9 @@ void CSCLEventsImplEfl::init()
     m_mouse_move_handler = ecore_event_handler_add(ECORE_EVENT_MOUSE_MOVE, mouse_move, NULL);
     m_mouse_up_handler = ecore_event_handler_add(ECORE_EVENT_MOUSE_BUTTON_UP, mouse_release, NULL);
 
+#ifndef WAYLAND
     m_xclient_msg_handler = ecore_event_handler_add(ECORE_X_EVENT_CLIENT_MESSAGE, client_message_cb, NULL);
+#endif
 #ifdef HANDLE_KEY_EVENTS
     m_key_pressed_handler = ecore_event_handler_add(ECORE_EVENT_KEY_DOWN, key_pressed, NULL);
 #endif
@@ -205,6 +211,11 @@ SclPoint get_rotated_local_coords(sclint x, sclint y, SCLRotation rotation, SclR
 Eina_Bool mouse_press(void *data, int type, void *event_info)
 {
     SCL_DEBUG();
+#ifdef WAYLAND
+    Ecore_Wl_Window *wl_base_window;
+    Ecore_Wl_Window *wl_magnifier_window;
+    Ecore_Wl_Window *wl_window;
+#endif
 
     Evas_Event_Mouse_Down *ev1 = (Evas_Event_Mouse_Down*)event_info;
     LOGD("mouse_press : %d %d\n", ev1->output.x, ev1->output.y);
@@ -222,6 +233,7 @@ Eina_Bool mouse_press(void *data, int type, void *event_info)
         sclboolean processed = FALSE;
         sclwindow window = SCLWINDOW_INVALID;
 
+#ifndef WAYLAND
         Ecore_X_Window inputWindow = 0;
         Ecore_X_Atom inputAtom = ecore_x_atom_get ("DeviceMgr Input Window");
         ecore_x_window_prop_xid_get (ecore_x_window_root_first_get(),
@@ -243,12 +255,23 @@ Eina_Bool mouse_press(void *data, int type, void *event_info)
                 adjustment->enable_touch_offset(FALSE);
             }
         }
-
+#endif
         sclboolean is_scl_window = FALSE;
+#ifdef WAYLAND
+        sclwindow evwin = (sclwindow)(ev->window);
+        wl_base_window = elm_win_wl_window_get(static_cast<Evas_Object*>(windows->get_base_window()));
+        if (wl_base_window) {
+            if ((unsigned int)ecore_wl_window_id_get(wl_base_window) == ev->window)
+                is_scl_window = TRUE;
+        } else if ((wl_magnifier_window = (elm_win_wl_window_get(static_cast<Evas_Object*>(windows->get_magnifier_window()))))) {
+            if ((unsigned int)ecore_wl_window_id_get(wl_magnifier_window) == ev->window)
+                is_scl_window = TRUE;
+#else
         if (elm_win_xwindow_get(static_cast<Evas_Object*>(windows->get_base_window())) == ev->window) {
             is_scl_window = TRUE;
         } else if (elm_win_xwindow_get(static_cast<Evas_Object*>(windows->get_magnifier_window())) == ev->window) {
             is_scl_window = TRUE;
+#endif
         } else {
             do {
                 window = windows->get_nth_window_in_Z_order_list(index);
@@ -256,8 +279,14 @@ Eina_Bool mouse_press(void *data, int type, void *event_info)
                 if (window_context) {
                     if (window_context->is_virtual) {
                         is_scl_window  = TRUE;
+#ifdef WAYLAND
+                    } else if ((wl_window = elm_win_wl_window_get(static_cast<Evas_Object*>(window)))) {
+                        if ((unsigned int)ecore_wl_window_id_get(wl_window) == ev->window)
+                            is_scl_window = TRUE;
+#else
                     } else if (elm_win_xwindow_get(static_cast<Evas_Object*>(window)) == ev->window) {
                         is_scl_window = TRUE;
+#endif
                     }
                 }
                 index++;
@@ -276,8 +305,13 @@ Eina_Bool mouse_press(void *data, int type, void *event_info)
                 if (window_context) {
                     windows->get_window_rect(window, &(window_context->geometry));
                     if (get_window_rect(window, &rect)) {
+#ifdef WAYLAND
+                        int adjustx = ev->x;
+                        int adjusty = ev->y;
+#else
                         int adjustx = ev->root.x;
                         int adjusty = ev->root.y;
+#endif
 
                         SclResParserManager *sclres_manager = SclResParserManager::get_instance();
                         PSclDefaultConfigure default_configure = NULL;
@@ -306,7 +340,11 @@ Eina_Bool mouse_press(void *data, int type, void *event_info)
                         if (process_event)
                         {
                             // Now convert the global coordinate to appropriate local coordinate
+#ifdef WAYLAND
+                            SclPoint coords = get_rotated_local_coords(ev->x, ev->y, context->get_rotation(), &rect);
+#else
                             SclPoint coords = get_rotated_local_coords(ev->root.x, ev->root.y, context->get_rotation(), &rect);
+#endif
                             controller->mouse_press(window, coords.x, coords.y, ev->multi.device);
                             mouse_pressed = TRUE;
                             processed = TRUE;
@@ -328,7 +366,11 @@ Eina_Bool mouse_press(void *data, int type, void *event_info)
                 }
 
                 // Now convert the global coordinate to appropriate local coordinate
+#ifdef WAYLAND
+                SclPoint coords = get_rotated_local_coords(ev->x, ev->y, context->get_rotation(), &rect);
+#else
                 SclPoint coords = get_rotated_local_coords(ev->root.x, ev->root.y, context->get_rotation(), &rect);
+#endif
                 controller->mouse_press(window, coords.x, coords.y, ev->multi.device);
                 mouse_pressed = TRUE;
                 processed = TRUE;
@@ -376,7 +418,11 @@ Eina_Bool mouse_release (void *data, int type, void *event_info)
             }
         }
         if (dimwinevent) {
+#ifdef WAYLAND
+            controller->mouse_press(windows->get_dim_window(), ev->x, ev->y, ev->multi.device);
+#else
             controller->mouse_press(windows->get_dim_window(), ev->root.x, ev->root.y, ev->multi.device);
+#endif
         } else {
             do {
                 window = windows->get_nth_window_in_Z_order_list(index);
@@ -385,8 +431,13 @@ Eina_Bool mouse_release (void *data, int type, void *event_info)
                     if (window_context) {
                         windows->get_window_rect(window, &(window_context->geometry));
                         if (get_window_rect(window, &rect)) {
+#ifdef WAYLAND
+                            int adjustx = ev->x;
+                            int adjusty = ev->y;
+#else
                             int adjustx = ev->root.x;
                             int adjusty = ev->root.y;
+#endif
 
                             SclResParserManager *sclres_manager = SclResParserManager::get_instance();
                             PSclDefaultConfigure default_configure = NULL;
@@ -416,7 +467,11 @@ Eina_Bool mouse_release (void *data, int type, void *event_info)
                             if (process_event)
                             {
                                 /* Now convert the global coordinate to appropriate local coordinate */
+#ifdef WAYLAND
+                                SclPoint coords = get_rotated_local_coords(ev->x, ev->y, context->get_rotation(), &rect);
+#else
                                 SclPoint coords = get_rotated_local_coords(ev->root.x, ev->root.y, context->get_rotation(), &rect);
+#endif
                                 controller->mouse_release(window, coords.x, coords.y, ev->multi.device);
                                 processed = TRUE;
                             }
@@ -437,7 +492,11 @@ Eina_Bool mouse_release (void *data, int type, void *event_info)
                 }
 
                 /* Now convert the global coordinate to appropriate local coordinate */
+#ifdef WAYLAND
+                SclPoint coords = get_rotated_local_coords(ev->x, ev->y, context->get_rotation(), &rect);
+#else
                 SclPoint coords = get_rotated_local_coords(ev->root.x, ev->root.y, context->get_rotation(), &rect);
+#endif
                 controller->mouse_release(window, coords.x, coords.y, ev->multi.device);
                 processed = TRUE;
             }
@@ -574,7 +633,11 @@ Eina_Bool mouse_move (void *data, int type, void *event_info)
                 rect.height = winwidth;
                 rect.width = winheight;
             }
+#ifdef WAYLAND
+            SclPoint coords = get_rotated_local_coords(ev->x, ev->y, context->get_rotation(), &rect);
+#else
             SclPoint coords = get_rotated_local_coords(ev->root.x, ev->root.y, context->get_rotation(), &rect);
+#endif
 
             controller->mouse_move(context->get_cur_pressed_window(ev->multi.device), coords.x, coords.y, ev->multi.device);
             processed = TRUE;
@@ -586,8 +649,13 @@ Eina_Bool mouse_move (void *data, int type, void *event_info)
                     if (window_context) {
                         windows->get_window_rect(window, &(window_context->geometry));
                         if (get_window_rect(window, &rect)) {
+#ifdef WAYLAND
+                            int adjustx = ev->x;
+                            int adjusty = ev->y;
+#else
                             int adjustx = ev->root.x;
                             int adjusty = ev->root.y;
+#endif
 
                             SclResParserManager *sclres_manager = SclResParserManager::get_instance();
                             PSclDefaultConfigure default_configure = NULL;
@@ -626,7 +694,11 @@ Eina_Bool mouse_move (void *data, int type, void *event_info)
                             if (process_event)
                             {
                                 /* Now convert the global coordinate to appropriate local coordinate */
+#ifdef WAYLAND
+                                SclPoint coords = get_rotated_local_coords(ev->x, ev->y, context->get_rotation(), &rect);
+#else
                                 SclPoint coords = get_rotated_local_coords(ev->root.x, ev->root.y, context->get_rotation(), &rect);
+#endif
 
                                 controller->mouse_move(window, coords.x, coords.y, ev->multi.device);
                                 processed = TRUE;
@@ -642,7 +714,11 @@ Eina_Bool mouse_move (void *data, int type, void *event_info)
             window = pressed_window;
             if (get_window_rect(window, &rect)) {
                 /* Now convert the global coordinate to appropriate local coordinate */
+#ifdef WAYLAND
+                SclPoint coords = get_rotated_local_coords(ev->x, ev->y, context->get_rotation(), &rect);
+#else
                 SclPoint coords = get_rotated_local_coords(ev->root.x, ev->root.y, context->get_rotation(), &rect);
+#endif
                 controller->mouse_move(window, coords.x, coords.y, ev->multi.device);
                 processed = TRUE;
             }
@@ -678,6 +754,7 @@ CSCLEventsImplEfl::connect_window_events(const sclwindow wnd, const sclint evt)
 Eina_Bool
 client_message_cb(void *data, int type, void *event)
 {
+#ifndef WAYLAND
     Ecore_X_Event_Client_Message *ev = (Ecore_X_Event_Client_Message *)event;
     if (ev->message_type == ECORE_X_ATOM_E_ILLUME_ACCESS_CONTROL) {
         CSCLWindows *windows = CSCLWindows::get_instance();
@@ -705,6 +782,7 @@ client_message_cb(void *data, int type, void *event)
             }
         }
     }
+#endif
     return ECORE_CALLBACK_PASS_ON;
 }
 
@@ -805,7 +883,14 @@ CSCLEventsImplEfl::generate_mouse_event(SCLMouseEvent type, scl16 x, scl16 y)
                     if (pressed[loop] != TRUE) {
                         pressed[loop] = TRUE;
                         Ecore_Event_Mouse_Button evt;
+#ifdef WAYLAND
+                        Ecore_Wl_Window *wl_base_window;
+                        wl_base_window = elm_win_wl_window_get(static_cast<Evas_Object*>(windows->get_base_window()));
+                        if (wl_base_window)
+                            evt.window = (unsigned int)ecore_wl_window_id_get(wl_base_window);
+#else
                         evt.window = elm_win_xwindow_get(static_cast<Evas_Object*>(windows->get_base_window()));
+#endif
                         //window_context = windows->get_window_context(windows->get_base_window(), FALSE);
                         window_context = windows->get_window_context(windows->get_base_window());
                         if (window_context) {
@@ -826,7 +911,14 @@ CSCLEventsImplEfl::generate_mouse_event(SCLMouseEvent type, scl16 x, scl16 y)
                     if (pressed[loop] == TRUE) {
                         pressed[loop] = FALSE;
                         Ecore_Event_Mouse_Button evt;
+#ifdef WAYLAND
+                        Ecore_Wl_Window *wl_base_window;
+                        wl_base_window = elm_win_wl_window_get(static_cast<Evas_Object*>(windows->get_base_window()));
+                        if (wl_base_window)
+                            evt.window = (unsigned int)ecore_wl_window_id_get(wl_base_window);
+#else
                         evt.window = elm_win_xwindow_get(static_cast<Evas_Object*>(windows->get_base_window()));
+#endif
                         //window_context = windows->get_window_context(windows->get_base_window(), FALSE);
                         window_context = windows->get_window_context(windows->get_base_window());
                         if (window_context) {
@@ -846,7 +938,14 @@ CSCLEventsImplEfl::generate_mouse_event(SCLMouseEvent type, scl16 x, scl16 y)
                 for (sclint loop = 0; !generated && loop < MAX_DEVICES; loop++) {
                     if (pressed[loop] == TRUE) {
                         Ecore_Event_Mouse_Move evt;
+#ifdef WAYLAND
+                        Ecore_Wl_Window *wl_base_window;
+                        wl_base_window = elm_win_wl_window_get(static_cast<Evas_Object*>(windows->get_base_window()));
+                        if(wl_base_window)
+                            evt.window = (unsigned int)ecore_wl_window_id_get(wl_base_window);
+#else
                         evt.window = elm_win_xwindow_get(static_cast<Evas_Object*>(windows->get_base_window()));
+#endif
                         //window_context = windows->get_window_context(windows->get_base_window(), FALSE);
                         window_context = windows->get_window_context(windows->get_base_window());
                         if (window_context) {
