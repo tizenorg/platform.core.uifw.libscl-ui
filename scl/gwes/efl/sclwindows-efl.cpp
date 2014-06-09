@@ -25,19 +25,23 @@
 
 #include <glib.h>
 #include <Elementary.h>
-#include <Ecore_X.h>
 #include <malloc.h>
+#ifndef WAYLAND
+#include <Ecore_X.h>
 #include <X11/Xlib.h>
 #include <X11/Xatom.h>
 #include <X11/Xutil.h>
 #include <utilX.h>
+#endif
 #include <dlog.h>
 #include "sclkeyfocushandler.h"
 
 using namespace scl;
 
+#ifndef WAYLAND
 static Ecore_X_Atom ATOM_WM_CLASS = 0;
 static Ecore_X_Window app_window = 0;
+#endif
 
 const sclint rotation_values_EFL[ROTATION_MAX] = {
     0, // ROTATION_0
@@ -49,7 +53,6 @@ const sclint rotation_values_EFL[ROTATION_MAX] = {
 void release_all(Evas_Object *win);
 
 #include "sclgraphics-efl.h"
-#include <utilX.h>
 #ifdef TEST_NEWBACKEND
 #include <Ecore_Evas.h>
 #include <Ecore.h>
@@ -65,8 +68,10 @@ extern std::vector<TextCache> g_TextCache;
 CSCLWindowsImplEfl::CSCLWindowsImplEfl()
 {
     SCL_DEBUG();
+#ifndef WAYLAND
     /* Initializes all window resources */
     ATOM_WM_CLASS = ecore_x_atom_get("WM_CLASS");
+#endif
 }
 
 /**
@@ -79,6 +84,7 @@ CSCLWindowsImplEfl::~CSCLWindowsImplEfl()
 
 static Ecore_Event_Handler *_candidate_show_handler         = NULL;
 
+#ifndef WAYLAND
 static Eina_Bool x_event_window_show_cb (void *data, int ev_type, void *event)
 {
     CSCLWindows *windows = CSCLWindows::get_instance();
@@ -94,6 +100,7 @@ static Eina_Bool x_event_window_show_cb (void *data, int ev_type, void *event)
     }
     return ECORE_CALLBACK_RENEW;
 }
+#endif
 
 
 void CSCLWindowsImplEfl::init()
@@ -120,13 +127,17 @@ CSCLWindowsImplEfl::create_base_window(const sclwindow parent, SclWindowContext 
         window_context->etc_info = NULL;
         window_context->window = parent;
 
-    //Adding window show event handler
-    _candidate_show_handler = ecore_event_handler_add (ECORE_X_EVENT_WINDOW_SHOW, x_event_window_show_cb, NULL);
+        //Adding window show event handler
+#ifndef WAYLAND
+        _candidate_show_handler = ecore_event_handler_add (ECORE_X_EVENT_WINDOW_SHOW, x_event_window_show_cb, NULL);
+#endif
 
 #ifndef APPLY_WINDOW_MANAGER_CHANGE
+#ifndef WAYLAND
         ecore_x_icccm_name_class_set(elm_win_xwindow_get(static_cast<Evas_Object*>(parent)), "Virtual Keyboard", "ISF" );
 
         set_window_accepts_focus(parent, FALSE);
+#endif
 #else
         if (parent) {
             evas_object_show((Evas_Object*)parent);
@@ -140,12 +151,13 @@ CSCLWindowsImplEfl::create_base_window(const sclwindow parent, SclWindowContext 
     int rots[4] = {0, 90, 180, 270};
     elm_win_wm_rotation_available_rotations_set(static_cast<Evas_Object*>(parent), rots, 4);
 
+#ifndef WAYLAND
     CSCLUtils *utils = CSCLUtils::get_instance();
     if (utils) {
         utils->log("WinEfl_createbasewin %p %p, %d %d\n",
                 parent, elm_win_xwindow_get(static_cast<Evas_Object*>(parent)), width, height);
     }
-
+#endif
     return ret;
 }
 
@@ -175,6 +187,7 @@ CSCLWindowsImplEfl::create_window(const sclwindow parent, SclWindowContext *wind
         new_height = height;
     }
 
+#ifndef WAYLAND
     ecore_x_e_window_rotation_geometry_set(elm_win_xwindow_get(win),
         rotation_values_EFL[ROTATION_0], 0, 0, new_width, new_height);
     ecore_x_e_window_rotation_geometry_set(elm_win_xwindow_get(win),
@@ -219,7 +232,7 @@ CSCLWindowsImplEfl::create_window(const sclwindow parent, SclWindowContext *wind
         utils->log("WinEfl_createwin %p %p, %d %d\n",
                 win, elm_win_xwindow_get(static_cast<Evas_Object*>(win)), width, height);
     }
-
+#endif
     return win;
 }
 
@@ -247,11 +260,14 @@ CSCLWindowsImplEfl::create_magnifier_window(const sclwindow parent, SclWindowCon
     SclWindowContext *window_context = windows->get_window_context(windows->get_base_window());
     evas_object_resize(win, scrx, height + window_context->height);
 #else
-    //evas_object_resize(win, width, height);
+#ifdef WAYLAND
+    evas_object_resize(win, width, height);
+#endif
 #endif
 
     elm_win_profile_set(win, "mobile");
 
+#ifndef WAYLAND
     ecore_x_e_window_rotation_geometry_set(elm_win_xwindow_get(win),
         rotation_values_EFL[ROTATION_0], 0, 0, width, height);
     ecore_x_e_window_rotation_geometry_set(elm_win_xwindow_get(win),
@@ -297,7 +313,7 @@ CSCLWindowsImplEfl::create_magnifier_window(const sclwindow parent, SclWindowCon
         utils->log("WinEfl_createmagwin %p %p, %d %d\n",
             win, elm_win_xwindow_get(static_cast<Evas_Object*>(win)), width, height);
     }
-
+#endif
     return win;
 }
 
@@ -321,6 +337,7 @@ CSCLWindowsImplEfl::create_dim_window(const sclwindow parent, SclWindowContext *
     int rots[4] = {0,90,180,270};
     elm_win_wm_rotation_available_rotations_set(win, rots, 4);
 
+#ifndef WAYLAND
 #ifndef APPLY_WINDOW_MANAGER_CHANGE
     ecore_x_icccm_name_class_set(elm_win_xwindow_get(static_cast<Evas_Object*>(win)), "ISF Popup", "ISF");
 
@@ -339,6 +356,7 @@ CSCLWindowsImplEfl::create_dim_window(const sclwindow parent, SclWindowContext *
         }
     }
 #endif
+#endif
 
     elm_win_profile_set(win, "mobile");
 
@@ -355,11 +373,12 @@ CSCLWindowsImplEfl::create_dim_window(const sclwindow parent, SclWindowContext *
 
     hide_window(win);
 
+#ifndef WAYLAND
     if (utils) {
         utils->log("WinEfl_createdimwin %p %p, %d %d\n",
             win, elm_win_xwindow_get(static_cast<Evas_Object*>(win)), width, height);
     }
-
+#endif
     return win;
 }
 
@@ -372,10 +391,12 @@ CSCLWindowsImplEfl::set_parent(const sclwindow parent, const sclwindow window)
 {
     SCL_DEBUG();
 
+#ifndef WAYLAND
     if (parent && window) {
         ecore_x_icccm_transient_for_set(elm_win_xwindow_get(static_cast<Evas_Object*>(window)),
                 elm_win_xwindow_get(static_cast<Evas_Object*>(parent)));
     }
+#endif
 }
 
 Eina_Bool destroy_later(void *data)
@@ -465,9 +486,11 @@ CSCLWindowsImplEfl::destroy_window(sclwindow window)
                     evas_object_del(win);
                 }
             }
+#ifndef WAYLAND
             utils->log("WinEfl_destroywin %p %p (basewin %p mag %p)\n", window,
                 (window_context && !(window_context->is_virtual)) ? elm_win_xwindow_get(static_cast<Evas_Object*>(window)) : 0x01,
                 windows->get_base_window(), windows->get_magnifier_window());
+#endif
         }
     }
 
@@ -501,6 +524,7 @@ CSCLWindowsImplEfl::show_window(const sclwindow window, sclboolean queue)
                 }
             }
         }
+#ifndef WAYLAND
 #ifndef APPLY_WINDOW_MANAGER_CHANGE
         if (windows->get_base_window() == window) {
             int  ret = 0;
@@ -545,6 +569,7 @@ CSCLWindowsImplEfl::show_window(const sclwindow window, sclboolean queue)
             window,
             (window_context && !(window_context->is_virtual)) ? elm_win_xwindow_get(static_cast<Evas_Object*>(window)) : 0x01,
             windows->get_base_window(), windows->get_magnifier_window());
+#endif
     }
 }
 
@@ -660,10 +685,12 @@ CSCLWindowsImplEfl::hide_window(const sclwindow window,  sclboolean fForce)
             elm_cache_all_flush();
             malloc_trim(0);
         }
+#ifndef WAYLAND
         utils->log("WinEfl_hidewin %p %p (basewin %p mag %p)\n",
             window,
             (window_context && !(window_context->is_virtual)) ? elm_win_xwindow_get(static_cast<Evas_Object*>(window)) : 0x01,
             windows->get_base_window(), windows->get_magnifier_window());
+#endif
     }
 }
 
@@ -751,11 +778,13 @@ CSCLWindowsImplEfl::move_window(const sclwindow window, scl16 x, scl16 y)
         //Evas *evas = evas_object_evas_get(window_object);
         //evas_render_idle_flush(evas);
 
+#ifndef WAYLAND
         utils->log("WinEfl_movewin %p %p %d %d %d %d (basewin %p mag %p)\n",
             window,
             (window_context && !(window_context->is_virtual)) ? elm_win_xwindow_get(static_cast<Evas_Object*>(window)) : 0x01,
             x, y, rotatex, rotatey,
             windows->get_base_window(), windows->get_magnifier_window());
+#endif
     }
 }
 
@@ -791,10 +820,12 @@ CSCLWindowsImplEfl::resize_window(const sclwindow window, scl16 width, scl16 hei
 #ifndef FULL_SCREEN_TEST
     if (windows && utils && window) {
         SclWindowContext *window_context = windows->get_window_context(window);
+#ifndef WAYLAND
         utils->log("WinEfl_resizewin %p %p %d %d (basewin %p mag %p)\n",
             window,
             (window_context && !(window_context->is_virtual)) ? elm_win_xwindow_get(static_cast<Evas_Object*>(window)) : 0x01,
             windows->get_base_window(), windows->get_magnifier_window());
+#endif
     }
 #endif
     //Evas_Object *window_object = (Evas_Object*)window;
@@ -998,10 +1029,13 @@ CSCLWindowsImplEfl::get_window_rect(const sclwindow window, SclRectangle *rect)
     CSCLContext *context = CSCLContext::get_instance();
 
     if (utils && context && rect && window) {
-        Window junkwin;
-        Ecore_X_Window_Attributes attrs;
         int x, y, width, height;
         sclint scr_w, scr_h;
+#ifdef WAYLAND
+        evas_object_geometry_get(static_cast<Evas_Object*>(window), &x, &y, &width, &height);
+#else
+        Window junkwin;
+        Ecore_X_Window_Attributes attrs;
         //CSCLWindows *windows = CSCLWindows::get_instance();
         ecore_x_window_geometry_get(elm_win_xwindow_get(static_cast<Evas_Object*>(window)), &x, &y, &width, &height);
         ecore_x_window_attributes_get(elm_win_xwindow_get(static_cast<Evas_Object*>(window)), &attrs);
@@ -1011,6 +1045,7 @@ CSCLWindowsImplEfl::get_window_rect(const sclwindow window, SclRectangle *rect)
         utils->log("WinEfl_getwinrect %p %p, %d %d %d %d\n",
             window, elm_win_xwindow_get(static_cast<Evas_Object*>(window)),
             x, y, width, height);
+#endif
 
         /* get window size */
         utils->get_screen_resolution(&scr_w, &scr_h);
@@ -1055,7 +1090,9 @@ CSCLWindowsImplEfl::get_window_rect(const sclwindow window, SclRectangle *rect)
     return TRUE;
 }
 
+#ifndef WAYLAND
 #include <X11/Xutil.h>
+#endif
 /**
  * Sets rotation
  */
@@ -1064,6 +1101,7 @@ CSCLWindowsImplEfl::set_window_rotation(const sclwindow window, SCLRotation rota
 {
     SCL_DEBUG();
 
+#ifndef WAYLAND
     CSCLWindows *windows = CSCLWindows::get_instance();
     SclWindowContext *window_context = NULL;
 
@@ -1095,6 +1133,7 @@ CSCLWindowsImplEfl::set_window_rotation(const sclwindow window, SCLRotation rota
           windows->resize_window(window_context->window, window_context->width, winctx->height);
           }*/
     }
+#endif
 }
 
 
@@ -1199,19 +1238,6 @@ void release_all(Evas_Object *win)
 #ifndef APPLY_WINDOW_MANAGER_CHANGE
 void CSCLWindowsImplEfl::set_window_accepts_focus(const sclwindow window, sclboolean acceptable)
 {
-    Eina_Bool accepts_focus;
-    Ecore_X_Window_State_Hint initial_state;
-    Ecore_X_Pixmap icon_pixmap;
-    Ecore_X_Pixmap icon_mask;
-    Ecore_X_Window icon_window;
-    Ecore_X_Window window_group;
-    Eina_Bool is_urgent;
-
-    if (window) {
-        ecore_x_icccm_hints_get(elm_win_xwindow_get(static_cast<Evas_Object*>(window)),
-            &accepts_focus, &initial_state, &icon_pixmap, &icon_mask, &icon_window, &window_group, &is_urgent);
-        ecore_x_icccm_hints_set(elm_win_xwindow_get(static_cast<Evas_Object*>(window)),
-            acceptable, initial_state, icon_pixmap, icon_mask, icon_window, window_group, is_urgent);
-    }
+    elm_win_prop_focus_skip_set(static_cast<Evas_Object*>(window), EINA_TRUE);
 }
 #endif

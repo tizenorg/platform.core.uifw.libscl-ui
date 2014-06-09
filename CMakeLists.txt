@@ -88,17 +88,25 @@ INCLUDE_DIRECTORIES(${CMAKE_SOURCE_DIR}/src
                     ${CMAKE_SOURCE_DIR}/res )
 
 INCLUDE(FindPkgConfig)
-pkg_check_modules(pkgs REQUIRED
+SET(PKGS_CHECK_MODULES
         elementary
         feedback
         sensor
         dlog
         ecore-imf
         libxml-2.0
-        utilX
         tts
         vconf
         )
+
+IF (with_x)
+        pkg_check_modules(pkgs REQUIRED ${PKGS_CHECK_MODULES} utilX)
+ENDIF(with_x)
+
+IF (with_wayland)
+        ADD_DEFINITIONS("-DWAYLAND")
+        pkg_check_modules(pkgs REQUIRED ${PKGS_CHECK_MODULES})
+ENDIF(with_wayland)
 
 FOREACH(flag ${pkgs_CFLAGS})
     SET(EXTRA_CFLAGS "${EXTRA_CFLAGS} ${flag}")
