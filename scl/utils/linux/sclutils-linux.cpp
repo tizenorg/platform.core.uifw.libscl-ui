@@ -22,7 +22,11 @@
 #include <stdarg.h>
 
 #include <Ecore.h>
+#ifdef WAYLAND
+#include <Ecore_Wayland.h>
+#else
 #include <Ecore_X.h>
+#endif
 #include <Ecore_Evas.h>
 #include <feedback.h>
 #include <Elementary.h>
@@ -37,6 +41,7 @@
 using namespace scl;
 
 static tts_h tts = NULL;
+#ifndef WAYLAND
 static Eina_Bool _get_default_zone_geometry_info (Ecore_X_Window root, scluint *x, scluint *y, scluint *w, scluint *h)
 {
     Ecore_X_Atom zone_geometry_atom;
@@ -76,7 +81,7 @@ static Eina_Bool _get_default_zone_geometry_info (Ecore_X_Window root, scluint *
 
     return ret;
 }
-
+#endif
 void accessibility_changed_cb(keynode_t *key, void* data)
 {
     int r;
@@ -158,6 +163,13 @@ CSCLUtilsImplLinux::get_screen_resolution(sclint *x, sclint *y) {
 
     static Evas_Coord scr_w = 0, scr_h = 0;
     if (scr_w == 0 || scr_h == 0) {
+#ifdef WAYLAND
+        ecore_wl_screen_size_get(&scr_w, &scr_h);
+        if (scr_w >= 720)
+            scr_w = 720;
+        else
+            scr_w = 600;
+#else
         scluint w, h;
         w = h = 0;
         if (_get_default_zone_geometry_info(ecore_x_window_root_first_get(), NULL, NULL, &w, &h)) {
@@ -166,6 +178,7 @@ CSCLUtilsImplLinux::get_screen_resolution(sclint *x, sclint *y) {
         } else {
             ecore_x_window_size_get(ecore_x_window_root_first_get(), &scr_w, &scr_h);
         }
+#endif
     }
     if (context && x && y) {
         if (context->get_display_mode() == DISPLAYMODE_LANDSCAPE) {

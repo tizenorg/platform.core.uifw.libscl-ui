@@ -78,12 +78,12 @@ sclboolean CSCLUIImpl::init(sclwindow parent, const SCLParserType parser_type, c
         cache->init();
         builder->init(parent);
 
+        m_initialized = TRUE;
+
         PSclDefaultConfigure default_configure = sclres_manager->get_default_configure();
         if (default_configure) {
             set_cur_sublayout(default_configure->default_sub_layout);
         }
-
-        m_initialized = TRUE;
     }
 
     SCL_DEBUG_ELAPASED_TIME_END();
