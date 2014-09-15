@@ -2206,8 +2206,8 @@ CSCLController::mouse_press(sclwindow window, sclint x, sclint y, scltouchdevice
                 } else if (btnIndex != NOT_USED) {
                     process_finished = TRUE;
                 } else {
+                    const SclLayout *layout = cache->get_cur_layout(window);
                     if (layout) {
-                        const SclLayout *layout = cache->get_cur_layout(window);
                         if (layout->use_sw_background && layout->bg_color.a == 0) {
                             /* If we could not find appropriate button in this popup window and the popup is transparent */
                             SclWindowContext *basectx = windows->get_window_context(windows->get_base_window());
