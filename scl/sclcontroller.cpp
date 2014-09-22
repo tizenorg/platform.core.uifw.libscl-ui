@@ -2197,6 +2197,8 @@ CSCLController::mouse_press(sclwindow window, sclint x, sclint y, scltouchdevice
                                     break;
                                 }
                             }
+                        } else {
+                            break;
                         }
                     }
                 }
@@ -2219,6 +2221,8 @@ CSCLController::mouse_press(sclwindow window, sclint x, sclint y, scltouchdevice
                         } else {
                             process_finished = TRUE;
                         }
+                    } else {
+                        process_finished = TRUE;
                     }
                 }
             } while (!process_finished);
