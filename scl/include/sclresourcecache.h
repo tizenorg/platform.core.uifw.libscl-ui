@@ -86,6 +86,9 @@ public:
 
     void set_custom_starting_coordinates(sclint x, sclint y);
     SclPoint get_custom_starting_coordinates();
+
+    void set_custom_starting_coordinates_option(SCLStartingCoordinatesOption option);
+    SCLStartingCoordinatesOption get_custom_starting_coordinates_option();
 private:
     sclboolean resize_resource_elements_by_resolution();
     sclboolean resize_layout_by_resolution(sclbyte layout_index, sclboolean resize_key_only = FALSE);
@@ -115,6 +118,7 @@ protected:
     sclchar mCurThemename[_POSIX_PATH_MAX];
 
     SclPoint mCurStartingCoordinates;
+    SCLStartingCoordinatesOption mCurStartingCoordinatesOption;
 };
 
 }

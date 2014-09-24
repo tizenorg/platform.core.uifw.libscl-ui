@@ -60,6 +60,7 @@ CSCLResourceCache::init()
 
     mCurStartingCoordinates.x = 0;
     mCurStartingCoordinates.y = 0;
+    mCurStartingCoordinatesOption = SCL_STARTING_COORDINATES_OPTION_ALL;
 
     return TRUE;
 }
@@ -1690,4 +1691,16 @@ SclPoint
 CSCLResourceCache::get_custom_starting_coordinates()
 {
     return mCurStartingCoordinates;
+}
+
+void
+CSCLResourceCache::set_custom_starting_coordinates_option(SCLStartingCoordinatesOption option)
+{
+    mCurStartingCoordinatesOption = option;
+}
+
+SCLStartingCoordinatesOption
+CSCLResourceCache::get_custom_starting_coordinates_option()
+{
+    return mCurStartingCoordinatesOption;
 }

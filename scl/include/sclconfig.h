@@ -391,6 +391,11 @@ typedef enum _SCLParserType {
     SCL_PARSER_TYPE_BINARY_XML,
 } SCLParserType;
 
+/* Starting Coordinates Options */
+typedef enum _SCLStartingCoordinatesOption {
+    SCL_STARTING_COORDINATES_OPTION_ALL,			/* Draw everything relative to the starting coordinate */
+    SCL_STARTING_COORDINATES_OPTION_BUTTONS_ONLY,	/* Affect starting coordinates only to the buttons */
+} SCLStartingCoordinatesOption;
 
 /* SCL predefined Identifiers */
 #define SCL_SHIFT_STATE_OFF_HINT_STRING "Shift Off"

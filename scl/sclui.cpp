@@ -400,6 +400,17 @@ CSCLUI::set_custom_starting_coordinates(sclint x, sclint y)
 }
 
 /**
+ * Sets the custom starting coordinates option for drawing the keyboard's content
+ */
+void
+CSCLUI::set_custom_starting_coordinates_option(SCLStartingCoordinatesOption option)
+{
+    if (m_impl) {
+        m_impl->set_custom_starting_coordinates_option(option);
+    }
+}
+
+/**
  * Returns the scl main window size
  */
 SclRectangle

@@ -94,6 +94,7 @@ public:
     void set_custom_scale_rate(sclfloat x, sclfloat y);
 
     void set_custom_starting_coordinates(sclint x, sclint y);
+    void set_custom_starting_coordinates_option(SCLStartingCoordinatesOption option);
 
     sclint get_multi_touch_context_num();
     sclboolean get_multi_touch_event(sclint seqorder, SclUIEventDesc *desc);

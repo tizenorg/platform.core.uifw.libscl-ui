@@ -211,9 +211,9 @@ CSCLUIBuilder::show_layout(const sclwindow window, const scl16 x, const scl16 y,
                         draw_window_bg_by_sw(window, draw_ctx, size, layout->bg_line_width, layout->bg_line_color, layout->bg_color);
                     }
                 } else if (layout->image_path[BUTTON_STATE_NORMAL]) {
+                    sclint targetx = 0;
+                    sclint targety = 0;
                     /* If the target window is virtual window, let's draw it on the base window */
-                    sclint targetx = cache->get_custom_starting_coordinates().x;
-                    sclint targety = cache->get_custom_starting_coordinates().y;
                     sclwindow targetwin = window;
                     if (window_context) {
                         if (window_context->is_virtual) {
@@ -225,6 +225,12 @@ CSCLUIBuilder::show_layout(const sclwindow window, const scl16 x, const scl16 y,
                                 targetx = window_context->geometry.x - base_window_context->geometry.x;
                                 targety = window_context->geometry.y - base_window_context->geometry.y;
                             }
+                        }
+                        /* Apply custom starting coordinates only to the base window, and if the option is ALL */
+                        if (windows->is_base_window(window) &&
+                            cache->get_custom_starting_coordinates_option() == SCL_STARTING_COORDINATES_OPTION_ALL) {
+                            targetx += cache->get_custom_starting_coordinates().x;
+                            targety += cache->get_custom_starting_coordinates().y;
                         }
                         if (strlen(layout->image_path[BUTTON_STATE_NORMAL]) > 0) {
                             /*SclImageCachedInfo cached_info = {0, };

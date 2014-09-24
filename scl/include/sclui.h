@@ -284,6 +284,12 @@ public:
     void set_custom_starting_coordinates(sclint x, sclint y);
 
     /**
+     * @brief This API sets the option for the starting coordinates feature
+     * @param[in] option the starting coordinate option
+     */
+    void set_custom_starting_coordinates_option(SCLStartingCoordinatesOption option);
+
+    /**
      * @brief This API returns the number of current multi touch contexts,
      *        which means how many fingers are currently pressing the touch device
      * @return number of touch contexts
