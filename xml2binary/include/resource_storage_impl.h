@@ -43,7 +43,7 @@ inline ResourceStorage::
 }
 
 inline const int ResourceStorage::
-size()const{
+get_size() const{
     return m_size;
 }
 
@@ -123,9 +123,9 @@ reserve(int bytes) {
 }
 inline int ResourceStorage::
 storage_cat(ResourceStorage& storage) {
-    if (storage.size() == 0) return 0;
+    if (storage.get_size() == 0) return 0;
 
-    int size = storage.size();
+    int size = storage.get_size();
     check_storage(size);
     memcpy(m_storage + m_size, storage.m_storage, size);
 

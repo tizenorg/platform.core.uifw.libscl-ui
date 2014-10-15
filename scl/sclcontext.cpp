@@ -89,11 +89,11 @@ CSCLContext::get_popup_layout( sclwindow window ) const
 
     sclshort ret = NOT_USED;
     CSCLWindows *windows = CSCLWindows::get_instance();
-    //SclWindowContext *ctx = windows->get_window_context(window, FALSE);
-    SclWindowContext *ctx = windows->get_window_context(window);
+    //SclWindowContext *window_context = windows->get_window_context(window, FALSE);
+    SclWindowContext *window_context = windows->get_window_context(window);
 
-    if (ctx) {
-        ret = ctx->layout;
+    if (window_context) {
+        ret = window_context->layout;
     }
 
     return ret;
@@ -105,11 +105,11 @@ CSCLContext::set_popup_layout( sclwindow window, sclshort val )
     SCL_DEBUG();
 
     CSCLWindows *windows = CSCLWindows::get_instance();
-    //SclWindowContext *ctx = windows->get_window_context(window, FALSE);
-    SclWindowContext *ctx = windows->get_window_context(window);
+    //SclWindowContext *window_context = windows->get_window_context(window, FALSE);
+    SclWindowContext *window_context = windows->get_window_context(window);
 
-    if (ctx) {
-        ctx->layout = val;
+    if (window_context) {
+        window_context->layout = val;
     }
 }
 
@@ -118,10 +118,10 @@ CSCLContext::set_base_layout( sclshort val )
 {
     SCL_DEBUG();
     CSCLWindows *windows = CSCLWindows::get_instance();
-    //SclWindowContext *ctx = windows->get_window_context(windows->get_base_window(), FALSE);
-    SclWindowContext *ctx = windows->get_window_context(windows->get_base_window());
-    if (ctx) {
-        ctx->layout = val;
+    //SclWindowContext *window_context = windows->get_window_context(windows->get_base_window(), FALSE);
+    SclWindowContext *window_context = windows->get_window_context(windows->get_base_window());
+    if (window_context) {
+        window_context->layout = val;
     }
 }
 
@@ -132,10 +132,10 @@ CSCLContext::get_base_layout() const
 
     sclshort ret = NOT_USED;
     CSCLWindows *windows = CSCLWindows::get_instance();
-    //SclWindowContext *ctx = windows->get_window_context(windows->get_base_window(), FALSE);
-    SclWindowContext *ctx = windows->get_window_context(windows->get_base_window());
-    if (ctx) {
-        ret = ctx->layout;
+    //SclWindowContext *window_context = windows->get_window_context(windows->get_base_window(), FALSE);
+    SclWindowContext *window_context = windows->get_window_context(windows->get_base_window());
+    if (window_context) {
+        ret = window_context->layout;
     }
 
     return ret;
@@ -145,9 +145,9 @@ scl16
 CSCLContext::get_cur_pressed_event_id(scltouchdevice touch_id)
 {
     scl16 ret = NOT_USED;
-    MultiTouchContext *ctx = find_multi_touch_context(touch_id);
-    if (ctx) {
-        ret = ctx->event_id;
+    MultiTouchContext *multi_touch_context = find_multi_touch_context(touch_id);
+    if (multi_touch_context) {
+        ret = multi_touch_context->event_id;
     }
     return ret;
 }
@@ -155,9 +155,9 @@ CSCLContext::get_cur_pressed_event_id(scltouchdevice touch_id)
 void
 CSCLContext::set_cur_pressed_event_id(scltouchdevice touch_id, scl16 id)
 {
-    MultiTouchContext *ctx = find_multi_touch_context(touch_id);
-    if (ctx) {
-        ctx->event_id = id;
+    MultiTouchContext *multi_touch_context = find_multi_touch_context(touch_id);
+    if (multi_touch_context) {
+        multi_touch_context->event_id = id;
     }
 }
 
@@ -165,9 +165,9 @@ scl8
 CSCLContext::get_cur_pressed_key(scltouchdevice touch_id)
 {
     scl8 ret = NOT_USED;
-    MultiTouchContext *ctx = find_multi_touch_context(touch_id);
-    if (ctx) {
-        ret = ctx->cur_pressed_key;
+    MultiTouchContext *multi_touch_context = find_multi_touch_context(touch_id);
+    if (multi_touch_context) {
+        ret = multi_touch_context->cur_pressed_key;
     }
     return ret;
 }
@@ -175,9 +175,9 @@ CSCLContext::get_cur_pressed_key(scltouchdevice touch_id)
 void
 CSCLContext::set_cur_pressed_key(scltouchdevice touch_id, scl8 val)
 {
-    MultiTouchContext *ctx = find_multi_touch_context(touch_id);
-    if (ctx) {
-        ctx->cur_pressed_key = val;
+    MultiTouchContext *window_context = find_multi_touch_context(touch_id);
+    if (window_context) {
+        window_context->cur_pressed_key = val;
     }
 }
 
@@ -185,9 +185,9 @@ sclwindow
 CSCLContext::get_cur_pressed_window(scltouchdevice touch_id)
 {
     sclwindow ret = SCLWINDOW_INVALID;
-    MultiTouchContext *ctx = find_multi_touch_context(touch_id);
-    if (ctx) {
-        ret = ctx->cur_pressed_window;
+    MultiTouchContext *multi_touch_context = find_multi_touch_context(touch_id);
+    if (multi_touch_context) {
+        ret = multi_touch_context->cur_pressed_window;
     }
     return ret;
 }
@@ -195,9 +195,9 @@ CSCLContext::get_cur_pressed_window(scltouchdevice touch_id)
 void
 CSCLContext::set_cur_pressed_window(scltouchdevice touch_id, sclwindow val)
 {
-    MultiTouchContext *ctx = find_multi_touch_context(touch_id);
-    if (ctx) {
-        ctx->cur_pressed_window = val;
+    MultiTouchContext *multi_touch_context = find_multi_touch_context(touch_id);
+    if (multi_touch_context) {
+        multi_touch_context->cur_pressed_window = val;
     }
 }
 
@@ -205,9 +205,9 @@ SclPoint
 CSCLContext::get_cur_pressed_point(scltouchdevice touch_id)
 {
     SclPoint ret = {0, 0};
-    MultiTouchContext *ctx = find_multi_touch_context(touch_id);
-    if (ctx) {
-        ret = ctx->cur_pressed_point;
+    MultiTouchContext *multi_touch_context = find_multi_touch_context(touch_id);
+    if (multi_touch_context) {
+        ret = multi_touch_context->cur_pressed_point;
     }
     return ret;
 }
@@ -215,63 +215,63 @@ CSCLContext::get_cur_pressed_point(scltouchdevice touch_id)
 void
 CSCLContext::set_cur_pressed_point(scltouchdevice touch_id, sclint x, sclint y)
 {
-    MultiTouchContext *ctx = find_multi_touch_context(touch_id);
-    if (ctx) {
-        ctx->cur_pressed_point.x = x;
-        ctx->cur_pressed_point.y = y;
+    MultiTouchContext *multi_touch_context = find_multi_touch_context(touch_id);
+    if (multi_touch_context) {
+        multi_touch_context->cur_pressed_point.x = x;
+        multi_touch_context->cur_pressed_point.y = y;
         set_farthest_move_point(touch_id, x, y); // reset farthest move point
     }
 }
 
 SclPoint
-CSCLContext::get_cur_move_point(scltouchdevice touch_id)
+CSCLContext::get_cur_moving_point(scltouchdevice touch_id)
 {
     SclPoint ret = {0, 0};
-    MultiTouchContext *ctx = find_multi_touch_context(touch_id);
-    if (ctx) {
-        ret = ctx->cur_move_point;
+    MultiTouchContext *multi_touch_context = find_multi_touch_context(touch_id);
+    if (multi_touch_context) {
+        ret = multi_touch_context->cur_moving_point;
     }
     return ret;
 }
 
 void
-CSCLContext::set_cur_move_point(scltouchdevice touch_id, sclint x, sclint y)
+CSCLContext::set_cur_moving_point(scltouchdevice touch_id, sclint x, sclint y)
 {
-    MultiTouchContext *ctx = find_multi_touch_context(touch_id);
-    if (ctx) {
-        ctx->cur_move_point.x = x;
-        ctx->cur_move_point.y = y;
+    MultiTouchContext *multi_touch_context = find_multi_touch_context(touch_id);
+    if (multi_touch_context) {
+        multi_touch_context->cur_moving_point.x = x;
+        multi_touch_context->cur_moving_point.y = y;
     }
 }
 
 sclwindow
-CSCLContext::get_cur_move_window(scltouchdevice touch_id)
+CSCLContext::get_cur_moving_window(scltouchdevice touch_id)
 {
     sclwindow ret = SCLWINDOW_INVALID;
-    MultiTouchContext *ctx = find_multi_touch_context(touch_id);
-    if (ctx) {
-        ret = ctx->cur_move_window;
+    MultiTouchContext *multi_touch_context = find_multi_touch_context(touch_id);
+    if (multi_touch_context) {
+        ret = multi_touch_context->cur_moving_window;
     }
     return ret;
 }
 
 
 void
-CSCLContext::set_cur_move_window(scltouchdevice touch_id, sclwindow window)
+CSCLContext::set_cur_moving_window(scltouchdevice touch_id, sclwindow window)
 {
-    MultiTouchContext *ctx = find_multi_touch_context(touch_id);
-    if (ctx) {
-        ctx->cur_move_window = window;
+    MultiTouchContext *window_context = find_multi_touch_context(touch_id);
+    if (window_context) {
+        window_context->cur_moving_window = window;
     }
 }
 
 struct timeval
 CSCLContext::get_cur_pressed_time(scltouchdevice touch_id)
 {
-    struct timeval ret = {0};
-    MultiTouchContext *ctx = find_multi_touch_context(touch_id);
-    if (ctx) {
-        ret = ctx->cur_pressed_time;
+    struct timeval ret = {0,0};
+    MultiTouchContext *multi_touch_context = find_multi_touch_context(touch_id);
+    if (multi_touch_context) {
+        ret = multi_touch_context->cur_pressed_time;
     }
     return ret;
 }
@@ -279,9 +279,9 @@ CSCLContext::get_cur_pressed_time(scltouchdevice touch_id)
 void
 CSCLContext::set_cur_pressed_time(scltouchdevice touch_id)
 {
-    MultiTouchContext *ctx = find_multi_touch_context(touch_id);
-    if (ctx) {
-        gettimeofday(&(ctx->cur_pressed_time), NULL);
+    MultiTouchContext *multi_touch_context = find_multi_touch_context(touch_id);
+    if (multi_touch_context) {
+        gettimeofday(&(multi_touch_context->cur_pressed_time), NULL);
     }
 }
 
@@ -289,9 +289,9 @@ SclPoint
 CSCLContext::get_farthest_move_point(scltouchdevice touch_id)
 {
     SclPoint ret = {0, 0};
-    MultiTouchContext *ctx = find_multi_touch_context(touch_id);
-    if (ctx) {
-        ret = ctx->farthest_move_point;
+    MultiTouchContext *multi_touch_context = find_multi_touch_context(touch_id);
+    if (multi_touch_context) {
+        ret = multi_touch_context->farthest_move_point;
     }
     return ret;
 }
@@ -299,13 +299,15 @@ CSCLContext::get_farthest_move_point(scltouchdevice touch_id)
 void
 CSCLContext::set_farthest_move_point(scltouchdevice touch_id, sclint x, sclint y)
 {
-    MultiTouchContext *ctx = find_multi_touch_context(touch_id);
-    if (ctx) {
+    MultiTouchContext *multi_touch_context = find_multi_touch_context(touch_id);
+    if (multi_touch_context) {
         CSCLUtils *utils = CSCLUtils::get_instance();
-        ctx->farthest_move_dist = utils->get_approximate_distance(x, y, ctx->cur_pressed_point.x, ctx->cur_pressed_point.y);
+        multi_touch_context->farthest_move_dist =
+            utils->get_approximate_distance(x, y,
+            multi_touch_context->cur_pressed_point.x, multi_touch_context->cur_pressed_point.y);
 
-        ctx->farthest_move_point.x = x;
-        ctx->farthest_move_point.y = y;
+        multi_touch_context->farthest_move_point.x = x;
+        multi_touch_context->farthest_move_point.y = y;
     }
 }
 
@@ -313,9 +315,9 @@ sclint
 CSCLContext::get_farthest_move_dist(scltouchdevice touch_id)
 {
     sclint ret = 0;
-    MultiTouchContext *ctx = find_multi_touch_context(touch_id);
-    if (ctx) {
-        ret = ctx->farthest_move_dist;
+    MultiTouchContext *multi_touch_context = find_multi_touch_context(touch_id);
+    if (multi_touch_context) {
+        ret = multi_touch_context->farthest_move_dist;
     }
     return ret;
 }
@@ -324,9 +326,9 @@ SCLDragState
 CSCLContext::get_cur_drag_state(scltouchdevice touch_id)
 {
     SCLDragState ret = SCL_DRAG_STATE_NONE;
-    MultiTouchContext *ctx = find_multi_touch_context(touch_id);
-    if (ctx) {
-        ret = ctx->cur_drag_state;
+    MultiTouchContext *multi_touch_context = find_multi_touch_context(touch_id);
+    if (multi_touch_context) {
+        ret = multi_touch_context->cur_drag_state;
     }
     return ret;
 }
@@ -334,9 +336,9 @@ CSCLContext::get_cur_drag_state(scltouchdevice touch_id)
 void
 CSCLContext::set_cur_drag_state(scltouchdevice touch_id, SCLDragState state)
 {
-    MultiTouchContext *ctx = find_multi_touch_context(touch_id);
-    if (ctx) {
-        ctx->cur_drag_state = state;
+    MultiTouchContext *multi_touch_context = find_multi_touch_context(touch_id);
+    if (multi_touch_context) {
+        multi_touch_context->cur_drag_state = state;
     }
 }
 
@@ -344,9 +346,9 @@ SCLKeyModifier
 CSCLContext::get_cur_key_modifier(scltouchdevice touch_id)
 {
     SCLKeyModifier ret = KEY_MODIFIER_NONE;
-    MultiTouchContext *ctx = find_multi_touch_context(touch_id);
-    if (ctx) {
-        ret = ctx->cur_key_modifier;
+    MultiTouchContext *multi_touch_context = find_multi_touch_context(touch_id);
+    if (multi_touch_context) {
+        ret = multi_touch_context->cur_key_modifier;
     }
     return ret;
 }
@@ -354,9 +356,9 @@ CSCLContext::get_cur_key_modifier(scltouchdevice touch_id)
 void
 CSCLContext::set_cur_key_modifier(scltouchdevice touch_id, SCLKeyModifier modifier)
 {
-    MultiTouchContext *ctx = find_multi_touch_context(touch_id);
-    if (ctx) {
-        ctx->cur_key_modifier = modifier;
+    MultiTouchContext *multi_touch_context = find_multi_touch_context(touch_id);
+    if (multi_touch_context) {
+        multi_touch_context->cur_key_modifier = modifier;
     }
 }
 
@@ -364,9 +366,9 @@ scl8
 CSCLContext::get_prev_pressed_key(scltouchdevice touch_id)
 {
     scl8 ret = NOT_USED;
-    MultiTouchContext *ctx = find_multi_touch_context(touch_id);
-    if (ctx) {
-        ret = ctx->prev_pressed_key;
+    MultiTouchContext *multi_touch_context = find_multi_touch_context(touch_id);
+    if (multi_touch_context) {
+        ret = multi_touch_context->prev_pressed_key;
     }
     return ret;
 }
@@ -374,9 +376,9 @@ CSCLContext::get_prev_pressed_key(scltouchdevice touch_id)
 void
 CSCLContext::set_prev_pressed_key(scltouchdevice touch_id, scl8 val)
 {
-    MultiTouchContext *ctx = find_multi_touch_context(touch_id);
-    if (ctx) {
-        ctx->prev_pressed_key = val;
+    MultiTouchContext *multi_touch_context = find_multi_touch_context(touch_id);
+    if (multi_touch_context) {
+        multi_touch_context->prev_pressed_key = val;
     }
 }
 
@@ -384,9 +386,9 @@ sclwindow
 CSCLContext::get_prev_pressed_window(scltouchdevice touch_id)
 {
     sclwindow ret = SCLWINDOW_INVALID;
-    MultiTouchContext *ctx = find_multi_touch_context(touch_id);
-    if (ctx) {
-        ret = ctx->prev_pressed_window;
+    MultiTouchContext *multi_touch_context = find_multi_touch_context(touch_id);
+    if (multi_touch_context) {
+        ret = multi_touch_context->prev_pressed_window;
     }
     return ret;
 }
@@ -394,30 +396,30 @@ CSCLContext::get_prev_pressed_window(scltouchdevice touch_id)
 void
 CSCLContext::set_prev_pressed_window(scltouchdevice touch_id, sclwindow val)
 {
-    MultiTouchContext *ctx = find_multi_touch_context(touch_id);
-    if (ctx) {
-        ctx->prev_pressed_window = val;
+    MultiTouchContext *multi_touch_context = find_multi_touch_context(touch_id);
+    if (multi_touch_context) {
+        multi_touch_context->prev_pressed_window = val;
     }
 }
 
 SclPoint
-CSCLContext::get_prev_move_point(scltouchdevice touch_id)
+CSCLContext::get_prev_moving_point(scltouchdevice touch_id)
 {
     SclPoint ret = {0, 0};
-    MultiTouchContext *ctx = find_multi_touch_context(touch_id);
-    if (ctx) {
-        ret = ctx->prev_move_point;
+    MultiTouchContext *multi_touch_context = find_multi_touch_context(touch_id);
+    if (multi_touch_context) {
+        ret = multi_touch_context->prev_moving_point;
     }
     return ret;
 }
 
 void
-CSCLContext::set_prev_move_point(scltouchdevice touch_id, sclint x, sclint y)
+CSCLContext::set_prev_moving_point(scltouchdevice touch_id, sclint x, sclint y)
 {
-    MultiTouchContext *ctx = find_multi_touch_context(touch_id);
-    if (ctx) {
-        ctx->prev_move_point.x = x;
-        ctx->prev_move_point.y = y;
+    MultiTouchContext *multi_touch_context = find_multi_touch_context(touch_id);
+    if (multi_touch_context) {
+        multi_touch_context->prev_moving_point.x = x;
+        multi_touch_context->prev_moving_point.y = y;
     }
 }
 
@@ -425,9 +427,9 @@ SCLDragState
 CSCLContext::get_prev_drag_state(scltouchdevice touch_id)
 {
     SCLDragState ret = SCL_DRAG_STATE_NONE;
-    MultiTouchContext *ctx = find_multi_touch_context(touch_id);
-    if (ctx) {
-        ret = ctx->prev_drag_state;
+    MultiTouchContext *multi_touch_context = find_multi_touch_context(touch_id);
+    if (multi_touch_context) {
+        ret = multi_touch_context->prev_drag_state;
     }
     return ret;
 }
@@ -435,28 +437,28 @@ CSCLContext::get_prev_drag_state(scltouchdevice touch_id)
 void
 CSCLContext::set_prev_drag_state(scltouchdevice touch_id, SCLDragState state)
 {
-    MultiTouchContext *ctx = find_multi_touch_context(touch_id);
-    if (ctx) {
-        ctx->prev_drag_state = state;
+    MultiTouchContext *multi_touch_context = find_multi_touch_context(touch_id);
+    if (multi_touch_context) {
+        multi_touch_context->prev_drag_state = state;
     }
 }
 
 void
-CSCLContext::create_multi_touch_context(scltouchdevice touch_id, sclboolean isSubEvent)
+CSCLContext::create_multi_touch_context(scltouchdevice touch_id, sclboolean is_sub_event)
 {
-    MultiTouchContext newctx;
-    memset(&newctx, 0x00, sizeof(MultiTouchContext));
-    newctx.used = TRUE;
-    newctx.cur_pressed_key = NOT_USED;
-    newctx.cur_pressed_window = SCLWINDOW_INVALID;
-    newctx.event_id = 0;
-    newctx.prev_pressed_key = NOT_USED;
-    newctx.prev_pressed_window = SCLWINDOW_INVALID;
-    newctx.cur_pressed_point.x = newctx.cur_pressed_point.y = 0;
-    newctx.cur_pressed_time.tv_sec = newctx.cur_pressed_time.tv_usec = 0;
-    newctx.cur_drag_state = SCL_DRAG_STATE_NONE;
-    newctx.is_sub_event = isSubEvent;
-    m_multi_touch_context[touch_id] = newctx;
+    MultiTouchContext new_multi_touch_context;
+    memset(&new_multi_touch_context, 0x00, sizeof(MultiTouchContext));
+    new_multi_touch_context.used = TRUE;
+    new_multi_touch_context.cur_pressed_key = NOT_USED;
+    new_multi_touch_context.cur_pressed_window = SCLWINDOW_INVALID;
+    new_multi_touch_context.event_id = 0;
+    new_multi_touch_context.prev_pressed_key = NOT_USED;
+    new_multi_touch_context.prev_pressed_window = SCLWINDOW_INVALID;
+    new_multi_touch_context.cur_pressed_point.x = new_multi_touch_context.cur_pressed_point.y = 0;
+    new_multi_touch_context.cur_pressed_time.tv_sec = new_multi_touch_context.cur_pressed_time.tv_usec = 0;
+    new_multi_touch_context.cur_drag_state = SCL_DRAG_STATE_NONE;
+    new_multi_touch_context.is_sub_event = is_sub_event;
+    m_multi_touch_context[touch_id] = new_multi_touch_context;
 
     m_multi_touch_seq.insert(m_multi_touch_seq.end(), touch_id);
 
@@ -472,9 +474,9 @@ CSCLContext::create_multi_touch_context(scltouchdevice touch_id, sclboolean isSu
 void
 CSCLContext::destroy_multi_touch_context(scltouchdevice touch_id)
 {
-    MultiTouchContext *ctx = find_multi_touch_context(touch_id);
-    if (ctx) {
-        memset(ctx, 0x00, sizeof(MultiTouchContext));
+    MultiTouchContext *multi_touch_context = find_multi_touch_context(touch_id);
+    if (multi_touch_context) {
+        memset(multi_touch_context, 0x00, sizeof(MultiTouchContext));
         m_multi_touch_context.erase(touch_id);
     }
 
@@ -489,13 +491,15 @@ CSCLContext::destroy_multi_touch_context(scltouchdevice touch_id)
         }
     } while (bFound);
 
+    /*
     CSCLUtils *utils = CSCLUtils::get_instance();
     if (utils) {
-        for(std::list<scltouchdevice>::iterator iter = m_multi_touch_seq.begin();iter != m_multi_touch_seq.end();std::advance(iter, 1)) {
+        for(iter = m_multi_touch_seq.begin();iter != m_multi_touch_seq.end();std::advance(iter, 1)) {
             utils->log("LIST : %d\n", *iter);
         }
         utils->log("\n");
     }
+    */
 }
 
 MultiTouchContext*
@@ -517,47 +521,48 @@ CSCLContext::get_multi_touch_context_num()
 }
 
 sclboolean
-CSCLContext::get_multi_touch_event(sclint seqorder, SclUIEventDesc *desc)
+CSCLContext::get_multi_touch_event(sclint order, SclUIEventDesc *desc)
 {
     sclboolean ret = FALSE;
-    sclint iSeqIndex = 0;
+    sclint index = 0;
 
     CSCLResourceCache *cache = CSCLResourceCache::get_instance();
 
     for(std::list<scltouchdevice>::iterator list_iter = m_multi_touch_seq.begin();
         !ret && list_iter != m_multi_touch_seq.end();std::advance(list_iter, 1)) {
-            if (iSeqIndex == seqorder) {
-                MultiTouchContext *pContext = find_multi_touch_context(*list_iter);
-                if (pContext) {
+            if (index == order) {
+                MultiTouchContext *multi_touch_context = find_multi_touch_context(*list_iter);
+                if (multi_touch_context) {
                     const SclLayoutKeyCoordinate *coordinate =
-                        cache->get_cur_layout_key_coordinate(pContext->cur_pressed_window, pContext->cur_pressed_key);
+                        cache->get_cur_layout_key_coordinate(multi_touch_context->cur_pressed_window,
+                            multi_touch_context->cur_pressed_key);
 
                     if (coordinate) {
-                        SCLShiftState shiftidx = get_shift_state();
-                        if (shiftidx < 0 || shiftidx >= SCL_SHIFT_STATE_MAX) shiftidx = SCL_SHIFT_STATE_OFF;
-                        desc->key_event = coordinate->key_event[shiftidx][0];
-                        desc->key_value = coordinate->key_value[shiftidx][0];
+                        SCLShiftState shift_index = get_shift_state();
+                        if (shift_index < 0 || shift_index >= SCL_SHIFT_STATE_MAX) shift_index = SCL_SHIFT_STATE_OFF;
+                        desc->key_event = coordinate->key_event[shift_index][0];
+                        desc->key_value = coordinate->key_value[shift_index][0];
                         desc->key_type = coordinate->key_type;
                     } else {
                         desc->key_event = 0;
                         desc->key_value = NULL;
                         desc->key_type = KEY_TYPE_NONE;
                     }
-                    desc->key_modifier = pContext->cur_key_modifier;
+                    desc->key_modifier = multi_touch_context->cur_key_modifier;
 
                     desc->touch_id = (*list_iter);
-                    desc->mouse_pressed_point = pContext->cur_pressed_point;
-                    desc->mouse_current_point = pContext->cur_move_point;
-                    desc->mouse_farthest_point = pContext->farthest_move_point;
+                    desc->mouse_pressed_point = multi_touch_context->cur_pressed_point;
+                    desc->mouse_current_point = multi_touch_context->cur_moving_point;
+                    desc->mouse_farthest_point = multi_touch_context->farthest_move_point;
 
-                    desc->touch_event_order = iSeqIndex;
+                    desc->touch_event_order = index;
 
                     desc->event_type = EVENT_TYPE_NONE;
 
                     ret = TRUE;
                 }
             }
-            iSeqIndex++;
+            index++;
     }
 
     return ret;

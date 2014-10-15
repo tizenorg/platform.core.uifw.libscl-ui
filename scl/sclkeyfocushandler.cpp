@@ -132,11 +132,11 @@ CSCLKeyFocusHandler::popup_closed(sclwindow window)
     if (sclres_layout_key_coordinate_pointer_frame &&
         scl_check_arrindex(layout, MAX_SCL_LAYOUT) && scl_check_arrindex(m_focus_key, MAX_KEY)) {
             SclLayoutKeyCoordinatePointer cur = sclres_layout_key_coordinate_pointer_frame[layout][m_focus_key];
-            SclWindowContext *winctx = windows->get_window_context(m_focus_window);
+            SclWindowContext *window_context = windows->get_window_context(m_focus_window);
             SclRectangle cur_key_coordinate;
-            if (winctx) {
-                cur_key_coordinate.x = cur->x + winctx->geometry.x;
-                cur_key_coordinate.y = cur->y + winctx->geometry.y;
+            if (window_context) {
+                cur_key_coordinate.x = cur->x + window_context->geometry.x;
+                cur_key_coordinate.y = cur->y + window_context->geometry.y;
                 cur_key_coordinate.width = cur->width;
                 cur_key_coordinate.height = cur->height;
             }
@@ -282,11 +282,11 @@ CSCLKeyFocusHandler::get_next_candidate_key(SCLHighlightNavigationDirection dire
                         continue;
                     }
                 }
-                SclWindowContext *winctx = windows->get_window_context(window);
+                SclWindowContext *window_context = windows->get_window_context(window);
                 SclRectangle btn;
-                if (winctx) {
-                    btn.x = p->x + winctx->geometry.x;
-                    btn.y = p->y + winctx->geometry.y;
+                if (window_context) {
+                    btn.x = p->x + window_context->geometry.x;
+                    btn.y = p->y + window_context->geometry.y;
                     btn.width = p->width;
                     btn.height = p->height;
                 }
@@ -309,7 +309,7 @@ CSCLKeyFocusHandler::get_next_candidate_key(SCLHighlightNavigationDirection dire
                             }
                             /* Save for otherside */
                             otherside_candidate = loop;
-                            int temp_distance_x = calculate_distance(btn.x, btn.x + btn.width, cur.x, cur.x + cur.width);
+                            temp_distance_x = calculate_distance(btn.x, btn.x + btn.width, cur.x, cur.x + cur.width);
                             if (temp_distance_x < candidate_distance_x) {
                                 if (btn.x < cur.x) {
                                     candidate = loop;
@@ -378,7 +378,7 @@ CSCLKeyFocusHandler::get_next_candidate_key(SCLHighlightNavigationDirection dire
                     default:
                         temp_distance_y = calculate_distance(btn.y, btn.y + btn.height, cur.y, cur.y + cur.height);
                         if (temp_distance_y <= candidate_distance_y) {
-                            int temp_distance_x = calculate_distance(btn.x, btn.x + btn.width, cur.x, cur.x + cur.width);
+                            temp_distance_x = calculate_distance(btn.x, btn.x + btn.width, cur.x, cur.x + cur.width);
                             if (temp_distance_x <= candidate_distance_x) {
                                 candidate = loop;
                                 candidate_distance_x = temp_distance_x;
@@ -439,11 +439,11 @@ CSCLKeyFocusHandler::process_navigation(SCLHighlightNavigationDirection directio
         SclLayoutKeyCoordinatePointer cur = sclres_layout_key_coordinate_pointer_frame[layout][m_focus_key];
 
         /* To compare with buttons in popup window, let's convert to global coordinates */
-        SclWindowContext *winctx = windows->get_window_context(m_focus_window);
+        SclWindowContext *window_context = windows->get_window_context(m_focus_window);
         SclRectangle cur_key_coordinate;
-        if (winctx && cur && cache) {
-            cur_key_coordinate.x = cur->x + winctx->geometry.x;
-            cur_key_coordinate.y = cur->y + winctx->geometry.y;
+        if (window_context && cur && cache) {
+            cur_key_coordinate.x = cur->x + window_context->geometry.x;
+            cur_key_coordinate.y = cur->y + window_context->geometry.y;
             cur_key_coordinate.width = cur->width;
             cur_key_coordinate.height = cur->height;
 
@@ -461,17 +461,18 @@ CSCLKeyFocusHandler::process_navigation(SCLHighlightNavigationDirection directio
         sclboolean exclude_popup_covered_area = FALSE;
 
         if (!windows->is_base_window(windows->get_nth_window_in_Z_order_list(SCL_WINDOW_Z_TOP))) {
-            CSCLResourceCache *cache = CSCLResourceCache::get_instance();
-            if (cache && scl_check_arrindex(winctx->inputmode, MAX_SCL_INPUT_MODE)) {
-                const SclLayout *layout =
+            if (cache && scl_check_arrindex(window_context->inputmode, MAX_SCL_INPUT_MODE)) {
+                const SclLayout *cur_layout =
                     cache->get_cur_layout(windows->get_nth_window_in_Z_order_list(SCL_WINDOW_Z_TOP));
-                if (!(layout->use_sw_background) || layout->bg_color.a != 0) {
-                    const PSclInputModeConfigure sclres_input_mode_configure =
-                        sclres_manager->get_input_mode_configure_table();
-                    if (sclres_input_mode_configure[winctx->inputmode].use_dim_window) {
-                        search_in_base_window = FALSE;
-                    } else {
-                        exclude_popup_covered_area = TRUE;
+                if (cur_layout) {
+                    if (!(cur_layout->use_sw_background) || cur_layout->bg_color.a != 0) {
+                        const PSclInputModeConfigure sclres_input_mode_configure =
+                            sclres_manager->get_input_mode_configure_table();
+                        if (sclres_input_mode_configure[window_context->inputmode].use_dim_window) {
+                            search_in_base_window = FALSE;
+                        } else {
+                            exclude_popup_covered_area = TRUE;
+                        }
                     }
                 }
             }
@@ -508,13 +509,13 @@ CSCLKeyFocusHandler::process_navigation(SCLHighlightNavigationDirection directio
             SclLayoutKeyCoordinatePointer popup_key =
                 sclres_layout_key_coordinate_pointer_frame[popup_layout][popup_candidate.candidate];
 
-            SclWindowContext *base_winctx = windows->get_window_context(windows->get_base_window());
-            SclWindowContext *popup_winctx = windows->get_window_context(popup_window);
+            SclWindowContext *base_window_context = windows->get_window_context(windows->get_base_window());
+            SclWindowContext *popup_window_context = windows->get_window_context(popup_window);
 
             SclRectangle base_key_coordinate;
-            if (base_winctx) {
-                base_key_coordinate.x = base_key->x + base_winctx->geometry.x;
-                base_key_coordinate.y = base_key->y + base_winctx->geometry.y;
+            if (base_window_context) {
+                base_key_coordinate.x = base_key->x + base_window_context->geometry.x;
+                base_key_coordinate.y = base_key->y + base_window_context->geometry.y;
                 base_key_coordinate.width = base_key->width;
                 base_key_coordinate.height = base_key->height;
 
@@ -523,9 +524,9 @@ CSCLKeyFocusHandler::process_navigation(SCLHighlightNavigationDirection directio
             }
 
             SclRectangle popup_key_coordinate;
-            if (popup_winctx) {
-                popup_key_coordinate.x = popup_key->x + popup_winctx->geometry.x;
-                popup_key_coordinate.y = popup_key->y + popup_winctx->geometry.y;
+            if (popup_window_context) {
+                popup_key_coordinate.x = popup_key->x + popup_window_context->geometry.x;
+                popup_key_coordinate.y = popup_key->y + popup_window_context->geometry.y;
                 popup_key_coordinate.width = popup_key->width;
                 popup_key_coordinate.height = popup_key->height;
             }
@@ -534,7 +535,7 @@ CSCLKeyFocusHandler::process_navigation(SCLHighlightNavigationDirection directio
                 CSCLUtils *utils = CSCLUtils::get_instance();
                 if (utils) {
                     /* If the base candidate key is covered by popup window, do not choose it */
-                    if (utils->is_rect_overlap(base_key_coordinate, popup_winctx->geometry)) {
+                    if (utils->is_rect_overlap(base_key_coordinate, popup_window_context->geometry)) {
                         base_candidate.candidate = NOT_USED;
                     }
                 }
@@ -619,11 +620,11 @@ CSCLKeyFocusHandler::process_navigation(SCLHighlightNavigationDirection directio
                         start_animation = TRUE;
                     }
                 } else {
-                    SclWindowContext *winctx_from = windows->get_window_context(desc.window_from);
-                    SclWindowContext *winctx_to = windows->get_window_context(desc.window_to);
-                    if (winctx_from && winctx_to) {
-                        if ((windows->is_base_window(desc.window_from) || winctx_from->is_virtual) &&
-                            (windows->is_base_window(desc.window_to) || winctx_to->is_virtual)) {
+                    SclWindowContext *window_context_from = windows->get_window_context(desc.window_from);
+                    SclWindowContext *window_context_to = windows->get_window_context(desc.window_to);
+                    if (window_context_from && window_context_to) {
+                        if ((windows->is_base_window(desc.window_from) || window_context_from->is_virtual) &&
+                            (windows->is_base_window(desc.window_to) || window_context_to->is_virtual)) {
                                 start_animation = TRUE;
                         }
                     }
@@ -660,11 +661,13 @@ CSCLKeyFocusHandler::process_navigation(SCLHighlightNavigationDirection directio
                             prev_rect.y += cache->get_custom_starting_coordinates().y;
                         } else {
                             /* Convert popup window coordinates relative to base window */
-                            SclWindowContext *base_winctx = windows->get_window_context(windows->get_base_window());
-                            SclWindowContext *prev_winctx = windows->get_window_context(desc.window_from);
-                            if (base_winctx && prev_winctx) {
-                                prev_rect.x += (prev_winctx->geometry.x - base_winctx->geometry.x);
-                                prev_rect.y += (prev_winctx->geometry.y - base_winctx->geometry.y);
+                            SclWindowContext *base_window_context =
+                                windows->get_window_context(windows->get_base_window());
+                            SclWindowContext *prev_window_context =
+                                windows->get_window_context(desc.window_from);
+                            if (base_window_context && prev_window_context) {
+                                prev_rect.x += (prev_window_context->geometry.x - base_window_context->geometry.x);
+                                prev_rect.y += (prev_window_context->geometry.y - base_window_context->geometry.y);
                             }
                         }
                         if (windows->is_base_window(desc.window_to)) {
@@ -672,11 +675,13 @@ CSCLKeyFocusHandler::process_navigation(SCLHighlightNavigationDirection directio
                             next_rect.y += cache->get_custom_starting_coordinates().y;
                         } else {
                             /* Convert popup window coordinates relative to base window */
-                            SclWindowContext *base_winctx = windows->get_window_context(windows->get_base_window());
-                            SclWindowContext *next_winctx = windows->get_window_context(desc.window_to);
-                            if (base_winctx && next_winctx) {
-                                next_rect.x += (next_winctx->geometry.x - base_winctx->geometry.x);
-                                next_rect.y += (next_winctx->geometry.y - base_winctx->geometry.y);
+                            SclWindowContext *base_window_context =
+                                windows->get_window_context(windows->get_base_window());
+                            SclWindowContext *next_window_context =
+                                windows->get_window_context(desc.window_to);
+                            if (base_window_context && next_window_context) {
+                                next_rect.x += (next_window_context->geometry.x - base_window_context->geometry.x);
+                                next_rect.y += (next_window_context->geometry.y - base_window_context->geometry.y);
                             }
                         }
                         /* Let's check if the navigation animation should be in circular movement */

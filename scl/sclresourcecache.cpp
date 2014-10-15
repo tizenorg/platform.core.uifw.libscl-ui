@@ -324,7 +324,7 @@ CSCLResourceCache::copy_from_privatekeyproperties(const SclPrivateKeyProperties*
             for (inner_loop = 0;inner_loop < MAX_SIZE_OF_LABEL_FOR_ONE;inner_loop++) {
                 if (!(privProperties->label[loop][inner_loop].empty())) {
                     coordinate->label[loop][inner_loop] =
-                        (sclchar*)privProperties->label[loop][inner_loop].c_str();
+                        const_cast<sclchar*>(privProperties->label[loop][inner_loop].c_str());
                 }
             }
         }
@@ -332,7 +332,7 @@ CSCLResourceCache::copy_from_privatekeyproperties(const SclPrivateKeyProperties*
             for (inner_loop = 0;inner_loop < SCL_BUTTON_STATE_MAX;inner_loop++) {
                 if (!(privProperties->image_label_path[loop][inner_loop].empty())) {
                     coordinate->image_label_path[loop][inner_loop] =
-                        (sclchar*)privProperties->image_label_path[loop][inner_loop].c_str();
+                        const_cast<sclchar*>(privProperties->image_label_path[loop][inner_loop].c_str());
                 }
             }
         }
@@ -340,7 +340,7 @@ CSCLResourceCache::copy_from_privatekeyproperties(const SclPrivateKeyProperties*
             for (inner_loop = 0;inner_loop < SCL_BUTTON_STATE_MAX;inner_loop++) {
                 if (!(privProperties->bg_image_path[loop][inner_loop].empty())) {
                     coordinate->bg_image_path[loop][inner_loop] =
-                        (sclchar*)privProperties->bg_image_path[loop][inner_loop].c_str();
+                        const_cast<sclchar*>(privProperties->bg_image_path[loop][inner_loop].c_str());
                 }
             }
         }
@@ -349,7 +349,7 @@ CSCLResourceCache::copy_from_privatekeyproperties(const SclPrivateKeyProperties*
             for (inner_loop = 0;inner_loop < MAX_SIZE_OF_MULTITAP_CHAR;inner_loop++) {
                 if (!(privProperties->key_value[loop][inner_loop].empty())) {
                     coordinate->key_value[loop][inner_loop] =
-                        (sclchar*)privProperties->key_value[loop][inner_loop].c_str();
+                        const_cast<sclchar*>(privProperties->key_value[loop][inner_loop].c_str());
                 }
             }
         }
@@ -365,7 +365,7 @@ CSCLResourceCache::copy_from_privatekeyproperties(const SclPrivateKeyProperties*
             for (inner_loop = 0;inner_loop < MAX_SIZE_OF_MULTITAP_CHAR;inner_loop++) {
                 if (!(privProperties->hint_string[loop][inner_loop].empty())) {
                     coordinate->hint_string[loop][inner_loop] =
-                        (sclchar*)privProperties->hint_string[loop][inner_loop].c_str();
+                        const_cast<sclchar*>(privProperties->hint_string[loop][inner_loop].c_str());
                 }
             }
         }
@@ -751,7 +751,7 @@ CSCLResourceCache::add_private_key(SclPrivateKeyProperties* privProperties, sclb
     ret = loop;
 
     sclboolean found = FALSE;
-    for (sclint loop = 0;loop < MAX_KEY; loop++) {
+    for (loop = 0;loop < MAX_KEY; loop++) {
         if ((!(privProperties->custom_id.empty())) && mCurBaseLayoutKeyCoordinates[loop].custom_id) {
             if (privProperties->custom_id.compare(mCurBaseLayoutKeyCoordinates[loop].custom_id) == 0) {
                 /* sets the current properties to private key properties */
@@ -806,7 +806,7 @@ CSCLResourceCache::remove_private_key(sclint id)
         return FALSE;
     }
     if (scl_check_arrindex(layout, MAX_SCL_LAYOUT)) {
-        for (sclint loop = 0;loop < MAX_KEY; loop++) {
+        for (loop = 0;loop < MAX_KEY; loop++) {
             if ((!(mPrivateKeyProperties[id].custom_id.empty())) && mCurBaseLayoutKeyCoordinates[loop].custom_id) {
                 if (mPrivateKeyProperties[id].custom_id.compare(mCurBaseLayoutKeyCoordinates[loop].custom_id) == 0) {
                     SclLayoutKeyCoordinatePointer p = sclres_layout_key_coordinate_pointer_frame[layout][loop];
@@ -914,13 +914,13 @@ CSCLResourceCache::recompute_layout(sclwindow window)
 
             if (popupindex >= 0 && popupindex < MAX_POPUP_WINDOW) {
                 if (!(windows->is_base_window(window))) {
-                    SclWindowContext *winctx = windows->get_window_context(window);
-                    if (winctx) {
-                        if (winctx->inputmode != NOT_USED) {
-                            inputmode = winctx->inputmode;
+                    SclWindowContext *window_context = windows->get_window_context(window);
+                    if (window_context) {
+                        if (window_context->inputmode != NOT_USED) {
+                            inputmode = window_context->inputmode;
                         }
-                        if (winctx->layout != NOT_USED) {
-                            layout = winctx->layout;
+                        if (window_context->layout != NOT_USED) {
+                            layout = window_context->layout;
                         }
                     }
                 }
@@ -1152,12 +1152,12 @@ void CSCLResourceCache::generate_autopopup_layout( const SclLayoutKeyCoordinate 
     if (utils && context && coordinate && autopopup_configure) {
         sclbyte num_keys, num_columns, num_rows;
         sclint x, y, width, height;
-        SCLShiftState shiftidx = context->get_shift_state();
-        if (shiftidx < 0 || shiftidx >= SCL_SHIFT_STATE_MAX) shiftidx = SCL_SHIFT_STATE_OFF;
+        SCLShiftState shift_index = context->get_shift_state();
+        if (shift_index < 0 || shift_index >= SCL_SHIFT_STATE_MAX) shift_index = SCL_SHIFT_STATE_OFF;
         if (context->get_caps_lock_mode()) {
-            shiftidx = (shiftidx == SCL_SHIFT_STATE_OFF) ? SCL_SHIFT_STATE_ON : SCL_SHIFT_STATE_OFF;
+            shift_index = (shift_index == SCL_SHIFT_STATE_OFF) ? SCL_SHIFT_STATE_ON : SCL_SHIFT_STATE_OFF;
         }
-        if (utils->get_autopopup_window_variables(coordinate->autopopup_key_labels[shiftidx], &num_keys, &num_columns, &num_rows, &width, &height)) {
+        if (utils->get_autopopup_window_variables(coordinate->autopopup_key_labels[shift_index], &num_keys, &num_columns, &num_rows, &width, &height)) {
             int row = 0, column = 0;
 
             pCurLayout->use_magnifier_window = FALSE;
@@ -1384,6 +1384,8 @@ void CSCLResourceCache::generate_autopopup_layout( const SclLayoutKeyCoordinate 
                                 (*pCurLayoutKeyCoordinates)[loop + decoidx].height =
                                     autopopup_configure->decoration_size * utils->get_smallest_custom_scale_rate();
                                 break;
+                            default:
+                                break;
                         }
 
                         (*pCurButtonContext)[loop + decoidx].used = TRUE;
@@ -1437,7 +1439,8 @@ CSCLResourceCache::clone_keyproperties(SclPrivateKeyProperties* priv, sclbyte in
         clear_privatekeyproperties(priv);
 
         /* gets the value of the previous key properties */
-        SclLayoutKeyCoordinate keyCoordinate = { 0 };
+        SclLayoutKeyCoordinate keyCoordinate;
+        memset(&keyCoordinate, 0x00, sizeof(keyCoordinate));
         if (scl_check_arrindex_unsigned(layout_index, MAX_SCL_LAYOUT) &&
             scl_check_arrindex_unsigned(key_index, MAX_KEY)) {
             SclLayoutKeyCoordinatePointer p = sclres_layout_key_coordinate_pointer_frame[layout_index][key_index];
@@ -1492,7 +1495,7 @@ CSCLResourceCache::set_private_key(SclPrivateKeyProperties* properties, sclboole
  * @param fRedraw If true, it will redraw the current key
  */
 sclint
-CSCLResourceCache::set_private_key(sclchar* custom_id, sclchar* label, sclchar* imagelabel[SCL_BUTTON_STATE_MAX], sclchar* imagebg[SCL_BUTTON_STATE_MAX], sclulong key_event, sclchar *key_value, sclboolean fRedraw, sclboolean fPendingUpdate)
+CSCLResourceCache::set_private_key(const sclchar* custom_id, sclchar* label, sclchar* imagelabel[SCL_BUTTON_STATE_MAX], sclchar* imagebg[SCL_BUTTON_STATE_MAX], sclulong key_event, sclchar *key_value, sclboolean fRedraw, sclboolean fPendingUpdate)
 {
     SCL_DEBUG();
 

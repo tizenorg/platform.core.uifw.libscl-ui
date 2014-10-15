@@ -21,10 +21,10 @@
 #include "sclstructs.h"
 #include "sclresource.h"
 
-#define MAX_SCL_INPUT_MODE 128
-#define MAX_SCL_LAYOUT 255
+#define MAX_SCL_INPUT_MODE 64
+#define MAX_SCL_LAYOUT 128
 #define MAX_SCL_LABEL_PROPERTIES 128
-#define MAX_SCL_MODIFIER_DECORATION_NUM 128
+#define MAX_SCL_MODIFIER_DECORATION_NUM 64
 
 typedef SclInputModeConfigure (*PSclInputModeConfigure);
 typedef SclLayout (*PSclLayout);

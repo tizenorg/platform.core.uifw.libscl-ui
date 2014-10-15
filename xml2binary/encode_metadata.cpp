@@ -36,7 +36,7 @@ encode_metadata_record(ResourceStorage& storage, const MetaData_Record& metadata
 }
 void
 encode_metadata(ResourceStorage& storage, const MetaData& metadata ) {
-    int init_size = storage.size();
+    int init_size = storage.get_size();
 
     storage.reserve(8);
     storage.put(metadata.m_version);
@@ -48,7 +48,7 @@ encode_metadata(ResourceStorage& storage, const MetaData& metadata ) {
         encode_metadata_record(storage, metadata.m_vec_metadata_record.at(i));
     }
 
-    int block_size = storage.size() - init_size;
+    int block_size = storage.get_size() - init_size;
     storage.random_put<sint_t>(block_size, 8, init_size);
 }
 

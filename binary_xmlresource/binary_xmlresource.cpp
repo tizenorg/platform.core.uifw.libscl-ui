@@ -82,12 +82,12 @@ void BinResource::init(const char *entry_filepath) {
     }
 
     for ( int i = ALLDATA; i < MAX_DATATYPE; ++i) {
-        info[i].offset = offset_table[i];
-        info[i].size = size_table[i];
+        m_info[i].offset = offset_table[i];
+        m_info[i].size = size_table[i];
     }
 
-    String_Bin_Parser stringBinParser(storageAllData, info[STRING].offset, info[STRING].size);
-    Metadata_Bin_Parser metadataBinParser(storageAllData, info[METADATA].offset, info[METADATA].size);
+    String_Bin_Parser stringBinParser(storageAllData, m_info[STRING].offset, m_info[STRING].size);
+    Metadata_Bin_Parser metadataBinParser(storageAllData, m_info[METADATA].offset, m_info[METADATA].size);
 
     String_Provider stringProvider(&stringBinParser);
     Metadata_Provider metadataProvider(&metadataBinParser);
@@ -95,42 +95,42 @@ void BinResource::init(const char *entry_filepath) {
 
     if (m_input_mode_configure_parser == NULL) {
         m_input_mode_configure_parser = BinInputModeConfigParser::get_instance();
-        m_input_mode_configure_parser->init(storageAllData, info[INPUT_MODE_CONFIGURE].offset, info[INPUT_MODE_CONFIGURE].size, &parser_info_provider);
+        m_input_mode_configure_parser->init(storageAllData, m_info[INPUT_MODE_CONFIGURE].offset, m_info[INPUT_MODE_CONFIGURE].size, &parser_info_provider);
     }
     if (m_default_configure_parser == NULL) {
         m_default_configure_parser = BinDefaultConfigParser::get_instance();
-        m_default_configure_parser->init(storageAllData, info[DEFAULT_CONFIGURE].offset, info[DEFAULT_CONFIGURE].size, &parser_info_provider);
+        m_default_configure_parser->init(storageAllData, m_info[DEFAULT_CONFIGURE].offset, m_info[DEFAULT_CONFIGURE].size, &parser_info_provider);
     }
    if (m_key_coordinate_frame_parser == NULL) {
         m_key_coordinate_frame_parser = BinKeyCoordFrameParser::get_instance();
-        m_key_coordinate_frame_parser->init(storageAllData, info[KEY_COORDINATE_FRAME].offset, info[KEY_COORDINATE_FRAME].size, &parser_info_provider);
+        m_key_coordinate_frame_parser->init(storageAllData, m_info[KEY_COORDINATE_FRAME].offset, m_info[KEY_COORDINATE_FRAME].size, &parser_info_provider);
     }
 
    if (m_layout_parser == NULL) {
         m_layout_parser = BinLayoutParser::get_instance();
-        m_layout_parser->init(storageAllData, info[LAYOUT].offset, info[LAYOUT].size, &parser_info_provider);
+        m_layout_parser->init(storageAllData, m_info[LAYOUT].offset, m_info[LAYOUT].size, &parser_info_provider);
     }
     if (m_modifier_decoration_parser == NULL) {
         m_modifier_decoration_parser = BinModifierDecorationParser::get_instance();
-        m_modifier_decoration_parser->init(storageAllData, info[MODIFIER_DECORATION].offset, info[MODIFIER_DECORATION].size, &parser_info_provider);
+        m_modifier_decoration_parser->init(storageAllData, m_info[MODIFIER_DECORATION].offset, m_info[MODIFIER_DECORATION].size, &parser_info_provider);
     }
     if (m_label_properties_parser == NULL) {
         m_label_properties_parser = BinLabelPropertyParser::get_instance();
-        m_label_properties_parser->init(storageAllData, info[LABEL_PROPERTIES_FRAME].offset, info[LABEL_PROPERTIES_FRAME].size, &parser_info_provider);
+        m_label_properties_parser->init(storageAllData, m_info[LABEL_PROPERTIES_FRAME].offset, m_info[LABEL_PROPERTIES_FRAME].size, &parser_info_provider);
     }
 
     if (m_autopopup_configure_parser == NULL) {
         m_autopopup_configure_parser = BinAutoPopupConfigParser::get_instance();
-        m_autopopup_configure_parser->init(storageAllData, info[AUTOPOPUP_CONFIGURE].offset, info[AUTOPOPUP_CONFIGURE].size, &parser_info_provider);
+        m_autopopup_configure_parser->init(storageAllData, m_info[AUTOPOPUP_CONFIGURE].offset, m_info[AUTOPOPUP_CONFIGURE].size, &parser_info_provider);
     }
     if (m_magnifier_configure_parser == NULL) {
         m_magnifier_configure_parser = BinMagnifierConfigParser::get_instance();
-        m_magnifier_configure_parser->init(storageAllData, info[MAGNIFIER_CONFIGURE].offset, info[MAGNIFIER_CONFIGURE].size, &parser_info_provider);
+        m_magnifier_configure_parser->init(storageAllData, m_info[MAGNIFIER_CONFIGURE].offset, m_info[MAGNIFIER_CONFIGURE].size, &parser_info_provider);
     }
 
     if (m_nine_patch_file_list_parser == NULL) {
         m_nine_patch_file_list_parser = BinNinePatchFileParser::get_instance();
-        m_nine_patch_file_list_parser->init(storageAllData, info[NINE_PATCH].offset, info[NINE_PATCH].size, &parser_info_provider);
+        m_nine_patch_file_list_parser->init(storageAllData, m_info[NINE_PATCH].offset, m_info[NINE_PATCH].size, &parser_info_provider);
     }
 
     SCLLOG_TIME_END("Parsing binary XML files");

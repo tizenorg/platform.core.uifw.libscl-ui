@@ -84,11 +84,11 @@ static Eina_Bool x_event_window_show_cb (void *data, int ev_type, void *event)
     CSCLWindows *windows = CSCLWindows::get_instance();
     Evas_Object *window = (Evas_Object *)windows->get_base_window();
     Ecore_X_Event_Window_Show *e = (Ecore_X_Event_Window_Show*)event;
-    CSCLKeyFocusHandler* focus_handler = CSCLKeyFocusHandler::get_instance();
 
     if(e->win == elm_win_xwindow_get(window)) {
         LOGD("INSIDE =-=-=-=- x_event_window_show_cb, Trying to Grab Key Board : \n");
 #ifdef USING_KEY_GRAB
+        CSCLKeyFocusHandler* focus_handler = CSCLKeyFocusHandler::get_instance();
         focus_handler->grab_keyboard(windows->get_base_window());
 #endif
     }
@@ -110,15 +110,15 @@ void CSCLWindowsImplEfl::fini()
  * Create a content window and binds it into given parent window as a child
  */
 sclwindow
-CSCLWindowsImplEfl::create_base_window(const sclwindow parent, SclWindowContext *winctx, scl16 width, scl16 height)
+CSCLWindowsImplEfl::create_base_window(const sclwindow parent, SclWindowContext *window_context, scl16 width, scl16 height)
 {
     SCL_DEBUG();
 
     sclwindow ret = SCLWINDOW_INVALID;
 
-    if (winctx) {
-        winctx->etc_info = NULL;
-        winctx->window = parent;
+    if (window_context) {
+        window_context->etc_info = NULL;
+        window_context->window = parent;
     
     //Adding window show event handler:mrunal.s
     _candidate_show_handler = ecore_event_handler_add (ECORE_X_EVENT_WINDOW_SHOW, x_event_window_show_cb, NULL);
@@ -135,7 +135,7 @@ CSCLWindowsImplEfl::create_base_window(const sclwindow parent, SclWindowContext 
         }
 #endif
 
-        ret = winctx->window;
+        ret = window_context->window;
     }
 
     CSCLUtils *utils = CSCLUtils::get_instance();
@@ -151,7 +151,7 @@ CSCLWindowsImplEfl::create_base_window(const sclwindow parent, SclWindowContext 
  * Creates a window
  */
 sclwindow
-CSCLWindowsImplEfl::create_window(const sclwindow parent, SclWindowContext *winctx, scl16 width, scl16 height)
+CSCLWindowsImplEfl::create_window(const sclwindow parent, SclWindowContext *window_context, scl16 width, scl16 height)
 {
     SCL_DEBUG();
 
@@ -230,7 +230,7 @@ CSCLWindowsImplEfl::create_window(const sclwindow parent, SclWindowContext *winc
 * Creates a window
 */
 sclwindow
-CSCLWindowsImplEfl::create_magnifier_window(const sclwindow parent, SclWindowContext *winctx, scl16 width, scl16 height)
+CSCLWindowsImplEfl::create_magnifier_window(const sclwindow parent, SclWindowContext *window_context, scl16 width, scl16 height)
 {
     SCL_DEBUG();
 
@@ -251,8 +251,8 @@ CSCLWindowsImplEfl::create_magnifier_window(const sclwindow parent, SclWindowCon
     CSCLWindows *windows = CSCLWindows::get_instance();
     sclint scrx, scry, winx, winy;
     utils->get_screen_resolution(&scrx, &scry);
-    SclWindowContext *winctx = windows->get_window_context(windows->get_base_window());
-    evas_object_resize(win, scrx, height + winctx->height);
+    SclWindowContext *window_context = windows->get_window_context(windows->get_base_window());
+    evas_object_resize(win, scrx, height + window_context->height);
 #else
     //evas_object_resize(win, width, height);
 #endif
@@ -316,7 +316,7 @@ CSCLWindowsImplEfl::create_magnifier_window(const sclwindow parent, SclWindowCon
  * Creates the dim window
  */
 sclwindow
-CSCLWindowsImplEfl::create_dim_window(const sclwindow parent, SclWindowContext *winctx, scl16 width, scl16 height)
+CSCLWindowsImplEfl::create_dim_window(const sclwindow parent, SclWindowContext *window_context, scl16 width, scl16 height)
 {
     SCL_DEBUG();
 
@@ -409,19 +409,19 @@ CSCLWindowsImplEfl::destroy_window(sclwindow window)
     CSCLWindows *windows = CSCLWindows::get_instance();
     CSCLUtils *utils = CSCLUtils::get_instance();
 
-    SclWindowContext *winctx = NULL;
+    SclWindowContext *window_context = NULL;
     if (windows && window) {
-        winctx = windows->get_window_context(window);
+        window_context = windows->get_window_context(window);
     }
 
     utils->log("WinEfl_destroywin %p %p (basewin %p mag %p)\n",
         window,
-        (winctx && !(winctx->is_virtual)) ? elm_win_xwindow_get(static_cast<Evas_Object*>(window)) : 0x01,
+        (window_context && !(window_context->is_virtual)) ? elm_win_xwindow_get(static_cast<Evas_Object*>(window)) : 0x01,
         windows->get_base_window(), windows->get_magnifier_window());
 
-    if (windows && utils && winctx) {
-        if (winctx->etc_info) {
-            Eina_List *list = (Eina_List*)(winctx->etc_info);
+    if (windows && utils && window_context) {
+        if (window_context->etc_info) {
+            Eina_List *list = (Eina_List*)(window_context->etc_info);
             Eina_List *iter = NULL;
             Eina_List *iter_next = NULL;
             void *data = NULL;
@@ -433,9 +433,9 @@ CSCLWindowsImplEfl::destroy_window(sclwindow window)
                         Evas_Object* eo = object->object;
                         if (object->extracted) {
                             //evas_object_image_data_set(eo, NULL);
-                            void *data = evas_object_image_data_get(eo, 1);
-                            if (data) {
-                                free(data);
+                            void *image_data = evas_object_image_data_get(eo, 1);
+                            if (image_data) {
+                                free(image_data);
                             }
                         }
                         if (eo) {
@@ -468,10 +468,10 @@ CSCLWindowsImplEfl::destroy_window(sclwindow window)
                 }
                 list = eina_list_remove_list(list, iter);
             }
-            winctx->etc_info = NULL;
+            window_context->etc_info = NULL;
         }
 
-        if (!(winctx->is_virtual)) {
+        if (!(window_context->is_virtual)) {
             /* FIXME : A workaround for the bug that event on a window being hidden is delivered to
                 e17, instead of the window itself or the window right below - Should report to WM */
             if (window == windows->get_nth_popup_window(SCL_WINDOW_Z_TOP)) {
@@ -484,7 +484,7 @@ CSCLWindowsImplEfl::destroy_window(sclwindow window)
         }
         utils->log("WinEfl_destroywin %p %p (basewin %p mag %p)\n",
             window,
-            (winctx && !(winctx->is_virtual)) ? elm_win_xwindow_get(static_cast<Evas_Object*>(window)) : 0x01,
+            (window_context && !(window_context->is_virtual)) ? elm_win_xwindow_get(static_cast<Evas_Object*>(window)) : 0x01,
             windows->get_base_window(), windows->get_magnifier_window());
     }
 
@@ -502,10 +502,10 @@ CSCLWindowsImplEfl::show_window(const sclwindow window, sclboolean queue)
     CSCLContext *context = CSCLContext::get_instance();
     CSCLUtils *utils = CSCLUtils::get_instance();
     if (windows && context && window) {
-        SclWindowContext *winctx = windows->get_window_context(window);
+        SclWindowContext *window_context = windows->get_window_context(window);
         if (!(context->get_hidden_state())) {
-            if (winctx) {
-                if (!(winctx->is_virtual)) {
+            if (window_context) {
+                if (!(window_context->is_virtual)) {
                     evas_object_show((Evas_Object*)window);
                 }
 #ifdef APPLY_WINDOW_MANAGER_CHANGE
@@ -551,7 +551,7 @@ CSCLWindowsImplEfl::show_window(const sclwindow window, sclboolean queue)
              *
              * N_SE-52548: ...and modified if() for other popup windows as well...
              */
-            if (winctx && !(winctx->is_virtual)) {
+            if (window_context && !(window_context->is_virtual)) {
                 ecore_x_icccm_transient_for_set
                     (elm_win_xwindow_get(static_cast<Evas_Object*>(window)), app_window);
                 elm_win_raise((Evas_Object *)window);
@@ -560,7 +560,7 @@ CSCLWindowsImplEfl::show_window(const sclwindow window, sclboolean queue)
 #endif
         utils->log("WinEfl_showwin %p %p (basewin %p mag %p)\n",
             window,
-            (winctx && !(winctx->is_virtual)) ? elm_win_xwindow_get(static_cast<Evas_Object*>(window)) : 0x01,
+            (window_context && !(window_context->is_virtual)) ? elm_win_xwindow_get(static_cast<Evas_Object*>(window)) : 0x01,
             windows->get_base_window(), windows->get_magnifier_window());
     }
 }
@@ -574,7 +574,7 @@ CSCLWindowsImplEfl::hide_window(const sclwindow window,  sclboolean fForce)
     SCL_DEBUG();
     CSCLWindows *windows = CSCLWindows::get_instance();
     CSCLUtils *utils = CSCLUtils::get_instance();
-    SclWindowContext *winctx = NULL;
+    SclWindowContext *window_context = NULL;
 
     if (windows && window) {
 #ifdef USING_KEY_GRAB
@@ -585,9 +585,9 @@ CSCLWindowsImplEfl::hide_window(const sclwindow window,  sclboolean fForce)
     }
 #endif
 
-        winctx = windows->get_window_context(window);
-        if (winctx) {
-            if (!(winctx->is_virtual)) {
+        window_context = windows->get_window_context(window);
+        if (window_context) {
+            if (!(window_context->is_virtual)) {
                 Evas_Object *win = (Evas_Object*)window;
 #ifdef APPLY_WINDOW_MANAGER_CHANGE
                 if (windows->is_base_window(window)) {
@@ -612,10 +612,10 @@ CSCLWindowsImplEfl::hide_window(const sclwindow window,  sclboolean fForce)
         // Memory optimization */
         //if (window == windows->get_magnifier_window() || TRUE) {
         if (window == windows->get_magnifier_window() || window == windows->get_dim_window()) {
-            if (winctx) {
-                if (winctx->etc_info) {
+            if (window_context) {
+                if (window_context->etc_info) {
 
-                    Eina_List *list = (Eina_List*)(winctx->etc_info);
+                    Eina_List *list = (Eina_List*)(window_context->etc_info);
                     Eina_List *iter = NULL;
                     Eina_List *iter_next = NULL;
                     void *data = NULL;
@@ -631,9 +631,9 @@ CSCLWindowsImplEfl::hide_window(const sclwindow window,  sclboolean fForce)
                                 if (bShouldRemove) {
                                     Evas_Object* eo = object->object;
                                     if (object->extracted) {
-                                        void *data = evas_object_image_data_get(eo, 1);
-                                        if (data) {
-                                            free(data);
+                                        void *image_data = evas_object_image_data_get(eo, 1);
+                                        if (image_data) {
+                                            free(image_data);
                                         }
                                     }
                                     if (eo) {
@@ -668,7 +668,7 @@ CSCLWindowsImplEfl::hide_window(const sclwindow window,  sclboolean fForce)
                             iIndex++;
                         }
                     }
-                    winctx->etc_info = list;
+                    window_context->etc_info = list;
 #endif
                 }
             }
@@ -681,7 +681,7 @@ CSCLWindowsImplEfl::hide_window(const sclwindow window,  sclboolean fForce)
         }
         utils->log("WinEfl_hidewin %p %p (basewin %p mag %p)\n",
             window,
-            (winctx && !(winctx->is_virtual)) ? elm_win_xwindow_get(static_cast<Evas_Object*>(window)) : 0x01,
+            (window_context && !(window_context->is_virtual)) ? elm_win_xwindow_get(static_cast<Evas_Object*>(window)) : 0x01,
             windows->get_base_window(), windows->get_magnifier_window());
     }
 }
@@ -699,13 +699,13 @@ CSCLWindowsImplEfl::move_window(const sclwindow window, scl16 x, scl16 y)
     CSCLWindows *windows = CSCLWindows::get_instance();
 
     if (utils && context && windows && window) {
-        //SclWindowContext *winctx = windows->get_window_context(window, FALSE);
-        SclWindowContext *winctx = windows->get_window_context(window);
+        //SclWindowContext *window_context = windows->get_window_context(window, FALSE);
+        SclWindowContext *window_context = windows->get_window_context(window);
         unsigned short win_width = 0;
         unsigned short win_height = 0;
-        if (winctx) {
-            win_width = winctx->geometry.width;
-            win_height = winctx->geometry.height;
+        if (window_context) {
+            win_width = window_context->geometry.width;
+            win_height = window_context->geometry.height;
         }
 
         scl16 rotatex = x;
@@ -719,16 +719,16 @@ CSCLWindowsImplEfl::move_window(const sclwindow window, scl16 x, scl16 y)
 
 #ifdef DO_NOT_MOVE_MAGNIFIER_WINDOW
         if (window == windows->get_magnifier_window()) {
-            SclWindowContext *basewinctx = windows->get_window_context(windows->get_base_window(), FALSE);
+            SclWindowContext *base_window_context = windows->get_window_context(windows->get_base_window(), FALSE);
             rotatex = orgx = 0;
             if (context->get_rotation_degree() == 90 || context->get_rotation_degree() == 270) {
-                rotatey = orgy = scr_w - basewinctx->height - win_height;
-                win_width = basewinctx->width;
-                win_height = basewinctx->height + win_height;
+                rotatey = orgy = scr_w - base_window_context->height - win_height;
+                win_width = base_window_context->width;
+                win_height = base_window_context->height + win_height;
             } else {
-                rotatey = orgy = scr_h - basewinctx->height - win_height;
-                win_width = basewinctx->width;
-                win_height = basewinctx->height + win_height;
+                rotatey = orgy = scr_h - base_window_context->height - win_height;
+                win_width = base_window_context->width;
+                win_height = base_window_context->height + win_height;
             }
             magnifierx = x;
             magnifiery = y - orgy;
@@ -757,7 +757,7 @@ CSCLWindowsImplEfl::move_window(const sclwindow window, scl16 x, scl16 y)
 
     #ifdef DO_NOT_MOVE_MAGNIFIER_WINDOW
         if (window == windows->get_magnifier_window()) {
-            if (rotatex == winctx->x && rotatey == winctx->y) return;
+            if (rotatex == window_context->x && rotatey == windonw_context->y) return;
         }
     #endif
 
@@ -773,7 +773,7 @@ CSCLWindowsImplEfl::move_window(const sclwindow window, scl16 x, scl16 y)
 
         utils->log("WinEfl_movewin %p %p %d %d %d %d (basewin %p mag %p)\n",
             window,
-            (winctx && !(winctx->is_virtual)) ? elm_win_xwindow_get(static_cast<Evas_Object*>(window)) : 0x01,
+            (window_context && !(window_context->is_virtual)) ? elm_win_xwindow_get(static_cast<Evas_Object*>(window)) : 0x01,
             x, y, rotatex, rotatey,
             windows->get_base_window(), windows->get_magnifier_window());
     }
@@ -792,15 +792,15 @@ CSCLWindowsImplEfl::resize_window(const sclwindow window, scl16 width, scl16 hei
 
 #ifdef DO_NOT_MOVE_MAGNIFIER_WINDOW
     if (window == windows->get_magnifier_window()) {
-        SclWindowContext *winctx = windows->get_window_context(windows->get_base_window());
-        if (winctx->width != width || winctx->height != height) {
+        SclWindowContext *window_context = windows->get_window_context(windows->get_base_window());
+        if (window_context->width != width || window_context->height != height) {
             CSCLUtils *utils = CSCLUtils::get_instance();
             sclint scrx, scry, winx, winy;
             utils->get_screen_resolution(&scrx, &scry);
             if (context->get_rotation_degree() == 90 || context->get_rotation_degree() == 270) {
-                evas_object_resize((Evas_Object*)window, scry, height + winctx->height);
+                evas_object_resize((Evas_Object*)window, scry, height + window_context->height);
             } else {
-                evas_object_resize((Evas_Object*)window, scrx, height + winctx->height);
+                evas_object_resize((Evas_Object*)window, scrx, height + window_context->height);
             }
         }
         return;
@@ -810,10 +810,10 @@ CSCLWindowsImplEfl::resize_window(const sclwindow window, scl16 width, scl16 hei
     Evas_Object *win = (Evas_Object*)window;
 #ifndef FULL_SCREEN_TEST
     if (windows && utils && window) {
-        SclWindowContext *winctx = windows->get_window_context(window);
+        SclWindowContext *window_context = windows->get_window_context(window);
         utils->log("WinEfl_resizewin %p %p %d %d (basewin %p mag %p)\n",
             window,
-            (winctx && !(winctx->is_virtual)) ? elm_win_xwindow_get(static_cast<Evas_Object*>(window)) : 0x01,
+            (window_context && !(window_context->is_virtual)) ? elm_win_xwindow_get(static_cast<Evas_Object*>(window)) : 0x01,
             windows->get_base_window(), windows->get_magnifier_window());
     }
 #endif
@@ -880,23 +880,23 @@ CSCLWindowsImplEfl::update_window(const sclwindow window, scl16 x, scl16 y, scl1
 
     CSCLWindows *windows = CSCLWindows::get_instance();
     CSCLUtils *utils = CSCLUtils::get_instance();
-    SclWindowContext *winctx = NULL;
+    SclWindowContext *window_context = NULL;
 
     if (windows && window) {
-        //winctx = windows->get_window_context(window, FALSE);
-        winctx = windows->get_window_context(window);
+        //window_context = windows->get_window_context(window, FALSE);
+        window_context = windows->get_window_context(window);
     }
-    if (windows && utils && winctx) {
-        if (winctx->is_virtual) {
-            SclWindowContext *basectx = windows->get_window_context(windows->get_base_window());
-            if (basectx) {
-                updatearea.x += (winctx->geometry.x - basectx->geometry.x);
-                updatearea.y += (winctx->geometry.y - basectx->geometry.y);
+    if (windows && utils && window_context) {
+        if (window_context->is_virtual) {
+            SclWindowContext *base_window_context = windows->get_window_context(windows->get_base_window());
+            if (base_window_context) {
+                updatearea.x += (window_context->geometry.x - base_window_context->geometry.x);
+                updatearea.y += (window_context->geometry.y - base_window_context->geometry.y);
             }
         }
-        if (winctx->etc_info) {
+        if (window_context->etc_info) {
 
-            Eina_List *list = (Eina_List*)(winctx->etc_info);
+            Eina_List *list = (Eina_List*)(window_context->etc_info);
             Eina_List *iter = NULL;
             Eina_List *iter_next = NULL;
             void *data = NULL;
@@ -925,16 +925,16 @@ CSCLWindowsImplEfl::update_window(const sclwindow window, scl16 x, scl16 y, scl1
                             //if (object->type == EFLOBJECT_IMAGE) {
                             SCL_DEBUG_ELAPASED_TIME_START();
                             if (TRUE) {
-                                if (winctx->width != object->position.width || winctx->height != object->position.height ||
+                                if (window_context->width != object->position.width || window_context->height != object->position.height ||
                                     object->type == EFLOBJECT_TEXTBLOCK || window == windows->get_magnifier_window()) {
                                     evas_object_hide(object->object);
                                 }
                             } else {
 #else
                             if (object->extracted) {
-                                void *data = evas_object_image_data_get(eo, 1);
-                                if (data) {
-                                    free(data);
+                                void *image_data = evas_object_image_data_get(eo, 1);
+                                if (image_data) {
+                                    free(image_data);
                                 }
                             }
                             if (eo) {
@@ -980,11 +980,11 @@ CSCLWindowsImplEfl::update_window(const sclwindow window, scl16 x, scl16 y, scl1
                     iIndex++;
                 }
             }
-            winctx->etc_info = list;
+            window_context->etc_info = list;
 
-            /*while ((Eina_List*)(winctx->etc_info))
+            /*while ((Eina_List*)(window_context->etc_info))
             {
-                EFLObject *object = (EFLObject*)eina_list_data_get((Eina_List*)(winctx->etc_info));
+                EFLObject *object = (EFLObject*)eina_list_data_get((Eina_List*)(window_context->etc_info));
                 if (object) {
                     Evas_Object* eo = object->object;
                     if (eo) {
@@ -992,10 +992,10 @@ CSCLWindowsImplEfl::update_window(const sclwindow window, scl16 x, scl16 y, scl1
                         object->object = NULL;
                     }
                 }
-                winctx->etc_info = eina_list_remove_list((Eina_List*)(winctx->etc_info), (Eina_List*)(winctx->etc_info));
+                window_context->etc_info = eina_list_remove_list((Eina_List*)(window_context->etc_info), (Eina_List*)(winctx->etc_info));
                 delete object;
             }
-            winctx->etc_info = NULL;*/
+            window_context->etc_info = NULL;*/
         }
         CSCLUIBuilder *builder = CSCLUIBuilder::get_instance();
         builder->show_layout(window, x, y, width, height);
@@ -1085,14 +1085,14 @@ CSCLWindowsImplEfl::set_window_rotation(const sclwindow window, SCLRotation rota
     SCL_DEBUG();
 
     CSCLWindows *windows = CSCLWindows::get_instance();
-    SclWindowContext *winctx = NULL;
+    SclWindowContext *window_context = NULL;
 
     if (windows && window) {
-        //winctx = windows->get_window_context(window, FALSE);
-        winctx = windows->get_window_context(window);
+        //window_context = windows->get_window_context(window, FALSE);
+        window_context = windows->get_window_context(window);
 
-        if (winctx) {
-            if (winctx->is_virtual) {
+        if (window_context) {
+            if (window_context->is_virtual) {
                 return;
             }
         }
@@ -1115,8 +1115,8 @@ CSCLWindowsImplEfl::set_window_rotation(const sclwindow window, SCLRotation rota
         hint.flags |= USPosition;
 
         XSetWMNormalHints(dpy, win, &hint);
-        /*if (winctx) {
-          windows->resize_window(winctx->window, winctx->width, winctx->height);
+        /*if (window_context) {
+          windows->resize_window(window_context->window, window_context->width, winctx->height);
           }*/
     }
 }
@@ -1152,12 +1152,12 @@ void release_all(Evas_Object *win)
 
     CSCLWindows *windows = CSCLWindows::get_instance();
     //if (window == windows->get_magnifier_window()) {
-        //SclWindowContext *winctx = windows->get_window_context(win, FALSE);
-    SclWindowContext *winctx = windows->get_window_context(win);
-        if (winctx && win) {
-            if (winctx->etc_info) {
+        //SclWindowContext *window_context = windows->get_window_context(win, FALSE);
+    SclWindowContext *window_context = windows->get_window_context(win);
+        if (window_context && win) {
+            if (window_context->etc_info) {
 
-                Eina_List *list = (Eina_List*)(winctx->etc_info);
+                Eina_List *list = (Eina_List*)(window_context->etc_info);
                 Eina_List *iter = NULL;
                 Eina_List *iter_next = NULL;
                 void *data = NULL;
@@ -1173,9 +1173,9 @@ void release_all(Evas_Object *win)
                             if (bShouldRemove) {
                                 Evas_Object* eo = object->object;
                                 if (object->extracted) {
-                                    void *data = evas_object_image_data_get(eo, 1);
-                                    if (data) {
-                                        free(data);
+                                    void *image_data = evas_object_image_data_get(eo, 1);
+                                    if (image_data) {
+                                        free(image_data);
                                     }
                                 }
                                 if (eo) {
@@ -1210,7 +1210,7 @@ void release_all(Evas_Object *win)
                         iIndex++;
                     }
                 }
-                winctx->etc_info = list;
+                window_context->etc_info = list;
 #endif
             }
         }

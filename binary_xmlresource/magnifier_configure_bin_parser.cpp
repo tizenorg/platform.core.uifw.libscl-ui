@@ -33,10 +33,10 @@ BinMagnifierConfigParser* BinMagnifierConfigParser::get_instance() {
     return &instance;
 }
 
-void BinMagnifierConfigParser::init(const FileStorage& storage, int offset, int size, IParserInfo_Provider* parser_info_provider) {
-    m_storage.set_str_provider(parser_info_provider);
+void BinMagnifierConfigParser::init(const FileStorage& storage, int offset, int size, IParserInfo_Provider* provider) {
+    m_storage.set_str_provider(provider);
     m_storage.get_storage(storage, offset, size);
-    this->parser_info_provider = parser_info_provider;
+    this->parser_info_provider = provider;
     parsing_magnifier_configure();
 }
 

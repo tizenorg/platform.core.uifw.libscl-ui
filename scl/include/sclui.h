@@ -66,7 +66,6 @@ public:
 
     /**
      * @brief This API requests SCL library to hide the S/W keyboard from the screen
-     * @param[in] ctx target SCL context
      */
     void hide();
 

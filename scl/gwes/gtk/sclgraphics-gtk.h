@@ -29,22 +29,24 @@ public :
     CSCLGraphicsImplGtk();
     ~CSCLGraphicsImplGtk();
 
-    void draw_image(sclwindow window, const scldrawctx drawCtx, sclchar* imgPath, SclImageCachedInfo *cachedinfo, sclint destX, sclint destY,
-                                  sclint destWidth, sclint destHeight, sclint srcX, sclint srcY, sclint srcWidth, sclint srcHeight);
-    sclimage load_image(const sclchar* imgPath);
-    void unload_image(sclimage imgData);
+    void draw_image(sclwindow window, const scldrawctx draw_ctx, sclchar* image_path,
+                    SclImageCachedInfo *cachedinfo, sclint dest_x, sclint dest_y, sclint dest_width, sclint dest_height,
+                    sclint src_x, sclint src_y, sclint src_width, sclint src_height);
+    sclimage load_image(const sclchar* image_path);
+    void unload_image(sclimage image_data);
 
     sclfont create_font(const SclFontInfo& info);
     void destroy_font(sclfont font);
-    void draw_text(sclwindow window, const scldrawctx drawCtx, const SclFontInfo& fontinfo, const SclColor& color,
-                   const sclchar *str, SclTextCachedInfo *cachedinfo, sclint posx, sclint posy, sclint width, sclint height,
+    void draw_text(sclwindow window, const scldrawctx draw_ctx, const SclFontInfo& font_info, const SclColor& color,
+                   const sclchar *str, SclTextCachedInfo *cachedinfo, sclint pos_x, sclint pos_y, sclint width, sclint height,
                    SCLLabelAlignment align, sclbyte padding);
 
-    void draw_rectangle(sclwindow window, const scldrawctx drawCtx, scldouble posx, scldouble posy,
-                        scldouble width, scldouble height, const scldouble lineWidth, const SclColor& lineColor, sclboolean fill, const SclColor& fillColor, scldouble radius, sclfloat alpha);
-    scldrawctx begin_paint(const sclwindow window, const sclboolean forcedraw = FALSE);
-    void end_paint(const sclwindow window, scldrawctx drawCtx);
-    SclSize get_image_size(sclchar* imgPath);
+    void draw_rectangle(sclwindow window, const scldrawctx draw_ctx, scldouble pos_x, scldouble pos_y,
+                        scldouble width, scldouble height, const scldouble line_width, const SclColor& line_color,
+                        sclboolean fill, const SclColor& fill_color, scldouble radius, sclfloat alpha);
+    scldrawctx begin_paint(const sclwindow window, const sclboolean force_draw = FALSE);
+    void end_paint(const sclwindow window, scldrawctx draw_ctx);
+    SclSize get_image_size(sclchar* image_path);
     SclSize get_text_size(const SclFontInfo &fontinfo, const sclchar *str);
 private:
 };

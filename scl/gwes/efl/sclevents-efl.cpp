@@ -118,42 +118,42 @@ sclboolean get_window_rect(const sclwindow window, SclRectangle *rect)
     CSCLWindows *windows = CSCLWindows::get_instance();
     CSCLContext *context = CSCLContext::get_instance();
     if (windows && context && utils && rect) {
-        SclWindowContext *winctx = windows->get_window_context(window);
+        SclWindowContext *window_context = windows->get_window_context(window);
         sclint scr_w, scr_h;
         /* get window size */
         utils->get_screen_resolution(&scr_w, &scr_h);
-        if (winctx) {
+        if (window_context) {
             switch (context->get_rotation()) {
                 case ROTATION_90_CW:
                     {
-                        rect->height = winctx->geometry.width;
-                        rect->width = winctx->geometry.height;
-                        rect->y = scr_w - rect->height - winctx->geometry.x;
-                        rect->x = winctx->geometry.y;
+                        rect->height = window_context->geometry.width;
+                        rect->width = window_context->geometry.height;
+                        rect->y = scr_w - rect->height - window_context->geometry.x;
+                        rect->x = window_context->geometry.y;
                     }
                     break;
                 case ROTATION_180:
                     {
-                        rect->width = winctx->geometry.width;
-                        rect->height = winctx->geometry.height;
-                        rect->x = scr_w - winctx->geometry.x - rect->width;
-                        rect->y = scr_h - winctx->geometry.y - rect->height;
+                        rect->width = window_context->geometry.width;
+                        rect->height = window_context->geometry.height;
+                        rect->x = scr_w - window_context->geometry.x - rect->width;
+                        rect->y = scr_h - window_context->geometry.y - rect->height;
                     }
                     break;
                 case ROTATION_90_CCW:
                     {
-                        rect->height = winctx->geometry.width;
-                        rect->width = winctx->geometry.height;
-                        rect->y = winctx->geometry.x;
-                        rect->x= scr_h - winctx->geometry.y - rect->width;
+                        rect->height = window_context->geometry.width;
+                        rect->width = window_context->geometry.height;
+                        rect->y = window_context->geometry.x;
+                        rect->x= scr_h - window_context->geometry.y - rect->width;
                     }
                     break;
                 default:
                     {
-                        rect->x = winctx->geometry.x;
-                        rect->y = winctx->geometry.y;
-                        rect->width = winctx->geometry.width;
-                        rect->height = winctx->geometry.height;
+                        rect->x = window_context->geometry.x;
+                        rect->y = window_context->geometry.y;
+                        rect->width = window_context->geometry.width;
+                        rect->height = window_context->geometry.height;
                     }
                     break;
             }
@@ -166,7 +166,7 @@ sclboolean get_window_rect(const sclwindow window, SclRectangle *rect)
 }
 
 /**  Here x and y contains "actual" x and y position relative to portrait root window,
-     and winctx->width,height contains the window's orientation dependant width and height */
+     and window_context->width,height contains the window's orientation dependant width and height */
 SclPoint get_rotated_local_coords(sclint x, sclint y, SCLRotation rotation, SclRectangle *rect) {
     SclPoint ret = {0, 0};
 
@@ -252,9 +252,9 @@ Eina_Bool mouse_press(void *data, int type, void *event_info)
         } else {
             do {
                 window = windows->get_nth_window_in_Z_order_list(index);
-                SclWindowContext *winctx = windows->get_window_context(window);
-                if (winctx) {
-                    if (winctx->is_virtual) {
+                SclWindowContext *window_context = windows->get_window_context(window);
+                if (window_context) {
+                    if (window_context->is_virtual) {
                         is_scl_window  = TRUE;
                     } else if (elm_win_xwindow_get(static_cast<Evas_Object*>(window)) == ev->window) {
                         is_scl_window = TRUE;
@@ -266,15 +266,15 @@ Eina_Bool mouse_press(void *data, int type, void *event_info)
         }
         if (!is_scl_window) return TRUE;
 
-        SclRectangle rect = {0};
+        SclRectangle rect = {0,0,0,0};
         do {
             window = windows->get_nth_window_in_Z_order_list(index);
             if (window) {
                 // Update the position of the target window
                 //windows->get_window_context(window, TRUE);
-                SclWindowContext *winctx = windows->get_window_context(window);
-                if (winctx) {
-                    windows->get_window_rect(window, &(winctx->geometry));
+                SclWindowContext *window_context = windows->get_window_context(window);
+                if (window_context) {
+                    windows->get_window_rect(window, &(window_context->geometry));
                     if (get_window_rect(window, &rect)) {
                         int adjustx = ev->root.x;
                         int adjusty = ev->root.y;
@@ -286,8 +286,7 @@ Eina_Bool mouse_press(void *data, int type, void *event_info)
                         }
                         if (default_configure) {
                             SCLDisplayMode display_mode = context->get_display_mode();
-                            CSCLErrorAdjustment *adjustment = CSCLErrorAdjustment::get_instance();
-                            if (adjustment && scl_check_arrindex(display_mode, DISPLAYMODE_MAX)) {
+                            if (scl_check_arrindex(display_mode, DISPLAYMODE_MAX)) {
                                 adjustment->apply_touch_offset(default_configure->touch_offset_level[display_mode], &adjustx, &adjusty);
                             }
                         }
@@ -367,9 +366,9 @@ Eina_Bool mouse_release (void *data, int type, void *event_info)
         sclwindow window = SCLWINDOW_INVALID;
         SclRectangle rect;
         sclboolean dimwinevent = FALSE;
-        SclWindowContext *dimctx = windows->get_window_context(windows->get_dim_window());
-        if (dimctx) {
-            if (!(dimctx->is_virtual)) {
+        SclWindowContext *dim_window_context = windows->get_window_context(windows->get_dim_window());
+        if (dim_window_context) {
+            if (!(dim_window_context->is_virtual)) {
                 if (elm_win_xwindow_get(static_cast<Evas_Object*>(windows->get_dim_window())) == ev->window) {
                     dimwinevent = TRUE;
                 }
@@ -381,9 +380,9 @@ Eina_Bool mouse_release (void *data, int type, void *event_info)
             do {
                 window = windows->get_nth_window_in_Z_order_list(index);
                 if (window) {
-                    SclWindowContext *winctx = windows->get_window_context(window);
-                    if (winctx) {
-                        windows->get_window_rect(window, &(winctx->geometry));
+                    SclWindowContext *window_context = windows->get_window_context(window);
+                    if (window_context) {
+                        windows->get_window_rect(window, &(window_context->geometry));
                         if (get_window_rect(window, &rect)) {
                             int adjustx = ev->root.x;
                             int adjusty = ev->root.y;
@@ -469,9 +468,9 @@ Eina_Bool key_pressed(void *data, int type, void *event_info)
     LOGD("=-=-=-=- ev->string(string) = %s \n",ev->string);
 
     CSCLResourceCache *cache = CSCLResourceCache::get_instance();
-    SclButtonContext *prevbtncontext = NULL;
+    SclButtonContext *prev_button_context = NULL;
     const SclLayoutKeyCoordinate *prevcoordinate = NULL;
-    SclButtonContext *btncontext = NULL;
+    SclButtonContext *button_context = NULL;
     const SclLayoutKeyCoordinate *coordinate = NULL;
 
     CSCLWindows *windows = CSCLWindows::get_instance();
@@ -490,13 +489,13 @@ Eina_Bool key_pressed(void *data, int type, void *event_info)
     } else if (strcmp(ev->keyname, "Down") == 0) {
         key_index = focus_handler->get_next_key_index(NAVIGATE_DOWN);
     } else if ((strcmp(ev->keyname, "Return") == 0)||(strcmp(ev->keyname, "Enter") == 0)) {
-        btncontext = cache->get_cur_button_context(window, current_key_index);
+        button_context = cache->get_cur_button_context(window, current_key_index);
         coordinate = cache->get_cur_layout_key_coordinate(window, current_key_index);
-        btncontext->state = BUTTON_STATE_NORMAL;
+        button_context->state = BUTTON_STATE_NORMAL;
         controller->mouse_press(window, coordinate->x, coordinate->y, TRUE);
         controller->mouse_release(window, coordinate->x, coordinate->y, TRUE);
         if (KEY_TYPE_MODECHANGE != coordinate->key_type) {
-            btncontext->state = BUTTON_STATE_PRESSED;
+            button_context->state = BUTTON_STATE_PRESSED;
             windows->update_window(window, coordinate->x, coordinate->y, coordinate->width, coordinate->height);
         } else {
             focus_handler->init_key_index();
@@ -505,12 +504,12 @@ Eina_Bool key_pressed(void *data, int type, void *event_info)
     }
 
     if (current_key_index != key_index) {
-        btncontext = cache->get_cur_button_context(window, key_index);
-        prevbtncontext = cache->get_cur_button_context(window, current_key_index);
+        button_context = cache->get_cur_button_context(window, key_index);
+        prev_button_context = cache->get_cur_button_context(window, current_key_index);
         prevcoordinate = cache->get_cur_layout_key_coordinate(window, current_key_index);
         coordinate = cache->get_cur_layout_key_coordinate(window, key_index);
-        prevbtncontext->state = BUTTON_STATE_NORMAL;
-        btncontext->state = BUTTON_STATE_PRESSED;
+        prev_button_context->state = BUTTON_STATE_NORMAL;
+        button_context->state = BUTTON_STATE_PRESSED;
         sclshort x,y,width,height;
         if (prevcoordinate->x < coordinate->x) {
             x = prevcoordinate->x;
@@ -582,9 +581,9 @@ Eina_Bool mouse_move (void *data, int type, void *event_info)
             do {
                 window = windows->get_nth_window_in_Z_order_list(index);
                 if (window) {
-                    SclWindowContext *winctx = windows->get_window_context(window);
-                    if (winctx) {
-                        windows->get_window_rect(window, &(winctx->geometry));
+                    SclWindowContext *window_context = windows->get_window_context(window);
+                    if (window_context) {
+                        windows->get_window_rect(window, &(window_context->geometry));
                         if (get_window_rect(window, &rect)) {
                             int adjustx = ev->root.x;
                             int adjusty = ev->root.y;
@@ -792,7 +791,7 @@ void
 CSCLEventsImplEfl::generate_mouse_event(SCLMouseEvent type, scl16 x, scl16 y)
 {
     CSCLWindows *windows = CSCLWindows::get_instance();
-    SclWindowContext *winctx = NULL;
+    SclWindowContext *window_context = NULL;
 
     static const sclint MAX_DEVICES = 100;
     static sclboolean pressed[MAX_DEVICES] = { FALSE };
@@ -806,11 +805,11 @@ CSCLEventsImplEfl::generate_mouse_event(SCLMouseEvent type, scl16 x, scl16 y)
                         pressed[loop] = TRUE;
                         Ecore_Event_Mouse_Button evt;
                         evt.window = elm_win_xwindow_get(static_cast<Evas_Object*>(windows->get_base_window()));
-                        //winctx = windows->get_window_context(windows->get_base_window(), FALSE);
-                        winctx = windows->get_window_context(windows->get_base_window());
-                        if (winctx) {
-                            evt.root.x = x + winctx->geometry.x;
-                            evt.root.y = y + winctx->geometry.y;
+                        //window_context = windows->get_window_context(windows->get_base_window(), FALSE);
+                        window_context = windows->get_window_context(windows->get_base_window());
+                        if (window_context) {
+                            evt.root.x = x + window_context->geometry.x;
+                            evt.root.y = y + window_context->geometry.y;
                             evt.multi.device = loop;
                             mouse_press(NULL, 0, &evt);
                         }
@@ -827,11 +826,11 @@ CSCLEventsImplEfl::generate_mouse_event(SCLMouseEvent type, scl16 x, scl16 y)
                         pressed[loop] = FALSE;
                         Ecore_Event_Mouse_Button evt;
                         evt.window = elm_win_xwindow_get(static_cast<Evas_Object*>(windows->get_base_window()));
-                        //winctx = windows->get_window_context(windows->get_base_window(), FALSE);
-                        winctx = windows->get_window_context(windows->get_base_window());
-                        if (winctx) {
-                            evt.root.x = x + winctx->geometry.x;
-                            evt.root.y = y + winctx->geometry.y;
+                        //window_context = windows->get_window_context(windows->get_base_window(), FALSE);
+                        window_context = windows->get_window_context(windows->get_base_window());
+                        if (window_context) {
+                            evt.root.x = x + window_context->geometry.x;
+                            evt.root.y = y + window_context->geometry.y;
                             evt.multi.device = loop;
                             mouse_release(NULL, 0, &evt);
                         }
@@ -847,11 +846,11 @@ CSCLEventsImplEfl::generate_mouse_event(SCLMouseEvent type, scl16 x, scl16 y)
                     if (pressed[loop] == TRUE) {
                         Ecore_Event_Mouse_Move evt;
                         evt.window = elm_win_xwindow_get(static_cast<Evas_Object*>(windows->get_base_window()));
-                        //winctx = windows->get_window_context(windows->get_base_window(), FALSE);
-                        winctx = windows->get_window_context(windows->get_base_window());
-                        if (winctx) {
-                            evt.root.x = x + winctx->geometry.x;
-                            evt.root.y = y + winctx->geometry.y;
+                        //window_context = windows->get_window_context(windows->get_base_window(), FALSE);
+                        window_context = windows->get_window_context(windows->get_base_window());
+                        if (window_context) {
+                            evt.root.x = x + window_context->geometry.x;
+                            evt.root.y = y + window_context->geometry.y;
                             evt.multi.device = loop;
                             mouse_move(NULL, 0, &evt);
                         }
@@ -859,6 +858,8 @@ CSCLEventsImplEfl::generate_mouse_event(SCLMouseEvent type, scl16 x, scl16 y)
                     }
                 }
             }
+            break;
+            default:
             break;
         }
     }

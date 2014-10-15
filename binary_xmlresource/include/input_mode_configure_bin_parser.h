@@ -29,7 +29,7 @@ class BinInputModeConfigParser {
     public:
         ~BinInputModeConfigParser();
         static BinInputModeConfigParser *get_instance();
-        void init(const FileStorage&, int, int, IParserInfo_Provider* parser_info_provider);
+        void init(const FileStorage&, int, int, IParserInfo_Provider* provider);
         PSclInputModeConfigure get_input_mode_configure_table();
         int get_inputmode_id(const char *name);
         const char* get_inputmode_name(int id);

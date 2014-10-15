@@ -28,7 +28,16 @@
 namespace scl
 {
 
-typedef struct {
+struct SclUIEventDesc {
+    SclUIEventDesc() {
+        key_value = NULL;
+        key_event = 0;
+        key_type = KEY_TYPE_NONE;
+        key_modifier = KEY_MODIFIER_NONE;
+        touch_id = 0;
+        touch_event_order = 0;
+        event_type = EVENT_TYPE_NONE;
+    }
     const sclchar *key_value;
     sclulong key_event;
     SCLKeyType key_type;
@@ -43,7 +52,7 @@ typedef struct {
     SclPoint mouse_farthest_point;
 
     SCLEventType event_type;
-} SclUIEventDesc;
+};
 
 struct SclNotiDesc {
     SclUIEventDesc *ui_event_desc;

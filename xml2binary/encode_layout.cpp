@@ -123,7 +123,7 @@ encode_layout_file(ResourceStorage& storage, IMetaData_Helper& md_helper) {
     // 2 byte (range[0-65536))
     const int LAYOUT_REC_DATA_SIZE_BYTES = 2;
 
-    const int init_size = storage.size();
+    const int init_size = storage.get_size();
 
     XMLResource *xmlresource = XMLResource::get_instance();
     PSclLayout layoutTable = xmlresource->get_layout_table();
@@ -150,10 +150,10 @@ encode_layout_file(ResourceStorage& storage, IMetaData_Helper& md_helper) {
 
     int layout_rec_data_size = 0;
     for ( int i = 0; i < size; ++i) {
-        int pre_size = storage.size();
+        int pre_size = storage.get_size();
         encode_layout_record(storage, cur, record_width);
 
-        int aft_size = storage.size();
+        int aft_size = storage.get_size();
         if (layout_rec_data_size == 0) {
             layout_rec_data_size = aft_size - pre_size;
         }
@@ -163,7 +163,7 @@ encode_layout_file(ResourceStorage& storage, IMetaData_Helper& md_helper) {
     }
 
     // back write data size
-    int advance_size = storage.size() - init_size;
+    int advance_size = storage.get_size() - init_size;
 
     // random put advance_size
     int data_size_offset = init_size;
@@ -173,7 +173,7 @@ encode_layout_file(ResourceStorage& storage, IMetaData_Helper& md_helper) {
     int layout_rec_data_offset = init_size + DATA_SIZE_BYTES + REC_NUM_BYTES;
     storage.random_put<sint_t>(layout_rec_data_size, LAYOUT_REC_DATA_SIZE_BYTES, layout_rec_data_offset);
 
-    return storage.size();
+    return storage.get_size();
 }
 
 int
@@ -185,7 +185,7 @@ encode_layout_file(const char* file, IMetaData_Helper& md_helper) {
 
     storage.toFile(file);
 
-    return storage.size();
+    return storage.get_size();
 }
 
 int
@@ -197,5 +197,5 @@ encode_layout_file(const char* file, int& offset, IMetaData_Helper& md_helper) {
 
     storage.toFile(file, offset);
 
-    return storage.size();
+    return storage.get_size();
 }

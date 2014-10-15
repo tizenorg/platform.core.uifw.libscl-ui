@@ -259,14 +259,14 @@ CSCLUIImpl::set_popup_input_mode(sclwindow window, const sclchar *input_mode)
 
         scl8 mode = NOT_USED;
         sclshort layout = NOT_USED;
-        SclWindowContext *winctx = NULL;
+        SclWindowContext *window_context = NULL;
 
         SclResParserManager *sclres_manager = SclResParserManager::get_instance();
         if (sclres_manager && windows && context) {
             SCLDisplayMode display_mode = context->get_display_mode();
             PSclInputModeConfigure sclres_input_mode_configure = sclres_manager->get_input_mode_configure_table();
             mode = sclres_manager->get_inputmode_id(input_mode);
-            winctx = windows->get_window_context(window);
+            window_context = windows->get_window_context(window);
             if (sclres_input_mode_configure &&
                 scl_check_arrindex(mode, MAX_SCL_INPUT_MODE) &&
                 scl_check_arrindex(display_mode, DISPLAYMODE_MAX)) {
@@ -274,10 +274,10 @@ CSCLUIImpl::set_popup_input_mode(sclwindow window, const sclchar *input_mode)
             }
         }
 
-        if (cache && windows && winctx) {
-            if (mode != NOT_USED && mode != winctx->inputmode && layout != NOT_USED) {
-                winctx->inputmode = mode;
-                winctx->layout = layout;
+        if (cache && windows && window_context) {
+            if (mode != NOT_USED && mode != window_context->inputmode && layout != NOT_USED) {
+                window_context->inputmode = mode;
+                window_context->layout = layout;
                 cache->recompute_layout(window);
                 windows->update_window(window);
                 ret = TRUE;
@@ -303,10 +303,10 @@ CSCLUIImpl::get_popup_input_mode(sclwindow window)
         CSCLWindows *windows = CSCLWindows::get_instance();
         SclResParserManager *sclres_manager = SclResParserManager::get_instance();
         if (windows && sclres_manager) {
-            SclWindowContext *winctx = windows->get_window_context(window);
-            if (winctx) {
-                if (scl_check_arrindex(winctx->inputmode, MAX_SCL_INPUT_MODE)) {
-                    ret = sclres_manager->get_inputmode_name(winctx->inputmode);
+            SclWindowContext *window_context = windows->get_window_context(window);
+            if (window_context) {
+                if (scl_check_arrindex(window_context->inputmode, MAX_SCL_INPUT_MODE)) {
+                    ret = sclres_manager->get_inputmode_name(window_context->inputmode);
                 }
             }
         }
@@ -405,7 +405,7 @@ CSCLUIImpl::set_private_key(const sclchar* custom_id, sclchar* label, sclchar* i
         CSCLWindows *windows = CSCLWindows::get_instance();
         CSCLResourceCache *cache = CSCLResourceCache::get_instance();
         if (windows && cache) {
-            ret = cache->set_private_key((sclchar*)custom_id, label, imagelabel, imagebg,
+            ret = cache->set_private_key(custom_id, label, imagelabel, imagebg,
                 key_event, key_value, fRedraw, windows->get_update_pending());
         }
     }
@@ -576,14 +576,14 @@ CSCLUIImpl::reset_popup_timeout()
             sclbyte index = 0;
             sclboolean timerset = FALSE;
             sclwindow window = SCLWINDOW_INVALID;
-            SclWindowContext *winctx = NULL;
+            SclWindowContext *window_context = NULL;
             do {
                 window = windows->get_nth_window_in_Z_order_list(index);
-                //winctx = windows->get_window_context(window, FALSE);
-                winctx = windows->get_window_context(window);
-                if (winctx) {
-                    if (winctx->timeout != 0) {
-                        events->create_timer(SCL_TIMER_POPUP_TIMEOUT, winctx->timeout, 0, TRUE);
+                //window_context = windows->get_window_context(window, FALSE);
+                window_context = windows->get_window_context(window);
+                if (window_context) {
+                    if (window_context->timeout != 0) {
+                        events->create_timer(SCL_TIMER_POPUP_TIMEOUT, window_context->timeout, 0, TRUE);
                         timerset = TRUE;
                     }
                     index++;
@@ -724,19 +724,19 @@ CSCLUIImpl::set_custom_starting_coordinates(sclint x, sclint y)
 SclRectangle
 CSCLUIImpl::get_main_window_rect()
 {
-    SclRectangle ret = {0};
+    SclRectangle ret = {0,0,0,0};
 
     if (m_initialized) {
         CSCLResourceCache *cache = CSCLResourceCache::get_instance();
         CSCLWindows *windows = CSCLWindows::get_instance();
         if (cache && windows) {
             //const SclLayout *layout  = cache->get_cur_layout(windows->get_base_window());
-            SclWindowContext *winctx = windows->get_window_context(windows->get_base_window());
-            if (winctx) {
-                ret.x = winctx->geometry.x;
-                ret.y = winctx->geometry.y;
-                ret.width = winctx->geometry.width;
-                ret.height = winctx->geometry.height;
+            SclWindowContext *window_context = windows->get_window_context(windows->get_base_window());
+            if (window_context) {
+                ret.x = window_context->geometry.x;
+                ret.y = window_context->geometry.y;
+                ret.width = window_context->geometry.width;
+                ret.height = window_context->geometry.height;
             }
         }
     }
@@ -750,7 +750,7 @@ CSCLUIImpl::get_main_window_rect()
 SclSize
 CSCLUIImpl::get_input_mode_size(const sclchar *input_mode, SCLDisplayMode display_mode)
 {
-    SclSize ret = {0};
+    SclSize ret = {0,0};
 
     if (m_initialized) {
         CSCLUtils *utils = CSCLUtils::get_instance();

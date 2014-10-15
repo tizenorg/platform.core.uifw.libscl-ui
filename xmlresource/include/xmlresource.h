@@ -61,7 +61,7 @@ class XMLResource: public sclres::SclRes{
     int get_modifier_decoration_id(const char *name);
     bool get_nine_patch_info(const char *filename, SclNinePatchInfo *info);
 
-    const char* name() {
+    const char* get_name() {
         return "xmlparser";
     }
 

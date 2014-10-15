@@ -30,7 +30,7 @@
 #include "magnifier_configure_bin_parser.h"
 #include "nine_patch_file_list_bin_parser.h"
 #include "sclres.h"
-struct info_t{
+struct resource_info_t{
     int offset;
     int size;
 };
@@ -82,12 +82,12 @@ class BinResource: public sclres::SclRes{
     int get_modifier_decoration_id(const char *name);
     bool get_nine_patch_info(const char *filename, SclNinePatchInfo *info);
 
-    const char* name() {
+    const char* get_name() {
         return "binary_xmlparser";
     }
 
     void destroy();
-    struct info_t info[MAX_DATATYPE];
+    struct resource_info_t m_info[MAX_DATATYPE];
     private:
     BinResource();
 

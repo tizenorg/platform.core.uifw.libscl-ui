@@ -41,7 +41,7 @@ encode(const char* file)const{
     encode_metadata(storage, metadata);
     storage.toFile(file);
 
-    return storage.size();
+    return storage.get_size();
 }
 
 int MetaData_Handler::
@@ -50,13 +50,13 @@ encode(const char* file, int& offset)const{
     encode_metadata(storage, metadata);
     storage.toFile(file, offset);
 
-    return storage.size();
+    return storage.get_size();
 }
 
 int MetaData_Handler::
 encode(ResourceStorage& storage)const{
     encode_metadata(storage, metadata);
-    return storage.size();
+    return storage.get_size();
 }
 
 const unsigned short MetaData_Handler::

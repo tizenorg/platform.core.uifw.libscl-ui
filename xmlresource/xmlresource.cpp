@@ -61,7 +61,7 @@ static void
 get_layout_files(PSclInputModeConfigure input_mode_table,
     size_t input_mode_size, vector<string> &vec_file) {
     vec_file.clear();
-    for (int mode = 0; mode < input_mode_size; mode++) {
+    for (unsigned int mode = 0; mode < input_mode_size; mode++) {
         SclInputModeConfigure &input_mode = input_mode_table[mode];
         for (int direct = 0; direct < DISPLAYMODE_MAX; direct++) {
             char * layout_file_path = input_mode.layouts[direct];

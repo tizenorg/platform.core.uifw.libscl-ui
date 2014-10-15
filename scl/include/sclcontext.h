@@ -39,8 +39,8 @@ typedef struct { // A context information dependant on each multitouch events
     SclPoint cur_pressed_point;
     struct timeval cur_pressed_time;
 
-    sclwindow cur_move_window;
-    SclPoint cur_move_point;
+    sclwindow cur_moving_window;
+    SclPoint cur_moving_point;
 
     SCLDragState cur_drag_state;
     SCLKeyModifier cur_key_modifier;
@@ -51,7 +51,7 @@ typedef struct { // A context information dependant on each multitouch events
     scl8 prev_pressed_key;
     sclwindow prev_pressed_window;
 
-    SclPoint prev_move_point;
+    SclPoint prev_moving_point;
     SCLDragState prev_drag_state;
 
     scl16 event_id;
@@ -228,7 +228,7 @@ public:
         return m_cur_highlighted_window;
     }
 
-    void create_multi_touch_context(scltouchdevice touch_id, sclboolean isSubEvent = FALSE);
+    void create_multi_touch_context(scltouchdevice touch_id, sclboolean is_sub_event = FALSE);
     void destroy_multi_touch_context(scltouchdevice touch_id);
     MultiTouchContext* find_multi_touch_context(scltouchdevice touch_id);
 
@@ -246,10 +246,10 @@ public:
     void set_custom_magnifier_label(scltouchdevice touch_id, sclint index, const sclchar* label);
     const sclchar* get_custom_magnifier_label(scltouchdevice touch_id, sclint index);
 
-    SclPoint get_cur_move_point(scltouchdevice touch_id);
-    void set_cur_move_point(scltouchdevice touch_id, sclint x, sclint y);
-    sclwindow get_cur_move_window(scltouchdevice touch_id);
-    void set_cur_move_window(scltouchdevice touch_id, sclwindow window);
+    SclPoint get_cur_moving_point(scltouchdevice touch_id);
+    void set_cur_moving_point(scltouchdevice touch_id, sclint x, sclint y);
+    sclwindow get_cur_moving_window(scltouchdevice touch_id);
+    void set_cur_moving_window(scltouchdevice touch_id, sclwindow window);
     SclPoint get_farthest_move_point(scltouchdevice touch_id);
     void set_farthest_move_point(scltouchdevice touch_id, sclint x, sclint y);
     sclint get_farthest_move_dist(scltouchdevice touch_id);
@@ -264,13 +264,13 @@ public:
     sclwindow get_prev_pressed_window(scltouchdevice touch_id);
     void set_prev_pressed_window(scltouchdevice touch_id, sclwindow window);
 
-    SclPoint get_prev_move_point(scltouchdevice touch_id);
-    void set_prev_move_point(scltouchdevice touch_id, sclint x, sclint y);
+    SclPoint get_prev_moving_point(scltouchdevice touch_id);
+    void set_prev_moving_point(scltouchdevice touch_id, sclint x, sclint y);
     SCLDragState get_prev_drag_state(scltouchdevice touch_id);
     void set_prev_drag_state(scltouchdevice touch_id, SCLDragState state);
 
     sclint get_multi_touch_context_num();
-    sclboolean get_multi_touch_event(sclint seqorder, SclUIEventDesc *desc);
+    sclboolean get_multi_touch_event(sclint order, SclUIEventDesc *desc);
     sclint get_multi_touch_event_order(scltouchdevice touch_id);
 
     sclchar* get_cur_sublayout();

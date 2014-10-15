@@ -225,8 +225,8 @@ SclResParserManager::get_nine_patch_info(const char *filename, SclNinePatchInfo 
 }
 
 const char*
-SclResParserManager::name() {
+SclResParserManager::get_name() {
     if (_current_parser == NULL) return NULL;
 
-    return _current_parser->name();
+    return _current_parser->get_name();
 }

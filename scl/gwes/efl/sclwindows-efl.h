@@ -36,7 +36,7 @@ typedef struct {
     EFLOBJECT_TYPE type;
     SclRectangle position;
     Evas_Object *object;
-    char *etc_info;
+    const char *etc_info;
     sclboolean extracted;
     void *data;
 } EFLObject;
@@ -49,10 +49,10 @@ public :
     void init();
     void fini();
 
-    sclwindow create_base_window(const sclwindow parent, SclWindowContext *winctx, scl16 width, scl16 height);
-    sclwindow create_window(const sclwindow parent, SclWindowContext *winctx, scl16 width, scl16 height);
-    sclwindow create_magnifier_window(const sclwindow parent, SclWindowContext *winctx, scl16 width, scl16 height);
-    sclwindow create_dim_window(const sclwindow parent, SclWindowContext *winctx, scl16 width, scl16 height);
+    sclwindow create_base_window(const sclwindow parent, SclWindowContext *window_context, scl16 width, scl16 height);
+    sclwindow create_window(const sclwindow parent, SclWindowContext *window_context, scl16 width, scl16 height);
+    sclwindow create_magnifier_window(const sclwindow parent, SclWindowContext *window_context, scl16 width, scl16 height);
+    sclwindow create_dim_window(const sclwindow parent, SclWindowContext *window_context, scl16 width, scl16 height);
     bool destroy_window(sclwindow window);
     void show_window(const sclwindow window, sclboolean queue);
     void hide_window(const sclwindow window,  sclboolean fForce = FALSE);

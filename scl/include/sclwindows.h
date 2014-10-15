@@ -57,7 +57,7 @@ typedef struct _SclWindowContext {
     sclint              timeout;
 
     SclPoint            layout_image_offset;
-    void*               etc_info;
+    const void*         etc_info;
 } SclWindowContext;
 
 /**
@@ -72,10 +72,14 @@ public :
     virtual void init() = 0;
     virtual void fini() = 0;
 
-    virtual sclwindow create_base_window(const sclwindow parent, SclWindowContext *winctx, scl16 width, scl16 height) = 0;
-    virtual sclwindow create_window(const sclwindow parent, SclWindowContext *winctx, scl16 width, scl16 height) = 0;
-    virtual sclwindow create_magnifier_window(const sclwindow parent, SclWindowContext *winctx, scl16 width, scl16 height) = 0;
-    virtual sclwindow create_dim_window(const sclwindow parent, SclWindowContext *winctx, scl16 width, scl16 height) = 0;
+    virtual sclwindow create_base_window(const sclwindow parent,
+        SclWindowContext *window_context, scl16 width, scl16 height) = 0;
+    virtual sclwindow create_window(const sclwindow parent,
+        SclWindowContext *window_context, scl16 width, scl16 height) = 0;
+    virtual sclwindow create_magnifier_window(const sclwindow parent,
+        SclWindowContext *window_context, scl16 width, scl16 height) = 0;
+    virtual sclwindow create_dim_window(const sclwindow parent,
+        SclWindowContext *window_context, scl16 width, scl16 height) = 0;
     virtual bool destroy_window(sclwindow window) = 0;
     virtual void set_parent(const sclwindow parent, const sclwindow window) = 0;
     virtual void show_window(const sclwindow window, sclboolean queue) = 0;
@@ -102,7 +106,9 @@ public :
     void init();
     void fini();
 
-    sclwindow open_popup(const SclWindowOpener opener, const SclRectangle& geometry, sclshort inputmode, sclshort layout, SCLPopupType popup_type, sclboolean is_virtual, sclboolean use_dim_window, sclint img_offset_x = 0, sclint img_offset_y = 0, sclint timeout = 0);
+    sclwindow open_popup(const SclWindowOpener opener, const SclRectangle& geometry,
+        sclshort inputmode, sclshort layout, SCLPopupType popup_type, sclboolean is_virtual,
+        sclboolean use_dim_window, sclint img_offset_x = 0, sclint img_offset_y = 0, sclint timeout = 0);
     bool close_popup(sclwindow window);
     bool close_all_popups(sclwindow skip_window = SCLWINDOW_INVALID);
 
@@ -135,7 +141,7 @@ public :
     sclwindow get_nth_popup_window(sclbyte index);
     sclbyte get_Z_order(sclwindow window);
 
-    sclwindow create_dim_window(const sclwindow parent, SclWindowContext *winctx, scl16 width, scl16 height);
+    sclwindow create_dim_window(const sclwindow parent, SclWindowContext *window_context, scl16 width, scl16 height);
     sclwindow get_dim_window();
 
     void set_update_pending(sclboolean pend);
@@ -144,7 +150,9 @@ public :
 protected :
     CSCLWindowsImpl* get_scl_windows_impl();
 
-    sclwindow create_window(const SclWindowOpener opener, const SclRectangle &geometry, sclshort inputmode, sclshort layout, SCLPopupType popup_type, sclboolean is_virtual, sclint img_offset_x = 0, sclint img_offset_y = 0, sclint timeout = 0);
+    sclwindow create_window(const SclWindowOpener opener, const SclRectangle &geometry,
+        sclshort inputmode, sclshort layout, SCLPopupType popup_type, sclboolean is_virtual,
+        sclint img_offset_x = 0, sclint img_offset_y = 0, sclint timeout = 0);
     bool destroy_window(sclwindow window);
 
     void push_window_in_Z_order_list(sclwindow window);
@@ -152,11 +160,11 @@ protected :
 
 private :
     CSCLWindowsImpl* m_impl;
-    SclWindowContext m_base_winctx;
-    SclWindowContext m_popup_winctx[MAX_POPUP_WINDOW];
+    SclWindowContext m_base_window_context;
+    SclWindowContext m_popup_window_context[MAX_POPUP_WINDOW];
 
-    SclWindowContext m_magnifier_winctx;
-    SclWindowContext m_dim_winctx;
+    SclWindowContext m_magnifier_window_context;
+    SclWindowContext m_dim_window_context;
 
     sclboolean m_pending_update;
     sclboolean m_initialized;

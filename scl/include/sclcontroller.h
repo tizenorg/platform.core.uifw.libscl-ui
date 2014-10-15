@@ -68,7 +68,7 @@ private:
         scltouchdevice touch_id, sclboolean actual_event = TRUE);
     sclboolean process_button_move_event(sclwindow window, sclint x, sclint y, sclbyte key_index,
         scltouchdevice touch_id, sclboolean actual_event = TRUE);
-    sclboolean process_button_over_event(sclwindow window, sclint x, sclint y, sclbyte keyindex);
+    sclboolean process_button_over_event(sclwindow window, sclint x, sclint y, sclbyte key_index);
     sclboolean process_button_release_event(sclwindow window, sclint x, sclint y, sclbyte key_index,
         scltouchdevice touch_id, sclboolean actual_event = TRUE);
 
@@ -81,7 +81,7 @@ private:
         sclboolean check_farthest,scltouchdevice touch_id, sclbyte extra_option);
 
 public:
-    void handle_engine_signal(SclInternalSignal signal, sclwindow skipwindow = SCLWINDOW_INVALID);
+    void handle_engine_signal(SclInternalSignal signal, sclwindow skip_window = SCLWINDOW_INVALID);
     sclboolean process_input_mode_change(const sclbyte mode);
     sclboolean process_rotation_change(const SCLRotation rotation);
 

@@ -91,7 +91,7 @@ encode_default_configure_record(ResourceStorage& storage, const PSclDefaultConfi
 
 int
 encode_default_configure_file(ResourceStorage& storage, IMetaData_Helper& md_helper) {
-    int init_size = storage.size();
+    int init_size = storage.get_size();
 
     XMLResource *xmlresource = XMLResource::get_instance();
     PSclDefaultConfigure defaultConfigure = xmlresource->get_default_configure();
@@ -106,9 +106,9 @@ encode_default_configure_file(ResourceStorage& storage, IMetaData_Helper& md_hel
     storage.reserve(8);
     encode_default_configure_record(storage, defaultConfigure, record_width);
 
-    int size = storage.size() - init_size;
+    int size = storage.get_size() - init_size;
     storage.random_put<sint_t>(size, 8, init_size);
-    return storage.size();
+    return storage.get_size();
 }
 
 int
@@ -119,7 +119,7 @@ encode_default_configure_file(const char* file, IMetaData_Helper& md_helper) {
     encode_default_configure_file(storage, md_helper);
     storage.toFile(file);
 
-    return storage.size();
+    return storage.get_size();
 }
 
 int
@@ -130,5 +130,5 @@ encode_default_configure_file(const char* file, int& offset, IMetaData_Helper& m
     encode_default_configure_file(storage, md_helper);
     storage.toFile(file, offset);
 
-    return storage.size();
+    return storage.get_size();
 }

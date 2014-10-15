@@ -405,7 +405,7 @@ CSCLUI::set_custom_starting_coordinates(sclint x, sclint y)
 SclRectangle
 CSCLUI::get_main_window_rect()
 {
-    SclRectangle ret = {0};
+    SclRectangle ret = {0,0,0,0};
 
     if (m_impl) {
         ret = m_impl->get_main_window_rect();
@@ -420,7 +420,7 @@ CSCLUI::get_main_window_rect()
 SclSize
 CSCLUI::get_input_mode_size(const sclchar *input_mode, SCLDisplayMode display_mode)
 {
-    SclSize ret = {0};
+    SclSize ret = {0,0};
 
     if (m_impl) {
         ret = m_impl->get_input_mode_size(input_mode, display_mode);

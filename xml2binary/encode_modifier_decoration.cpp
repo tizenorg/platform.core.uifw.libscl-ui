@@ -35,7 +35,7 @@ encode_modifier_decoration_record(ResourceStorage& storage, const PSclModifierDe
 int
 encode_modifier_decoration_file(ResourceStorage& storage, IMetaData_Helper& md_helper) {
 
-    int init_size = storage.size();
+    int init_size = storage.get_size();
 
     XMLResource *xmlresource = XMLResource::get_instance();
     PSclModifierDecoration modifierDecorationTable = xmlresource->get_modifier_decoration_table();
@@ -60,10 +60,10 @@ encode_modifier_decoration_file(ResourceStorage& storage, IMetaData_Helper& md_h
         cur++;
     }
 
-    int advance_size = storage.size() - init_size;
+    int advance_size = storage.get_size() - init_size;
     storage.random_put<sint_t>(advance_size, 8, init_size);
 
-    return storage.size();
+    return storage.get_size();
 }
 
 int
@@ -75,7 +75,7 @@ encode_modifier_decoration_file(const char* file, IMetaData_Helper& md_helper) {
     encode_modifier_decoration_file(storage, md_helper);
     storage.toFile(file);
 
-    return storage.size();
+    return storage.get_size();
 }
 
 int
@@ -87,5 +87,5 @@ encode_modifier_decoration_file(const char* file, int& offset, IMetaData_Helper&
     encode_modifier_decoration_file(storage, md_helper);
     storage.toFile(file, offset);
 
-    return storage.size();
+    return storage.get_size();
 }

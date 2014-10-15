@@ -97,7 +97,8 @@ public :
                    SCLLabelAlignment align, sclint padding_x, sclint padding_y, sclint inner_width, sclint inner_height);
 
     void draw_rectangle(sclwindow window, const scldrawctx draw_ctx, scldouble pos_x, scldouble pos_y,
-                        scldouble width, scldouble height, const scldouble line_width, const SclColor& line_color, sclboolean fill, const SclColor& fill_color, scldouble radius, sclfloat alpha);
+                        scldouble width, scldouble height, const scldouble line_width, const SclColor& line_color,
+                        sclboolean fill, const SclColor& fill_color, scldouble radius, sclfloat alpha);
     scldrawctx begin_paint(const sclwindow window, const sclboolean force_draw = FALSE);
     void end_paint(const sclwindow window, scldrawctx draw_ctx);
     SclSize get_image_size(sclchar* image_path);

@@ -64,7 +64,7 @@ encode_magnifier_configure_record(ResourceStorage& storage, const PSclMagnifierW
 int
 encode_magnifier_configure_file(ResourceStorage& storage, IMetaData_Helper& md_helper) {
 
-    int init_size = storage.size();
+    int init_size = storage.get_size();
 
     XMLResource *xmlresource = XMLResource::get_instance();
     PSclMagnifierWndConfigure magnifierConfigure = xmlresource->get_magnifier_configure();
@@ -80,11 +80,11 @@ encode_magnifier_configure_file(ResourceStorage& storage, IMetaData_Helper& md_h
     storage.reserve(8);
     encode_magnifier_configure_record(storage, magnifierConfigure, record_width);
 
-    int advance_size = storage.size() - init_size;
+    int advance_size = storage.get_size() - init_size;
 
     storage.random_put<sint_t>(advance_size, 8, init_size);
 
-    return storage.size();
+    return storage.get_size();
 }
 
 int
@@ -96,7 +96,7 @@ encode_magnifier_configure_file(const char* file, int& offset, IMetaData_Helper&
     encode_magnifier_configure_file(storage, md_helper);
     storage.toFile(file, offset);
 
-    return storage.size();
+    return storage.get_size();
 }
 
 int
@@ -108,5 +108,5 @@ encode_magnifier_configure_file(const char* file, IMetaData_Helper& md_helper) {
     encode_magnifier_configure_file(storage, md_helper);
     storage.toFile(file);
 
-    return storage.size();
+    return storage.get_size();
 }

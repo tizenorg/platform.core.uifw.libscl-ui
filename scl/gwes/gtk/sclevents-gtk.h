@@ -32,13 +32,13 @@ public :
     ~CSCLEventsImplGtk();
 
     /* Implementation about interface functions */
-    void connect_window_events(const sclwindow wnd, const sclint evt);
-    void create_timer(const scl16 id, const scl32 interval, scl16 value, sclboolean addToMap);
+    void connect_window_events(const sclwindow window, const sclint event);
+    void create_timer(const scl16 id, const scl32 interval, scl16 value, sclboolean add_to_map);
     void destroy_timer(const scl32 id);
     void destroy_all_timer();
 
 private:
-    std::map<int, int> idMap;
+    std::map<int, int> id_map;
 };
 } /* End of scl namespace */
 #endif __SCL_EVENTS_GTK_H__

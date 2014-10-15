@@ -47,16 +47,16 @@ CSCLGraphicsImplCairo::~CSCLGraphicsImplCairo()
  * Draws the given text on cairo-surface
  */
 void
-CSCLGraphicsImplCairo::draw_text(sclwindow window, const scldrawctx drawCtx, const SclFontInfo& fontinfo, const SclColor& color,
+CSCLGraphicsImplCairo::draw_text(sclwindow window, const scldrawctx draw_ctx, const SclFontInfo& fontinfo, const SclColor& color,
                                  const sclchar *str, sclint posx, sclint posy, sclint width, sclint height,
                                  SCLLabelAlignment align, sclbyte padding)
 {
     SCL_DEBUG();
     /* pre-condition */
     scl_assert_return(str);
-    scl_assert_return(drawCtx);
+    scl_assert_return(draw_ctx);
 
-    cairo_t* cr = static_cast<cairo_t*>(drawCtx);
+    cairo_t* cr = static_cast<cairo_t*>(draw_ctx);
     cairo_identity_matrix(cr);
     cairo_set_source_rgba(cr, color.r / 256.0, color.g / 256.0, color.b / 256.0, 1.0);
     cairo_select_font_face(cr, fontinfo.fontname,
@@ -95,15 +95,15 @@ CSCLGraphicsImplCairo::draw_text(sclwindow window, const scldrawctx drawCtx, con
  * Draws the given image on cairo-surface
  */
 void
-CSCLGraphicsImplCairo::draw_image(sclwindow window, const scldrawctx drawCtx, sclchar* imgPath, sclint destX, sclint destY,
+CSCLGraphicsImplCairo::draw_image(sclwindow window, const scldrawctx draw_ctx, sclchar* imgPath, sclint destX, sclint destY,
                                   sclint destWidth, sclint destHeight, sclint srcX, sclint srcY, sclint srcWidth, sclint srcHeight)
 {
     SCL_DEBUG();
     /* pre-condition */
     scl_assert_return(imgPath);
-    scl_assert_return(drawCtx);
+    scl_assert_return(draw_ctx);
 
-    cairo_t* cr = static_cast<cairo_t*>(drawCtx);
+    cairo_t* cr = static_cast<cairo_t*>(draw_ctx);
     CSCLWindows *windows = CSCLWindows::get_instance();
     CSCLImageProxy *proxy = CSCLImageProxy::get_instance();
 
@@ -142,14 +142,14 @@ CSCLGraphicsImplCairo::draw_image(sclwindow window, const scldrawctx drawCtx, sc
  * Draws a rectangle on cairo-surface
  */
 void
-CSCLGraphicsImplCairo::draw_rectangle(sclwindow window, const scldrawctx drawCtx, scldouble posx, scldouble posy,
+CSCLGraphicsImplCairo::draw_rectangle(sclwindow window, const scldrawctx draw_ctx, scldouble posx, scldouble posy,
                                       scldouble width, scldouble height, const scldouble lineWidth, const SclColor& lineColor, sclboolean fill, const SclColor& fillColor, scldouble radius, sclfloat alpha)
 {
     SCL_DEBUG();
     /* pre-condition */
-    scl_assert_return(drawCtx);
+    scl_assert_return(draw_ctx);
 
-    cairo_t* cr = static_cast<cairo_t*>(drawCtx);
+    cairo_t* cr = static_cast<cairo_t*>(draw_ctx);
     cairo_identity_matrix(cr);
 
     /* a custom shape that could be wrapped in a function */
@@ -294,9 +294,9 @@ CSCLGraphicsImplCairo::begin_paint(const sclwindow window, const sclboolean forc
  * Notices that drawing tasks have done.
  */
 void
-CSCLGraphicsImplCairo::end_paint(const sclwindow window, scldrawctx drawCtx)
+CSCLGraphicsImplCairo::end_paint(const sclwindow window, scldrawctx draw_ctx)
 {
-    cairo_destroy(static_cast<cairo_t*>(drawCtx));
+    cairo_destroy(static_cast<cairo_t*>(draw_ctx));
 }
 
 sclfont

@@ -62,7 +62,7 @@ public: /* These are the functions need to be implemented by the descendants of 
     virtual bool get_nine_patch_info(const char *filename, SclNinePatchInfo *info) = 0;
 
     /* Function returning the name of current SclRes instance */
-    virtual const char* name() = 0;
+    virtual const char* get_name() = 0;
 
 private:
     std::string m_resource_directory;

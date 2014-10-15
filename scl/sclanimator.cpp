@@ -129,7 +129,8 @@ CSCLAnimator::destroy_animator(sclint id)
 {
     sclboolean ret = TRUE;
 
-    std::map<sclint, SclAnimationState>::iterator iter = m_animators.find(id);
+    std::map<sclint, SclAnimationState>::iterator iter;
+    iter = m_animators.find(id);
     if (iter != m_animators.end()) {
         SclAnimationState *state = &(iter->second);
         state->active = FALSE;
@@ -139,14 +140,13 @@ CSCLAnimator::destroy_animator(sclint id)
     }
 
     sclboolean destroy_timer = TRUE;
-    for(std::map<sclint, SclAnimationState>::iterator iter = m_animators.begin();
-        iter != m_animators.end();std::advance(iter, 1)) {
-            if (iter != m_animators.end()) {
-                SclAnimationState *state = &(iter->second);
-                if (state->active) {
-                    destroy_timer = FALSE;
-                }
+    for(iter = m_animators.begin();iter != m_animators.end();std::advance(iter, 1)) {
+        if (iter != m_animators.end()) {
+            SclAnimationState *state = &(iter->second);
+            if (state->active) {
+                destroy_timer = FALSE;
             }
+        }
     }
 
     if (destroy_timer) {
@@ -239,7 +239,8 @@ CSCLAnimator::stop_animator(sclint id)
 {
     sclboolean ret = TRUE;
 
-    std::map<sclint, SclAnimationState>::iterator iter = m_animators.find(id);
+    std::map<sclint, SclAnimationState>::iterator iter;
+    iter = m_animators.find(id);
     if (iter != m_animators.end()) {
         SclAnimationState *state = &(iter->second);
         state->active = FALSE;
@@ -249,14 +250,13 @@ CSCLAnimator::stop_animator(sclint id)
     }
 
     sclboolean destroy_timer = TRUE;
-    for(std::map<sclint, SclAnimationState>::iterator iter = m_animators.begin();
-        iter != m_animators.end();std::advance(iter, 1)) {
-            if (iter != m_animators.end()) {
-                SclAnimationState *state = &(iter->second);
-                if (state->active) {
-                    destroy_timer = FALSE;
-                }
+    for(iter = m_animators.begin();iter != m_animators.end();std::advance(iter, 1)) {
+        if (iter != m_animators.end()) {
+            SclAnimationState *state = &(iter->second);
+            if (state->active) {
+                destroy_timer = FALSE;
             }
+        }
     }
 
     if (destroy_timer) {
@@ -293,14 +293,14 @@ CSCLAnimator::animator_timer_highlight_ui(SclAnimationState *state)
             ((delta_height) * state->step * SCL_ANIMATION_TIMER_INTERVAL) / state->desc.length;
 
         if (state->desc.circular) {
-            SclWindowContext *base_winctx = windows->get_window_context(windows->get_base_window());
-            if (base_winctx) {
+            SclWindowContext *base_window_context = windows->get_window_context(windows->get_base_window());
+            if (base_window_context) {
                 if (rect_from.x > rect_to.x) {
                     delta_x = rect_to.x;
-                    delta_x += (base_winctx->geometry.width - rect_from.x);
+                    delta_x += (base_window_context->geometry.width - rect_from.x);
                 } else {
                     delta_x = -(rect_from.x);
-                    delta_x -= (base_winctx->geometry.width - rect_to.x);
+                    delta_x -= (base_window_context->geometry.width - rect_to.x);
                 }
 
                 state->rect_cur.x = rect_from.x +
@@ -308,9 +308,9 @@ CSCLAnimator::animator_timer_highlight_ui(SclAnimationState *state)
 
                 if (state->rect_cur.x + state->rect_cur.width <= 0) {
                     /* Make the highlight UI come out from the right side of the window */
-                    state->rect_cur.x += base_winctx->geometry.width;
-                } else if (state->rect_cur.x > base_winctx->geometry.width) {
-                    state->rect_cur.x -= base_winctx->geometry.width;
+                    state->rect_cur.x += base_window_context->geometry.width;
+                } else if (state->rect_cur.x > base_window_context->geometry.width) {
+                    state->rect_cur.x -= base_window_context->geometry.width;
                 }
             }
         } else {
@@ -327,7 +327,6 @@ sclboolean
 CSCLAnimator::animator_timer()
 {
     sclboolean destroy_timer = TRUE;
-    SclAnimationState* cur = NULL;
     for(std::map<sclint, SclAnimationState>::iterator iter = m_animators.begin();
         iter != m_animators.end();std::advance(iter, 1)) {
             if (iter != m_animators.end()) {
@@ -349,12 +348,9 @@ CSCLAnimator::animator_timer()
                     }
 
                     if (state->active == FALSE) {
-                        CSCLWindows *windows = CSCLWindows::get_instance();
-                        if (windows) {
-                            windows->update_window(state->desc.window_to,
-                                state->desc.rect_to.x, state->desc.rect_to.y,
-                                state->desc.rect_to.width, state->desc.rect_to.height);
-                        }
+                        windows->update_window(state->desc.window_to,
+                            state->desc.rect_to.x, state->desc.rect_to.y,
+                            state->desc.rect_to.width, state->desc.rect_to.height);
                     } else {
                         destroy_timer = FALSE;
                     }

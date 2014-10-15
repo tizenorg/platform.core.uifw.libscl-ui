@@ -75,7 +75,7 @@ class ResourceStorage{
         int random_put(T data, int width, int random_offset);
 
     // get the current used size
-    const int size()const;
+    const int get_size() const;
 
     // get the capability of the storage
     const int capability() const;

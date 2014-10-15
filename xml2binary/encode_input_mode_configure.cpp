@@ -44,7 +44,7 @@ encode_input_mode_configure_record(ResourceStorage& storage, const PSclInputMode
 
 int encode_input_mode_configure_file(ResourceStorage& storage, IMetaData_Helper& md_helper) {
 
-    int init_size = storage.size();
+    int init_size = storage.get_size();
     /*size 4bytes*/
     const int INPUT_MODE_CONFIGURE_SIZE_WIDTH = 4;
 
@@ -69,9 +69,9 @@ int encode_input_mode_configure_file(ResourceStorage& storage, IMetaData_Helper&
         cur++;
     }
 
-    int advance_size = storage.size() - init_size;
+    int advance_size = storage.get_size() - init_size;
     storage.random_put<sint_t>(advance_size, 8, init_size);
-    return storage.size();
+    return storage.get_size();
 }
 
 int encode_input_mode_configure_file(const char* file, int& offset, IMetaData_Helper& md_helper) {
@@ -81,7 +81,7 @@ int encode_input_mode_configure_file(const char* file, int& offset, IMetaData_He
     encode_input_mode_configure_file(storage, md_helper);
     storage.toFile(file, offset);
 
-    return storage.size();
+    return storage.get_size();
 }
 
 int encode_input_mode_configure_file(const char* file, IMetaData_Helper& md_helper) {
@@ -91,5 +91,5 @@ int encode_input_mode_configure_file(const char* file, IMetaData_Helper& md_help
     encode_input_mode_configure_file(storage, md_helper);
     storage.toFile(file);
 
-    return storage.size();
+    return storage.get_size();
 }

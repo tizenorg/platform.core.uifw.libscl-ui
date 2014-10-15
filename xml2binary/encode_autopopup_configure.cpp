@@ -90,7 +90,7 @@ encode_autopopup_configure_record(ResourceStorage& storage, const PSclAutoPopupC
 
 int
 encode_autopopup_configure_file(ResourceStorage& storage, IMetaData_Helper& md_helper) {
-    int init_size = storage.size();
+    int init_size = storage.get_size();
 
     XMLResource *xmlresource = XMLResource::get_instance();
     PSclAutoPopupConfigure autopopupConfigure = xmlresource->get_autopopup_configure();
@@ -107,10 +107,10 @@ encode_autopopup_configure_file(ResourceStorage& storage, IMetaData_Helper& md_h
 
     encode_autopopup_configure_record(storage, autopopupConfigure, record_width);
 
-    int size = storage.size() - init_size;
+    int size = storage.get_size() - init_size;
     storage.random_put<sint_t>(size, 8, init_size);
 
-    return storage.size();
+    return storage.get_size();
 }
 
 int
@@ -119,7 +119,7 @@ encode_autopopup_configure_file(const char* file, IMetaData_Helper& md_helper) {
     ResourceStorage storage;
     encode_autopopup_configure_file(storage, md_helper);
     storage.toFile(file);
-    return storage.size();
+    return storage.get_size();
 }
 int
 encode_autopopup_configure_file(const char* file, int &offset, IMetaData_Helper& md_helper) {
@@ -128,5 +128,5 @@ encode_autopopup_configure_file(const char* file, int &offset, IMetaData_Helper&
     encode_autopopup_configure_file(storage, md_helper);
     storage.toFile(file, offset);
 
-    return storage.size();
+    return storage.get_size();
 }

@@ -41,7 +41,7 @@ encode_nine_patch_info(ResourceStorage& storage, const SclNinePatchInfo* cur, co
 int
 encode_nine_patch_file(ResourceStorage& storage, IMetaData_Helper& md_helper) {
 
-    int init_size = storage.size();
+    int init_size = storage.get_size();
 
     XMLResource *xmlresource = XMLResource::get_instance();
     if (xmlresource == NULL) {
@@ -68,10 +68,10 @@ encode_nine_patch_file(ResourceStorage& storage, IMetaData_Helper& md_helper) {
         cur++;
     }
 
-    int size = storage.size() - init_size;
+    int size = storage.get_size() - init_size;
     storage.random_put<sint_t>(size, 8, init_size);
 
-    return storage.size();
+    return storage.get_size();
 }
 
 int
@@ -82,7 +82,7 @@ encode_nine_patch_file(const char* file, IMetaData_Helper& md_helper) {
     encode_nine_patch_file(storage, md_helper);
     storage.toFile(file);
 
-    return storage.size();
+    return storage.get_size();
 }
 
 int
@@ -93,5 +93,5 @@ encode_nine_patch_file(const char* file, int& offset,  IMetaData_Helper& md_help
     encode_nine_patch_file(storage, md_helper);
     storage.toFile(file, offset);
 
-    return storage.size();
+    return storage.get_size();
 }

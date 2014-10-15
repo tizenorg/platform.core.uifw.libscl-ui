@@ -91,10 +91,10 @@ void
 CSCLEvents::connect_window_events( sclwindow wnd, const sclint evt )
 {
     CSCLWindows *windows = CSCLWindows::get_instance();
-    //SclWindowContext *winctx = windows->get_window_context(wnd, FALSE);
-    SclWindowContext *winctx = windows->get_window_context(wnd);
-    if (winctx) {
-        if (!(winctx->is_virtual)) {
+    //SclWindowContext *window_context = windows->get_window_context(wnd, FALSE);
+    SclWindowContext *window_context = windows->get_window_context(wnd);
+    if (window_context) {
+        if (!(window_context->is_virtual)) {
             get_scl_events_impl()->connect_window_events(wnd, evt);
         }
     }
@@ -121,9 +121,7 @@ CSCLEvents::process_key_event(const char *key)
     LOGD("=-=-=-=- keyname(char) = %s \n",keyname);
 
     CSCLResourceCache *cache = CSCLResourceCache::get_instance();
-    SclButtonContext *prevbtncontext = NULL;
     const SclLayoutKeyCoordinate *prevcoordinate = NULL;
-    SclButtonContext *btncontext = NULL;
     const SclLayoutKeyCoordinate *coordinate = NULL;
 
     CSCLWindows *windows = CSCLWindows::get_instance();
@@ -151,13 +149,12 @@ CSCLEvents::process_key_event(const char *key)
         focus_window = focus_handler->get_current_focus_window();
         key_index = focus_handler->get_current_focus_key();
     } else if ((strcmp(keyname, "Return") == 0)||(strcmp(keyname, "Enter") == 0)) {
-        btncontext = cache->get_cur_button_context(current_focus_window, current_key_index);
         coordinate = cache->get_cur_layout_key_coordinate(current_focus_window, current_key_index);
-        //btncontext->state = BUTTON_STATE_NORMAL;
+        //button_context->state = BUTTON_STATE_NORMAL;
         controller->mouse_press(current_focus_window, coordinate->x, coordinate->y, TRUE);
         controller->mouse_release(current_focus_window, coordinate->x, coordinate->y, TRUE);
         if (KEY_TYPE_MODECHANGE != coordinate->key_type) {
-            //btncontext->state = BUTTON_STATE_PRESSED;
+            //button_context->state = BUTTON_STATE_PRESSED;
             //windows->update_window(window, coordinate->x, coordinate->y, coordinate->width, coordinate->height);
         } else {
             focus_handler->init_key_index();
@@ -170,8 +167,8 @@ CSCLEvents::process_key_event(const char *key)
     if (current_key_index != key_index || current_focus_window != focus_window) {
         prevcoordinate = cache->get_cur_layout_key_coordinate(current_focus_window, current_key_index);
         coordinate = cache->get_cur_layout_key_coordinate(focus_window, key_index);
-        //prevbtncontext->state = BUTTON_STATE_NORMAL;
-        //btncontext->state = BUTTON_STATE_PRESSED;
+        //prev_button_context->state = BUTTON_STATE_NORMAL;
+        //button_context->state = BUTTON_STATE_PRESSED;
         if (current_focus_window == focus_window) {
             sclshort x,y,width,height;
             if (prevcoordinate->x < coordinate->x) {

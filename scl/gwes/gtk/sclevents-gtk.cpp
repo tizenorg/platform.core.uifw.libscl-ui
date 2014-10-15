@@ -86,10 +86,10 @@ mouse_press(GtkWidget *widget, GdkEventButton *event, gpointer user_data)
     GtkWidget* magnifier = static_cast<GtkWidget*>(windows->get_magnifier_window());
     gdk_window_raise(magnifier->window);
     if (widget == windows->get_magnifier_window()) {
-        SclWindowContext *magctx = windows->get_window_context(widget, FALSE);
-        if (magctx) {
-            magpressposx = magctx->x;
-            magpressposy = magctx->y;
+        SclWindowContext *magnifier_window_context = windows->get_window_context(widget, FALSE);
+        if (magnifier_window_context) {
+            magpressposx = magnifier_window_context->x;
+            magpressposy = magnifier_window_context->y;
         }
         /* First convert the local coordinate to global coordinate */
         sclwindow window = SCLWINDOW_INVALID;
@@ -347,7 +347,7 @@ mouse_move(GtkWidget *widget, GdkEventButton *event, gpointer user_data)
  * - show_base_layout (when the expost event has occured)
  */
 void
-CSCLEventsImplGtk::connect_window_events(const sclwindow wnd, const sclint evt)
+CSCLEventsImplGtk::connect_window_events(const sclwindow window, const sclint event)
 {
     SCL_DEBUG();
     /* pre-condition */
@@ -394,13 +394,13 @@ timer_event(gpointer data)
  * In this function, it should call timer_event of CSCLController class
  */
 void
-CSCLEventsImplGtk::create_timer(const scl16 id, const scl32 interval, scl16 value, sclboolean addToMap)
+CSCLEventsImplGtk::create_timer(const scl16 id, const scl32 interval, scl16 value, sclboolean add_to_map)
 {
     SCL_DEBUG();
     sclint data = SCL_MAKELONG(id, value);
     gint timerId = gtk_timeout_add (static_cast<guint32>(interval), timer_event, (gpointer)data);
-    if (addToMap) {
-        idMap[id] = timerId;
+    if (add_to_map) {
+        id_map[id] = timerId;
     }
 }
 
@@ -411,10 +411,10 @@ void
 CSCLEventsImplGtk::destroy_timer(const scl32 id)
 {
     SCL_DEBUG();
-    for ( std::map<int, int>::iterator idx = idMap.begin(); idx != idMap.end(); ++idx) {
+    for ( std::map<int, int>::iterator idx = id_map.begin(); idx != id_map.end(); ++idx) {
         if ((*idx).first == id) {
             gtk_timeout_remove ((*idx).second);
-            idMap.erase((*idx).first);
+            id_map.erase((*idx).first);
             break;
         }
     }
@@ -427,9 +427,9 @@ void
 CSCLEventsImplGtk::destroy_all_timer()
 {
     SCL_DEBUG();
-    for ( std::map<int, int>::iterator idx = idMap.begin(); idx != idMap.end(); ++idx) {
+    for ( std::map<int, int>::iterator idx = id_map.begin(); idx != id_map.end(); ++idx) {
         gtk_timeout_remove ((*idx).second);
     }
-    idMap.clear();
+    id_map.clear();
 }
 

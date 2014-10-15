@@ -52,11 +52,11 @@ typedef struct _SclTextCachedInfo {
     SclSize actual_size;
 }SclTextCachedInfo;
 
-const SclColor SCLCOLOR_WHITE = {255, 255, 255};
-const SclColor SCLCOLOR_GREY = {128, 128, 128};
-const SclColor SCLCOLOR_BLACK = {0, 0, 0};
-const SclColor SCLCOLOR_RED = {255, 0, 0};
-const SclColor SCLCOLOR_BLUE = {0, 0, 255};
+const SclColor SCLCOLOR_WHITE = {255, 255, 255, 255};
+const SclColor SCLCOLOR_GREY = {128, 128, 128, 255};
+const SclColor SCLCOLOR_BLACK = {0, 0, 0, 255};
+const SclColor SCLCOLOR_RED = {255, 0, 0, 255};
+const SclColor SCLCOLOR_BLUE = {0, 0, 255, 255};
 
 /**
  * @brief The base class to work as a soft-based keyboard

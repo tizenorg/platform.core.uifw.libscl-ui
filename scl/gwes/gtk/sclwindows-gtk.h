@@ -29,21 +29,21 @@ public :
     CSCLWindowsImplGtk();
     ~CSCLWindowsImplGtk();
 
-    sclwindow create_base_window(const sclwindow parent, SclWindowContext *winctx, scl16 width, scl16 height);
-    sclwindow create_window(const sclwindow parent, SclWindowContext *winctx, scl16 width, scl16 height);
-    sclwindow create_dim_window(const sclwindow parent, SclWindowContext *winctx, scl16 width, scl16 height);
+    sclwindow create_base_window(const sclwindow parent, SclWindowContext *window_context, scl16 width, scl16 height);
+    sclwindow create_window(const sclwindow parent, SclWindowContext *window_context, scl16 width, scl16 height);
+    sclwindow create_dim_window(const sclwindow parent, SclWindowContext *window_context, scl16 width, scl16 height);
     bool destroy_window(sclwindow window);
     void show_window(const sclwindow window, sclboolean queue);
-    void hide_window(const sclwindow window,  sclboolean fForce = FALSE);
+    void hide_window(const sclwindow window,  sclboolean force = FALSE);
     void move_window(const sclwindow window, scl16 x, scl16 y);
     void resize_window(const sclwindow window, scl16 width, scl16 height);
     void move_resize_window(const sclwindow window, scl16 x, scl16 y, scl16 width, scl16 height);
     void update_window(const sclwindow window, scl16 x = 0, scl16 y = 0, scl16 width = 0, scl16 height = 0);
     void set_window_rotation(const sclwindow window, sclint degree);
-    void show_message_box(const sclwindow parent, scl8 msgType, sclchar* title, sclchar* msg);
+    void show_message_box(const sclwindow parent, scl8 msg_type, sclchar* title, sclchar* msg);
     sclboolean get_window_rect(const sclwindow window, SclRectangle *rect);
-    void set_parent(const sclwindow parentWindow, const sclwindow window);
-    void set_keep_above(const sclwindow window, sclboolean keepabove);
+    void set_parent(const sclwindow parent_window, const sclwindow window);
+    void set_keep_above(const sclwindow window, sclboolean keep_above);
 };
 } /* End of scl namespace */
 #endif __SCL_WINDOWS_GTK_H__

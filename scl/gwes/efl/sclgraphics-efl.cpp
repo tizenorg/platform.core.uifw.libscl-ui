@@ -146,16 +146,16 @@ CSCLGraphicsImplEfl::draw_image(sclwindow window, const scldrawctx draw_ctx, scl
     CSCLResourceCache *cache = CSCLResourceCache::get_instance();
     CSCLWindows *windows = CSCLWindows::get_instance();
     CSCLUtils *utils = CSCLUtils::get_instance();
-    SclWindowContext *winctx = NULL;
-    SclWindowContext *targetctx = NULL;
+    SclWindowContext *window_context = NULL;
+    SclWindowContext *target_window_context = NULL;
     if (windows && window) {
-        //winctx = windows->get_window_context(window, FALSE);
-        winctx = windows->get_window_context(window);
-        //targetctx = windows->get_window_context(draw_ctx, FALSE);
-        targetctx = windows->get_window_context(draw_ctx);
+        //window_context = windows->get_window_context(window, FALSE);
+        window_context = windows->get_window_context(window);
+        //target_window_context = windows->get_window_context(draw_ctx, FALSE);
+        target_window_context = windows->get_window_context(draw_ctx);
     }
 
-    if (winctx && targetctx && image_path && utils && cache && windows) {
+    if (window_context && target_window_context && image_path && utils && cache && windows) {
         sclboolean is_highlight_ui = FALSE;
         sclchar buf[_POSIX_PATH_MAX] = {0};
         utils->get_decomposed_path(buf, IMG_PATH_PREFIX, image_path);
@@ -222,7 +222,7 @@ CSCLGraphicsImplEfl::draw_image(sclwindow window, const scldrawctx draw_ctx, scl
             EFLObject *clip_object = NULL;
             
             Evas_Object *window_object = (Evas_Object*)window;
-            if (winctx->is_virtual) {
+            if (window_context->is_virtual) {
                 window_object = static_cast<Evas_Object*>(windows->get_base_window());
             }
 
@@ -334,9 +334,11 @@ CSCLGraphicsImplEfl::draw_image(sclwindow window, const scldrawctx draw_ctx, scl
                         if (is_highlight_ui) {
                             delete object;
                         } else {
-                            targetctx->etc_info = eina_list_append((Eina_List*)(targetctx->etc_info), object);
+                            target_window_context->etc_info =
+                                eina_list_append((Eina_List*)(target_window_context->etc_info), object);
                             if (clip_object) {
-                                targetctx->etc_info = eina_list_append((Eina_List*)(targetctx->etc_info), clip_object);
+                                target_window_context->etc_info =
+                                    eina_list_append((Eina_List*)(target_window_context->etc_info), clip_object);
                             }
                         }
 
@@ -348,7 +350,8 @@ CSCLGraphicsImplEfl::draw_image(sclwindow window, const scldrawctx draw_ctx, scl
                         //SclRectangle rt;
                         //windows->get_window_rect(window, &rt);
                         //if (rt.width == dest_width && rt.height == dest_height) {
-                        if (winctx->geometry.width == dest_width && winctx->geometry.height == dest_height) {
+                        if (window_context->geometry.width == dest_width &&
+                            window_context->geometry.height == dest_height) {
                             //evas_object_lower(image_object);
                             evas_object_layer_set(image_object, window_layer + 0);
                         } else {
@@ -462,17 +465,17 @@ CSCLGraphicsImplEfl::draw_text(sclwindow window, const scldrawctx draw_ctx, cons
     SCL_DEBUG();
 
     CSCLWindows *windows = CSCLWindows::get_instance();
-    SclWindowContext *winctx = NULL;
-    SclWindowContext *targetctx = NULL;
+    SclWindowContext *window_context = NULL;
+    SclWindowContext *target_window_context = NULL;
 
     if (windows && window) {
-        //winctx = windows->get_window_context(window, FALSE);
-        winctx = windows->get_window_context(window);
-        //targetctx = windows->get_window_context(draw_ctx, FALSE);
-        targetctx = windows->get_window_context(draw_ctx);
+        //window_context = windows->get_window_context(window, FALSE);
+        window_context = windows->get_window_context(window);
+        //target_window_context = windows->get_window_context(draw_ctx, FALSE);
+        target_window_context = windows->get_window_context(draw_ctx);
     }
 
-    if (winctx && targetctx && str && windows) {
+    if (window_context && target_window_context && str && windows) {
         if (strlen(str) > 0) {
 #ifdef DO_NOT_MOVE_MAGNIFIER_WINDOW
             if (window == windows->get_magnifier_window()) {
@@ -542,7 +545,7 @@ CSCLGraphicsImplEfl::draw_text(sclwindow window, const scldrawctx draw_ctx, cons
             if (object) {
                 object->extracted = FALSE;
                 Evas_Object *window_object = (Evas_Object*)window;
-                if (winctx->is_virtual) {
+                if (window_context->is_virtual) {
                     window_object = static_cast<Evas_Object*>(windows->get_base_window());
                 }
                 Evas *evas = evas_object_evas_get(window_object);
@@ -631,7 +634,7 @@ CSCLGraphicsImplEfl::draw_text(sclwindow window, const scldrawctx draw_ctx, cons
                     object->position.y = pos_y;
                     object->position.width = width;
                     object->position.height = height;
-                    object->etc_info = (char*)str;
+                    object->etc_info = str;
                     object->data = st;
 
                     sclint calwidth, calheight;
@@ -667,7 +670,7 @@ CSCLGraphicsImplEfl::draw_text(sclwindow window, const scldrawctx draw_ctx, cons
                             color.r, color.g, color.b, color.a, padding_x, padding_x);
                         evas_textblock_style_set(st, strStyle);
                         evas_object_textblock_style_set(text_object, st);
-                        char *markup = evas_textblock_text_utf8_to_markup(text_object, str);
+                        markup = evas_textblock_text_utf8_to_markup(text_object, str);
                         if (markup) {
                             evas_object_textblock_text_markup_set(text_object, markup);
                             free(markup);
@@ -703,7 +706,8 @@ CSCLGraphicsImplEfl::draw_text(sclwindow window, const scldrawctx draw_ctx, cons
                     /*evas_object_event_callback_add((Evas_Object*)text_object, EVAS_CALLBACK_MOUSE_UP, mouse_release, window);
                     evas_object_event_callback_add((Evas_Object*)text_object, EVAS_CALLBACK_MOUSE_MOVE, mouse_move, window);*/
 
-                    targetctx->etc_info = eina_list_append((Eina_List*)(targetctx->etc_info), object);
+                    target_window_context->etc_info =
+                        eina_list_append((Eina_List*)(target_window_context->etc_info), object);
 
                     sclint window_layer = 29000;
                     if (!windows->is_base_window(reinterpret_cast<sclwindow>(draw_ctx))) {
@@ -765,23 +769,23 @@ CSCLGraphicsImplEfl::draw_rectangle(sclwindow window, const scldrawctx draw_ctx,
     CSCLResourceCache *cache = CSCLResourceCache::get_instance();
     CSCLWindows *windows = CSCLWindows::get_instance();
     CSCLUtils *utils = CSCLUtils::get_instance();
-    SclWindowContext *winctx = NULL;
-    SclWindowContext *targetctx = NULL;
+    SclWindowContext *window_context = NULL;
+    SclWindowContext *target_window_context = NULL;
 
     if (windows && window) {
-        //winctx = windows->get_window_context(window, FALSE);
-        winctx = windows->get_window_context(window);
-        //targetctx = windows->get_window_context(draw_ctx, FALSE);
-        targetctx = windows->get_window_context(draw_ctx);
+        //window_context = windows->get_window_context(window, FALSE);
+        window_context = windows->get_window_context(window);
+        //target_window_context = windows->get_window_context(draw_ctx, FALSE);
+        target_window_context = windows->get_window_context(draw_ctx);
     }
 
-    if (winctx && utils && cache && windows && targetctx) {
+    if (window_context && utils && cache && windows && target_window_context) {
         EFLObject *object = new EFLObject;
         if (object) {
             Evas_Object *window_object = (Evas_Object*)window;
-            if (winctx->is_virtual) {
+            if (window_context->is_virtual) {
                 window_object = static_cast<Evas_Object*>(windows->get_base_window());
-            //    //winctx = windows->get_window_context(windows->get_base_window());
+            //    //window_context = windows->get_window_context(windows->get_base_window());
             }
 
             Evas *evas = evas_object_evas_get(window_object);
@@ -807,7 +811,8 @@ CSCLGraphicsImplEfl::draw_rectangle(sclwindow window, const scldrawctx draw_ctx,
             object->etc_info = NULL;
             object->data = NULL;
 
-            targetctx->etc_info = eina_list_append((Eina_List*)(targetctx->etc_info), object);
+            target_window_context->etc_info =
+                eina_list_append((Eina_List*)(target_window_context->etc_info), object);
 
             sclint window_layer = 29000;
             if (!windows->is_base_window(reinterpret_cast<sclwindow>(draw_ctx))) {

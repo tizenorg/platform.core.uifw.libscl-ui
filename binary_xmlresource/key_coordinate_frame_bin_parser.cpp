@@ -63,18 +63,18 @@ load(int layout_id)
     FileStorage alldata;
     alldata.loadFile(path);
 
-    String_Bin_Parser stringBinParser(alldata, bin_xmlres->info[STRING].offset, bin_xmlres->info[STRING].size);
-    Metadata_Bin_Parser metadataBinParser(alldata, bin_xmlres->info[METADATA].offset, bin_xmlres->info[METADATA].size);
+    String_Bin_Parser stringBinParser(alldata, bin_xmlres->m_info[STRING].offset, bin_xmlres->m_info[STRING].size);
+    Metadata_Bin_Parser metadataBinParser(alldata, bin_xmlres->m_info[METADATA].offset, bin_xmlres->m_info[METADATA].size);
 
     String_Provider stringProvider(&stringBinParser);
     Metadata_Provider metadataProvider(&metadataBinParser);
-    ParserInfo_Provider parser_info_provider(&metadataProvider, &stringProvider);
-    storage.set_str_provider(&parser_info_provider);
-    this->parser_info_provider = &parser_info_provider;
+    ParserInfo_Provider provider(&metadataProvider, &stringProvider);
+    storage.set_str_provider(&provider);
+    this->parser_info_provider = &provider;
     storage.get_storage(
         alldata,
-        bin_xmlres->info[KEY_COORDINATE_FRAME].offset,
-        bin_xmlres->info[KEY_COORDINATE_FRAME].size);
+        bin_xmlres->m_info[KEY_COORDINATE_FRAME].offset,
+        bin_xmlres->m_info[KEY_COORDINATE_FRAME].size);
 
     // 4 byte (range[0-4,294,967,295))
     const int DATA_SIZE_BYTES = 4;
@@ -146,10 +146,10 @@ unload()
     }
 }
 void
-BinKeyCoordFrameParser::init(const FileStorage& storage, int offset, int size, IParserInfo_Provider* parser_info_provider) {
+BinKeyCoordFrameParser::init(const FileStorage& storage, int offset, int size, IParserInfo_Provider* provider) {
     m_storage.set_str_provider(parser_info_provider);
     m_storage.get_storage(storage, offset, size);
-    this->parser_info_provider = parser_info_provider;
+    this->parser_info_provider = provider;
 }
 
 PSclLayoutKeyCoordinatePointerTable

@@ -42,8 +42,10 @@ CSCLGraphicsImplGtk::~CSCLGraphicsImplGtk()
 
 
 void
-CSCLGraphicsImplGtk::draw_image(sclwindow window, const scldrawctx drawCtx, sclchar* imgPath, SclImageCachedInfo *cachedinfo, sclint destX, sclint destY,
-                                sclint destWidth, sclint destHeight, sclint srcX, sclint srcY, sclint srcWidth, sclint srcHeight)
+CSCLGraphicsImplGtk::draw_image(sclwindow window, const scldrawctx draw_ctx,
+                                sclchar* image_path, SclImageCachedInfo *cachedinfo,
+                                sclint dest_x, sclint dest_y, sclint dest_width, sclint dest_height,
+                                sclint src_x, sclint src_y, sclint src_width, sclint src_height)
 {
     SCL_DEBUG();
     //printf("\n %d destX, %d destY,\n %d destWidth, %d destHeight, %d srcX, %d srcY,\n %d srcWidth, %d srcHeight\n", destX, destY, destWidth, destHeight,  srcX,  srcWidth,  srcHeight);
@@ -126,7 +128,7 @@ load_pixmap(const gchar *filename)
 }
 
 sclimage
-CSCLGraphicsImplGtk::load_image(const sclchar *imgPath)
+CSCLGraphicsImplGtk::load_image(const sclchar* image_path)
 {
     SCL_DEBUG();
     GdkPixmap* imgData = NULL;
@@ -137,7 +139,7 @@ CSCLGraphicsImplGtk::load_image(const sclchar *imgPath)
 }
 
 void
-CSCLGraphicsImplGtk::unload_image(sclimage imgData)
+CSCLGraphicsImplGtk::unload_image(sclimage image_data)
 {
     SCL_DEBUG();
     /* pre-condition */
@@ -151,7 +153,7 @@ CSCLGraphicsImplGtk::unload_image(sclimage imgData)
  * This func should be called before using a drawing primitive at first.
  */
 scldrawctx
-CSCLGraphicsImplGtk::begin_paint(const sclwindow window, const sclboolean forcedraw /* = FALSE */)
+CSCLGraphicsImplGtk::begin_paint(const sclwindow window, const sclboolean force_draw /* = FALSE */)
 {
     SCL_DEBUG();
     /* pre-condition */
@@ -171,9 +173,9 @@ CSCLGraphicsImplGtk::begin_paint(const sclwindow window, const sclboolean forced
  * Notices that drawing tasks have done.
  */
 void
-CSCLGraphicsImplGtk::end_paint(const sclwindow window, scldrawctx drawCtx)
+CSCLGraphicsImplGtk::end_paint(const sclwindow window, scldrawctx draw_ctx)
 {
-    cairo_destroy(static_cast<cairo_t*>(drawCtx));
+    cairo_destroy(static_cast<cairo_t*>(draw_ctx));
 }
 
 sclfont
@@ -191,16 +193,17 @@ CSCLGraphicsImplGtk::destroy_font(sclfont font)
  * Draws the given text on cairo-surface
  */
 void
-CSCLGraphicsImplGtk::draw_text(sclwindow window, const scldrawctx drawCtx, const SclFontInfo& fontinfo, const SclColor& color,
-                               const sclchar *str, SclTextCachedInfo *cachedinfo, sclint posx, sclint posy, sclint width, sclint height,
+CSCLGraphicsImplGtk::draw_text(sclwindow window, const scldrawctx draw_ctx, const SclFontInfo& font_info,
+                               const SclColor& color, const sclchar *str, SclTextCachedInfo *cachedinfo,
+                               sclint pos_x, sclint pos_y, sclint width, sclint height,
                                SCLLabelAlignment align, sclbyte padding)
 {
     SCL_DEBUG();
     /* pre-condition */
     scl_assert_return(str);
-    scl_assert_return(drawCtx);
+    scl_assert_return(draw_ctx);
 
-    cairo_t* cr = static_cast<cairo_t*>(drawCtx);
+    cairo_t* cr = static_cast<cairo_t*>(draw_ctx);
     cairo_identity_matrix(cr);
     cairo_set_source_rgba(cr, color.r / 256.0, color.g / 256.0, color.b / 256.0, 1.0);
     cairo_select_font_face(cr, fontinfo.fontname,
@@ -249,14 +252,16 @@ CSCLGraphicsImplGtk::draw_text(sclwindow window, const scldrawctx drawCtx, const
  * Draws a rectangle on cairo-surface
  */
 void
-CSCLGraphicsImplGtk::draw_rectangle(sclwindow window, const scldrawctx drawCtx, scldouble posx, scldouble posy,
-                                    scldouble width, scldouble height, const scldouble lineWidth, const SclColor& lineColor, sclboolean fill, const SclColor& fillColor, scldouble radius, sclfloat alpha)
+CSCLGraphicsImplGtk::draw_rectangle(sclwindow window, const scldrawctx draw_ctx,
+                                    scldouble pos_x, scldouble pos_y, scldouble width, scldouble height,
+                                    const scldouble line_width, const SclColor& line_color, sclboolean fill,
+                                    const SclColor& fill_color, scldouble radius, sclfloat alpha)
 {
     SCL_DEBUG();
     /* pre-condition */
-    scl_assert_return(drawCtx);
+    scl_assert_return(draw_ctx);
 
-    cairo_t* cr = static_cast<cairo_t*>(drawCtx);
+    cairo_t* cr = static_cast<cairo_t*>(draw_ctx);
     cairo_identity_matrix(cr);
 
     /* a custom shape that could be wrapped in a function */
@@ -316,7 +321,7 @@ CSCLGraphicsImplGtk::draw_rectangle(sclwindow window, const scldrawctx drawCtx, 
 }
 
 SclSize
-CSCLGraphicsImplGtk::get_image_size(sclchar* imgPath)
+CSCLGraphicsImplGtk::get_image_size(sclchar* image_path)
 {
     SCL_DEBUG();
     SclSize ret = { 0, 0 };

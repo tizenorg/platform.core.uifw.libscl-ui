@@ -72,7 +72,7 @@ public:
     const sclchar* get_cur_themename();
 
     sclint set_private_key(SclPrivateKeyProperties* properties, sclboolean fRedraw, sclboolean fPendingUpdate);
-    sclint set_private_key(sclchar* custom_id, sclchar* label, sclchar* imagelabel[SCL_BUTTON_STATE_MAX], sclchar* imagebg[SCL_BUTTON_STATE_MAX], sclulong key_event, sclchar *key_value, sclboolean fRedraw, sclboolean fPendingUpdate);
+    sclint set_private_key(const sclchar* custom_id, sclchar* label, sclchar* imagelabel[SCL_BUTTON_STATE_MAX], sclchar* imagebg[SCL_BUTTON_STATE_MAX], sclulong key_event, sclchar *key_value, sclboolean fRedraw, sclboolean fPendingUpdate);
     void unset_private_key(sclshort input_mode_index, sclbyte layout_index, sclbyte key_index);
     void unset_private_key(const sclchar* custom_id);
 

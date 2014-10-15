@@ -74,7 +74,7 @@ make_transparent_window (GtkWidget *window)
  * Create a content window and binds it into given parent window as a child
  */
 sclwindow
-CSCLWindowsImplGtk::create_base_window(const sclwindow parent, SclWindowContext *winctx, scl16 width, scl16 height)
+CSCLWindowsImplGtk::create_base_window(const sclwindow parent, SclWindowContext *window_context, scl16 width, scl16 height)
 {
     SCL_DEBUG();
 
@@ -82,16 +82,16 @@ CSCLWindowsImplGtk::create_base_window(const sclwindow parent, SclWindowContext 
 
     /* pre-condition */
     scl_assert(parent != NULL);
-    scl_assert(winctx != NULL);
-    scl_assert(winctx->etc_info == NULL);
+    scl_assert(window_context != NULL);
+    scl_assert(window_context->etc_info == NULL);
 
-    if (winctx->window == NULL) {
+    if (window_context->window == NULL) {
         window = (GtkWidget*)parent;
 
         if (GTK_WIDGET_TOPLEVEL(window)) {
             window = (GtkWidget*)parent;
-            winctx->etc_info = NULL;
-            winctx->window = window;
+            window_context->etc_info = NULL;
+            window_context->window = window;
             //gtk_window_set_keep_above(GTK_WINDOW(window), TRUE);
             make_transparent_window(window);
         } else {
@@ -102,30 +102,30 @@ CSCLWindowsImplGtk::create_base_window(const sclwindow parent, SclWindowContext 
             gtk_box_pack_start(GTK_BOX(window), drawarea, TRUE, TRUE, 0);
             gtk_widget_show (drawarea);
             gtk_widget_show (window);
-            winctx->etc_info = static_cast<void*>(drawarea);
-            winctx->window = drawarea;
+            window_context->etc_info = static_cast<void*>(drawarea);
+            window_context->window = drawarea;
             make_transparent_window(drawarea);
         }
     }
     /* post-condition */
-    return winctx->window;
+    return window_context->window;
 }
 
 /**
  * Creates a window
  */
 sclwindow
-CSCLWindowsImplGtk::create_window(const sclwindow parent, SclWindowContext *winctx, scl16 width, scl16 height)
+CSCLWindowsImplGtk::create_window(const sclwindow parent, SclWindowContext *window_context, scl16 width, scl16 height)
 {
     SCL_DEBUG();
     /* pre-condition */
     scl_assert(parent);
-    scl_assert(winctx);
-    scl_assert(winctx->etc_info == NULL);
+    scl_assert(window_context);
+    scl_assert(window_context->etc_info == NULL);
 
     GtkWidget* window = NULL;
 
-    if (winctx->window == NULL) {
+    if (window_context->window == NULL) {
         window = gtk_window_new (GTK_WINDOW_TOPLEVEL);
         gtk_window_set_type_hint(GTK_WINDOW (window), GDK_WINDOW_TYPE_HINT_UTILITY);
 #ifdef NO_SOCKETPLUG
@@ -146,8 +146,8 @@ CSCLWindowsImplGtk::create_window(const sclwindow parent, SclWindowContext *winc
         gtk_widget_set_app_paintable(window, TRUE);
 #endif
         //gtk_effect_set_enable (GTK_WIDGET(window), FALSE);
-        winctx->etc_info = NULL;
-        winctx->window = window;
+        window_context->etc_info = NULL;
+        window_context->window = window;
 
 
         /* Window rotation*/
@@ -167,16 +167,16 @@ CSCLWindowsImplGtk::create_window(const sclwindow parent, SclWindowContext *winc
  * Creates the dim window
  */
 sclwindow
-CSCLWindowsImplGtk::create_dim_window(const sclwindow parent, SclWindowContext *winctx, scl16 width, scl16 height)
+CSCLWindowsImplGtk::create_dim_window(const sclwindow parent, SclWindowContext *window_context, scl16 width, scl16 height)
 {
     SCL_DEBUG();
     /* pre-condition */
     scl_assert(parent);
-    scl_assert(winctx);
-    scl_assert(winctx->etc_info == NULL);
+    scl_assert(window_context);
+    scl_assert(window_context->etc_info == NULL);
     GtkWidget* window = NULL;
 
-    if (winctx->window == NULL) {
+    if (window_context->window == NULL) {
         window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
         gtk_window_set_type_hint(GTK_WINDOW (window), GDK_WINDOW_TYPE_HINT_UTILITY);
 #ifdef NO_SOCKETPLUG
@@ -195,8 +195,8 @@ CSCLWindowsImplGtk::create_dim_window(const sclwindow parent, SclWindowContext *
         gtk_window_set_opacity(GTK_WINDOW(window), 0.5);
         gtk_widget_realize(window);
         //gtk_effect_set_enable (GTK_WIDGET(window), FALSE);
-        winctx->etc_info = NULL;
-        winctx->window = window;
+        window_context->etc_info = NULL;
+        window_context->window = window;
     }
 
     return window;
@@ -207,7 +207,7 @@ CSCLWindowsImplGtk::create_dim_window(const sclwindow parent, SclWindowContext *
  * Caution: Currently, If we use transient_for them the ISE will occure some crash. It needs to check X11
  */
 void
-CSCLWindowsImplGtk::set_parent(const sclwindow parentWindow, const sclwindow window)
+CSCLWindowsImplGtk::set_parent(const sclwindow parent_window, const sclwindow window)
 {
     SCL_DEBUG();
     scl_assert_return(window);
@@ -283,13 +283,13 @@ CSCLWindowsImplGtk::show_window(const sclwindow window, sclboolean queue)
  * Hides the given window
  */
 void
-CSCLWindowsImplGtk::hide_window(const sclwindow window,  sclboolean fForce)
+CSCLWindowsImplGtk::hide_window(const sclwindow window,  sclboolean force)
 {
     SCL_DEBUG();
     scl_assert_return(window);
     GtkWidget* widget = static_cast<GtkWidget*>(window);
     CSCLWindows *windows = CSCLWindows::get_instance();
-    if (windows->get_magnifier_window() == window && fForce == FALSE) {
+    if (windows->get_magnifier_window() == window && force == FALSE) {
         /* Fix me : The below is a temporary code for magnifier speed enhancement */
 #ifdef NO_SOCKETPLUG
         gint root_x, root_y;
@@ -447,7 +447,7 @@ CSCLWindowsImplGtk::set_window_rotation(const sclwindow window, sclint degree) {
  * Shows a message box
  */
 void
-CSCLWindowsImplGtk::show_message_box(const sclwindow parent, scl8 msgType, sclchar* title, sclchar* msg) {
+CSCLWindowsImplGtk::show_message_box(const sclwindow parent, scl8 msg_type, sclchar* title, sclchar* msg) {
     SCL_DEBUG();
     scl_assert_return(strlen(msg) > 0);
 
@@ -488,8 +488,8 @@ CSCLWindowsImplGtk::show_message_box(const sclwindow parent, scl8 msgType, sclch
 
 
 void
-CSCLWindowsImplGtk::set_keep_above(const sclwindow window, sclboolean keepabove) {
+CSCLWindowsImplGtk::set_keep_above(const sclwindow window, sclboolean keep_above) {
     SCL_DEBUG();
 
-    gtk_window_set_keep_above(GTK_WINDOW(window), keepabove);
+    gtk_window_set_keep_above(GTK_WINDOW(window), keep_above);
 }

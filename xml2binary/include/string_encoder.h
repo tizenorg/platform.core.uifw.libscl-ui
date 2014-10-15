@@ -30,7 +30,7 @@ class String_Encoder:public IString_Encoder{
         }
 
         void set_path(const char* file) {
-            this->file = file;
+            this->m_file = file;
         }
 
         /* @ insert str to string vector */
@@ -55,15 +55,15 @@ class String_Encoder:public IString_Encoder{
         int encode() const{
             ResourceStorage storage;
             encode(storage);
-            storage.toFile(file);
-            return storage.size();
+            storage.toFile(m_file);
+            return storage.get_size();
         }
         int encode(int& offset) const{
             ResourceStorage storage;
             encode(storage);
-            storage.toFile(file, offset);
+            storage.toFile(m_file, offset);
 
-            return storage.size();
+            return storage.get_size();
         }
 
         int encode(ResourceStorage& storage) const{
@@ -76,11 +76,11 @@ class String_Encoder:public IString_Encoder{
                 storage.put(it->c_str());
             }
 
-            return storage.size();
+            return storage.get_size();
         }
 
     private:
         std::vector<std::string> m_vec_string;
-        const char* file;
+        const char* m_file;
 };
 #endif

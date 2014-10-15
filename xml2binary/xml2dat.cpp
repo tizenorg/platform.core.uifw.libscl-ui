@@ -17,7 +17,6 @@
 
 #include <limits.h>
 #include <unistd.h>
-#include "xml2dat.h"
 #include "string_encoder.h"
 #include "metadata_handler.h"
 #include "encode_layout.h"
@@ -172,8 +171,8 @@ int main(const int argc, char* argv[]) {
             rs.put<sint_t>(offset_table[i], OFFSET_WIDTH);
         }
 
-        int offset = 0;
-        int ret = rs.toFile(bin_file, offset);
+        int bin_offset = 0;
+        int ret = rs.toFile(bin_file, bin_offset);
         if (ret < 0) {
             printf("error\n");
             return -1;

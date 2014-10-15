@@ -83,7 +83,7 @@ encode_label_properties_record(ResourceStorage& storage, const PSclLabelProperti
 int
 encode_label_properties_frame_file(ResourceStorage& storage, IMetaData_Helper& md_helper) {
 
-    int init_size = storage.size();
+    int init_size = storage.get_size();
 
     /*size 4bytes*/
     const int SIZE_WIDTH = 4;
@@ -112,10 +112,10 @@ encode_label_properties_frame_file(ResourceStorage& storage, IMetaData_Helper& m
         }
     }
 
-    int advance_size = storage.size() - init_size;
+    int advance_size = storage.get_size() - init_size;
     storage.random_put<sint_t>(advance_size, 8, init_size);
 
-    return storage.size();
+    return storage.get_size();
 }
 
 int
@@ -127,7 +127,7 @@ encode_label_properties_frame_file(const char* file, int& offset, IMetaData_Help
     encode_label_properties_frame_file(storage, md_helper);
     storage.toFile(file, offset);
 
-    return storage.size();
+    return storage.get_size();
 }
 
 int
@@ -139,5 +139,5 @@ encode_label_properties_frame_file(const char* file, IMetaData_Helper& md_helper
     encode_label_properties_frame_file(storage, md_helper);
     storage.toFile(file);
 
-    return storage.size();
+    return storage.get_size();
 }

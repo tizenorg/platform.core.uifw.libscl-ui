@@ -45,7 +45,7 @@ class FileStorage{
         FileStorage(const IString_Provider* string_provider = NULL);
     ~FileStorage();
 
-    int offset() const;
+    int get_offset() const;
     void set_str_provider(const IString_Provider*);
     template <typename T>
     T get(int width);
@@ -63,7 +63,7 @@ class FileStorage{
     int get_storage(const FileStorage&, int offset, int block_size);
 
     void advance(int bytes);
-    int size()const;
+    int get_size() const;
 
     private:
     /** brief unify get_xx method name

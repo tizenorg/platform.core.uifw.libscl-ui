@@ -51,7 +51,7 @@ class SclResParserManager{
         int get_modifier_decoration_id(const char *name);
         bool get_nine_patch_info(const char *filename, SclNinePatchInfo *info);
 
-        const char* name();
+        const char* get_name();
         void destroy();
     private:
         SclResParserManager();

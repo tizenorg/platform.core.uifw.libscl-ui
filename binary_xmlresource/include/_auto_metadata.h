@@ -244,58 +244,60 @@ void set_layout_width(T& md_helper,
 }
 
 template <class T>
-void set_key_coordinate_record_width(T& md_helper,
+void set_key_coordinate_record_width(T *md_helper,
 	Key_coordinate_record_width & record_width) {
-	md_helper.set_current_metadata_record("key_coordinate_record");
-	memset(&record_width, 0x00, sizeof(Key_coordinate_record_width));
+	if (md_helper) {
+		md_helper->set_current_metadata_record("key_coordinate_record");
+		memset(&record_width, 0x00, sizeof(Key_coordinate_record_width));
 
-	record_width.x = md_helper.get_width("x");
-	record_width.y = md_helper.get_width("y");
-	record_width.width = md_helper.get_width("width");
-	record_width.height = md_helper.get_width("height");
-	record_width.add_hit_left = md_helper.get_width("add_hit_left");
-	record_width.add_hit_right = md_helper.get_width("add_hit_right");
-	record_width.add_hit_top = md_helper.get_width("add_hit_top");
-	record_width.add_hit_bottom = md_helper.get_width("add_hit_bottom");
-	record_width.popup_relative_x = md_helper.get_width("popup_relative_x");
-	record_width.popup_relative_y = md_helper.get_width("popup_relative_y");
-	record_width.extract_offset_x = md_helper.get_width("extract_offset_x");
-	record_width.extract_offset_y = md_helper.get_width("extract_offset_y");
-	record_width.sub_layout = md_helper.get_width("sub_layout");
-	record_width.magnifier_offset_x = md_helper.get_width("magnifier_offset_x");
-	record_width.magnifier_offset_y = md_helper.get_width("magnifier_offset_y");
-	record_width.custom_id = md_helper.get_width("custom_id");
-	record_width.button_type = md_helper.get_width("button_type");
-	record_width.key_type = md_helper.get_width("key_type");
-	record_width.popup_type = md_helper.get_width("popup_type");
-	record_width.use_magnifier = md_helper.get_width("use_magnifier");
-	record_width.use_long_key_magnifier = md_helper.get_width("use_long_key_magnifier");
-	record_width.popup_input_mode = md_helper.get_width("popup_input_mode");
-	record_width.sound_style = md_helper.get_width("sound_style");
-	record_width.vibe_style = md_helper.get_width("vibe_style");
-	record_width.is_side_button = md_helper.get_width("is_side_button");
-	record_width.label_count = md_helper.get_width("label_count");
-	record_width.label = md_helper.get_width("label");
-	record_width.label_type = md_helper.get_width("label_type");
-	record_width.image_label_path = md_helper.get_width("image_label_path");
-	record_width.image_label_type = md_helper.get_width("image_label_type");
-	record_width.bg_image_path = md_helper.get_width("bg_image_path");
-	record_width.key_value_count = md_helper.get_width("key_value_count");
-	record_width.key_value = md_helper.get_width("key_value");
-	record_width.key_event = md_helper.get_width("key_event");
-	record_width.long_key_type = md_helper.get_width("long_key_type");
-	record_width.long_key_value = md_helper.get_width("long_key_value");
-	record_width.long_key_event = md_helper.get_width("long_key_event");
-	record_width.use_repeat_key = md_helper.get_width("use_repeat_key");
-	record_width.autopopup_key_labels = md_helper.get_width("autopopup_key_labels");
-	record_width.autopopup_key_values = md_helper.get_width("autopopup_key_values");
-	record_width.autopopup_key_events = md_helper.get_width("autopopup_key_events");
-	record_width.dont_close_popup = md_helper.get_width("dont_close_popup");
-	record_width.extra_option = md_helper.get_width("extra_option");
-	record_width.multitouch_type = md_helper.get_width("multitouch_type");
-	record_width.modifier_decorator = md_helper.get_width("modifier_decorator");
-	record_width.magnifier_label = md_helper.get_width("magnifier_label");
-	record_width.hint_string = md_helper.get_width("hint_string");
+		record_width.x = md_helper->get_width("x");
+		record_width.y = md_helper->get_width("y");
+		record_width.width = md_helper->get_width("width");
+		record_width.height = md_helper->get_width("height");
+		record_width.add_hit_left = md_helper->get_width("add_hit_left");
+		record_width.add_hit_right = md_helper->get_width("add_hit_right");
+		record_width.add_hit_top = md_helper->get_width("add_hit_top");
+		record_width.add_hit_bottom = md_helper->get_width("add_hit_bottom");
+		record_width.popup_relative_x = md_helper->get_width("popup_relative_x");
+		record_width.popup_relative_y = md_helper->get_width("popup_relative_y");
+		record_width.extract_offset_x = md_helper->get_width("extract_offset_x");
+		record_width.extract_offset_y = md_helper->get_width("extract_offset_y");
+		record_width.sub_layout = md_helper->get_width("sub_layout");
+		record_width.magnifier_offset_x = md_helper->get_width("magnifier_offset_x");
+		record_width.magnifier_offset_y = md_helper->get_width("magnifier_offset_y");
+		record_width.custom_id = md_helper->get_width("custom_id");
+		record_width.button_type = md_helper->get_width("button_type");
+		record_width.key_type = md_helper->get_width("key_type");
+		record_width.popup_type = md_helper->get_width("popup_type");
+		record_width.use_magnifier = md_helper->get_width("use_magnifier");
+		record_width.use_long_key_magnifier = md_helper->get_width("use_long_key_magnifier");
+		record_width.popup_input_mode = md_helper->get_width("popup_input_mode");
+		record_width.sound_style = md_helper->get_width("sound_style");
+		record_width.vibe_style = md_helper->get_width("vibe_style");
+		record_width.is_side_button = md_helper->get_width("is_side_button");
+		record_width.label_count = md_helper->get_width("label_count");
+		record_width.label = md_helper->get_width("label");
+		record_width.label_type = md_helper->get_width("label_type");
+		record_width.image_label_path = md_helper->get_width("image_label_path");
+		record_width.image_label_type = md_helper->get_width("image_label_type");
+		record_width.bg_image_path = md_helper->get_width("bg_image_path");
+		record_width.key_value_count = md_helper->get_width("key_value_count");
+		record_width.key_value = md_helper->get_width("key_value");
+		record_width.key_event = md_helper->get_width("key_event");
+		record_width.long_key_type = md_helper->get_width("long_key_type");
+		record_width.long_key_value = md_helper->get_width("long_key_value");
+		record_width.long_key_event = md_helper->get_width("long_key_event");
+		record_width.use_repeat_key = md_helper->get_width("use_repeat_key");
+		record_width.autopopup_key_labels = md_helper->get_width("autopopup_key_labels");
+		record_width.autopopup_key_values = md_helper->get_width("autopopup_key_values");
+		record_width.autopopup_key_events = md_helper->get_width("autopopup_key_events");
+		record_width.dont_close_popup = md_helper->get_width("dont_close_popup");
+		record_width.extra_option = md_helper->get_width("extra_option");
+		record_width.multitouch_type = md_helper->get_width("multitouch_type");
+		record_width.modifier_decorator = md_helper->get_width("modifier_decorator");
+		record_width.magnifier_label = md_helper->get_width("magnifier_label");
+		record_width.hint_string = md_helper->get_width("hint_string");
+	}
 }
 
 template <class T>

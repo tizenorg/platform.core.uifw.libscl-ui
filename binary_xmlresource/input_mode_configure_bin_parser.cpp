@@ -35,10 +35,10 @@ BinInputModeConfigParser::get_instance() {
 }
 
 void
-BinInputModeConfigParser::init(const FileStorage& storage, int offset, int size, IParserInfo_Provider* parser_info_provider) {
+BinInputModeConfigParser::init(const FileStorage& storage, int offset, int size, IParserInfo_Provider* provider) {
     m_storage.set_str_provider(parser_info_provider);
     m_storage.get_storage(storage, offset, size);
-    this->parser_info_provider = parser_info_provider;
+    this->parser_info_provider = provider;
     parsing_input_mode_configure_table();
 }
 

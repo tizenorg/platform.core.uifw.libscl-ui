@@ -34,7 +34,7 @@ FileStorage::~FileStorage() {
 }
 
 int FileStorage::
-offset() const {
+get_offset() const {
     return m_offset;
 }
 void FileStorage::
@@ -174,13 +174,13 @@ int FileStorage::
     return m_size;
 }
 int FileStorage::
-size()const{
+get_size() const{
     return m_size;
 }
 int FileStorage::
 get_storage(const FileStorage& storage, int offset, int block_size) {
     if (offset < 0 || block_size <= 0) return -1;
-    if (storage.size() < offset + block_size) return -1;
+    if (storage.get_size() < offset + block_size) return -1;
 
     if (m_storage != NULL) {
         delete[] m_storage;
