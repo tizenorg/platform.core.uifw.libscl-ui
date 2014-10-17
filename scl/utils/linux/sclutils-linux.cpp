@@ -199,7 +199,7 @@ CSCLUtilsImplLinux::play_tts(const sclchar* str) {
                 LOGD("Fail to stop TTS : ret(%d)\n", r);
             }
         }
-        r = tts_add_text(tts, str, "en_US", TTS_VOICE_TYPE_FEMALE, TTS_SPEED_NORMAL, &utt_id);
+        r = tts_add_text(tts, str, NULL, TTS_VOICE_TYPE_AUTO, TTS_SPEED_AUTO, &utt_id);
         if (TTS_ERROR_NONE == r) {
             r = tts_play(tts);
             if (TTS_ERROR_NONE != r) {
