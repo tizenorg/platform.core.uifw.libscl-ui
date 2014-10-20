@@ -165,7 +165,7 @@ sclboolean get_window_rect(const sclwindow window, SclRectangle *rect)
     return ret;
 }
 
-/**  Here x and y contains "actual" x and y position relative to portrait root window, 
+/**  Here x and y contains "actual" x and y position relative to portrait root window,
      and winctx->width,height contains the window's orientation dependant width and height */
 SclPoint get_rotated_local_coords(sclint x, sclint y, SCLRotation rotation, SclRectangle *rect) {
     SclPoint ret = {0, 0};
@@ -514,32 +514,32 @@ Eina_Bool key_pressed(void *data, int type, void *event_info)
         sclshort x,y,width,height;
         if (prevcoordinate->x < coordinate->x) {
             x = prevcoordinate->x;
-        } else { 
+        } else {
             x = coordinate->x;
         }
 
         if (prevcoordinate->y < coordinate->y) {
             y = prevcoordinate->y;
-        } else { 
+        } else {
             y = coordinate->y;
         }
 
         if (prevcoordinate->x + prevcoordinate->width > coordinate->x + coordinate->width) {
             width = prevcoordinate->x + prevcoordinate->width - x;
-        } else { 
+        } else {
             width = coordinate->x + coordinate->width - x;
         }
 
         if (prevcoordinate->y + prevcoordinate->height > coordinate->y + coordinate->height) {
             height = prevcoordinate->y + prevcoordinate->height - y;
-        } else { 
+        } else {
             height = coordinate->y + coordinate->height - y;
         }
         windows->update_window(window, x, y, width, height);
 
     } else {
     }
-    
+
     return TRUE;
 }
 #endif /*HANDLE_KEY_EVENTS*/
@@ -714,7 +714,7 @@ Eina_Bool timer_event(void *data)
     CSCLUtils *utils = CSCLUtils::get_instance();
     CSCLController *controller = CSCLController::get_instance();
 
-	scl32 sendData = static_cast<scl32>(reinterpret_cast<uintptr_t>(data) & 0xffffffff);
+    scl32 sendData = static_cast<scl32>(reinterpret_cast<uintptr_t>(data) & 0xffffffff);
 
     if (controller && utils) {
         scl16 id = SCL_LOWORD(sendData); /* Timer ID */

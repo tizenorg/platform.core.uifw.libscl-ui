@@ -380,7 +380,7 @@ gboolean
 timer_event(gpointer data)
 {
     SCL_DEBUG();
-	scl32 sendData = static_cast<scl32>(reinterpret_cast<uintptr_t>(data) & 0xffffffff);
+    scl32 sendData = static_cast<scl32>(reinterpret_cast<uintptr_t>(data) & 0xffffffff);
     CSCLController *controller;
     controller = CSCLController::get_instance();
     if (controller) {
