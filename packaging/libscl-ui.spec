@@ -5,8 +5,8 @@ Name:       libscl-ui
 Summary:    A library for developing XML-based software keyboards
 Version:    0.4.7
 Release:    1
-Group:      TO BE / FILLED IN
-License:    TO BE / FILLED IN
+Group:      System Environment/Libraries
+License:    Apache License, Version 2.0
 Source0:    libscl-ui-%{version}.tar.gz
 BuildRequires:  gettext-tools
 BuildRequires:  cmake
@@ -43,7 +43,7 @@ make %{?jobs:-j%jobs}
 %install
 rm -rf %{buildroot}
 mkdir -p %{buildroot}/usr/share/license
-cp LICENSE.Flora %{buildroot}/usr/share/license/%{name}
+cp LICENSE %{buildroot}/usr/share/license/%{name}
 
 %make_install
 
