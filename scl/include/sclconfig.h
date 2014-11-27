@@ -18,6 +18,9 @@
 #ifndef __SCL_CONFIG_H__
 #define __SCL_CONFIG_H__
 
+namespace scl
+{
+
 #ifndef IMG_PATH_PREFIX
 #define IMG_PATH_PREFIX "image"
 #endif
@@ -461,5 +464,7 @@ typedef enum _SCLDebugMode {
     DEBUGMODE_DISPLAY_INTERNAL,
     DEBUGMODE_AUTOTEST,
 }SCLDebugMode;
+
+}
 
 #endif //__SCL_CONFIG_H__

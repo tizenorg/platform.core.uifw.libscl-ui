@@ -26,6 +26,8 @@
 #define MAX_SCL_LABEL_PROPERTIES 128
 #define MAX_SCL_MODIFIER_DECORATION_NUM 64
 
+using namespace scl;
+
 typedef SclInputModeConfigure (*PSclInputModeConfigure);
 typedef SclLayout (*PSclLayout);
 

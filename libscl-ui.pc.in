@@ -8,6 +8,7 @@ includedir=${prefix}/include
 Name: libscl-ui
 Description: SCL UI - A library for developing XML-based software keyboards
 Version: 1.0
+Requires: libscl-common
 Libs: -L${libdir} -lscl-ui
 Cflags: -I${includedir}/libscl-ui
 

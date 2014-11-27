@@ -21,6 +21,9 @@
 #include <limits.h>
 #include <libxml/parser.h>
 #include "scltypes.h"
+
+using namespace scl;
+
 int get_content_int(const xmlNodePtr cur_node);
 bool get_content_bool(const xmlNodePtr cur_node);
 

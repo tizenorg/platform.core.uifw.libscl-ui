@@ -19,6 +19,7 @@
 #define __SCL_UI_H__
 
 #include "scltypes.h"
+#include "sclconfig.h"
 #include "sclstructs.h"
 #include "scleventcallback.h"
 

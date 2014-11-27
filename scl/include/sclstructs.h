@@ -24,6 +24,9 @@
 
 //SCL_BEGIN_DECLS
 
+namespace scl
+{
+
 /**
   *@brief SCL input mode configuration structure, which indicates a type of SW keyboard
   */
@@ -418,6 +421,9 @@ typedef struct _SclModifierDecoration {
     /* Background image file for decoration */
     sclchar *bg_image_path[DISPLAYMODE_MAX][KEY_MODIFIER_MAX];
 }SclModifierDecoration;
+
+
+}
 
 //SCL_END_DECLS
 
