@@ -220,7 +220,7 @@ CSCLGraphicsImplEfl::draw_image(sclwindow window, const scldrawctx draw_ctx, scl
             if (!bFound) {
 #endif
             EFLObject *clip_object = NULL;
-            
+
             Evas_Object *window_object = (Evas_Object*)window;
             if (window_context->is_virtual) {
                 window_object = static_cast<Evas_Object*>(windows->get_base_window());

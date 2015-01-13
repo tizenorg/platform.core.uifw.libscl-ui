@@ -27,7 +27,7 @@
 
 #include <Elementary.h>
 #include <Ecore_X.h>
-#include <dlog.h> /*CHK_MRUNAL*/
+#include <dlog.h>
 #include <utilX.h>
 
 #include "sclkeyfocushandler.h"
@@ -52,7 +52,7 @@ Eina_Bool mouse_release (void *data, int type, void *event_info);
 Eina_Bool client_message_cb(void *data, int type, void *event);
 
 #ifdef HANDLE_KEY_EVENTS
-Eina_Bool key_pressed(void *data, int type, void *event_info);/*CHK_MRUNAL*/
+Eina_Bool key_pressed(void *data, int type, void *event_info);
 #endif
 
 /**
@@ -89,7 +89,7 @@ void CSCLEventsImplEfl::init()
 
     m_xclient_msg_handler = ecore_event_handler_add(ECORE_X_EVENT_CLIENT_MESSAGE, client_message_cb, NULL);
 #ifdef HANDLE_KEY_EVENTS
-    m_key_pressed_handler = ecore_event_handler_add(ECORE_EVENT_KEY_DOWN, key_pressed, NULL);/*CHK_MRUNAL*/
+    m_key_pressed_handler = ecore_event_handler_add(ECORE_EVENT_KEY_DOWN, key_pressed, NULL);
 #endif
 }
 
@@ -454,7 +454,6 @@ Eina_Bool mouse_release (void *data, int type, void *event_info)
 }
 
 #ifdef HANDLE_KEY_EVENTS
-/*CHK_MRUNAL*/
 Eina_Bool key_pressed(void *data, int type, void *event_info)
 {
     LOGD("=-=-=-=- key_pressed \n");
@@ -659,12 +658,12 @@ Eina_Bool mouse_move (void *data, int type, void *event_info)
 
 /**
  * Regists a event callback func to given window.
- * In this function, it should call serveral event functions of CSCLController class whenever an event has occured
+ * In this function, it should call several event functions of CSCLController class whenever an event has occurred
  * The below list shows what event function should be called.
  * - mouse_press (when the user presses mouse button)
  * - mouse_release (when the user releases mouse button)
  * - mouse_move (when the user drags mouse button)
- * - show_base_layout (when the expost event has occured)
+ * - show_base_layout (when the expost event has occurred)
  */
 void
 CSCLEventsImplEfl::connect_window_events(const sclwindow wnd, const sclint evt)
@@ -783,7 +782,7 @@ CSCLEventsImplEfl::destroy_all_timer()
 
         CSCLUtils *utils = CSCLUtils::get_instance();
         if (utils) {
-            utils->log("Destoyed Timer : %d %p\n", (*idx).first, (*idx).second);
+            utils->log("Destroyed Timer : %d %p\n", (*idx).first, (*idx).second);
         }
     }
     idMap.clear();

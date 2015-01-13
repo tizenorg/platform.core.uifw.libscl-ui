@@ -31,7 +31,7 @@
 #include <X11/Xatom.h>
 #include <X11/Xutil.h>
 #include <utilX.h>
-#include <dlog.h>/*CHK_MRUNAL*/
+#include <dlog.h>
 #include "sclkeyfocushandler.h"
 
 using namespace scl;
@@ -574,7 +574,6 @@ CSCLWindowsImplEfl::hide_window(const sclwindow window,  sclboolean fForce)
 
     if (windows && window) {
 #ifdef USING_KEY_GRAB
-    /*CHK_MRUNAL*/
     if (window == windows->get_base_window()) {
         CSCLKeyFocusHandler* focus_handler = CSCLKeyFocusHandler::get_instance();
         focus_handler->ungrab_keyboard(window);
