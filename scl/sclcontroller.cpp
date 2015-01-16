@@ -3282,6 +3282,9 @@ CSCLController::timer_event(const scl32 data)
     scl16 id = SCL_LOWORD(data); /* Timer ID */
     scl16 value = SCL_HIWORD(data); /* event unique ID */
 
+    if (!windows || !context || !events || !state || !cache || !handler)
+        return FALSE;
+
     switch (id) {
     case SCL_TIMER_AUTOPOPUP: {
         /* Checks whether my event id is availble */
@@ -3314,7 +3317,7 @@ CSCLController::timer_event(const scl32 data)
             if (button_context) {
                 if (button_context->state == BUTTON_STATE_PRESSED) {
                     button_context->state = BUTTON_STATE_NORMAL;
-                    if (windows && coordinate) {
+                    if (coordinate) {
                         windows->update_window(window, coordinate->x, coordinate->y, coordinate->width, coordinate->height);
                     }
                 }
@@ -3363,7 +3366,7 @@ CSCLController::timer_event(const scl32 data)
             }
             //printf("AUTOPOPUP : %d %d\n", moving_point.x, moving_point.y);
 
-            if (windows && coordinate) {
+            if (coordinate) {
                 windows->update_window(window, coordinate->x, coordinate->y, coordinate->width, coordinate->height);
             }
         }
@@ -3490,7 +3493,7 @@ CSCLController::timer_event(const scl32 data)
         desc.timed_out = TRUE;
 
         SclResParserManager *sclres_manager = SclResParserManager::get_instance();
-        if (windows && sclres_manager) {
+        if (sclres_manager) {
             const PSclInputModeConfigure sclres_input_mode_configure =
                 sclres_manager->get_input_mode_configure_table();
             sclwindow window = windows->get_nth_popup_window(SCL_WINDOW_Z_TOP);

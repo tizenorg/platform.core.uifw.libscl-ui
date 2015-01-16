@@ -109,7 +109,8 @@ parsing_field(const xmlNodePtr node, MetaData_Field& data, const MetaData_Width&
     xmlChar* name = xmlGetProp(node, (const xmlChar*)"name");
     if (name == NULL) return -1;
     /*FIXME strncpy ?*/
-    strcpy(data.m_name, (const char*)name);
+    strncpy(data.m_name, (const char*)name, sizeof(data.m_name));
+    data.m_name[sizeof(data.m_name)-1] = '\0';
     xmlFree(name);
 
     xmlChar* type = xmlGetProp(node, (const xmlChar*)"type");
@@ -118,25 +119,28 @@ parsing_field(const xmlNodePtr node, MetaData_Field& data, const MetaData_Width&
     int ret = 0;
     if (0 == xmlStrcmp(type, (const xmlChar*)"string_id")) {
         /*FIXME use vaule instead string*/
-        strcpy(data.m_type, (const char*)type);
+        strncpy(data.m_type, (const char*)type, sizeof(data.m_type));
+        data.m_type[sizeof(data.m_type) - 1] = '\0';
         data.m_width = metadataWidth.string_id_width;
     } else if ( 0 == xmlStrcmp(type, (const xmlChar*)"int8")) {
-        strcpy(data.m_type, (const char*)type);
+        strncpy(data.m_type, (const char*)type, sizeof(data.m_type));
+        data.m_type[sizeof(data.m_type) - 1] = '\0';
         data.m_width = 1;
-
     } else if ( 0 == xmlStrcmp(type, (const xmlChar*)"int16")) {
-        strcpy(data.m_type, (const char*)type);
+        strncpy(data.m_type, (const char*)type, sizeof(data.m_type));
+        data.m_type[sizeof(data.m_type) - 1] = '\0';
         data.m_width = 2;
-
     } else if ( 0 == xmlStrcmp(type, (const xmlChar*)"int32")) {
-        strcpy(data.m_type, (const char*)type);
+        strncpy(data.m_type, (const char*)type, sizeof(data.m_type));
+        data.m_type[sizeof(data.m_type) - 1] = '\0';
         data.m_width = 4;
-
     } else if ( 0 == xmlStrcmp(type, (const xmlChar*)"float32")) {
-        strcpy(data.m_type, (const char*)type);
+        strncpy(data.m_type, (const char*)type, sizeof(data.m_type));
+        data.m_type[sizeof(data.m_type) - 1] = '\0';
         data.m_width = 4;
     } else if ( 0 == xmlStrcmp(type, (const xmlChar*)"float64")) {
-        strcpy(data.m_type, (const char*)type);
+        strncpy(data.m_type, (const char*)type, sizeof(data.m_type));
+        data.m_type[sizeof(data.m_type) - 1] = '\0';
         data.m_width = 8;
     }
     else{
@@ -153,7 +157,8 @@ parsing_record(const xmlNodePtr curNode, MetaData_Record& metadataRecord, const 
     //parsing struct name
     xmlChar* name = xmlGetProp(curNode, (const xmlChar*)"name");
     if (name == NULL) return -1;
-    strcpy(metadataRecord.m_name, (const char*)name);
+    strncpy(metadataRecord.m_name, (const char*)name, sizeof(metadataRecord.m_name));
+    metadataRecord.m_name[sizeof(metadataRecord.m_name)-1] = '\0';
     xmlFree(name);
 
     xmlNodePtr childNode = curNode->xmlChildrenNode;
@@ -227,7 +232,8 @@ parsing_metadata() {
 
     xmlChar* version = xmlGetProp(curNode, (const xmlChar*)"version");
     if (version) {
-        strcpy(metadata.m_version, (const char*)version);
+        strncpy(metadata.m_version, (const char*)version, sizeof(metadata.m_version));
+        metadata.m_version[sizeof(metadata.m_version)-1] = '\0';
         xmlFree(version);
     } else {
         strcpy(metadata.m_version, (const char*)"");

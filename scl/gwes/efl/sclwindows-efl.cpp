@@ -119,7 +119,7 @@ CSCLWindowsImplEfl::create_base_window(const sclwindow parent, SclWindowContext 
     if (window_context) {
         window_context->etc_info = NULL;
         window_context->window = parent;
-    
+
     //Adding window show event handler:mrunal.s
     _candidate_show_handler = ecore_event_handler_add (ECORE_X_EVENT_WINDOW_SHOW, x_event_window_show_cb, NULL);
 
@@ -196,7 +196,7 @@ CSCLWindowsImplEfl::create_window(const sclwindow parent, SclWindowContext *wind
 
     set_window_accepts_focus(win, FALSE);
 
-    /*ecore_x_icccm_transient_for_set(elm_win_xwindow_get(static_cast<Evas_Object*>(win)), 
+    /*ecore_x_icccm_transient_for_set(elm_win_xwindow_get(static_cast<Evas_Object*>(win)),
         elm_win_xwindow_get(static_cast<Evas_Object*>(parent)));*/
 
     Ecore_X_Atom ATOM_WINDOW_EFFECT_ENABLE  = 0;
@@ -277,7 +277,7 @@ CSCLWindowsImplEfl::create_magnifier_window(const sclwindow parent, SclWindowCon
 
     set_window_accepts_focus(win, FALSE);
 
-    /*ecore_x_icccm_transient_for_set(elm_win_xwindow_get(static_cast<Evas_Object*>(win)), 
+    /*ecore_x_icccm_transient_for_set(elm_win_xwindow_get(static_cast<Evas_Object*>(win)),
         elm_win_xwindow_get(static_cast<Evas_Object*>(parent)));*/
 
     Ecore_X_Atom ATOM_WINDOW_EFFECT_ENABLE  = 0;
@@ -334,7 +334,7 @@ CSCLWindowsImplEfl::create_dim_window(const sclwindow parent, SclWindowContext *
 
     set_window_accepts_focus(win, FALSE);
 
-    /*ecore_x_icccm_transient_for_set(elm_win_xwindow_get(static_cast<Evas_Object*>(win)), 
+    /*ecore_x_icccm_transient_for_set(elm_win_xwindow_get(static_cast<Evas_Object*>(win)),
         elm_win_xwindow_get(static_cast<Evas_Object*>(parent)));*/
 
     Ecore_X_Atom ATOM_WINDOW_EFFECT_ENABLE  = 0;
@@ -386,7 +386,7 @@ CSCLWindowsImplEfl::set_parent(const sclwindow parent, const sclwindow window)
     SCL_DEBUG();
 
     if (parent && window) {
-        ecore_x_icccm_transient_for_set(elm_win_xwindow_get(static_cast<Evas_Object*>(window)), 
+        ecore_x_icccm_transient_for_set(elm_win_xwindow_get(static_cast<Evas_Object*>(window)),
                 elm_win_xwindow_get(static_cast<Evas_Object*>(parent)));
     }
 }
@@ -410,82 +410,78 @@ CSCLWindowsImplEfl::destroy_window(sclwindow window)
     CSCLUtils *utils = CSCLUtils::get_instance();
 
     SclWindowContext *window_context = NULL;
-    if (windows && window) {
+    if (windows && window && utils) {
         window_context = windows->get_window_context(window);
-    }
+        if (window_context) {
+            utils->log("WinEfl_destroywin %p %p (basewin %p mag %p)\n", window,
+                (!(window_context->is_virtual)) ? elm_win_xwindow_get(static_cast<Evas_Object*>(window)) : 0x01,
+                windows->get_base_window(), windows->get_magnifier_window());
+            if (window_context->etc_info) {
+                Eina_List *list = (Eina_List*)(window_context->etc_info);
+                Eina_List *iter = NULL;
+                Eina_List *iter_next = NULL;
+                void *data = NULL;
 
-    utils->log("WinEfl_destroywin %p %p (basewin %p mag %p)\n",
-        window,
-        (window_context && !(window_context->is_virtual)) ? elm_win_xwindow_get(static_cast<Evas_Object*>(window)) : 0x01,
-        windows->get_base_window(), windows->get_magnifier_window());
-
-    if (windows && utils && window_context) {
-        if (window_context->etc_info) {
-            Eina_List *list = (Eina_List*)(window_context->etc_info);
-            Eina_List *iter = NULL;
-            Eina_List *iter_next = NULL;
-            void *data = NULL;
-
-            EINA_LIST_FOREACH_SAFE(list, iter, iter_next, data) {
-                if (data) {
-                    EFLObject *object = (EFLObject*)(data);
-                    if (object) {
-                        Evas_Object* eo = object->object;
-                        if (object->extracted) {
-                            //evas_object_image_data_set(eo, NULL);
-                            void *image_data = evas_object_image_data_get(eo, 1);
-                            if (image_data) {
-                                free(image_data);
-                            }
-                        }
-                        if (eo) {
-                            evas_object_del(eo);
-                            object->object = NULL;
-                        }
-                        if (object->type == EFLOBJECT_TEXTBLOCK) {
-                            Evas_Textblock_Style *st = (Evas_Textblock_Style*)(object->data);
-                            if (st) {
-                                evas_textblock_style_free(st);
-                            }
-#ifdef TEST_NEWBACKEND
-                            for(sclint loop = 0;loop < g_TextCache.size();loop++) {
-                                if (g_TextCache[loop].text == object->object) {
-                                    g_TextCache[loop].used = FALSE;
+                EINA_LIST_FOREACH_SAFE(list, iter, iter_next, data) {
+                    if (data) {
+                        EFLObject *object = (EFLObject*)(data);
+                        if (object) {
+                            Evas_Object* eo = object->object;
+                            if (object->extracted) {
+                                //evas_object_image_data_set(eo, NULL);
+                                void *image_data = evas_object_image_data_get(eo, 1);
+                                if (image_data) {
+                                    free(image_data);
                                 }
                             }
-#endif
-                        } else if (object->type == EFLOBJECT_IMAGE) {
-#ifdef TEST_NEWBACKEND
-                            for(sclint loop = 0;loop < g_ImageCache.size();loop++) {
-                                if (g_ImageCache[loop].image == object->object) {
-                                    g_ImageCache[loop].used = FALSE;
-                                }
+                            if (eo) {
+                                evas_object_del(eo);
+                                object->object = NULL;
                             }
+                            if (object->type == EFLOBJECT_TEXTBLOCK) {
+                                Evas_Textblock_Style *st = (Evas_Textblock_Style*)(object->data);
+                                if (st) {
+                                    evas_textblock_style_free(st);
+                                }
+#ifdef TEST_NEWBACKEND
+                                for(sclint loop = 0;loop < g_TextCache.size();loop++) {
+                                    if (g_TextCache[loop].text == object->object) {
+                                        g_TextCache[loop].used = FALSE;
+                                    }
+                                }
 #endif
+                            } else if (object->type == EFLOBJECT_IMAGE) {
+#ifdef TEST_NEWBACKEND
+                                for(sclint loop = 0;loop < g_ImageCache.size();loop++) {
+                                    if (g_ImageCache[loop].image == object->object) {
+                                        g_ImageCache[loop].used = FALSE;
+                                    }
+                                }
+#endif
+                            }
+                            delete object;
                         }
-                        delete object;
                     }
+                    list = eina_list_remove_list(list, iter);
                 }
-                list = eina_list_remove_list(list, iter);
+                window_context->etc_info = NULL;
             }
-            window_context->etc_info = NULL;
-        }
 
-        if (!(window_context->is_virtual)) {
-            /* FIXME : A workaround for the bug that event on a window being hidden is delivered to
-                e17, instead of the window itself or the window right below - Should report to WM */
-            if (window == windows->get_nth_popup_window(SCL_WINDOW_Z_TOP)) {
-                ecore_timer_add(0.1f, destroy_later, (void*)window);
-            } else {
-                Evas_Object *win = (Evas_Object*)window;
-                evas_object_hide(win);
-                evas_object_del(win);
+            if (!(window_context->is_virtual)) {
+                /* FIXME : A workaround for the bug that event on a window being hidden is delivered to
+                    e17, instead of the window itself or the window right below - Should report to WM */
+                if (window == windows->get_nth_popup_window(SCL_WINDOW_Z_TOP)) {
+                    ecore_timer_add(0.1f, destroy_later, (void*)window);
+                } else {
+                    Evas_Object *win = (Evas_Object*)window;
+                    evas_object_hide(win);
+                    evas_object_del(win);
+                }
             }
+            utils->log("WinEfl_destroywin %p %p (basewin %p mag %p)\n", window,
+                (window_context && !(window_context->is_virtual)) ? elm_win_xwindow_get(static_cast<Evas_Object*>(window)) : 0x01,
+                windows->get_base_window(), windows->get_magnifier_window());
         }
-        utils->log("WinEfl_destroywin %p %p (basewin %p mag %p)\n",
-            window,
-            (window_context && !(window_context->is_virtual)) ? elm_win_xwindow_get(static_cast<Evas_Object*>(window)) : 0x01,
-            windows->get_base_window(), windows->get_magnifier_window());
     }
 
     return TRUE;

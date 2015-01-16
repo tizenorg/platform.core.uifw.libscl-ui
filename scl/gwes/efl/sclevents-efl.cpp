@@ -356,11 +356,12 @@ Eina_Bool mouse_release (void *data, int type, void *event_info)
 
     //Evas_Event_Mouse_Up *ev = (Evas_Event_Mouse_Up*)event_info;
     Ecore_Event_Mouse_Button *ev = (Ecore_Event_Mouse_Button*)event_info;
-    LOGD("mouse_release : %d %d, %d %d\n", ev->root.x, ev->root.y, ev->x, ev->y);
 
     //if (!mouse_pressed) return FALSE;
 
     if (controller && windows && context && ev) {
+        LOGD("mouse_release : %d %d, %d %d\n", ev->root.x, ev->root.y, ev->x, ev->y);
+
         sclbyte index = 0;
         sclboolean processed = FALSE;
         sclwindow window = SCLWINDOW_INVALID;
@@ -555,7 +556,6 @@ Eina_Bool mouse_move (void *data, int type, void *event_info)
 
     //Evas_Event_Mouse_Move *ev = (Evas_Event_Mouse_Move*)event_info;
     Ecore_Event_Mouse_Move *ev = (Ecore_Event_Mouse_Move*)event_info;
-    LOGD("mouse_move : %d %d, %d %d\n", ev->root.x, ev->root.y, ev->x, ev->y);
 
     //if (!mouse_pressed) return FALSE;
 
@@ -564,6 +564,8 @@ Eina_Bool mouse_move (void *data, int type, void *event_info)
         sclboolean processed = FALSE;
         sclwindow window = SCLWINDOW_INVALID;
         SclRectangle rect;
+
+        LOGD("mouse_move : %d %d, %d %d\n", ev->root.x, ev->root.y, ev->x, ev->y);
 
         if (context->get_cur_pressed_window(ev->multi.device) != SCLWINDOW_INVALID &&
             get_window_rect(context->get_cur_pressed_window(ev->multi.device), &rect)) {

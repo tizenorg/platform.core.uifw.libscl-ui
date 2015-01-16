@@ -103,8 +103,8 @@ static void handle_shift_state_on_button_click_event(SclUIEventDesc ui_event_des
         turn_shift_off = FALSE;
     }
     /* If we are in ON_PRESSED or ON_KEY_ENTERED mode of shift multi touch state, do not turn it off now */
-    if (context->get_shift_multi_touch_enabled() && turn_shift_off) {
-        if (context) {
+    if (context) {
+        if (context->get_shift_multi_touch_enabled() && turn_shift_off) {
             if (context->get_shift_multi_touch_state() == SCL_SHIFT_MULTITOUCH_ON_PRESSED) {
                 context->set_shift_multi_touch_state(SCL_SHIFT_MULTITOUCH_ON_KEY_ENTERED);
                 turn_shift_off = FALSE;
