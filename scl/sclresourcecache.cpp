@@ -954,14 +954,14 @@ CSCLResourceCache::recompute_layout(sclwindow window)
                     }
 
                     CSCLKeyFocusHandler* focus_handler = CSCLKeyFocusHandler::get_instance();
-                    //reset navigation info:mrunal.s
+                    //reset navigation info
                     focus_handler->reset_key_navigation_info(window);
                     for (loop = 0;loop < MAX_KEY;loop++) {
                         SclLayoutKeyCoordinatePointer p = sclres_layout_key_coordinate_pointer_frame[layout][loop];
                         if (p && p->valid) {
-                            //BUILDING KEY NAVIGATION INFO:mrunal.s
+                            //BUILDING KEY NAVIGATION INFO
                             focus_handler->update_key_navigation_info(window, loop, p);
-                            //BUILDING KEY NAVIGATION INFO COMPLETED:mrunal.s
+                            //BUILDING KEY NAVIGATION INFO COMPLETED
                             (*pCurButtonContext)[loop].used = TRUE;
                             if (popupindex != NOT_USED) {
                                 change_by_privatekey(inputmode, layout, loop, &(mCurPopupLayoutKeyCoordinates[popupindex][loop]));
@@ -1014,7 +1014,7 @@ CSCLResourceCache::recompute_layout(sclwindow window)
                             }
                         }
                     }
-                    //finalize navigation info:mrunal.s
+                    //finalize navigation info
                     focus_handler->finalize_key_navigation_info(window);
                 }
             }

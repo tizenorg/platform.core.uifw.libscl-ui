@@ -120,9 +120,8 @@ CSCLWindowsImplEfl::create_base_window(const sclwindow parent, SclWindowContext 
         window_context->etc_info = NULL;
         window_context->window = parent;
 
-    //Adding window show event handler:mrunal.s
+    //Adding window show event handler
     _candidate_show_handler = ecore_event_handler_add (ECORE_X_EVENT_WINDOW_SHOW, x_event_window_show_cb, NULL);
-
 
 #ifndef APPLY_WINDOW_MANAGER_CHANGE
         ecore_x_icccm_name_class_set(elm_win_xwindow_get(static_cast<Evas_Object*>(parent)), "Virtual Keyboard", "ISF" );
