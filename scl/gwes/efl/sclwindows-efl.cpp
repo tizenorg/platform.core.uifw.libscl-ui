@@ -195,9 +195,6 @@ CSCLWindowsImplEfl::create_window(const sclwindow parent, SclWindowContext *wind
 
     set_window_accepts_focus(win, FALSE);
 
-    /*ecore_x_icccm_transient_for_set(elm_win_xwindow_get(static_cast<Evas_Object*>(win)),
-        elm_win_xwindow_get(static_cast<Evas_Object*>(parent)));*/
-
     Ecore_X_Atom ATOM_WINDOW_EFFECT_ENABLE  = 0;
     unsigned int effect_state = 0; // 0 -> disable effect 1-> enable effect
 
@@ -234,16 +231,11 @@ CSCLWindowsImplEfl::create_magnifier_window(const sclwindow parent, SclWindowCon
     SCL_DEBUG();
 
     Evas_Object *win = NULL;
-    win = elm_win_add(static_cast<Evas_Object*>(parent), "Magnfier", ELM_WIN_BASIC);
+    win = elm_win_add(static_cast<Evas_Object*>(parent), "Magnifier", ELM_WIN_BASIC);
 
     elm_win_borderless_set(win, EINA_TRUE);
     elm_win_alpha_set(win, EINA_TRUE);
     elm_win_title_set(win, "Keyboard Magnifier Window");
-
-    /*
-     * FIXME set override to let window manager responds elm_win_raise request
-     */
-    //elm_win_override_set(win, EINA_TRUE);
 
 #ifdef DO_NOT_MOVE_MAGNIFIER_WINDOW
     CSCLUtils *utils = CSCLUtils::get_instance();
@@ -275,9 +267,6 @@ CSCLWindowsImplEfl::create_magnifier_window(const sclwindow parent, SclWindowCon
     ecore_x_icccm_name_class_set(elm_win_xwindow_get(static_cast<Evas_Object*>(win)), "Key Magnifier", "ISF");
 
     set_window_accepts_focus(win, FALSE);
-
-    /*ecore_x_icccm_transient_for_set(elm_win_xwindow_get(static_cast<Evas_Object*>(win)),
-        elm_win_xwindow_get(static_cast<Evas_Object*>(parent)));*/
 
     Ecore_X_Atom ATOM_WINDOW_EFFECT_ENABLE  = 0;
     unsigned int effect_state = 0; // 0 -> disable effect 1-> enable effect
@@ -333,9 +322,6 @@ CSCLWindowsImplEfl::create_dim_window(const sclwindow parent, SclWindowContext *
 
     set_window_accepts_focus(win, FALSE);
 
-    /*ecore_x_icccm_transient_for_set(elm_win_xwindow_get(static_cast<Evas_Object*>(win)),
-        elm_win_xwindow_get(static_cast<Evas_Object*>(parent)));*/
-
     Ecore_X_Atom ATOM_WINDOW_EFFECT_ENABLE  = 0;
     unsigned int effect_state = 0; // 0 -> disable effect 1-> enable effect
 
@@ -364,7 +350,6 @@ CSCLWindowsImplEfl::create_dim_window(const sclwindow parent, SclWindowContext *
     evas_object_color_set(bg, color.r, color.g, color.b, color.a);
     evas_object_show(bg);*/
 
-    //elm_win_override_set(win, EINA_TRUE);
     hide_window(win);
 
     if (utils) {
@@ -604,7 +589,6 @@ CSCLWindowsImplEfl::hide_window(const sclwindow window,  sclboolean fForce)
 
     if (windows && utils && window) {
         // Memory optimization */
-        //if (window == windows->get_magnifier_window() || TRUE) {
         if (window == windows->get_magnifier_window() || window == windows->get_dim_window()) {
             if (window_context) {
                 if (window_context->etc_info) {
@@ -693,7 +677,6 @@ CSCLWindowsImplEfl::move_window(const sclwindow window, scl16 x, scl16 y)
     CSCLWindows *windows = CSCLWindows::get_instance();
 
     if (utils && context && windows && window) {
-        //SclWindowContext *window_context = windows->get_window_context(window, FALSE);
         SclWindowContext *window_context = windows->get_window_context(window);
         unsigned short win_width = 0;
         unsigned short win_height = 0;
@@ -1145,8 +1128,6 @@ void release_all(Evas_Object *win)
     //LOGD("HIDE_WINDOW : %p\n", window);
 
     CSCLWindows *windows = CSCLWindows::get_instance();
-    //if (window == windows->get_magnifier_window()) {
-        //SclWindowContext *window_context = windows->get_window_context(win, FALSE);
     SclWindowContext *window_context = windows->get_window_context(win);
         if (window_context && win) {
             if (window_context->etc_info) {
