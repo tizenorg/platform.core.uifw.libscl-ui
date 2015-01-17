@@ -283,7 +283,7 @@ CSCLKeyFocusHandler::get_next_candidate_key(SCLHighlightNavigationDirection dire
                     }
                 }
                 SclWindowContext *window_context = windows->get_window_context(window);
-                SclRectangle btn;
+                SclRectangle btn = {0, 0, 0, 0};
                 if (window_context) {
                     btn.x = p->x + window_context->geometry.x;
                     btn.y = p->y + window_context->geometry.y;
@@ -523,7 +523,7 @@ CSCLKeyFocusHandler::process_navigation(SCLHighlightNavigationDirection directio
                 base_key_coordinate.y += cache->get_custom_starting_coordinates().y;
             }
 
-            SclRectangle popup_key_coordinate;
+            SclRectangle popup_key_coordinate = {0, 0, 0, 0};
             if (popup_window_context) {
                 popup_key_coordinate.x = popup_key->x + popup_window_context->geometry.x;
                 popup_key_coordinate.y = popup_key->y + popup_window_context->geometry.y;
