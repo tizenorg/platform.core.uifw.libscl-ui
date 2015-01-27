@@ -187,8 +187,7 @@ CSCLWindowsImplEfl::create_window(const sclwindow parent, SclWindowContext *wind
     //evas_object_resize(win, width, height);
 #endif
 
-    const char *szProfile[] = {"mobile", ""};
-    elm_win_profiles_set(win, szProfile, 1);
+    elm_win_profile_set(win, "mobile");
 
 #ifndef APPLY_WINDOW_MANAGER_CHANGE
     ecore_x_icccm_name_class_set(elm_win_xwindow_get(static_cast<Evas_Object*>(win)), "ISF Popup", "ISF");
@@ -248,8 +247,7 @@ CSCLWindowsImplEfl::create_magnifier_window(const sclwindow parent, SclWindowCon
     //evas_object_resize(win, width, height);
 #endif
 
-    const char *szProfile[] = {"mobile", ""};
-    elm_win_profiles_set(win, szProfile, 1);
+    elm_win_profile_set(win, "mobile");
 
     ecore_x_e_window_rotation_geometry_set(elm_win_xwindow_get(win),
         rotation_values_EFL[ROTATION_0], 0, 0, width, height);
@@ -336,8 +334,7 @@ CSCLWindowsImplEfl::create_dim_window(const sclwindow parent, SclWindowContext *
     }
 #endif
 
-    const char *szProfile[] = {"mobile", ""};
-    elm_win_profiles_set(win, szProfile, 1);
+    elm_win_profile_set(win, "mobile");
 
     CSCLContext *context = CSCLContext::get_instance();
     set_window_rotation(win, context->get_rotation());
