@@ -5,8 +5,8 @@ Name:       libscl-ui
 Summary:    A library for developing XML-based software keyboards
 Version:    0.4.7
 Release:    1
-Group:      System Environment/Libraries
-License:    Apache License, Version 2.0
+Group:      Graphics & UI Framework/Input
+License:    Apache-2.0
 Source0:    libscl-ui-%{version}.tar.gz
 BuildRequires:  gettext-tools
 BuildRequires:  cmake
@@ -30,7 +30,7 @@ Group:      Development/Libraries
 Requires:   %{name} = %{version}-%{release}
 
 %description devel
-A devel pacakge of libscl-ui library that helps developing S/W Keyboard
+A devel package of libscl-ui library that helps developing S/W Keyboard
 
 %prep
 %setup -q
