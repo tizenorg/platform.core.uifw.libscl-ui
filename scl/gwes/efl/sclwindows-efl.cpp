@@ -137,6 +137,9 @@ CSCLWindowsImplEfl::create_base_window(const sclwindow parent, SclWindowContext 
         ret = window_context->window;
     }
 
+    int rots[4] = {0, 90, 180, 270};
+    elm_win_wm_rotation_available_rotations_set(static_cast<Evas_Object*>(parent), rots, 4);
+
     CSCLUtils *utils = CSCLUtils::get_instance();
     if (utils) {
         utils->log("WinEfl_createbasewin %p %p, %d %d\n",
@@ -314,6 +317,9 @@ CSCLWindowsImplEfl::create_dim_window(const sclwindow parent, SclWindowContext *
     elm_win_title_set(win, "Keyboard Dim Window");
 
     evas_object_resize(win, width, height);
+
+    int rots[4] = {0,90,180,270};
+    elm_win_wm_rotation_available_rotations_set(win, rots, 4);
 
 #ifndef APPLY_WINDOW_MANAGER_CHANGE
     ecore_x_icccm_name_class_set(elm_win_xwindow_get(static_cast<Evas_Object*>(win)), "ISF Popup", "ISF");
@@ -1069,10 +1075,6 @@ CSCLWindowsImplEfl::set_window_rotation(const sclwindow window, SCLRotation rota
             if (window_context->is_virtual) {
                 return;
             }
-        }
-
-        if (scl_check_arrindex(rotation, ROTATION_MAX)) {
-            elm_win_rotation_with_resize_set(static_cast<Evas_Object*>(window), rotation_values_EFL[rotation]);
         }
 
         XSizeHints hint;
