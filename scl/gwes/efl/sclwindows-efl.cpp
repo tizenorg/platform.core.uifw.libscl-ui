@@ -535,6 +535,8 @@ CSCLWindowsImplEfl::show_window(const sclwindow window, sclboolean queue)
              * N_SE-52548: ...and modified if() for other popup windows as well...
              */
             if (window_context && !(window_context->is_virtual)) {
+                ecore_x_icccm_transient_for_set
+                    (elm_win_xwindow_get(static_cast<Evas_Object*>(window)), app_window);
                 elm_win_raise((Evas_Object *)window);
             }
         }
