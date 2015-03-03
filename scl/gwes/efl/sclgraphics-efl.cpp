@@ -230,6 +230,11 @@ CSCLGraphicsImplEfl::draw_image(sclwindow window, const scldrawctx draw_ctx, scl
             Evas_Object *image_object = NULL;
             if (is_highlight_ui && m_highlight_ui_object) {
                 image_object = m_highlight_ui_object;
+                const SclNinePatchInfo *nine_patch_info = utils->get_nine_patch_info(image_path);
+                if (nine_patch_info) {
+                    evas_object_image_border_set(image_object,
+                            nine_patch_info->left, nine_patch_info->right, nine_patch_info->top, nine_patch_info->bottom);
+                }
                 evas_object_move(image_object, dest_x, dest_y);
                 evas_object_raise(image_object);
                 evas_object_show(image_object);

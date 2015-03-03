@@ -68,7 +68,11 @@ CSCLContext::reset()
     m_sounce_enabled = TRUE;
     m_vibration_enabled = TRUE;
     m_shift_multi_touch_enabled = TRUE;
+#ifdef _TV
+    m_highlight_ui_enabled = TRUE;
+#else
     m_highlight_ui_enabled = FALSE;
+#endif
     m_highlight_ui_animation_enabled = FALSE;
 
     m_tts_enabled = FALSE;
