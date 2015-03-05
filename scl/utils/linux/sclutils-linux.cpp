@@ -26,11 +26,11 @@
 #include <Ecore_Wayland.h>
 #else
 #include <Ecore_X.h>
+#include <tts.h>
 #endif
 #include <Ecore_Evas.h>
 #include <feedback.h>
 #include <Elementary.h>
-#include <tts.h>
 #include <vconf.h>
 
 #include <dlog.h>
@@ -40,7 +40,10 @@
 
 using namespace scl;
 
+#ifndef WAYLAND
 static tts_h tts = NULL;
+#endif
+
 #ifndef WAYLAND
 static Eina_Bool _get_default_zone_geometry_info (Ecore_X_Window root, scluint *x, scluint *y, scluint *w, scluint *h)
 {
@@ -84,6 +87,7 @@ static Eina_Bool _get_default_zone_geometry_info (Ecore_X_Window root, scluint *
 #endif
 void accessibility_changed_cb(keynode_t *key, void* data)
 {
+#ifndef WAYLAND
     int r;
     int enabled;
     if (vconf_get_int(VCONFKEY_SETAPPL_ACCESSIBILITY_TTS, &enabled)) {
@@ -133,6 +137,7 @@ void accessibility_changed_cb(keynode_t *key, void* data)
             }
         }
     }
+#endif
 }
 
 void
@@ -197,6 +202,7 @@ sclboolean
 CSCLUtilsImplLinux::play_tts(const sclchar* str) {
     SCL_DEBUG();
 
+#ifndef WAYLAND
     if (str) {
         int r;
         int utt_id = 0;
@@ -223,6 +229,7 @@ CSCLUtilsImplLinux::play_tts(const sclchar* str) {
             LOGD("Fail to add text : ret(%d)\n", r);
         }
     }
+#endif
 
     return TRUE;
 }
