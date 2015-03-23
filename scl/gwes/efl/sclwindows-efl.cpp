@@ -82,9 +82,9 @@ CSCLWindowsImplEfl::~CSCLWindowsImplEfl()
     SCL_DEBUG();
 }
 
+#ifndef WAYLAND
 static Ecore_Event_Handler *_candidate_show_handler         = NULL;
 
-#ifndef WAYLAND
 static Eina_Bool x_event_window_show_cb (void *data, int ev_type, void *event)
 {
     CSCLWindows *windows = CSCLWindows::get_instance();
@@ -101,7 +101,6 @@ static Eina_Bool x_event_window_show_cb (void *data, int ev_type, void *event)
     return ECORE_CALLBACK_RENEW;
 }
 #endif
-
 
 void CSCLWindowsImplEfl::init()
 {
@@ -132,11 +131,11 @@ CSCLWindowsImplEfl::create_base_window(const sclwindow parent, SclWindowContext 
         _candidate_show_handler = ecore_event_handler_add (ECORE_X_EVENT_WINDOW_SHOW, x_event_window_show_cb, NULL);
 #endif
 
+        set_window_accepts_focus(parent, FALSE);
+
 #ifndef APPLY_WINDOW_MANAGER_CHANGE
 #ifndef WAYLAND
         ecore_x_icccm_name_class_set(elm_win_xwindow_get(static_cast<Evas_Object*>(parent)), "Virtual Keyboard", "ISF" );
-
-        set_window_accepts_focus(parent, FALSE);
 #endif
 #else
         if (parent) {
@@ -176,6 +175,9 @@ CSCLWindowsImplEfl::create_window(const sclwindow parent, SclWindowContext *wind
     elm_win_alpha_set(win, EINA_TRUE);
     elm_win_title_set(win, "Keyboard Popup Window");
 
+    set_window_accepts_focus(win, FALSE);
+
+#ifndef WAYLAND
     scl16 new_width;
     scl16 new_height;
     CSCLContext *context = CSCLContext::get_instance();
@@ -187,7 +189,6 @@ CSCLWindowsImplEfl::create_window(const sclwindow parent, SclWindowContext *wind
         new_height = height;
     }
 
-#ifndef WAYLAND
     ecore_x_e_window_rotation_geometry_set(elm_win_xwindow_get(win),
         rotation_values_EFL[ROTATION_0], 0, 0, new_width, new_height);
     ecore_x_e_window_rotation_geometry_set(elm_win_xwindow_get(win),
@@ -208,8 +209,6 @@ CSCLWindowsImplEfl::create_window(const sclwindow parent, SclWindowContext *wind
 #ifndef APPLY_WINDOW_MANAGER_CHANGE
     ecore_x_icccm_name_class_set(elm_win_xwindow_get(static_cast<Evas_Object*>(win)), "ISF Popup", "ISF");
 
-    set_window_accepts_focus(win, FALSE);
-
     Ecore_X_Atom ATOM_WINDOW_EFFECT_ENABLE  = 0;
     unsigned int effect_state = 0; // 0 -> disable effect 1-> enable effect
 
@@ -222,7 +221,6 @@ CSCLWindowsImplEfl::create_window(const sclwindow parent, SclWindowContext *wind
             utils->log("Could not get _NET_CM_WINDOW_EFFECT_ENABLE ATOM \n");
         }
     }
-
 #endif
 
     set_window_rotation(win, context->get_rotation());
@@ -267,6 +265,8 @@ CSCLWindowsImplEfl::create_magnifier_window(const sclwindow parent, SclWindowCon
 
     elm_win_profile_set(win, "mobile");
 
+    set_window_accepts_focus(win, FALSE);
+
 #ifndef WAYLAND
     ecore_x_e_window_rotation_geometry_set(elm_win_xwindow_get(win),
         rotation_values_EFL[ROTATION_0], 0, 0, width, height);
@@ -282,8 +282,6 @@ CSCLWindowsImplEfl::create_magnifier_window(const sclwindow parent, SclWindowCon
 
 #ifndef APPLY_WINDOW_MANAGER_CHANGE
     ecore_x_icccm_name_class_set(elm_win_xwindow_get(static_cast<Evas_Object*>(win)), "Key Magnifier", "ISF");
-
-    set_window_accepts_focus(win, FALSE);
 
     Ecore_X_Atom ATOM_WINDOW_EFFECT_ENABLE  = 0;
     unsigned int effect_state = 0; // 0 -> disable effect 1-> enable effect
@@ -337,11 +335,11 @@ CSCLWindowsImplEfl::create_dim_window(const sclwindow parent, SclWindowContext *
     int rots[4] = {0,90,180,270};
     elm_win_wm_rotation_available_rotations_set(win, rots, 4);
 
+    set_window_accepts_focus(win, FALSE);
+
 #ifndef WAYLAND
 #ifndef APPLY_WINDOW_MANAGER_CHANGE
     ecore_x_icccm_name_class_set(elm_win_xwindow_get(static_cast<Evas_Object*>(win)), "ISF Popup", "ISF");
-
-    set_window_accepts_focus(win, FALSE);
 
     Ecore_X_Atom ATOM_WINDOW_EFFECT_ENABLE  = 0;
     unsigned int effect_state = 0; // 0 -> disable effect 1-> enable effect
