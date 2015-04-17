@@ -85,10 +85,12 @@ SclLog::log(enum LOG_LEVEL level, char* fmt, ...) {
     time(&now);
     timenow = localtime(&now);
 
-    fprintf(m_flog, "[ %s ] %s\n", log_message[level], asctime(timenow));
-    fprintf(m_flog, "\t%s\n", str_log);
+    if (timenow) {
+        fprintf(m_flog, "[ %s ] %s\n", log_message[level], asctime(timenow));
+        fprintf(m_flog, "\t%s\n", str_log);
 
-    fflush(m_flog);
+        fflush(m_flog);
+    }
 }
 
 void

@@ -905,7 +905,7 @@ CSCLUIBuilder::draw_button_bg_by_layoutimg(const sclwindow window, const scldraw
                     }
                 }
         }
-        if (!path_composed) {
+        if (!path_composed && layout) {
             m_utils->get_composed_path(composed_path, IMG_PATH_PREFIX, layout->image_path[state]);
         }
         /*if (g_key_spacing_off) {
@@ -992,11 +992,13 @@ CSCLUIBuilder::show_magnifier(const sclwindow window, scldrawctx draw_ctx)
     }
 
     /* Do not show if current layout does not allow magnifier */
-    if (!(layout->use_magnifier_window)) {
-        if (utils) {
-            utils->log("!(layout->use_magnifier_window \n");
+    if (layout) {
+        if (!(layout->use_magnifier_window)) {
+            if (utils) {
+                utils->log("!(layout->use_magnifier_window \n");
+            }
+            return FALSE;
         }
-        return FALSE;
     }
     if (coordinate) {
         /* Some key types do not use the magnifier window */

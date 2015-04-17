@@ -360,8 +360,10 @@ CSCLUtils::get_str_dup(const sclchar* str)
     if (str) {
         length = strlen(str) + 1;
         new_str = (sclchar*)malloc(length);
-        memcpy(new_str, str, length);
-        new_str[length - 1] = '\0';
+        if (new_str) {
+            memcpy(new_str, str, length);
+            new_str[length - 1] = '\0';
+        }
     } else {
         new_str = NULL;
     }

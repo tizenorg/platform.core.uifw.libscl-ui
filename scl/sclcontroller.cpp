@@ -3520,6 +3520,10 @@ CSCLController::timer_event(const scl32 data)
     break;
     case SCL_TIMER_AUTOTEST: {
         sclint rnd = rand() % 100;
+
+        if (cache->get_cur_layout(windows->get_base_window()) == NULL) {
+            return FALSE;
+        }
         sclint x = (rand() % (cache->get_cur_layout(windows->get_base_window())->width));
         sclint y = (rand() % (cache->get_cur_layout(windows->get_base_window())->height));
 

@@ -151,15 +151,19 @@ CSCLEvents::process_key_event(const char *key)
     } else if ((strcmp(keyname, "Return") == 0)||(strcmp(keyname, "Enter") == 0)) {
         coordinate = cache->get_cur_layout_key_coordinate(current_focus_window, current_key_index);
         //button_context->state = BUTTON_STATE_NORMAL;
-        controller->mouse_press(current_focus_window, coordinate->x, coordinate->y, TRUE);
-        controller->mouse_release(current_focus_window, coordinate->x, coordinate->y, TRUE);
-        if (KEY_TYPE_MODECHANGE != coordinate->key_type) {
-            //button_context->state = BUTTON_STATE_PRESSED;
-            //windows->update_window(window, coordinate->x, coordinate->y, coordinate->width, coordinate->height);
+        if (coordinate) {
+            controller->mouse_press(current_focus_window, coordinate->x, coordinate->y, TRUE);
+            controller->mouse_release(current_focus_window, coordinate->x, coordinate->y, TRUE);
+            if (KEY_TYPE_MODECHANGE != coordinate->key_type) {
+                //button_context->state = BUTTON_STATE_PRESSED;
+                //windows->update_window(window, coordinate->x, coordinate->y, coordinate->width, coordinate->height);
+            } else {
+                focus_handler->init_key_index();
+            }
+            return TRUE;
         } else {
-            focus_handler->init_key_index();
+            return FALSE;
         }
-        return TRUE;
     } else {
         return FALSE;
     }
@@ -169,37 +173,39 @@ CSCLEvents::process_key_event(const char *key)
         coordinate = cache->get_cur_layout_key_coordinate(focus_window, key_index);
         //prev_button_context->state = BUTTON_STATE_NORMAL;
         //button_context->state = BUTTON_STATE_PRESSED;
-        if (current_focus_window == focus_window) {
-            sclshort x,y,width,height;
-            if (prevcoordinate->x < coordinate->x) {
-                x = prevcoordinate->x;
-            } else {
-                x = coordinate->x;
-            }
+        if (coordinate && prevcoordinate) {
+            if (current_focus_window == focus_window) {
+                sclshort x,y,width,height;
+                if (prevcoordinate->x < coordinate->x) {
+                    x = prevcoordinate->x;
+                } else {
+                    x = coordinate->x;
+                }
 
-            if (prevcoordinate->y < coordinate->y) {
-                y = prevcoordinate->y;
-            } else {
-                y = coordinate->y;
-            }
+                if (prevcoordinate->y < coordinate->y) {
+                    y = prevcoordinate->y;
+                } else {
+                    y = coordinate->y;
+                }
 
-            if (prevcoordinate->x + prevcoordinate->width > coordinate->x + coordinate->width) {
-                width = prevcoordinate->x + prevcoordinate->width - x;
-            } else {
-                width = coordinate->x + coordinate->width - x;
-            }
+                if (prevcoordinate->x + prevcoordinate->width > coordinate->x + coordinate->width) {
+                    width = prevcoordinate->x + prevcoordinate->width - x;
+                } else {
+                    width = coordinate->x + coordinate->width - x;
+                }
 
-            if (prevcoordinate->y + prevcoordinate->height > coordinate->y + coordinate->height) {
-                height = prevcoordinate->y + prevcoordinate->height - y;
+                if (prevcoordinate->y + prevcoordinate->height > coordinate->y + coordinate->height) {
+                    height = prevcoordinate->y + prevcoordinate->height - y;
+                } else {
+                    height = coordinate->y + coordinate->height - y;
+                }
+                windows->update_window(focus_window, x, y, width, height);
             } else {
-                height = coordinate->y + coordinate->height - y;
+                windows->update_window(focus_window,
+                    coordinate->x, coordinate->y, coordinate->width, coordinate->height);
+                windows->update_window(current_focus_window,
+                    prevcoordinate->x, prevcoordinate->y, prevcoordinate->width, prevcoordinate->height);
             }
-            windows->update_window(focus_window, x, y, width, height);
-        } else {
-            windows->update_window(focus_window,
-                coordinate->x, coordinate->y, coordinate->width, coordinate->height);
-            windows->update_window(current_focus_window,
-                prevcoordinate->x, prevcoordinate->y, prevcoordinate->width, prevcoordinate->height);
         }
     } else {
     }
