@@ -162,8 +162,6 @@ CSCLUtilsImplLinux::fini() {
 sclboolean
 CSCLUtilsImplLinux::get_screen_resolution(sclint *x, sclint *y) {
     SCL_DEBUG();
-    //*x = gdk_screen_get_width(gdk_screen_get_default());
-    //*y = gdk_screen_get_height(gdk_screen_get_default());
     CSCLContext *context = CSCLContext::get_instance();
 
     static Evas_Coord scr_w = 0, scr_h = 0;
@@ -171,10 +169,6 @@ CSCLUtilsImplLinux::get_screen_resolution(sclint *x, sclint *y) {
 #ifdef WAYLAND
         ecore_wl_sync();
         ecore_wl_screen_size_get(&scr_w, &scr_h);
-        if (scr_w >= 720)
-            scr_w = 720;
-        else
-            scr_w = 600;
 #else
         scluint w, h;
         w = h = 0;
