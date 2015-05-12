@@ -89,8 +89,8 @@ void accessibility_changed_cb(keynode_t *key, void* data)
 {
 #ifndef WAYLAND
     int r;
-    int enabled;
-    if (vconf_get_int(VCONFKEY_SETAPPL_ACCESSIBILITY_TTS, &enabled)) {
+    int enabled = 0;
+    if (vconf_get_int(VCONFKEY_SETAPPL_ACCESSIBILITY_TTS, &enabled) == 0) {
         LOGD("VCONFKEY_SETAPPL_ACCESSIBILITY_TTS : %d, (%p)", enabled, tts);
         if (enabled) {
             if (tts == NULL) {
