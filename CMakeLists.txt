@@ -95,6 +95,7 @@ SET(PKGS_CHECK_MODULES
         dlog
         ecore-imf
         libxml-2.0
+        tts
         vconf
         )
 
@@ -102,7 +103,7 @@ IF (with_wayland)
         ADD_DEFINITIONS("-DWAYLAND")
         pkg_check_modules(pkgs REQUIRED ${PKGS_CHECK_MODULES})
 ELSE (with_wayland)
-        pkg_check_modules(pkgs REQUIRED ${PKGS_CHECK_MODULES} utilX tts)
+        pkg_check_modules(pkgs REQUIRED ${PKGS_CHECK_MODULES} utilX)
 ENDIF(with_wayland)
 
 FOREACH(flag ${pkgs_CFLAGS})
