@@ -82,25 +82,17 @@ CSCLWindowsImplEfl::~CSCLWindowsImplEfl()
     SCL_DEBUG();
 }
 
-#ifndef WAYLAND
-static Ecore_Event_Handler *_candidate_show_handler         = NULL;
-
-static Eina_Bool x_event_window_show_cb (void *data, int ev_type, void *event)
+static void window_show_cb (void *data, Evas *e, Evas_Object *obj, void *event)
 {
-    CSCLWindows *windows = CSCLWindows::get_instance();
-    Evas_Object *window = (Evas_Object *)windows->get_base_window();
-    Ecore_X_Event_Window_Show *e = (Ecore_X_Event_Window_Show*)event;
-
-    if(e->win == elm_win_xwindow_get(window)) {
-        LOGD("INSIDE =-=-=-=- x_event_window_show_cb, Trying to Grab Key Board : \n");
+    LOGD("INSIDE =-=-=-=- window_show_cb, Trying to Grab Key Board : \n");
 #ifdef USING_KEY_GRAB
-        CSCLKeyFocusHandler* focus_handler = CSCLKeyFocusHandler::get_instance();
+    CSCLWindows *windows = CSCLWindows::get_instance();
+    CSCLKeyFocusHandler* focus_handler = CSCLKeyFocusHandler::get_instance();
+
+    if (windows && focus_handler)
         focus_handler->grab_keyboard(windows->get_base_window());
 #endif
-    }
-    return ECORE_CALLBACK_RENEW;
 }
-#endif
 
 void CSCLWindowsImplEfl::init()
 {
@@ -127,9 +119,7 @@ CSCLWindowsImplEfl::create_base_window(const sclwindow parent, SclWindowContext 
         window_context->window = parent;
 
         //Adding window show event handler
-#ifndef WAYLAND
-        _candidate_show_handler = ecore_event_handler_add (ECORE_X_EVENT_WINDOW_SHOW, x_event_window_show_cb, NULL);
-#endif
+        evas_object_event_callback_add(static_cast<Evas_Object*>(parent), EVAS_CALLBACK_SHOW, window_show_cb, NULL);
 
         set_window_accepts_focus(parent, FALSE);
 
@@ -504,7 +494,9 @@ CSCLWindowsImplEfl::show_window(const sclwindow window, sclboolean queue)
     SCL_DEBUG();
     CSCLWindows *windows = CSCLWindows::get_instance();
     CSCLContext *context = CSCLContext::get_instance();
+#ifndef WAYLAND
     CSCLUtils *utils = CSCLUtils::get_instance();
+#endif
     if (windows && context && window) {
         SclWindowContext *window_context = windows->get_window_context(window);
         if (!(context->get_hidden_state())) {
@@ -801,7 +793,6 @@ CSCLWindowsImplEfl::resize_window(const sclwindow window, scl16 width, scl16 hei
     if (window == windows->get_magnifier_window()) {
         SclWindowContext *window_context = windows->get_window_context(windows->get_base_window());
         if (window_context->width != width || window_context->height != height) {
-            CSCLUtils *utils = CSCLUtils::get_instance();
             sclint scrx, scry, winx, winy;
             utils->get_screen_resolution(&scrx, &scry);
             if (context->get_rotation_degree() == 90 || context->get_rotation_degree() == 270) {
@@ -816,15 +807,15 @@ CSCLWindowsImplEfl::resize_window(const sclwindow window, scl16 width, scl16 hei
 
     Evas_Object *win = (Evas_Object*)window;
 #ifndef FULL_SCREEN_TEST
+#ifndef WAYLAND
     if (windows && utils && window) {
         SclWindowContext *window_context = windows->get_window_context(window);
-#ifndef WAYLAND
         utils->log("WinEfl_resizewin %p %p %d %d (basewin %p mag %p)\n",
             window,
             (window_context && !(window_context->is_virtual)) ? elm_win_xwindow_get(static_cast<Evas_Object*>(window)) : 0x01,
             windows->get_base_window(), windows->get_magnifier_window());
-#endif
     }
+#endif
 #endif
     //Evas_Object *window_object = (Evas_Object*)window;
     //Evas *evas = evas_object_evas_get(window_object);

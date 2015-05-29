@@ -750,46 +750,22 @@ CSCLKeyFocusHandler::process_navigation(SCLHighlightNavigationDirection directio
 
 #ifdef TARGET_EMULATOR
 
-static Ecore_Event_Handler *_sniffer_win_show_handler         = NULL;
-
-/**
- * ecore event handler deletion
- */
-static void delete_sniffer_win_show_handler (void)
-{
-    if (_sniffer_win_show_handler) {
-        ecore_event_handler_del (_sniffer_win_show_handler);
-        _sniffer_win_show_handler = NULL;
-    }
-}
-
 /**
  * callback for window show event (sniffer window)
  */
-#ifndef WAYLAND
-static Eina_Bool x_event_sniffer_window_show_cb (void *data, int ev_type, void *event)
+static void sniffer_window_show_cb (void *data, Evas *e, Evas_Object *obj, void *event)
 {
-    Evas_Object *evas_window = (Evas_Object *)data;
-    Ecore_X_Window x_window = elm_win_xwindow_get(evas_window);
-    Ecore_X_Event_Window_Show *e = (Ecore_X_Event_Window_Show*)event;
+    LOGD("INSIDE =-=-=-=- x_event_sniffer_window_show_cb, Trying to Grab Key Board : \n");
+#ifndef WAYLAND
+    Eina_Bool ret = ecore_x_keyboard_grab(x_window);
 
-    if (e->win == x_window) {
-
-        LOGD("INSIDE =-=-=-=- x_event_sniffer_window_show_cb, Trying to Grab Key Board : \n");
-        Eina_Bool ret = ecore_x_keyboard_grab(x_window);
-
-        if (EINA_TRUE == ret) {
-            LOGD("Keyboard Grabbed successfully by sniffer\n");
-        } else {
-            LOGD("Failed to Grab keyboard by sniffer\n");
-        }
-        ecore_event_handler_del(_sniffer_win_show_handler);
-        return ECORE_CALLBACK_CANCEL;
+    if (EINA_TRUE == ret) {
+        LOGD("Keyboard Grabbed successfully by sniffer\n");
+    } else {
+        LOGD("Failed to Grab keyboard by sniffer\n");
     }
-    LOGD("Wrong window .. renewing callback\n");
-    return ECORE_CALLBACK_RENEW;
-}
 #endif
+}
 
 /**
  * sniffer window creation function, the keyboard would be grabbed by this window in case of Tizen Emulator
@@ -810,9 +786,8 @@ CSCLKeyFocusHandler::create_sniffer_window(void)
     evas_object_show(win);
     evas_object_resize(win, 100, 100);
     m_sniffer = win;
-#ifndef WAYLAND
-    _sniffer_win_show_handler = ecore_event_handler_add (ECORE_X_EVENT_WINDOW_SHOW, x_event_sniffer_window_show_cb, m_sniffer);
-#endif
+
+    evas_object_event_callback_add(win, EVAS_CALLBACK_SHOW, sniffer_window_show_cb, NULL);
 }
 
 void
