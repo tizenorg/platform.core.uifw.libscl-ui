@@ -159,7 +159,7 @@ CSCLWindowsImplEfl::create_window(const sclwindow parent, SclWindowContext *wind
     SCL_DEBUG();
 
     Evas_Object *win = NULL;
-    win = elm_win_add(static_cast<Evas_Object*>(parent), "SCLPopup", ELM_WIN_BASIC);
+    win = elm_win_add(static_cast<Evas_Object*>(parent), "SCLPopup", ELM_WIN_UTILITY);
 
     elm_win_borderless_set(win, EINA_TRUE);
     elm_win_alpha_set(win, EINA_TRUE);
@@ -232,7 +232,7 @@ CSCLWindowsImplEfl::create_magnifier_window(const sclwindow parent, SclWindowCon
     SCL_DEBUG();
 
     Evas_Object *win = NULL;
-    win = elm_win_add(static_cast<Evas_Object*>(parent), "Magnifier", ELM_WIN_BASIC);
+    win = elm_win_add(static_cast<Evas_Object*>(parent), "Magnifier", ELM_WIN_UTILITY);
 
     elm_win_borderless_set(win, EINA_TRUE);
     elm_win_alpha_set(win, EINA_TRUE);
@@ -310,7 +310,7 @@ CSCLWindowsImplEfl::create_dim_window(const sclwindow parent, SclWindowContext *
     SCL_DEBUG();
 
     Evas_Object *win = NULL;
-    win = elm_win_add(static_cast<Evas_Object*>(parent), "SCLPopup", ELM_WIN_BASIC);
+    win = elm_win_add(static_cast<Evas_Object*>(parent), "SCLPopup", ELM_WIN_UTILITY);
 
     elm_win_borderless_set(win, EINA_TRUE);
     elm_win_alpha_set(win, EINA_TRUE);
