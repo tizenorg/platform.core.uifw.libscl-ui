@@ -427,12 +427,12 @@ const int BOOLTypeHelper::Bool(const string str) {
 /////////////////////////////////////////////////
 const string INTTypeHelper::dextoString(const int val) {
     char temp[8] = {0};
-    sprintf(temp, "0x%x", val);
+    snprintf(temp, sizeof(temp), "0x%x", val);
     return string(temp);
 }
 const string INTTypeHelper::toString(const int val) {
     char temp[8] = {0};
-    sprintf(temp, "%d", val);
+    snprintf(temp, sizeof(temp), "%d", val);
     return string(temp);
 }
 const int INTTypeHelper::Int(const string str) {

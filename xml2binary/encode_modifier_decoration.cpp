@@ -20,6 +20,8 @@
 #include "resource_storage_impl.h"
 #include "put_record.h"
 #include "_auto_metadata.h"
+#include <dlog.h>
+
 using namespace xmlresource;
 static void
 encode_modifier_decoration_record(ResourceStorage& storage, const PSclModifierDecoration cur, const Modifier_decoration_width& record_width) {
@@ -40,7 +42,7 @@ encode_modifier_decoration_file(ResourceStorage& storage, IMetaData_Helper& md_h
     XMLResource *xmlresource = XMLResource::get_instance();
     PSclModifierDecoration modifierDecorationTable = xmlresource->get_modifier_decoration_table();
     if (modifierDecorationTable == NULL) {
-        printf("Error. modifier decoration table is NULL\n");
+        LOGW("Error. modifier decoration table is NULL");
         return 0;
     }
 

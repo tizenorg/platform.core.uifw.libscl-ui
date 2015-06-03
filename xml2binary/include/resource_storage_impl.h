@@ -18,6 +18,7 @@
 #ifndef __RESOURCE_STORAGE_IMPL_H__
 #define __RESOURCE_STORAGE_IMPL_H__
 #include "resource_storage.h"
+#include <dlog.h>
 
 inline ResourceStorage::
 ResourceStorage() {
@@ -144,13 +145,13 @@ inline void ResourceStorage::
 expand_storage() {
     unsigned int _new_size = (unsigned int)(m_capability + __RE_NEW_LENGTH__);
     if (_new_size > (unsigned int)__MAX_NEW_SIZE__) {
-        printf("expand_storage failed: size is limited to %d\n", __MAX_NEW_SIZE__);
+        LOGW("expand_storage failed: size is limited to %d", __MAX_NEW_SIZE__);
         return;
     }
 
     char* _p = new char[_new_size];
     if(_p == NULL) {
-        printf("expand_storage error");
+        LOGW("expand_storage error");
         return;
     }
     memset(_p, 0x00, _new_size);

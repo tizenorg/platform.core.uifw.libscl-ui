@@ -213,21 +213,21 @@ parsing_metadata() {
 
     doc = xmlReadFile(file_name, NULL, 0);
     if (doc == NULL) {
-        printf("Could not load file.\n");
-        exit(1);
+        LOGE("Could not load file.\n");
+        return;
     }
 
     curNode = xmlDocGetRootElement(doc);
     if (curNode == NULL) {
-        printf("empty document.\n");
+        LOGE("empty document.\n");
         xmlFreeDoc(doc);
-        exit(1);
+        return;
     }
     if (0 != xmlStrcmp(curNode->name, (const xmlChar*)"metadata"))
     {
-        printf("root name %s error!\n", curNode->name);
+        LOGE("root name %s error!\n", curNode->name);
         xmlFreeDoc(doc);
-        exit(1);
+        return;
     }
 
     xmlChar* version = xmlGetProp(curNode, (const xmlChar*)"version");
@@ -236,7 +236,7 @@ parsing_metadata() {
         metadata.m_version[sizeof(metadata.m_version)-1] = '\0';
         xmlFree(version);
     } else {
-        strcpy(metadata.m_version, (const char*)"");
+        metadata.m_version[0] = '\0';
     }
 
     MetaData_Width metadataWidth;

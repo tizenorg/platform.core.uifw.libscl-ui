@@ -26,6 +26,7 @@
 #include "scluibuilder.h"
 #include "sclres_manager.h"
 #include <assert.h>
+#include <dlog.h>
 
 //Includes for CSCLKeyFocusHandler
 #include "sclkeyfocushandler.h"
@@ -742,7 +743,7 @@ CSCLResourceCache::add_private_key(SclPrivateKeyProperties* privProperties, sclb
             if (mPrivateKeyProperties[loop].valid == FALSE) break;
         }
         if (loop == MAX_PRIVATE_KEY) {
-            printf("Out of buffer!! could not insert new private data into buffer \n");
+            LOGW("Out of buffer!! could not insert new private data into buffer");
             return ret;
         }
     }
@@ -781,7 +782,7 @@ CSCLResourceCache::add_private_key(SclPrivateKeyProperties* privProperties, sclb
 #endif
 
     if (ret == NOT_USED) {
-        printf("Failed!. Out of private data buffer\n");
+        LOGW("Failed!. Out of private data buffer");
     }
     return ret;
 }

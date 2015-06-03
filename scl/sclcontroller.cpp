@@ -32,6 +32,7 @@
 #include "sclres_manager.h"
 #include "scleventhandler.h"
 #include "sclanimator.h"
+#include <dlog.h>
 
 //#define DIRECTLY_DRAW_ON_EVENTS
 
@@ -1400,7 +1401,7 @@ CSCLController::process_button_over_event(sclwindow window, sclint x, sclint y, 
                 return FALSE;
             }
             if (key_index != highlighted_key || window != highlighted_window ) {
-                printf("%d != %d || %p != %p\n", key_index, highlighted_key, window, highlighted_window);
+                SECURE_LOGD("%d != %d || %p != %p", key_index, highlighted_key, window, highlighted_window);
                 if(layout) {
                     if (coordinate->key_type != KEY_TYPE_NONE) {
                         if (context->get_tts_enabled()) {
@@ -1842,7 +1843,7 @@ CSCLController::process_button_release_event(sclwindow window, sclint x, sclint 
                                     sclres_manager->get_layout_id(sclres_input_mode_configure[popup_input_mode].layouts[display_mode]);
                                 if (popupLayoutId == NOT_USED){
                                     // deal with NOT_USED
-                                    printf("popupLayoutID is not used.\n");
+                                    LOGD("popupLayoutID is not used.");
                                 }
                                 SclLayout *layout = NULL;
                                 /* FIXME */
@@ -2981,7 +2982,7 @@ CSCLController::mouse_move(sclwindow window, sclint x, sclint y, scltouchdevice 
                     deltax = originx - startx;
                     deltay = originy - starty;
                     sclfloat dist_farthest = utils->get_approximate_distance(originx, originy, startx, starty);
-                    printf("%d %d %d %d %f, %d %d\n", originx, originy, startx, starty, dist_farthest, cur_drag_state, next_drag_state);
+                    //printf("%d %d %d %d %f, %d %d\n", originx, originy, startx, starty, dist_farthest, cur_drag_state, next_drag_state);
                     /* Let's see how much we are away from the last farthest point */
                     sclfloat diffdir_recog_dist = SCL_DIRECTION_RELATIVE_DIFFDIR_RECOG_DIST * utils->get_smallest_scale_rate();
                     /* If we moved certain amount from the point where direction changed, process drag state change routine */
@@ -3034,7 +3035,7 @@ CSCLController::mouse_move(sclwindow window, sclint x, sclint y, scltouchdevice 
                 if (drag_state_changed) {
                     /* When the dragging direction changes, save the current position as farthest point for future comparison */
                     context->set_farthest_move_point(touch_id, originx, originy);
-                    printf("SET_FARTHEST : %d %d %d\n", originx, originy, context->get_cur_drag_state(touch_id));
+                    LOGD("SET_FARTHEST : %d %d %d", originx, originy, context->get_cur_drag_state(touch_id));
                 }
             }
 

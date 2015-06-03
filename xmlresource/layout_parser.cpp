@@ -27,6 +27,7 @@
 #include "layout_parser_helper.h"
 #include "put_record.h"
 #include "simple_debug.h"
+#include <dlog.h>
 
 using namespace std;
 
@@ -256,20 +257,23 @@ LayoutParserImpl::load(int layout_id) {
         doc = xmlReadFile(input_file.c_str(), NULL, 0);
         if (doc == NULL) {
             SCLLOG(SclLog::ERROR, "Could not load file: %s.", input_file.c_str());
-            exit(1);
+            LOGE("Could not load file: %s.", input_file.c_str());
+            return;
         }
 
         cur_node = xmlDocGetRootElement(doc);
         if (cur_node == NULL) {
             SCLLOG(SclLog::ERROR, "LayoutParserImpl: empty document.\n");
+            LOGE("LayoutParserImpl: empty document.");
             xmlFreeDoc(doc);
-            exit(1);
+            return;
         }
         if (0 != xmlStrcmp(cur_node->name, (const xmlChar*)LAYOUT_TAG))
         {
             SCLLOG(SclLog::ERROR, "LayoutParserImpl: root name error: %s\n!", (char *)cur_node->name);
+            LOGE("LayoutParserImpl: root name error: %s!", (char *)cur_node->name);
             xmlFreeDoc(doc);
-            exit(1);
+            return;
         }
 
         PSclLayout cur_rec_layout = m_layout_table + layout_id;

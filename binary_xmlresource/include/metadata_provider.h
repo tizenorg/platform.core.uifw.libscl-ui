@@ -19,6 +19,8 @@
 #define __METADATA_PROVIDER_H_
 #include "imetadata_provider.h"
 #include "metadata_bin_parser.h"
+#include <dlog.h>
+
 class Metadata_Provider:public IMetadata_Provider{
     public:
         Metadata_Provider(const Metadata_Bin_Parser* metadataParser):m_metadataParser(metadataParser) {
@@ -44,7 +46,7 @@ class Metadata_Provider:public IMetadata_Provider{
                 current_record_name = record_name;
                 curRecordIndex = (int)find_metadata_record_index(record_name);
                 if (curRecordIndex == -1) {
-                    printf("Can not find %s metadata record.\n", record_name);
+                    LOGW("Can not find %s metadata record.", record_name);
                 }
             }
         }

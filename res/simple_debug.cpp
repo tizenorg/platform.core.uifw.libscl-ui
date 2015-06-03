@@ -73,7 +73,7 @@ SclLog::log(enum LOG_LEVEL level, char* fmt, ...) {
     char str_log[128];
     va_list ap;
     va_start(ap, fmt);
-    vsprintf(str_log, fmt, ap);
+    vsnprintf(str_log, sizeof(str_log), fmt, ap);
     va_end(ap);
 
     /*
@@ -100,7 +100,7 @@ SCLLOG(enum SclLog::LOG_LEVEL level, char* fmt, ...) {
         char str_log[128];
         va_list ap;
         va_start(ap, fmt);
-        vsprintf(str_log, fmt, ap);
+        vsnprintf(str_log, sizeof(str_log), fmt, ap);
         va_end(ap);
         log->log(level, str_log);
     }
