@@ -163,11 +163,16 @@ CSCLWindowsImplEfl::create_window(const sclwindow parent, SclWindowContext *wind
 
     elm_win_borderless_set(win, EINA_TRUE);
     elm_win_alpha_set(win, EINA_TRUE);
-    elm_win_title_set(win, "Keyboard Popup Window");
+    elm_win_title_set(win, "ISF Popup");
 
     set_window_accepts_focus(win, FALSE);
 
-#ifndef WAYLAND
+    int rots[4] = {0, 90, 180, 270};
+    elm_win_wm_rotation_available_rotations_set(win, rots, 4);
+
+#ifdef WAYLAND
+    evas_object_resize(win, width, height);
+#else
     scl16 new_width;
     scl16 new_height;
     CSCLContext *context = CSCLContext::get_instance();
@@ -188,8 +193,6 @@ CSCLWindowsImplEfl::create_window(const sclwindow parent, SclWindowContext *wind
     ecore_x_e_window_rotation_geometry_set(elm_win_xwindow_get(win),
         rotation_values_EFL[ROTATION_90_CCW], 0, 0, new_width, new_height);
 
-    int rots[4] = {0, 90, 180, 270};
-    elm_win_wm_rotation_available_rotations_set(win, rots, 4);
 #ifndef FULL_SCREEN_TEST
     //evas_object_resize(win, width, height);
 #endif
@@ -236,7 +239,12 @@ CSCLWindowsImplEfl::create_magnifier_window(const sclwindow parent, SclWindowCon
 
     elm_win_borderless_set(win, EINA_TRUE);
     elm_win_alpha_set(win, EINA_TRUE);
-    elm_win_title_set(win, "Keyboard Magnifier Window");
+    elm_win_title_set(win, "ISF Popup");
+
+    set_window_accepts_focus(win, FALSE);
+
+    int rots[4] = {0,90,180,270};
+    elm_win_wm_rotation_available_rotations_set(win, rots, 4);
 
 #ifdef DO_NOT_MOVE_MAGNIFIER_WINDOW
     CSCLUtils *utils = CSCLUtils::get_instance();
@@ -251,9 +259,9 @@ CSCLWindowsImplEfl::create_magnifier_window(const sclwindow parent, SclWindowCon
 #endif
 #endif
 
-    set_window_accepts_focus(win, FALSE);
-
-#ifndef WAYLAND
+#ifdef WAYLAND
+    evas_object_resize(win, width, height);
+#else
     ecore_x_e_window_rotation_geometry_set(elm_win_xwindow_get(win),
         rotation_values_EFL[ROTATION_0], 0, 0, width, height);
     ecore_x_e_window_rotation_geometry_set(elm_win_xwindow_get(win),
@@ -262,9 +270,6 @@ CSCLWindowsImplEfl::create_magnifier_window(const sclwindow parent, SclWindowCon
         rotation_values_EFL[ROTATION_180], 0, 0, width, height);
     ecore_x_e_window_rotation_geometry_set(elm_win_xwindow_get(win),
         rotation_values_EFL[ROTATION_90_CCW], 0, 0, height, width);
-
-    int rots[4] = {0,90,180,270};
-    elm_win_wm_rotation_available_rotations_set(win, rots, 4);
 
 #ifndef APPLY_WINDOW_MANAGER_CHANGE
     ecore_x_icccm_name_class_set(elm_win_xwindow_get(static_cast<Evas_Object*>(win)), "Key Magnifier", "ISF");
@@ -282,8 +287,6 @@ CSCLWindowsImplEfl::create_magnifier_window(const sclwindow parent, SclWindowCon
         }
     }
 #endif
-
-    //evas_font_path_prepend(evas_object_evas_get(win), "/usr/share/SLP/fonts");
 
     CSCLContext *context = CSCLContext::get_instance();
     set_window_rotation(win, context->get_rotation());
@@ -314,7 +317,7 @@ CSCLWindowsImplEfl::create_dim_window(const sclwindow parent, SclWindowContext *
 
     elm_win_borderless_set(win, EINA_TRUE);
     elm_win_alpha_set(win, EINA_TRUE);
-    elm_win_title_set(win, "Keyboard Dim Window");
+    elm_win_title_set(win, "ISF Popup");
 
     evas_object_resize(win, width, height);
 
@@ -1024,11 +1027,10 @@ CSCLWindowsImplEfl::get_window_rect(const sclwindow window, SclRectangle *rect)
         ecore_x_window_attributes_get(elm_win_xwindow_get(static_cast<Evas_Object*>(window)), &attrs);
         XTranslateCoordinates((Display*)ecore_x_display_get(), (Drawable)elm_win_xwindow_get(static_cast<Evas_Object*>(window)),
                               attrs.root, -attrs.border, -attrs.border, &x, &y, &junkwin);
-
-        utils->log("WinEfl_getwinrect %p %p, %d %d %d %d\n",
-            window, elm_win_xwindow_get(static_cast<Evas_Object*>(window)),
-            x, y, width, height);
 #endif
+
+        utils->log("WinEfl_getwinrect %p %d %d %d %d\n",
+            window, x, y, width, height);
 
         /* get window size */
         utils->get_screen_resolution(&scr_w, &scr_h);
