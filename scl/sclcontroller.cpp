@@ -1000,7 +1000,7 @@ CSCLController::process_button_repeat_pressed_event(sclwindow window, sclbyte ke
                         sclulong repeatKeyEvent = coordinate->key_event[shift_index][0];
 
                         /* In case of Delete key, Change from Char deletion to Word deletion
-                           when the input accelation speed is reached to Max */
+                           when the input acceleration speed is reached to Max */
                         SclResParserManager *sclres_manager = SclResParserManager::get_instance();
                         PSclDefaultConfigure default_configure = NULL;
                         if (sclres_manager) {
@@ -3847,7 +3847,7 @@ CSCLController::configure_autopopup_window(sclwindow window, sclbyte key_index, 
                 autopopup_configure->decoration_size * utils->get_smallest_custom_scale_rate();
             /* First check the growing direction of this autopopup window */
             if (coordinate->x < baseWndRect.width / 2) {
-                /* We're growing left to right, caculate the left start point */
+                /* We're growing left to right, calculate the left start point */
                 rect->x = baseWndRect.x + coordinate->x + (coordinate->width / 2) -
                     (autopopup_configure->button_width * utils->get_custom_scale_rate_x() / 2) -
                     autopopup_configure->bg_padding * utils->get_smallest_custom_scale_rate();
@@ -3858,7 +3858,7 @@ CSCLController::configure_autopopup_window(sclwindow window, sclbyte key_index, 
                             relocate_unit) + 1) * relocate_unit;
                 }
             } else {
-                /* We're growing right to left, caculate the right end point */
+                /* We're growing right to left, calculate the right end point */
                 rect->x = baseWndRect.x + coordinate->x + (coordinate->width / 2) +
                     (autopopup_configure->button_width * utils->get_custom_scale_rate_x() / 2) +
                     autopopup_configure->bg_padding * utils->get_smallest_custom_scale_rate();

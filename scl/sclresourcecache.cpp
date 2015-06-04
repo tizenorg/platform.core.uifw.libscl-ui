@@ -141,7 +141,7 @@ CSCLResourceCache::resize_layout_by_resolution(sclbyte layout_index, sclboolean 
             }
         }
 
-        ///* FIXME : We should apply this contraint to other scaling routines also! */
+        ///* FIXME : We should apply this constraint to other scaling routines also! */
         ///* If the current screen resolution Y is bigger than our target height */
         //if (scale_value_y > 1.0f) {
         //    /* And if we have to scale Y-axis more than the X-axis, limit the scale value to X-axis rate */
@@ -1489,7 +1489,7 @@ CSCLResourceCache::set_private_key(SclPrivateKeyProperties* properties, sclboole
 
 /**
  * Sets a private key to the current context
- * The other properties except given parameters will keep to the orginal value.
+ * The other properties except given parameters will keep to the original value.
  * @Usage
  * gCore->set_private_key(INPUT_MODE_NUMBER, LYT_PORTRAIT_NOW_3x4, 0, "private", 999, TRUE);
  *
