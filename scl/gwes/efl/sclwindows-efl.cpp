@@ -140,13 +140,11 @@ CSCLWindowsImplEfl::create_base_window(const sclwindow parent, SclWindowContext 
     int rots[4] = {0, 90, 180, 270};
     elm_win_wm_rotation_available_rotations_set(static_cast<Evas_Object*>(parent), rots, 4);
 
-#ifndef WAYLAND
     CSCLUtils *utils = CSCLUtils::get_instance();
     if (utils) {
-        utils->log("WinEfl_createbasewin %p %p, %d %d\n",
-                parent, elm_win_xwindow_get(static_cast<Evas_Object*>(parent)), width, height);
+        utils->log("WinEfl_createbasewin %p, %d %d\n",
+                parent, width, height);
     }
-#endif
     return ret;
 }
 
@@ -170,9 +168,6 @@ CSCLWindowsImplEfl::create_window(const sclwindow parent, SclWindowContext *wind
     int rots[4] = {0, 90, 180, 270};
     elm_win_wm_rotation_available_rotations_set(win, rots, 4);
 
-#ifdef WAYLAND
-    evas_object_resize(win, width, height);
-#else
     scl16 new_width;
     scl16 new_height;
     CSCLContext *context = CSCLContext::get_instance();
@@ -184,6 +179,13 @@ CSCLWindowsImplEfl::create_window(const sclwindow parent, SclWindowContext *wind
         new_height = height;
     }
 
+#ifndef FULL_SCREEN_TEST
+    //evas_object_resize(win, width, height);
+#endif
+
+#ifdef WAYLAND
+    evas_object_resize(win, new_width, new_height);
+#else
     ecore_x_e_window_rotation_geometry_set(elm_win_xwindow_get(win),
         rotation_values_EFL[ROTATION_0], 0, 0, new_width, new_height);
     ecore_x_e_window_rotation_geometry_set(elm_win_xwindow_get(win),
@@ -193,17 +195,12 @@ CSCLWindowsImplEfl::create_window(const sclwindow parent, SclWindowContext *wind
     ecore_x_e_window_rotation_geometry_set(elm_win_xwindow_get(win),
         rotation_values_EFL[ROTATION_90_CCW], 0, 0, new_width, new_height);
 
-#ifndef FULL_SCREEN_TEST
-    //evas_object_resize(win, width, height);
-#endif
-
 #ifndef APPLY_WINDOW_MANAGER_CHANGE
     ecore_x_icccm_name_class_set(elm_win_xwindow_get(static_cast<Evas_Object*>(win)), "ISF Popup", "ISF");
 
     Ecore_X_Atom ATOM_WINDOW_EFFECT_ENABLE  = 0;
     unsigned int effect_state = 0; // 0 -> disable effect 1-> enable effect
 
-    CSCLUtils *utils = CSCLUtils::get_instance();
     ATOM_WINDOW_EFFECT_ENABLE = ecore_x_atom_get("_NET_CM_WINDOW_EFFECT_ENABLE");
     if (ATOM_WINDOW_EFFECT_ENABLE) {
         ecore_x_window_prop_card32_set(elm_win_xwindow_get(static_cast<Evas_Object*>(win)), ATOM_WINDOW_EFFECT_ENABLE, &effect_state, 1);
@@ -213,15 +210,17 @@ CSCLWindowsImplEfl::create_window(const sclwindow parent, SclWindowContext *wind
         }
     }
 #endif
+#endif
 
     set_window_rotation(win, context->get_rotation());
 
     //elm_win_override_set(win, EINA_TRUE);
+
+    CSCLUtils *utils = CSCLUtils::get_instance();
     if (utils) {
-        utils->log("WinEfl_createwin %p %p, %d %d\n",
-                win, elm_win_xwindow_get(static_cast<Evas_Object*>(win)), width, height);
+        utils->log("WinEfl_createwin %p, %d %d\n",
+                win, width, height);
     }
-#endif
     return win;
 }
 
@@ -235,6 +234,8 @@ CSCLWindowsImplEfl::create_magnifier_window(const sclwindow parent, SclWindowCon
     SCL_DEBUG();
 
     Evas_Object *win = NULL;
+    CSCLUtils *utils = CSCLUtils::get_instance();
+
     win = elm_win_add(static_cast<Evas_Object*>(parent), "Magnifier", ELM_WIN_UTILITY);
 
     elm_win_borderless_set(win, EINA_TRUE);
@@ -253,10 +254,6 @@ CSCLWindowsImplEfl::create_magnifier_window(const sclwindow parent, SclWindowCon
     utils->get_screen_resolution(&scrx, &scry);
     SclWindowContext *window_context = windows->get_window_context(windows->get_base_window());
     evas_object_resize(win, scrx, height + window_context->height);
-#else
-#ifdef WAYLAND
-    evas_object_resize(win, width, height);
-#endif
 #endif
 
 #ifdef WAYLAND
@@ -273,11 +270,8 @@ CSCLWindowsImplEfl::create_magnifier_window(const sclwindow parent, SclWindowCon
 
 #ifndef APPLY_WINDOW_MANAGER_CHANGE
     ecore_x_icccm_name_class_set(elm_win_xwindow_get(static_cast<Evas_Object*>(win)), "Key Magnifier", "ISF");
-
     Ecore_X_Atom ATOM_WINDOW_EFFECT_ENABLE  = 0;
     unsigned int effect_state = 0; // 0 -> disable effect 1-> enable effect
-
-    CSCLUtils *utils = CSCLUtils::get_instance();
     ATOM_WINDOW_EFFECT_ENABLE = ecore_x_atom_get("_NET_CM_WINDOW_EFFECT_ENABLE");
     if (ATOM_WINDOW_EFFECT_ENABLE) {
         ecore_x_window_prop_card32_set(elm_win_xwindow_get(static_cast<Evas_Object*>(win)), ATOM_WINDOW_EFFECT_ENABLE, &effect_state, 1);
@@ -286,6 +280,7 @@ CSCLWindowsImplEfl::create_magnifier_window(const sclwindow parent, SclWindowCon
             utils->log("Could not get _NET_CM_WINDOW_EFFECT_ENABLE ATOM \n");
         }
     }
+#endif
 #endif
 
     CSCLContext *context = CSCLContext::get_instance();
@@ -297,10 +292,10 @@ CSCLWindowsImplEfl::create_magnifier_window(const sclwindow parent, SclWindowCon
 
     //elm_win_override_set(win, EINA_TRUE);
     if (utils) {
-        utils->log("WinEfl_createmagwin %p %p, %d %d\n",
-            win, elm_win_xwindow_get(static_cast<Evas_Object*>(win)), width, height);
+        utils->log("WinEfl_createmagwin %p, %d %d\n",
+                win, width, height);
     }
-#endif
+
     return win;
 }
 
@@ -313,6 +308,7 @@ CSCLWindowsImplEfl::create_dim_window(const sclwindow parent, SclWindowContext *
     SCL_DEBUG();
 
     Evas_Object *win = NULL;
+    CSCLUtils *utils = CSCLUtils::get_instance();
     win = elm_win_add(static_cast<Evas_Object*>(parent), "SCLPopup", ELM_WIN_UTILITY);
 
     elm_win_borderless_set(win, EINA_TRUE);
@@ -333,7 +329,6 @@ CSCLWindowsImplEfl::create_dim_window(const sclwindow parent, SclWindowContext *
     Ecore_X_Atom ATOM_WINDOW_EFFECT_ENABLE  = 0;
     unsigned int effect_state = 0; // 0 -> disable effect 1-> enable effect
 
-    CSCLUtils *utils = CSCLUtils::get_instance();
     ATOM_WINDOW_EFFECT_ENABLE = ecore_x_atom_get("_NET_CM_WINDOW_EFFECT_ENABLE");
     if (ATOM_WINDOW_EFFECT_ENABLE) {
         ecore_x_window_prop_card32_set(elm_win_xwindow_get(static_cast<Evas_Object*>(win)), ATOM_WINDOW_EFFECT_ENABLE, &effect_state, 1);
@@ -358,12 +353,11 @@ CSCLWindowsImplEfl::create_dim_window(const sclwindow parent, SclWindowContext *
 
     hide_window(win);
 
-#ifndef WAYLAND
     if (utils) {
-        utils->log("WinEfl_createdimwin %p %p, %d %d\n",
-            win, elm_win_xwindow_get(static_cast<Evas_Object*>(win)), width, height);
+        utils->log("WinEfl_createdimwin %p, %d %d\n",
+            win,
+             width, height);
     }
-#endif
     return win;
 }
 
@@ -471,11 +465,8 @@ CSCLWindowsImplEfl::destroy_window(sclwindow window)
                     evas_object_del(win);
                 }
             }
-#ifndef WAYLAND
-            utils->log("WinEfl_destroywin %p %p (basewin %p mag %p)\n", window,
-                (window_context && !(window_context->is_virtual)) ? elm_win_xwindow_get(static_cast<Evas_Object*>(window)) : 0x01,
-                windows->get_base_window(), windows->get_magnifier_window());
-#endif
+            utils->log("WinEfl_destroywin %p (basewin %p mag %p)\n", window,
+                 windows->get_base_window(), windows->get_magnifier_window());
         }
     }
 
@@ -491,9 +482,7 @@ CSCLWindowsImplEfl::show_window(const sclwindow window, sclboolean queue)
     SCL_DEBUG();
     CSCLWindows *windows = CSCLWindows::get_instance();
     CSCLContext *context = CSCLContext::get_instance();
-#ifndef WAYLAND
     CSCLUtils *utils = CSCLUtils::get_instance();
-#endif
     if (windows && context && window) {
         SclWindowContext *window_context = windows->get_window_context(window);
         if (!(context->get_hidden_state())) {
@@ -552,11 +541,10 @@ CSCLWindowsImplEfl::show_window(const sclwindow window, sclboolean queue)
             }
         }
 #endif
+#endif
         utils->log("WinEfl_showwin %p %p (basewin %p mag %p)\n",
             window,
-            (window_context && !(window_context->is_virtual)) ? elm_win_xwindow_get(static_cast<Evas_Object*>(window)) : 0x01,
             windows->get_base_window(), windows->get_magnifier_window());
-#endif
     }
 }
 
@@ -672,12 +660,9 @@ CSCLWindowsImplEfl::hide_window(const sclwindow window,  sclboolean fForce)
             elm_cache_all_flush();
             malloc_trim(0);
         }
-#ifndef WAYLAND
-        utils->log("WinEfl_hidewin %p %p (basewin %p mag %p)\n",
+        utils->log("WinEfl_hidewin %p (basewin %p mag %p)\n",
             window,
-            (window_context && !(window_context->is_virtual)) ? elm_win_xwindow_get(static_cast<Evas_Object*>(window)) : 0x01,
             windows->get_base_window(), windows->get_magnifier_window());
-#endif
     }
 }
 
@@ -765,13 +750,10 @@ CSCLWindowsImplEfl::move_window(const sclwindow window, scl16 x, scl16 y)
         //Evas *evas = evas_object_evas_get(window_object);
         //evas_render_idle_flush(evas);
 
-#ifndef WAYLAND
-        utils->log("WinEfl_movewin %p %p %d %d %d %d (basewin %p mag %p)\n",
+        utils->log("WinEfl_movewin %p %d %d %d %d (basewin %p mag %p)\n",
             window,
-            (window_context && !(window_context->is_virtual)) ? elm_win_xwindow_get(static_cast<Evas_Object*>(window)) : 0x01,
             x, y, rotatex, rotatey,
             windows->get_base_window(), windows->get_magnifier_window());
-#endif
     }
 }
 
@@ -807,9 +789,8 @@ CSCLWindowsImplEfl::resize_window(const sclwindow window, scl16 width, scl16 hei
 #ifndef WAYLAND
     if (windows && utils && window) {
         SclWindowContext *window_context = windows->get_window_context(window);
-        utils->log("WinEfl_resizewin %p %p %d %d (basewin %p mag %p)\n",
+        utils->log("WinEfl_resizewin %p %d %d (basewin %p mag %p)\n",
             window,
-            (window_context && !(window_context->is_virtual)) ? elm_win_xwindow_get(static_cast<Evas_Object*>(window)) : 0x01,
             windows->get_base_window(), windows->get_magnifier_window());
     }
 #endif
