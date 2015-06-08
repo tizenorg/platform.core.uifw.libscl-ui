@@ -157,6 +157,8 @@ CSCLWindowsImplEfl::create_window(const sclwindow parent, SclWindowContext *wind
     SCL_DEBUG();
 
     Evas_Object *win = NULL;
+    CSCLUtils *utils = CSCLUtils::get_instance();
+
     win = elm_win_add(static_cast<Evas_Object*>(parent), "SCLPopup", ELM_WIN_UTILITY);
 
     elm_win_borderless_set(win, EINA_TRUE);
@@ -215,8 +217,6 @@ CSCLWindowsImplEfl::create_window(const sclwindow parent, SclWindowContext *wind
     set_window_rotation(win, context->get_rotation());
 
     //elm_win_override_set(win, EINA_TRUE);
-
-    CSCLUtils *utils = CSCLUtils::get_instance();
     if (utils) {
         utils->log("WinEfl_createwin %p, %d %d\n",
                 win, width, height);
@@ -785,14 +785,11 @@ CSCLWindowsImplEfl::resize_window(const sclwindow window, scl16 width, scl16 hei
 
     Evas_Object *win = (Evas_Object*)window;
 #ifndef FULL_SCREEN_TEST
-#ifndef WAYLAND
     if (windows && utils && window) {
-        SclWindowContext *window_context = windows->get_window_context(window);
         utils->log("WinEfl_resizewin %p %d %d (basewin %p mag %p)\n",
             window,
             windows->get_base_window(), windows->get_magnifier_window());
     }
-#endif
 #endif
     //Evas_Object *window_object = (Evas_Object*)window;
     //Evas *evas = evas_object_evas_get(window_object);
@@ -1055,9 +1052,6 @@ CSCLWindowsImplEfl::get_window_rect(const sclwindow window, SclRectangle *rect)
     return TRUE;
 }
 
-#ifndef WAYLAND
-#include <X11/Xutil.h>
-#endif
 /**
  * Sets rotation
  */
