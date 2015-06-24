@@ -83,6 +83,7 @@ cp LICENSE %{buildroot}/usr/share/license/%{name}
 %postun
 
 %files
+%manifest %{name}.manifest
 %defattr(-,root,root,-)
 %{_libdir}/libscl-ui.so
 %{_datadir}/libscl-ui/metadata.xml
