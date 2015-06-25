@@ -994,17 +994,8 @@ CSCLWindowsImplEfl::get_window_rect(const sclwindow window, SclRectangle *rect)
     if (utils && context && rect && window) {
         int x, y, width, height;
         sclint scr_w, scr_h;
-#ifdef WAYLAND
-        evas_object_geometry_get(static_cast<Evas_Object*>(window), &x, &y, &width, &height);
-#else
-        Window junkwin;
-        Ecore_X_Window_Attributes attrs;
-        //CSCLWindows *windows = CSCLWindows::get_instance();
-        ecore_x_window_geometry_get(elm_win_xwindow_get(static_cast<Evas_Object*>(window)), &x, &y, &width, &height);
-        ecore_x_window_attributes_get(elm_win_xwindow_get(static_cast<Evas_Object*>(window)), &attrs);
-        XTranslateCoordinates((Display*)ecore_x_display_get(), (Drawable)elm_win_xwindow_get(static_cast<Evas_Object*>(window)),
-                              attrs.root, -attrs.border, -attrs.border, &x, &y, &junkwin);
-#endif
+        elm_win_screen_position_get(static_cast<Evas_Object*>(window), &x, &y);
+        elm_win_screen_size_get(static_cast<Evas_Object*>(window), NULL, NULL, &width, &height);
 
         utils->log("WinEfl_getwinrect %p %d %d %d %d\n",
             window, x, y, width, height);
