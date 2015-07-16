@@ -133,6 +133,8 @@ INSTALL(FILES "${CMAKE_SOURCE_DIR}/scl/include/sclui.h" DESTINATION include/libs
 INSTALL(FILES "${CMAKE_SOURCE_DIR}/scl/include/sclconfig.h" DESTINATION include/libscl-ui)
 INSTALL(FILES "${CMAKE_SOURCE_DIR}/scl/include/sclstructs.h" DESTINATION include/libscl-ui)
 INSTALL(FILES "${CMAKE_SOURCE_DIR}/scl/include/scleventcallback.h" DESTINATION include/libscl-ui)
+INSTALL(FILES "${CMAKE_SOURCE_DIR}/scl/include/sclutils.h" DESTINATION include/libscl-ui)
+INSTALL(FILES "${CMAKE_SOURCE_DIR}/scl/include/sclfeedback.h" DESTINATION include/libscl-ui)
 
 CONFIGURE_FILE(${PROJECT_NAME}.pc.in ${PROJECT_NAME}.pc @ONLY)
 INSTALL(FILES ${CMAKE_BINARY_DIR}/${PROJECT_NAME}.pc DESTINATION ${LIBDIR}/pkgconfig)
