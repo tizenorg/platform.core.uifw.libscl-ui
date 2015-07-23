@@ -304,8 +304,13 @@ Eina_Bool mouse_press(void *data, int type, void *event_info)
                 if (window_context) {
                     windows->get_window_rect(window, &(window_context->geometry));
                     if (get_window_rect(window, &rect)) {
+#ifdef WAYLAND
+                        int adjustx = ev->x + rect.x;
+                        int adjusty = ev->y + rect.y;
+#else
                         int adjustx = ev->root.x;
                         int adjusty = ev->root.y;
+#endif
 
                         SclResParserManager *sclres_manager = SclResParserManager::get_instance();
                         PSclDefaultConfigure default_configure = NULL;
@@ -334,7 +339,11 @@ Eina_Bool mouse_press(void *data, int type, void *event_info)
                         if (process_event)
                         {
                             // Now convert the global coordinate to appropriate local coordinate
+#ifdef WAYLAND
+                            SclPoint coords = get_rotated_local_coords(ev->x + rect.x, ev->y + rect.y, context->get_rotation(), &rect);
+#else
                             SclPoint coords = get_rotated_local_coords(ev->root.x, ev->root.y, context->get_rotation(), &rect);
+#endif
                             controller->mouse_press(window, coords.x, coords.y, ev->multi.device);
                             mouse_pressed = TRUE;
                             processed = TRUE;
@@ -356,7 +365,11 @@ Eina_Bool mouse_press(void *data, int type, void *event_info)
                 }
 
                 // Now convert the global coordinate to appropriate local coordinate
+#ifdef WAYLAND
+                SclPoint coords = get_rotated_local_coords(ev->x + rect.x, ev->y + rect.y, context->get_rotation(), &rect);
+#else
                 SclPoint coords = get_rotated_local_coords(ev->root.x, ev->root.y, context->get_rotation(), &rect);
+#endif
                 controller->mouse_press(window, coords.x, coords.y, ev->multi.device);
                 mouse_pressed = TRUE;
                 processed = TRUE;
@@ -413,8 +426,13 @@ Eina_Bool mouse_release (void *data, int type, void *event_info)
                     if (window_context) {
                         windows->get_window_rect(window, &(window_context->geometry));
                         if (get_window_rect(window, &rect)) {
+#ifdef WAYLAND
+                            int adjustx = ev->x + rect.x;
+                            int adjusty = ev->y + rect.y;
+#else
                             int adjustx = ev->root.x;
                             int adjusty = ev->root.y;
+#endif
 
                             SclResParserManager *sclres_manager = SclResParserManager::get_instance();
                             PSclDefaultConfigure default_configure = NULL;
@@ -444,7 +462,11 @@ Eina_Bool mouse_release (void *data, int type, void *event_info)
                             if (process_event)
                             {
                                 /* Now convert the global coordinate to appropriate local coordinate */
+#ifdef WAYLAND
+                                SclPoint coords = get_rotated_local_coords(ev->x + rect.x, ev->y + rect.y, context->get_rotation(), &rect);
+#else
                                 SclPoint coords = get_rotated_local_coords(ev->root.x, ev->root.y, context->get_rotation(), &rect);
+#endif
                                 controller->mouse_release(window, coords.x, coords.y, ev->multi.device);
                                 processed = TRUE;
                             }
@@ -465,7 +487,11 @@ Eina_Bool mouse_release (void *data, int type, void *event_info)
                 }
 
                 /* Now convert the global coordinate to appropriate local coordinate */
+#ifdef WAYLAND
+                SclPoint coords = get_rotated_local_coords(ev->x + rect.x, ev->y + rect.y, context->get_rotation(), &rect);
+#else
                 SclPoint coords = get_rotated_local_coords(ev->root.x, ev->root.y, context->get_rotation(), &rect);
+#endif
                 controller->mouse_release(window, coords.x, coords.y, ev->multi.device);
                 processed = TRUE;
             }
@@ -602,7 +628,11 @@ Eina_Bool mouse_move (void *data, int type, void *event_info)
                 rect.height = winwidth;
                 rect.width = winheight;
             }
+#ifdef WAYLAND
+            SclPoint coords = get_rotated_local_coords(ev->x + rect.x, ev->y + rect.y, context->get_rotation(), &rect);
+#else
             SclPoint coords = get_rotated_local_coords(ev->root.x, ev->root.y, context->get_rotation(), &rect);
+#endif
 
             controller->mouse_move(context->get_cur_pressed_window(ev->multi.device), coords.x, coords.y, ev->multi.device);
             processed = TRUE;
@@ -614,9 +644,13 @@ Eina_Bool mouse_move (void *data, int type, void *event_info)
                     if (window_context) {
                         windows->get_window_rect(window, &(window_context->geometry));
                         if (get_window_rect(window, &rect)) {
+#ifdef WAYLAND
+                            int adjustx = ev->x + rect.x;
+                            int adjusty = ev->y + rect.y;
+#else
                             int adjustx = ev->root.x;
                             int adjusty = ev->root.y;
-
+#endif
                             SclResParserManager *sclres_manager = SclResParserManager::get_instance();
                             PSclDefaultConfigure default_configure = NULL;
                             if (sclres_manager) {
@@ -654,8 +688,11 @@ Eina_Bool mouse_move (void *data, int type, void *event_info)
                             if (process_event)
                             {
                                 /* Now convert the global coordinate to appropriate local coordinate */
+#ifdef WAYLAND
+                                SclPoint coords = get_rotated_local_coords(ev->x + rect.x, ev->y + rect.y, context->get_rotation(), &rect);
+#else
                                 SclPoint coords = get_rotated_local_coords(ev->root.x, ev->root.y, context->get_rotation(), &rect);
-
+#endif
                                 controller->mouse_move(window, coords.x, coords.y, ev->multi.device);
                                 processed = TRUE;
                             }
@@ -670,7 +707,11 @@ Eina_Bool mouse_move (void *data, int type, void *event_info)
             window = pressed_window;
             if (get_window_rect(window, &rect)) {
                 /* Now convert the global coordinate to appropriate local coordinate */
+#ifdef WAYLAND
+                SclPoint coords = get_rotated_local_coords(ev->x + rect.x, ev->y + rect.y, context->get_rotation(), &rect);
+#else
                 SclPoint coords = get_rotated_local_coords(ev->root.x, ev->root.y, context->get_rotation(), &rect);
+#endif
                 controller->mouse_move(window, coords.x, coords.y, ev->multi.device);
                 processed = TRUE;
             }
