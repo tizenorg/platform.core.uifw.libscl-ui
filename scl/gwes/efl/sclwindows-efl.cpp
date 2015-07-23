@@ -994,6 +994,7 @@ CSCLWindowsImplEfl::get_window_rect(const sclwindow window, SclRectangle *rect)
     if (utils && context && rect && window) {
         int x = 0, y = 0, width = 0, height = 0;
         sclint scr_w = 0, scr_h = 0;
+        elm_win_screen_position_get(static_cast<Evas_Object*>(window), &x, &y);
         elm_win_screen_size_get(static_cast<Evas_Object*>(window), NULL, NULL, &width, &height);
 
         utils->log("WinEfl_getwinrect %p %d %d %d %d\n",
