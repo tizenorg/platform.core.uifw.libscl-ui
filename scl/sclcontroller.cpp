@@ -2020,7 +2020,8 @@ CSCLController::mouse_press(sclwindow window, sclint x, sclint y, scltouchdevice
         if (windows->is_base_window(window)) {
             SclWindowContext *dim_window_context = windows->get_window_context(windows->get_dim_window());
             if (dim_window_context) {
-                if (dim_window_context->is_virtual && !(dim_window_context->hidden)) {
+                LOGD ("dim window is_virtual:%d, hidden:%d", dim_window_context->is_virtual, dim_window_context->hidden);
+                if (/*dim_window_context->is_virtual &&*/ !(dim_window_context->hidden)) {
                     window = windows->get_dim_window();
                     window_context = dim_window_context;
                 }
