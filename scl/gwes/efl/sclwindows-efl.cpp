@@ -499,8 +499,8 @@ CSCLWindowsImplEfl::show_window(const sclwindow window, sclboolean queue)
                 }
             }
         }
-#ifndef WAYLAND
 #ifndef APPLY_WINDOW_MANAGER_CHANGE
+#ifndef WAYLAND
         if (windows->get_base_window() == window) {
             int  ret = 0;
             Atom type_return;
@@ -525,6 +525,7 @@ CSCLWindowsImplEfl::show_window(const sclwindow window, sclboolean queue)
                 }
             }
         }
+#endif
         scl8 popup_index = windows->find_popup_window_index(window);
         if (windows->get_magnifier_window() == window || popup_index != NOT_USED) {
             /*
@@ -534,13 +535,15 @@ CSCLWindowsImplEfl::show_window(const sclwindow window, sclboolean queue)
              * N_SE-52548: ...and modified if() for other popup windows as well...
              */
             if (window_context && !(window_context->is_virtual)) {
+#ifndef WAYLAND
                 ecore_x_icccm_transient_for_set
                     (elm_win_xwindow_get(static_cast<Evas_Object*>(window)), app_window);
+#endif
                 elm_win_raise((Evas_Object *)window);
             }
         }
 #endif
-#endif
+
         utils->log("WinEfl_showwin %p %p (basewin %p mag %p)\n",
             window,
             windows->get_base_window(), windows->get_magnifier_window());
@@ -1086,7 +1089,6 @@ CSCLWindowsImplEfl::set_window_rotation(const sclwindow window, SCLRotation rota
 #endif
 }
 
-
 /**
  * Shows a message box
  */
@@ -1095,7 +1097,6 @@ CSCLWindowsImplEfl::show_message_box(const sclwindow parent, scl8 msgType, sclch
 {
     SCL_DEBUG();
 }
-
 
 void
 CSCLWindowsImplEfl::set_keep_above(const sclwindow window, sclboolean keepabove)
