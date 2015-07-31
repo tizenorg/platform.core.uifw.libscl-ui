@@ -454,7 +454,7 @@ typedef enum _SCLStartingCoordinatesOption {
 #define SCL_AUTO_DETECT_PORTRAIT_LANDSCAPE TRUE
 
 /* FIXME : This should be configurable also */
-#define SCL_HIGHLIGHT_UI_IMAGE "button/B09_Qwerty_btn_highlight.png"
+#define SCL_HIGHLIGHT_UI_IMAGE "B09_Qwerty_btn_highlight.png"
 
 #define SCL_ANIMATION_TIMER_INTERVAL (1000 / 30) // 30 frames per second
 #define SCL_ANIMATION_TIME 300 // Animation for 300 ms
