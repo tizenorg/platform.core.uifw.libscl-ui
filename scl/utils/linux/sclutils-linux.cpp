@@ -86,7 +86,7 @@ void accessibility_changed_cb(keynode_t *key, void* data)
 {
     int r;
     int enabled = 0;
-    if (vconf_get_int(VCONFKEY_SETAPPL_ACCESSIBILITY_TTS, &enabled) == 0) {
+    if (vconf_get_bool(VCONFKEY_SETAPPL_ACCESSIBILITY_TTS, &enabled) == 0) {
         LOGD("VCONFKEY_SETAPPL_ACCESSIBILITY_TTS : %d, (%p)", enabled, tts);
         if (enabled) {
             if (tts == NULL) {
