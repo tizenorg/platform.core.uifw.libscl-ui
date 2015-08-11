@@ -259,12 +259,11 @@ Eina_Bool mouse_press(void *data, int type, void *event_info)
         sclboolean is_scl_window = FALSE;
 #ifdef WAYLAND
         wl_base_window = elm_win_wl_window_get(static_cast<Evas_Object*>(windows->get_base_window()));
-        if (wl_base_window) {
-            if ((unsigned int)ecore_wl_window_id_get(wl_base_window) == ev->window)
-                is_scl_window = TRUE;
-        } else if ((wl_magnifier_window = (elm_win_wl_window_get(static_cast<Evas_Object*>(windows->get_magnifier_window()))))) {
-            if ((unsigned int)ecore_wl_window_id_get(wl_magnifier_window) == ev->window)
-                is_scl_window = TRUE;
+        wl_magnifier_window = (elm_win_wl_window_get(static_cast<Evas_Object*>(windows->get_magnifier_window())));
+        if (wl_base_window && (unsigned int)ecore_wl_window_id_get(wl_base_window) == ev->window) {
+            is_scl_window = TRUE;
+        } else if (wl_magnifier_window && (unsigned int)ecore_wl_window_id_get(wl_magnifier_window) == ev->window) {
+            is_scl_window = TRUE;
 #else
         if (elm_win_xwindow_get(static_cast<Evas_Object*>(windows->get_base_window())) == ev->window) {
             is_scl_window = TRUE;
