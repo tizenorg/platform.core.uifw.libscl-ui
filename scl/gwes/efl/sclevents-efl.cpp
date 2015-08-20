@@ -644,6 +644,14 @@ Eina_Bool mouse_move (void *data, int type, void *event_info)
 #ifdef WAYLAND
             int root_x = ev->x + rect.x;
             int root_y = ev->y + rect.y;
+
+            Ecore_Wl_Window *wl_base_window = elm_win_wl_window_get (static_cast<Evas_Object*>(windows->get_base_window ()));
+            if (wl_base_window && (unsigned int)ecore_wl_window_id_get (wl_base_window) == ev->window) {
+                SclRectangle base_rect;
+                get_window_rect (windows->get_base_window (), &base_rect);
+                root_x = ev->x + base_rect.x;
+                root_y = ev->y + base_rect.y;
+            }
 #else
             int root_x = ev->root.x;
             int root_y = ev->root.y;
