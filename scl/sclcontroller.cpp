@@ -1942,7 +1942,7 @@ CSCLController::process_button_release_event(sclwindow window, sclint x, sclint 
 
                 key_event_desc.touch_event_order = context->get_multi_touch_event_order(touch_id);
 
-                handler->on_event_drag_state_changed(key_event_desc);
+                SCLEventReturnType evt = handler->on_event_drag_state_changed(key_event_desc);
             }
         }
 
@@ -2541,7 +2541,7 @@ CSCLController::mouse_release(sclwindow window, sclint x, sclint y, scltouchdevi
                 if (layout && layout->use_sw_background && layout->bg_color.a == 0) {
                     /* If we could not find appropriate button in this popup window and the popup is transparent */
                     SclWindowContext *base_window_context = windows->get_window_context(windows->get_base_window());
-                    if (base_window_context) {
+                    if (base_window_context && window_context) {
                         x = (window_context->geometry.x + x - base_window_context->geometry.x);
                         y = (window_context->geometry.y + y - base_window_context->geometry.y);
                     }
@@ -3188,7 +3188,7 @@ CSCLController::mouse_move(sclwindow window, sclint x, sclint y, scltouchdevice 
                                     /* If we could not find appropriate button in this popup window and the popup is transparent */
                                     SclWindowContext *base_window_context =
                                         windows->get_window_context(windows->get_base_window());
-                                    if (base_window_context) {
+                                    if (base_window_context && window_context) {
                                         x = (window_context->geometry.x + x - base_window_context->geometry.x);
                                         y = (window_context->geometry.y + y - base_window_context->geometry.y);
                                     }
@@ -3646,12 +3646,8 @@ void CSCLController::handle_engine_signal( SclInternalSignal signal, sclwindow t
     for (loop = 0;loop < SIGACTION_MAXNUM;loop++) {
         if (SIGNAL_TABLE[loop][signal] == TRUE) {
             switch (loop) {
-            case SIGACTION_RESIZE_RESOURCES:
-                break;
             case SIGACTION_DESTROY_TIMERS:
                 events->destroy_all_timer();
-                break;
-            case SIGACTION_CLEAR_PRIVATEKEYS:
                 break;
             case SIGACTION_RECOMPUTE_LAYOUT: {
                 if (targetWindow != SCLWINDOW_INVALID) {
@@ -3698,10 +3694,6 @@ void CSCLController::handle_engine_signal( SclInternalSignal signal, sclwindow t
             case SIGACTION_UNPRESS_KEYS:
                 context->set_cur_pressed_key(context->get_last_touch_device_id(), NOT_USED);
                 context->set_cur_pressed_window(context->get_last_touch_device_id(), SCLWINDOW_INVALID);
-            break;
-            case SIGACTION_INIT_DISPLAY:
-            break;
-            case SIGACTION_INIT_INPUTMODE:
             break;
             default:
             break;
