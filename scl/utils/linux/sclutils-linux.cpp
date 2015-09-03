@@ -231,7 +231,7 @@ CSCLUtilsImplLinux::play_sound(const sclchar* snd_style) {
     } SOUND_TYPES;
 
     static const SOUND_TYPES internal_types[] = {
-        {"Backspace", FEEDBACK_PATTERN_SIP_BACKSPACE},
+        {"Backspace", FEEDBACK_PATTERN_SIP},
     };
     static const sclint SOUND_TYPES_NUM = (sizeof(internal_types) / sizeof(SOUND_TYPES));
 
@@ -269,7 +269,7 @@ CSCLUtilsImplLinux::play_vibration(const sclchar* vibe_style, const scllong dura
     } VIBRATION_TYPES;
 
     static const VIBRATION_TYPES internal_types[] = {
-        {"Backspace", FEEDBACK_PATTERN_SIP_BACKSPACE},
+        {"Backspace", FEEDBACK_PATTERN_SIP},
     };
     static const sclint VIBRATION_TYPES_NUM = (sizeof(internal_types) / sizeof(VIBRATION_TYPES));
 
