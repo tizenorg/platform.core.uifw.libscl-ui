@@ -27,7 +27,9 @@
 #include <glib.h>
 #include <Elementary.h>
 #include <malloc.h>
-#ifndef WAYLAND
+#ifdef WAYLAND
+#include <Ecore_Wayland.h>
+#else
 #include <Ecore_X.h>
 #include <X11/Xlib.h>
 #include <X11/Xatom.h>
@@ -189,7 +191,14 @@ CSCLWindowsImplEfl::create_window(const sclwindow parent, SclWindowContext *wind
 #endif
 
 #ifdef WAYLAND
-    evas_object_resize(win, new_width, new_height);
+    ecore_wl_window_rotation_geometry_set(elm_win_wl_window_get(win),
+        rotation_values_EFL[ROTATION_0], 0, 0, new_width, new_height);
+    ecore_wl_window_rotation_geometry_set(elm_win_wl_window_get(win),
+        rotation_values_EFL[ROTATION_90_CW], 0, 0, new_width, new_height);
+    ecore_wl_window_rotation_geometry_set(elm_win_wl_window_get(win),
+        rotation_values_EFL[ROTATION_180], 0, 0, new_width, new_height);
+    ecore_wl_window_rotation_geometry_set(elm_win_wl_window_get(win),
+        rotation_values_EFL[ROTATION_90_CCW], 0, 0, new_width, new_height);
 #else
     ecore_x_e_window_rotation_geometry_set(elm_win_xwindow_get(win),
         rotation_values_EFL[ROTATION_0], 0, 0, new_width, new_height);
@@ -260,7 +269,14 @@ CSCLWindowsImplEfl::create_magnifier_window(const sclwindow parent, SclWindowCon
 #endif
 
 #ifdef WAYLAND
-    evas_object_resize(win, width, height);
+    ecore_wl_window_rotation_geometry_set(elm_win_wl_window_get(win),
+        rotation_values_EFL[ROTATION_0], 0, 0, width, height);
+    ecore_wl_window_rotation_geometry_set(elm_win_wl_window_get(win),
+        rotation_values_EFL[ROTATION_90_CW], 0, 0, height, width);
+    ecore_wl_window_rotation_geometry_set(elm_win_wl_window_get(win),
+        rotation_values_EFL[ROTATION_180], 0, 0, width, height);
+    ecore_wl_window_rotation_geometry_set(elm_win_wl_window_get(win),
+        rotation_values_EFL[ROTATION_90_CCW], 0, 0, height, width);
 #else
     ecore_x_e_window_rotation_geometry_set(elm_win_xwindow_get(win),
         rotation_values_EFL[ROTATION_0], 0, 0, width, height);
