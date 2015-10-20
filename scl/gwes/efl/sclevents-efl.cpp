@@ -865,7 +865,7 @@ CSCLEventsImplEfl::destroy_timer(const scl32 id)
         if (idx != idMap.end()) {
             CSCLUtils *utils = CSCLUtils::get_instance();
             if (utils) {
-                utils->log("Destoyed Timer : %d %p\n", (*idx).first, (*idx).second);
+                utils->log("Destroyed Timer : %d %p\n", (*idx).first, (*idx).second);
             }
             ecore_timer_del((*idx).second);
             idMap.erase((*idx).first);
