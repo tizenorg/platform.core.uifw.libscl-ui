@@ -82,7 +82,7 @@ static Eina_Bool _get_default_zone_geometry_info (Ecore_X_Window root, scluint *
     return ret;
 }
 #endif
-void accessibility_changed_cb(keynode_t *key, void* data)
+static void accessibility_changed_cb(keynode_t *key, void* data)
 {
     int r;
     int enabled = 0;
