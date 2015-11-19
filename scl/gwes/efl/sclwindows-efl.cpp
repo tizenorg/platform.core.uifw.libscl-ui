@@ -200,6 +200,7 @@ CSCLWindowsImplEfl::create_window(const sclwindow parent, SclWindowContext *wind
     ecore_wl_window_rotation_geometry_set(elm_win_wl_window_get(win),
         rotation_values_EFL[ROTATION_90_CCW], 0, 0, new_width, new_height);
 #else
+    /*
     ecore_x_e_window_rotation_geometry_set(elm_win_xwindow_get(win),
         rotation_values_EFL[ROTATION_0], 0, 0, new_width, new_height);
     ecore_x_e_window_rotation_geometry_set(elm_win_xwindow_get(win),
@@ -208,7 +209,7 @@ CSCLWindowsImplEfl::create_window(const sclwindow parent, SclWindowContext *wind
         rotation_values_EFL[ROTATION_180], 0, 0, new_width, new_height);
     ecore_x_e_window_rotation_geometry_set(elm_win_xwindow_get(win),
         rotation_values_EFL[ROTATION_90_CCW], 0, 0, new_width, new_height);
-
+    */
 #ifndef APPLY_WINDOW_MANAGER_CHANGE
     ecore_x_icccm_name_class_set(elm_win_xwindow_get(static_cast<Evas_Object*>(win)), "ISF Popup", "ISF");
 
@@ -278,6 +279,7 @@ CSCLWindowsImplEfl::create_magnifier_window(const sclwindow parent, SclWindowCon
     ecore_wl_window_rotation_geometry_set(elm_win_wl_window_get(win),
         rotation_values_EFL[ROTATION_90_CCW], 0, 0, height, width);
 #else
+    /*
     ecore_x_e_window_rotation_geometry_set(elm_win_xwindow_get(win),
         rotation_values_EFL[ROTATION_0], 0, 0, width, height);
     ecore_x_e_window_rotation_geometry_set(elm_win_xwindow_get(win),
@@ -286,7 +288,7 @@ CSCLWindowsImplEfl::create_magnifier_window(const sclwindow parent, SclWindowCon
         rotation_values_EFL[ROTATION_180], 0, 0, width, height);
     ecore_x_e_window_rotation_geometry_set(elm_win_xwindow_get(win),
         rotation_values_EFL[ROTATION_90_CCW], 0, 0, height, width);
-
+    */
 #ifndef APPLY_WINDOW_MANAGER_CHANGE
     ecore_x_icccm_name_class_set(elm_win_xwindow_get(static_cast<Evas_Object*>(win)), "Key Magnifier", "ISF");
     Ecore_X_Atom ATOM_WINDOW_EFFECT_ENABLE  = 0;
