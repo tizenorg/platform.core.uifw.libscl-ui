@@ -45,15 +45,21 @@ void CSCLGwes::init(sclwindow parent, scl16 width, scl16 height)
     if (m_windows) {
         m_windows->init();
     }
+
     if (m_graphics) {
         m_graphics->init();
     }
+
     if (m_events) {
         m_events->init();
     }
 
-    sclwindow wnd = m_windows->create_base_window(parent, width, height);
-    m_events->connect_window_events(wnd, SCL_EVENT_MOUSE | SCL_EVENT_EXPOSE);
+    if (m_windows) {
+        sclwindow wnd = m_windows->create_base_window(parent, width, height);
+        if (m_events) {
+            m_events->connect_window_events(wnd, SCL_EVENT_MOUSE | SCL_EVENT_EXPOSE);
+        }
+    }
 }
 
 void CSCLGwes::fini()
