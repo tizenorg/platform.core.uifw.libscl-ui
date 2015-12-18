@@ -6,7 +6,7 @@
 
 Name:       libscl-ui
 Summary:    A library for developing XML-based software keyboards
-Version:    0.6.3
+Version:    0.6.4
 Release:    1
 Group:      Graphics & UI Framework/Input
 License:    Apache-2.0
