@@ -23,6 +23,7 @@ using namespace std;
 BinInputModeConfigParser::BinInputModeConfigParser() {
     m_inputmode_size = 0;
     memset(m_input_mode_configure_table, 0x00, sizeof(SclInputModeConfigure) * MAX_SCL_INPUT_MODE);
+    parser_info_provider = NULL;
 }
 
 BinInputModeConfigParser::~BinInputModeConfigParser() {

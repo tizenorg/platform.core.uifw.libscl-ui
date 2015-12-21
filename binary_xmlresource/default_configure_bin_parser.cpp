@@ -22,6 +22,7 @@ using namespace std;
 
 BinDefaultConfigParser::BinDefaultConfigParser() {
     memset((void*)&m_default_configure, 0x00, sizeof(SclDefaultConfigure));
+    parser_info_provider = NULL;
 }
 
 BinDefaultConfigParser::~BinDefaultConfigParser() {

@@ -35,6 +35,7 @@ using namespace scl;
 
 BinKeyCoordFrameParser::BinKeyCoordFrameParser() {
     memset(m_key_coordinate_pointer_frame, 0x00, sizeof(SclLayoutKeyCoordinatePointer) * MAX_SCL_LAYOUT * MAX_KEY);
+    parser_info_provider = NULL;
 }
 BinKeyCoordFrameParser::~BinKeyCoordFrameParser() {
     for (int i = 0; i < MAX_SCL_LAYOUT; ++i) {

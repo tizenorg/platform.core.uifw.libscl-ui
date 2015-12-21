@@ -61,6 +61,7 @@ CSCLGraphicsImplEfl::CSCLGraphicsImplEfl()
 {
     SCL_DEBUG();
     /* Initializes all window resources */
+    m_highlight_ui_object = NULL;
 }
 
 /**

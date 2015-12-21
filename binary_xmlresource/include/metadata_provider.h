@@ -25,6 +25,7 @@ class Metadata_Provider:public IMetadata_Provider{
     public:
         Metadata_Provider(const Metadata_Bin_Parser* metadataParser):m_metadataParser(metadataParser) {
             current_record_name = NULL;
+            curRecordIndex = -1;
         }
 
         const int get_width(const char* field_name)const{

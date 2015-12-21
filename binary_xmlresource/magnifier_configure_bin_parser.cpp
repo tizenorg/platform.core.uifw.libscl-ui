@@ -23,6 +23,7 @@ using namespace std;
 
 BinMagnifierConfigParser::BinMagnifierConfigParser() {
     memset((void*)&m_magnifier_configure, 0x00, sizeof(SclMagnifierWndConfigure));
+    parser_info_provider = NULL;
 }
 
 BinMagnifierConfigParser::~BinMagnifierConfigParser() {

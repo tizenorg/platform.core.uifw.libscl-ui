@@ -22,6 +22,7 @@
 BinLabelPropertyParser::BinLabelPropertyParser() {
     m_size = 0;
     memset(m_label_properties_frame, 0, sizeof(SclLabelProperties) * MAX_SCL_LABEL_PROPERTIES * MAX_SIZE_OF_LABEL_FOR_ONE);
+    parser_info_provider = NULL;
 }
 
 BinLabelPropertyParser::~BinLabelPropertyParser() {

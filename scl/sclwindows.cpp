@@ -48,6 +48,7 @@ CSCLWindows::CSCLWindows()
     memset(m_popup_window_context, 0x00, sizeof(SclWindowContext) * MAX_POPUP_WINDOW);
 
     m_pending_update = FALSE;
+    m_initialized = FALSE;
 
     for (loop = 0;loop < MAX_ZORDER_NUM;loop++) {
         m_Z_order_list[loop] = SCLWINDOW_INVALID;

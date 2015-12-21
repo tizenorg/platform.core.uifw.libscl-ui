@@ -22,6 +22,7 @@ using namespace std;
 
 BinAutoPopupConfigParser::BinAutoPopupConfigParser() {
     memset((void*)&m_autopopup_configure, 0x00, sizeof(SclAutoPopupConfigure));
+    parser_info_provider = NULL;
 }
 
 BinAutoPopupConfigParser::~BinAutoPopupConfigParser() {

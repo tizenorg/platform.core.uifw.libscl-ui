@@ -21,6 +21,7 @@
 
 BinModifierDecorationParser::BinModifierDecorationParser() {
     memset(m_modifier_decoration_table, 0x00, sizeof(SclModifierDecoration) * MAX_SCL_MODIFIER_DECORATION_NUM);
+    parser_info_provider = NULL;
 }
 
 BinModifierDecorationParser::~BinModifierDecorationParser() {
