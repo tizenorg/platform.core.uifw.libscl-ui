@@ -467,7 +467,7 @@ CSCLKeyFocusHandler::process_navigation(SCLHighlightNavigationDirection directio
         sclboolean exclude_popup_covered_area = FALSE;
 
         if (!windows->is_base_window(windows->get_nth_window_in_Z_order_list(SCL_WINDOW_Z_TOP))) {
-            if (cache && scl_check_arrindex(window_context->inputmode, MAX_SCL_INPUT_MODE)) {
+            if (cache && window_context && scl_check_arrindex(window_context->inputmode, MAX_SCL_INPUT_MODE)) {
                 const SclLayout *cur_layout =
                     cache->get_cur_layout(windows->get_nth_window_in_Z_order_list(SCL_WINDOW_Z_TOP));
                 if (cur_layout) {
