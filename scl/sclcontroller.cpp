@@ -2050,7 +2050,8 @@ CSCLController::mouse_press(sclwindow window, sclint x, sclint y, scltouchdevice
             if (coordinate) {
                 if (coordinate->multitouch_type == SCL_MULTI_TOUCH_TYPE_GRAB_SUB_EVENTS) {
                     isSubEvent = TRUE;
-                    utils->play_vibration(DEFAULT_VIBRATION_STYLE, DEFAULT_VIBRATION_DURATION);
+                    if (utils)
+                        utils->play_vibration(DEFAULT_VIBRATION_STYLE, DEFAULT_VIBRATION_DURATION);
                 }
             }
         }
@@ -2951,7 +2952,7 @@ CSCLController::mouse_move(sclwindow window, sclint x, sclint y, scltouchdevice 
                     desc.mouse_farthest_point = context->get_farthest_move_point(touch_id);
                     desc.key_modifier = key_modifier;
 
-                    if (handler->on_event_drag_state_changed(desc) && context->get_magnifier_enabled()) {
+                    if (handler && handler->on_event_drag_state_changed(desc) && context->get_magnifier_enabled()) {
                         update_magnifier = TRUE;
                     }
                 }
@@ -3620,13 +3621,17 @@ void CSCLController::handle_engine_signal( SclInternalSignal signal, sclwindow t
     switch (signal) {
         case SCL_SIG_SHOW:
             {
-                context->set_hidden_state(FALSE);
+                if (context)
+                    context->set_hidden_state(FALSE);
             }
             break;
         case SCL_SIG_HIDE:
             {
-                context->set_hidden_state(TRUE);
-                windows->close_all_popups();
+                if (context)
+                    context->set_hidden_state(TRUE);
+
+                if (windows)
+                    windows->close_all_popups();
             }
             break;
         case SCL_SIG_START:
@@ -3651,7 +3656,9 @@ void CSCLController::handle_engine_signal( SclInternalSignal signal, sclwindow t
                 break;
             case SIGACTION_RECOMPUTE_LAYOUT: {
                 if (targetWindow != SCLWINDOW_INVALID) {
-                    cache->recompute_layout(targetWindow);
+                    if (cache)
+                        cache->recompute_layout(targetWindow);
+
                     // EFL testing
                     windows->update_window(targetWindow);
                 }

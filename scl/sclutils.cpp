@@ -75,7 +75,7 @@ CSCLUtils::init()
         scl_assert(default_configure->target_screen_width);
         scl_assert(default_configure->target_screen_height);
         if (default_configure->target_screen_width != 0 &&default_configure->target_screen_height != 0) {
-            GetCSCLUtilsImpl()->get_screen_resolution(&m_scn_resolution_x, &m_scn_resolution_y);
+            impl->get_screen_resolution(&m_scn_resolution_x, &m_scn_resolution_y);
             m_scn_rate_x = m_scn_resolution_x / (float)default_configure->target_screen_width;
             m_scn_rate_y = m_scn_resolution_y / (float)default_configure->target_screen_height;
 

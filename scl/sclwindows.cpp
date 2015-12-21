@@ -263,7 +263,8 @@ sclwindow CSCLWindows::open_popup(const SclWindowOpener opener, const SclRectang
                     button_context->state = BUTTON_STATE_NORMAL;
                 }*/
 
-                windows->update_window(window, coordinate->x, coordinate->y, coordinate->width, coordinate->height);
+                if (coordinate)
+                    windows->update_window(window, coordinate->x, coordinate->y, coordinate->width, coordinate->height);
             }
         }
     }
@@ -314,6 +315,8 @@ CSCLWindows::create_base_window(const sclwindow parent, scl16 width, scl16 heigh
     SCL_DEBUG();
 
     if (m_initialized) {
+        CSCLWindowsImpl* impl = get_scl_windows_impl();
+
         m_base_window_context.hidden = TRUE;
         m_base_window_context.geometry.width = width;
         m_base_window_context.geometry.height = height;
@@ -322,10 +325,12 @@ CSCLWindows::create_base_window(const sclwindow parent, scl16 width, scl16 heigh
         m_base_window_context.opener.window = parent;
         m_base_window_context.geometry.x = m_base_window_context.geometry.y = 0;
         m_base_window_context.etc_info = NULL;
-        m_base_window_context.window =
-            get_scl_windows_impl()->create_base_window(parent, &m_base_window_context, width, height);
+        m_base_window_context.window = SCLWINDOW_INVALID;
 
-        push_window_in_Z_order_list(m_base_window_context.window);
+        if (impl) {
+            m_base_window_context.window = impl->create_base_window(parent, &m_base_window_context, width, height);
+            push_window_in_Z_order_list(m_base_window_context.window);
+        }
     }
 
     // Update the position information

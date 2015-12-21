@@ -1012,9 +1012,11 @@ CSCLUIBuilder::show_magnifier(const sclwindow window, scldrawctx draw_ctx)
         /* Do not show if there's nothing to show */
         //const char *targetstr = coordinate->key_value[shift_index][button_context->multikeyIdx];
         const char *targetstr = coordinate->label[shift_index][0];
-        if (state->get_cur_action_state() == ACTION_STATE_BASE_LONGKEY ||
-            state->get_cur_action_state() == ACTION_STATE_POPUP_LONGKEY ) {
+        if (state) {
+            if (state->get_cur_action_state() == ACTION_STATE_BASE_LONGKEY ||
+                state->get_cur_action_state() == ACTION_STATE_POPUP_LONGKEY) {
                 targetstr = coordinate->long_key_value;
+            }
         }
         const sclchar* customstr = NULL;
         for(sclint label_index = 0;label_index < MAX_SIZE_OF_LABEL_FOR_ONE && !customstr;label_index++) {
@@ -1058,7 +1060,7 @@ CSCLUIBuilder::show_magnifier(const sclwindow window, scldrawctx draw_ctx)
     }
     if (coordinate && magnifier_configure) {
         sclchar composed_path[_POSIX_PATH_MAX] = {0,};
-        if (state->get_cur_action_state() == ACTION_STATE_BASE_LONGKEY) {
+        if (state && state->get_cur_action_state() == ACTION_STATE_BASE_LONGKEY) {
             m_utils->get_composed_path(composed_path, IMG_PATH_PREFIX, magnifier_configure->bg_long_key_image_path);
             m_gwes->m_graphics->draw_image(window, draw_ctx, composed_path, NULL, 0, 0,
                 magnifier_configure->width * utils->get_custom_scale_rate_x(),
@@ -1117,8 +1119,10 @@ CSCLUIBuilder::show_magnifier(const sclwindow window, scldrawctx draw_ctx)
                             targetstr = cache->find_substituted_string(targetstr);
                         } else if (loop == 0) {
                             /* Don't display sublabels of each buttons in magnifier window - this policy can be changed, but for now */
-                            targetstr = coordinate->label[shift_index][button_context->multikeyIdx];
-                            targetstr = cache->find_substituted_string(targetstr);
+                            if (button_context) {
+                                targetstr = coordinate->label[shift_index][button_context->multikeyIdx];
+                                targetstr = cache->find_substituted_string(targetstr);
+                            }
                         }
                         if (targetstr) {
                             draw_magnifier_label(window, draw_ctx, loop, targetstr);

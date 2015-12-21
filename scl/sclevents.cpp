@@ -151,7 +151,7 @@ CSCLEvents::process_key_event(const char *key)
     } else if ((strcmp(keyname, "Return") == 0)||(strcmp(keyname, "Enter") == 0)) {
         coordinate = cache->get_cur_layout_key_coordinate(current_focus_window, current_key_index);
         //button_context->state = BUTTON_STATE_NORMAL;
-        if (coordinate) {
+        if (coordinate && controller) {
             controller->mouse_press(current_focus_window, coordinate->x, coordinate->y, TRUE);
             controller->mouse_release(current_focus_window, coordinate->x, coordinate->y, TRUE);
             if (KEY_TYPE_MODECHANGE != coordinate->key_type) {

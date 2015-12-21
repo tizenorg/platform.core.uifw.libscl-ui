@@ -474,7 +474,7 @@ CSCLKeyFocusHandler::process_navigation(SCLHighlightNavigationDirection directio
                     if (!(cur_layout->use_sw_background) || cur_layout->bg_color.a != 0) {
                         const PSclInputModeConfigure sclres_input_mode_configure =
                             sclres_manager->get_input_mode_configure_table();
-                        if (sclres_input_mode_configure[window_context->inputmode].use_dim_window) {
+                        if (sclres_input_mode_configure && sclres_input_mode_configure[window_context->inputmode].use_dim_window) {
                             search_in_base_window = FALSE;
                         } else {
                             exclude_popup_covered_area = TRUE;
@@ -539,7 +539,7 @@ CSCLKeyFocusHandler::process_navigation(SCLHighlightNavigationDirection directio
 
             if (exclude_popup_covered_area) {
                 CSCLUtils *utils = CSCLUtils::get_instance();
-                if (utils) {
+                if (utils && popup_window_context) {
                     /* If the base candidate key is covered by popup window, do not choose it */
                     if (utils->is_rect_overlap(base_key_coordinate, popup_window_context->geometry)) {
                         base_candidate.candidate = NOT_USED;
