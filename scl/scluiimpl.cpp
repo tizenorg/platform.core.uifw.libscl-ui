@@ -777,8 +777,10 @@ CSCLUIImpl::get_input_mode_size(const sclchar *input_mode, SCLDisplayMode displa
                 sclint layout = sclres_manager->get_layout_id(
                         sclres_input_mode_configure[inputmode].layouts[display_mode]);
 
-                ret.width = sclres_layout[layout].width;
-                ret.height = sclres_layout[layout].height;
+                if (layout >= 0) {
+                    ret.width = sclres_layout[layout].width;
+                    ret.height = sclres_layout[layout].height;
+                }
             }
         }
     }
@@ -799,8 +801,6 @@ CSCLUIImpl::get_screen_resolution(sclint *width, sclint *height)
         }
     }
 }
-
-
 
 void
 CSCLUIImpl::set_debug_mode(SCLDebugMode mode)
