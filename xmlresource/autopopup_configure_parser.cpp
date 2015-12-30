@@ -32,19 +32,19 @@ class AutoPopupConfigureParserImpl {
             m_autopopup_configure.add_grab_left = NOT_USED;
             m_autopopup_configure.add_grab_right = NOT_USED;
             m_autopopup_configure.add_grab_top = NOT_USED;
-            m_autopopup_configure.add_grab_bottom= NOT_USED;
+            m_autopopup_configure.add_grab_bottom = NOT_USED;
         }
 
         ~AutoPopupConfigureParserImpl() {
             /* Let's create de-initializing function for this resource releasement */
             sclint loop;
-            for(loop = 0;loop < SCL_BUTTON_STATE_MAX;loop++) {
+            for (loop = 0;loop < SCL_BUTTON_STATE_MAX;loop++) {
                 if (m_autopopup_configure.button_image_path[loop]) {
                     xmlFree(m_autopopup_configure.button_image_path[loop]);
                     m_autopopup_configure.button_image_path[loop] = NULL;
                 }
             }
-            for(loop = 0;loop < MAX_WND_DECORATOR;loop++) {
+            for (loop = 0;loop < MAX_WND_DECORATOR;loop++) {
                 if (m_autopopup_configure.decoration_image_path[loop]) {
                     xmlFree(m_autopopup_configure.decoration_image_path[loop]);
                     m_autopopup_configure.decoration_image_path[loop] = NULL;
@@ -54,7 +54,6 @@ class AutoPopupConfigureParserImpl {
                 xmlFree(m_autopopup_configure.label_type);
                 m_autopopup_configure.label_type = NULL;
             }
-
         }
 
         int parsing_autopopup_configure(const char* input_file) {
@@ -130,46 +129,44 @@ class AutoPopupConfigureParserImpl {
             }
             xmlFreeDoc(doc);
             return 0;
-
         }
         void parsing_background_color(const xmlNodePtr cur_node) {
             assert(cur_node != NULL);
 
             xmlNodePtr child_node = cur_node->xmlChildrenNode;
-            while (child_node!=NULL) {
-                if (0 == xmlStrcmp(child_node->name, (const xmlChar *)"r") ) {
+            while (child_node != NULL) {
+                if (0 == xmlStrcmp(child_node->name, (const xmlChar *)"r")) {
                     m_autopopup_configure.bg_color.r = get_content_int(child_node);
                 }
-                else if (0 == xmlStrcmp(child_node->name, (const xmlChar *)"g") ) {
+                else if (0 == xmlStrcmp(child_node->name, (const xmlChar *)"g")) {
                     m_autopopup_configure.bg_color.g = get_content_int(child_node);
                 }
-                else if (0 == xmlStrcmp(child_node->name, (const xmlChar *)"b") ) {
+                else if (0 == xmlStrcmp(child_node->name, (const xmlChar *)"b")) {
                     m_autopopup_configure.bg_color.b = get_content_int(child_node);
                 }
-                else if (0 == xmlStrcmp(child_node->name, (const xmlChar *)"a") ) {
+                else if (0 == xmlStrcmp(child_node->name, (const xmlChar *)"a")) {
                     m_autopopup_configure.bg_color.a = get_content_int(child_node);
                 }
 
                 child_node = child_node->next;
             }
-
         }
 
         void parsing_background_line_color(const xmlNodePtr cur_node) {
             assert(cur_node != NULL);
 
             xmlNodePtr child_node = cur_node->xmlChildrenNode;
-            while (child_node!=NULL) {
-                if (0 == xmlStrcmp(child_node->name, (const xmlChar *)"r") ) {
+            while (child_node != NULL) {
+                if (0 == xmlStrcmp(child_node->name, (const xmlChar *)"r")) {
                     m_autopopup_configure.bg_line_color.r = get_content_int(child_node);
                 }
-                else if (0 == xmlStrcmp(child_node->name, (const xmlChar *)"g") ) {
+                else if (0 == xmlStrcmp(child_node->name, (const xmlChar *)"g")) {
                     m_autopopup_configure.bg_line_color.g = get_content_int(child_node);
                 }
-                else if (0 == xmlStrcmp(child_node->name, (const xmlChar *)"b") ) {
+                else if (0 == xmlStrcmp(child_node->name, (const xmlChar *)"b")) {
                     m_autopopup_configure.bg_line_color.b = get_content_int(child_node);
                 }
-                else if (0 == xmlStrcmp(child_node->name, (const xmlChar *)"a") ) {
+                else if (0 == xmlStrcmp(child_node->name, (const xmlChar *)"a")) {
                     m_autopopup_configure.bg_line_color.a = get_content_int(child_node);
                 }
 
@@ -183,7 +180,7 @@ class AutoPopupConfigureParserImpl {
             xmlNodePtr child_node = cur_node->xmlChildrenNode;
 
             while (child_node != NULL) {
-                if (0 == xmlStrcmp(child_node->name, (const xmlChar*)"image") ) {
+                if (0 == xmlStrcmp(child_node->name, (const xmlChar*)"image")) {
                     int button_state = get_button_state_prop(child_node);
                     if (button_state >= 0 && button_state < SCL_BUTTON_STATE_MAX) {
                         m_autopopup_configure.button_image_path[button_state] = (sclchar*)xmlNodeGetContent(child_node);
@@ -191,21 +188,19 @@ class AutoPopupConfigureParserImpl {
                 }
                 child_node = child_node->next;
             }
-
         }
         void parsing_button_size(const xmlNodePtr cur_node) {
             assert(cur_node != NULL);
 
             xmlNodePtr child_node = cur_node->xmlChildrenNode;
-            while (child_node!=NULL) {
-                if (0 == xmlStrcmp(child_node->name, (const xmlChar*)"width") ) {
+            while (child_node != NULL) {
+                if (0 == xmlStrcmp(child_node->name, (const xmlChar*)"width")) {
                     m_autopopup_configure.button_width = get_content_int(child_node);
-                } else if (0 == xmlStrcmp(child_node->name, (const xmlChar*)"height") ) {
+                } else if (0 == xmlStrcmp(child_node->name, (const xmlChar*)"height")) {
                     m_autopopup_configure.button_height = get_content_int(child_node);
                 }
                 child_node = child_node->next;
             }
-
         }
 
         void parsing_window_decorator_image_path(const xmlNodePtr cur_node) {
@@ -214,7 +209,7 @@ class AutoPopupConfigureParserImpl {
             xmlNodePtr child_node = cur_node->xmlChildrenNode;
 
             while (child_node != NULL) {
-                if (0 == xmlStrcmp(child_node->name, (const xmlChar*)"image") ) {
+                if (0 == xmlStrcmp(child_node->name, (const xmlChar*)"image")) {
                     if (equal_prop(cur_node, "direction", "top_left")) {
                         m_autopopup_configure.decoration_image_path[WND_DECORATOR_TOP_LEFT] = (sclchar *)xmlNodeGetContent(cur_node);;
                     }
@@ -242,29 +237,27 @@ class AutoPopupConfigureParserImpl {
                 }
                 child_node = child_node->next;
             }
-
         }
 
         void parsing_grab_area(const xmlNodePtr cur_node) {
             assert(cur_node != NULL);
 
             xmlNodePtr child_node = cur_node->xmlChildrenNode;
-            while (child_node!=NULL) {
-                if (0 == xmlStrcmp(child_node->name, (const xmlChar*)"left") ) {
+            while (child_node != NULL) {
+                if (0 == xmlStrcmp(child_node->name, (const xmlChar*)"left")) {
                     m_autopopup_configure.add_grab_left = get_content_int(child_node);
                 }
-                else if (0 == xmlStrcmp(child_node->name, (const xmlChar*)"right") ) {
+                else if (0 == xmlStrcmp(child_node->name, (const xmlChar*)"right")) {
                     m_autopopup_configure.add_grab_right = get_content_int(child_node);
                 }
-                else if (0 == xmlStrcmp(child_node->name, (const xmlChar*)"top") ) {
+                else if (0 == xmlStrcmp(child_node->name, (const xmlChar*)"top")) {
                     m_autopopup_configure.add_grab_top = get_content_int(child_node);
                 }
-                else if (0 == xmlStrcmp(child_node->name, (const xmlChar*)"bottom") ) {
+                else if (0 == xmlStrcmp(child_node->name, (const xmlChar*)"bottom")) {
                     m_autopopup_configure.add_grab_bottom = get_content_int(child_node);
                 }
                 child_node = child_node->next;
             }
-
         }
 
         int get_button_state_prop(const xmlNodePtr cur_node) {
@@ -281,7 +274,6 @@ class AutoPopupConfigureParserImpl {
                 button_state = BUTTON_STATE_TOGGLED;
             }
             return button_state;
-
         }
         SCLDisplayMode get_content_displaymode(const xmlNodePtr cur_node) {
             assert(cur_node != NULL);
@@ -297,7 +289,6 @@ class AutoPopupConfigureParserImpl {
             }
 
             return display_mode;
-
         }
         SclAutoPopupConfigure m_autopopup_configure;
 };

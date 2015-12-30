@@ -43,6 +43,5 @@ String_Bin_Parser::parse() {
         const char* temp = m_storage.get_str();
         m_vec_str_depository.push_back(temp);
     }
-
 }
 

@@ -38,7 +38,7 @@ std::vector<TextCache> g_TextCache;
 sclint hash_string(const sclchar* str) {
     sclint ret = 0;
     sclint len = strlen(str);
-    for(sclint loop = 0;loop < len && str[loop];loop++) {
+    for (sclint loop = 0;loop < len && str[loop];loop++) {
         ret = ((loop + 1) * str[loop]);
     }
 
@@ -50,9 +50,9 @@ using namespace scl;
 
 int iNumCreate = 0;
 
-extern void mouse_press (void *data, Evas *e, Evas_Object *object, void *event_info);
-extern void mouse_release (void *data, Evas *e, Evas_Object *object, void *event_info);
-extern void mouse_move (void *data, Evas *e, Evas_Object *object, void *event_info);
+extern void mouse_press(void *data, Evas *e, Evas_Object *object, void *event_info);
+extern void mouse_release(void *data, Evas *e, Evas_Object *object, void *event_info);
+extern void mouse_move(void *data, Evas *e, Evas_Object *object, void *event_info);
 
 /**
  * Constructor
@@ -87,14 +87,14 @@ void CSCLGraphicsImplEfl::fini()
 
 Evas_Object* extract_partimage_from_fullimage(
     Evas_Object* fullimage,
-    int img_x,int img_y,
-    int cell_x,int cell_y,
+    int img_x, int img_y,
+    int cell_x, int cell_y,
     int cell_cx, int cell_cy)
 {
     unsigned int *data;
     unsigned int *t_data;
-    int i,j;
-    int w,h;
+    int i, j;
+    int w, h;
     Evas_Object *image_ob;
 
     if (fullimage == NULL) {
@@ -102,18 +102,18 @@ Evas_Object* extract_partimage_from_fullimage(
     }
     evas_object_image_size_get(fullimage, &w, &h);
 
-    data = (unsigned int*)evas_object_image_data_get(fullimage,0);
+    data = (unsigned int*)evas_object_image_data_get(fullimage, 0);
     if (data == NULL) {
         return NULL;
     }
 
-    t_data=(unsigned int*)malloc(sizeof(unsigned int)*cell_cx*cell_cy);
+    t_data = (unsigned int*)malloc(sizeof(unsigned int)*cell_cx*cell_cy);
     if (t_data == NULL) {
         return NULL;
     }
 
-    for (i=img_y; i<img_y+cell_cy; i++) {
-        for (j=img_x; j<img_x+cell_cx; j++) {
+    for (i=img_y; i < img_y+cell_cy; i++) {
+        for (j=img_x; j < img_x+cell_cx; j++) {
             t_data[(i-img_y)*cell_cx+(j-img_x)] = data[i*w+j];
         }
     }
@@ -123,10 +123,10 @@ Evas_Object* extract_partimage_from_fullimage(
         free(t_data);
         return NULL;
     }
-    evas_object_image_size_set(image_ob,cell_cx,cell_cy);
-    evas_object_image_data_set(image_ob,t_data);
-    evas_object_image_fill_set(image_ob,0,0,cell_cx,cell_cy);
-    evas_object_resize(image_ob,cell_cx,cell_cy);
+    evas_object_image_size_set(image_ob, cell_cx, cell_cy);
+    evas_object_image_data_set(image_ob, t_data);
+    evas_object_image_fill_set(image_ob, 0, 0, cell_cx, cell_cy);
+    evas_object_resize(image_ob, cell_cx, cell_cy);
 
     evas_object_show(image_ob);
 
@@ -177,7 +177,7 @@ CSCLGraphicsImplEfl::draw_image(sclwindow window, const scldrawctx draw_ctx, scl
             sclint hashval = hash_string(image_path);
             /*for(std::list<ImageCache>::iterator iter = g_ImageCache.begin();
                 bFound && iter != g_ImageCache.end();std::advance(iter, 1)) {*/
-            for(sclint loop = 0;loop < g_ImageCache.size() && !bFound;loop++) {
+            for (sclint loop = 0;loop < g_ImageCache.size() && !bFound;loop++) {
                 if (
                     /*  (*iter).used &&
                         window == (*iter).window &&
@@ -286,7 +286,7 @@ CSCLGraphicsImplEfl::draw_image(sclwindow window, const scldrawctx draw_ctx, scl
                             image_object = newobj;
                             evas_object_move(image_object, dest_x, dest_y);
                             if (dest_width > 0 && dest_height > 0) {
-                                evas_object_image_fill_set(image_object, 0, 0, dest_width,dest_height);
+                                evas_object_image_fill_set(image_object, 0, 0, dest_width, dest_height);
                                 evas_object_resize(image_object, dest_width, dest_height);
                             }
     #else
@@ -317,7 +317,7 @@ CSCLGraphicsImplEfl::draw_image(sclwindow window, const scldrawctx draw_ctx, scl
                         } else {
                             evas_object_move(image_object, dest_x, dest_y);
                             if (dest_width > 0 && dest_height > 0) {
-                                evas_object_image_fill_set(image_object, 0, 0, dest_width,dest_height);
+                                evas_object_image_fill_set(image_object, 0, 0, dest_width, dest_height);
                                 evas_object_resize(image_object, dest_width, dest_height);
                             }
                         }
@@ -385,7 +385,7 @@ CSCLGraphicsImplEfl::draw_image(sclwindow window, const scldrawctx draw_ctx, scl
                     cache.src_width = src_width;
                     cache.src_height = src_height;
                 }
-                cache.extrace_image= extrace_image;
+                cache.extrace_image = extrace_image;
                 cache.image = object->object;
                 if (clip_object) {
                     cache.clipper = clip_object->object;
@@ -395,7 +395,7 @@ CSCLGraphicsImplEfl::draw_image(sclwindow window, const scldrawctx draw_ctx, scl
 
                 //g_ImageCache.insert(g_ImageCache.end(), cache);
                 sclboolean bInserted = FALSE;
-                for(sclint loop = 0;loop < g_ImageCache.size() && !bInserted;loop++) {
+                for (sclint loop = 0;loop < g_ImageCache.size() && !bInserted;loop++) {
                     if (!g_ImageCache[loop].used) {
                         g_ImageCache[loop] = cache;
                     }
@@ -496,7 +496,7 @@ CSCLGraphicsImplEfl::draw_text(sclwindow window, const scldrawctx draw_ctx, cons
             sclint org_posy = pos_y;
             /*for(std::list<TextCache>::iterator iter = g_TextCache.begin();
                 bFound && iter != g_TextCache.end();std::advance(iter, 1)) {*/
-            for(sclint loop = 0;loop < g_TextCache.size() && !bFound;loop++) {
+            for (sclint loop = 0;loop < g_TextCache.size() && !bFound;loop++) {
                     if (
                         /*
                         (*iter).used &&
@@ -616,7 +616,7 @@ CSCLGraphicsImplEfl::draw_text(sclwindow window, const scldrawctx draw_ctx, cons
                     snprintf(strStyle, 128,
                         "DEFAULT='font=%s font_size=%d align=%s color=#%02X%02X%02X%02X wrap=word left_margin=%d right_margin=%d'",
                             font_info.font_name, font_info.font_size,
-                            (((int)align % 3) == 1 ) ? "center" : ((((int)align % 3) == 2 ) ? "right" : "left"),
+                            (((int)align % 3) == 1) ? "center" : ((((int)align % 3) == 2) ? "right" : "left"),
                             color.r, color.g, color.b, color.a, padding_x, padding_x);
 
                     Evas_Textblock_Style *st;
@@ -672,7 +672,7 @@ CSCLGraphicsImplEfl::draw_text(sclwindow window, const scldrawctx draw_ctx, cons
                             "DEFAULT='font=%s font_size=%d align=%s color=#%02X%02X%02X%02X wrap=word left_margin=%d right_margin=%d'",
                             font_info.font_name,
                             (int)(SCL_LABEL_OVERLENGTH_TEXT_RESIZE_RATE * font_info.font_size * resize_rate),
-                            (((int)align % 3) == 1 ) ? "center" : ((((int)align % 3) == 2 ) ? "right" : "left"),
+                            (((int)align % 3) == 1) ? "center" : ((((int)align % 3) == 2) ? "right" : "left"),
                             color.r, color.g, color.b, color.a, padding_x, padding_x);
                         evas_textblock_style_set(st, strStyle);
                         evas_object_textblock_style_set(text_object, st);
@@ -749,7 +749,7 @@ CSCLGraphicsImplEfl::draw_text(sclwindow window, const scldrawctx draw_ctx, cons
 
                 //g_TextCache.insert(g_TextCache.end(), cache);
                 sclboolean bInserted = FALSE;
-                for(sclint loop = 0;loop < g_TextCache.size() && !bInserted;loop++) {
+                for (sclint loop = 0;loop < g_TextCache.size() && !bInserted;loop++) {
                     if (!g_TextCache[loop].used) {
                         g_TextCache[loop] = cache;
                     }

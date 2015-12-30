@@ -50,8 +50,8 @@ sclwindow pressed_window = SCLWINDOW_INVALID;
 #define MIN_XY_DIFF 14
 
 Eina_Bool mouse_press(void *data, int type, void *event_info);
-Eina_Bool mouse_move (void *data, int type, void *event_info);
-Eina_Bool mouse_release (void *data, int type, void *event_info);
+Eina_Bool mouse_move(void *data, int type, void *event_info);
+Eina_Bool mouse_release(void *data, int type, void *event_info);
 
 Eina_Bool client_message_cb(void *data, int type, void *event);
 
@@ -113,7 +113,6 @@ void CSCLEventsImplEfl::fini()
     if (m_key_pressed_handler) ecore_event_handler_del(m_key_pressed_handler);
 #endif
     m_key_pressed_handler = NULL;
-
 }
 
 sclboolean get_window_rect(const sclwindow window, SclRectangle *rect)
@@ -151,7 +150,7 @@ sclboolean get_window_rect(const sclwindow window, SclRectangle *rect)
                         rect->height = window_context->geometry.width;
                         rect->width = window_context->geometry.height;
                         rect->y = window_context->geometry.x;
-                        rect->x= scr_h - window_context->geometry.y - rect->width;
+                        rect->x = scr_h - window_context->geometry.y - rect->width;
                     }
                     break;
                 default:
@@ -234,8 +233,8 @@ Eina_Bool mouse_press(void *data, int type, void *event_info)
 
 #ifndef WAYLAND
         Ecore_X_Window inputWindow = 0;
-        Ecore_X_Atom inputAtom = ecore_x_atom_get ("DeviceMgr Input Window");
-        ecore_x_window_prop_xid_get (ecore_x_window_root_first_get(),
+        Ecore_X_Atom inputAtom = ecore_x_atom_get("DeviceMgr Input Window");
+        ecore_x_window_prop_xid_get(ecore_x_window_root_first_get(),
             inputAtom, ECORE_X_ATOM_WINDOW, &inputWindow, 1);
         if (inputWindow == 0) {
             utils->log("Error : input window NULL!");
@@ -292,7 +291,7 @@ Eina_Bool mouse_press(void *data, int type, void *event_info)
         }
         if (!is_scl_window) return TRUE;
 
-        SclRectangle rect = {0,0,0,0};
+        SclRectangle rect = {0, 0, 0, 0};
         do {
             window = windows->get_nth_window_in_Z_order_list(index);
             if (window) {
@@ -392,7 +391,7 @@ Eina_Bool mouse_press(void *data, int type, void *event_info)
 }
 
 //void mouse_release (void *data, Evas *e, Evas_Object *object, void *event_info)
-Eina_Bool mouse_release (void *data, int type, void *event_info)
+Eina_Bool mouse_release(void *data, int type, void *event_info)
 {
     SCL_DEBUG();
 
@@ -527,12 +526,12 @@ Eina_Bool key_pressed(void *data, int type, void *event_info)
     CSCLController *controller = CSCLController::get_instance();
     Ecore_Event_Key *ev = (Ecore_Event_Key *)event_info;
     const char *ckey_val = ev->key;
-    LOGD("=-=-=-=- ev->key(char) = %c \n",ev->key);
-    LOGD("=-=-=-=- ev->key(string) = %s \n",ev->key);
-    LOGD("=-=-=-=- ev->keyname(char) = %c \n",ev->keyname);
-    LOGD("=-=-=-=- ev->keyname(string) = %s \n",ev->keyname);
-    LOGD("=-=-=-=- ev->string(char) = %c \n",ev->string);
-    LOGD("=-=-=-=- ev->string(string) = %s \n",ev->string);
+    LOGD("=-=-=-=- ev->key(char) = %c \n", ev->key);
+    LOGD("=-=-=-=- ev->key(string) = %s \n", ev->key);
+    LOGD("=-=-=-=- ev->keyname(char) = %c \n", ev->keyname);
+    LOGD("=-=-=-=- ev->keyname(string) = %s \n", ev->keyname);
+    LOGD("=-=-=-=- ev->string(char) = %c \n", ev->string);
+    LOGD("=-=-=-=- ev->string(string) = %s \n", ev->string);
 
     CSCLResourceCache *cache = CSCLResourceCache::get_instance();
     SclButtonContext *prev_button_context = NULL;
@@ -555,7 +554,7 @@ Eina_Bool key_pressed(void *data, int type, void *event_info)
         key_index = focus_handler->get_next_key_index(NAVIGATE_UP);
     } else if (strcmp(ev->keyname, "Down") == 0) {
         key_index = focus_handler->get_next_key_index(NAVIGATE_DOWN);
-    } else if ((strcmp(ev->keyname, "Return") == 0)||(strcmp(ev->keyname, "Enter") == 0)) {
+    } else if ((strcmp(ev->keyname, "Return") == 0) || (strcmp(ev->keyname, "Enter") == 0)) {
         button_context = cache->get_cur_button_context(window, current_key_index);
         coordinate = cache->get_cur_layout_key_coordinate(window, current_key_index);
         button_context->state = BUTTON_STATE_NORMAL;
@@ -577,7 +576,7 @@ Eina_Bool key_pressed(void *data, int type, void *event_info)
         coordinate = cache->get_cur_layout_key_coordinate(window, key_index);
         prev_button_context->state = BUTTON_STATE_NORMAL;
         button_context->state = BUTTON_STATE_PRESSED;
-        sclshort x,y,width,height;
+        sclshort x, y, width, height;
         if (prevcoordinate->x < coordinate->x) {
             x = prevcoordinate->x;
         } else {
@@ -611,7 +610,7 @@ Eina_Bool key_pressed(void *data, int type, void *event_info)
 #endif /*HANDLE_KEY_EVENTS*/
 
 //int mouse_move (void *data, Evas *e, Evas_Object *object, void *event_info)
-Eina_Bool mouse_move (void *data, int type, void *event_info)
+Eina_Bool mouse_move(void *data, int type, void *event_info)
 {
     SCL_DEBUG();
 
@@ -645,10 +644,10 @@ Eina_Bool mouse_move (void *data, int type, void *event_info)
             int root_x = ev->x + rect.x;
             int root_y = ev->y + rect.y;
 
-            Ecore_Wl_Window *wl_base_window = elm_win_wl_window_get (static_cast<Evas_Object*>(windows->get_base_window ()));
-            if (wl_base_window && (unsigned int)ecore_wl_window_id_get (wl_base_window) == ev->window) {
+            Ecore_Wl_Window *wl_base_window = elm_win_wl_window_get(static_cast<Evas_Object*>(windows->get_base_window()));
+            if (wl_base_window && (unsigned int)ecore_wl_window_id_get(wl_base_window) == ev->window) {
                 SclRectangle base_rect;
-                get_window_rect (windows->get_base_window (), &base_rect);
+                get_window_rect(windows->get_base_window(), &base_rect);
                 root_x = ev->x + base_rect.x;
                 root_y = ev->y + base_rect.y;
             }
@@ -793,7 +792,7 @@ client_message_cb(void *data, int type, void *event)
             Evas_Object *base_win = (Evas_Object *)windows->get_base_window();
             if (base_win == NULL) return FALSE;
 
-            if ((unsigned int)ev->data.l[0] == elm_win_xwindow_get(base_win) ) {
+            if ((unsigned int)ev->data.l[0] == elm_win_xwindow_get(base_win)) {
                 if ((unsigned int)ev->data.l[1] == ECORE_X_ATOM_E_ILLUME_ACCESS_ACTION_ACTIVATE) {
                 // 1 finger double tap
                 controller->mouse_press(base_win, last_pos_x, last_pos_y);
@@ -881,7 +880,7 @@ void
 CSCLEventsImplEfl::destroy_all_timer()
 {
     SCL_DEBUG();
-    for ( std::map<int, Ecore_Timer*>::iterator idx = idMap.begin(); idx != idMap.end(); ++idx) {
+    for ( std::map<int, Ecore_Timer*>::iterator idx = idMap.begin(); idx != idMap.end(); ++idx ) {
         ecore_timer_del((*idx).second);
 
         CSCLUtils *utils = CSCLUtils::get_instance();
@@ -967,7 +966,7 @@ CSCLEventsImplEfl::generate_mouse_event(SCLMouseEvent type, scl16 x, scl16 y)
 #ifdef WAYLAND
                         Ecore_Wl_Window *wl_base_window;
                         wl_base_window = elm_win_wl_window_get(static_cast<Evas_Object*>(windows->get_base_window()));
-                        if(wl_base_window)
+                        if (wl_base_window)
                             evt.window = (unsigned int)ecore_wl_window_id_get(wl_base_window);
 #else
                         evt.window = elm_win_xwindow_get(static_cast<Evas_Object*>(windows->get_base_window()));

@@ -82,7 +82,6 @@ encode_label_properties_record(ResourceStorage& storage, const PSclLabelProperti
 
 int
 encode_label_properties_frame_file(ResourceStorage& storage, IMetaData_Helper& md_helper) {
-
     int init_size = storage.get_size();
 
     /*size 4bytes*/
@@ -105,8 +104,8 @@ encode_label_properties_frame_file(ResourceStorage& storage, IMetaData_Helper& m
 
     Label_properties_record_width record_width;
     set_label_properties_record_width(md_helper, record_width);
-    for ( int i = 0; i < size; ++i) {
-        for ( int j = 0; j < maxj; ++j) {
+    for ( int i = 0; i < size; ++i ) {
+        for ( int j = 0; j < maxj; ++j ) {
             SclLabelProperties cur = labelPropertiesFrame[i][j];
             encode_label_properties_record(storage, &cur, record_width);
         }

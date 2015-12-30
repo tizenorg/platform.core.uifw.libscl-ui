@@ -31,12 +31,12 @@ extern "C"
     /* Definition for debug message trace */
 #define scldebugc(m_code)						"\x1b[" # m_code
 #define scldebug_sync()							(void)fflush(stdout)
-#define scldebug_puts(m_code)					(void)fputs(m_code,stdout)
+#define scldebug_puts(m_code)					(void)fputs(m_code, stdout)
 #define scldebug_clear_screen()					scldebug_puts(scldebugc(H) scldebugc(J))
-#define scldebug_move(m_x,m_y)					scldebug_puts(scldebugc(m_y;m_x ## H))
+#define scldebug_move(m_x, m_y)					scldebug_puts(scldebugc(m_y;m_x ## H))
 #define scldebug_move_x(m_y)					scldebug_puts(scldebugc(;m_y ## H))
 #define scldebug_move_y(m_y)					scldebug_puts(scldebugc(m_y ## d))
-#define scldebug_puts_xy(m_x,m_y,m_message)	scldebug_puts(scldebugc(m_y;m_x ## H) m_message)
+#define scldebug_puts_xy(m_x, m_y, m_message)	scldebug_puts(scldebugc(m_y;m_x ## H) m_message)
 #define mc_normal		scldebugc(0m)
 #define mc_black		scldebugc(1;30m)
 #define mc_red			scldebugc(1;31m)

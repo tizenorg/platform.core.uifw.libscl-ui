@@ -26,7 +26,6 @@ SclRes::SclRes()
 
 SclRes::~SclRes()
 {
-
 }
 
 void

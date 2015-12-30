@@ -87,7 +87,7 @@ CSCLWindowsImplEfl::~CSCLWindowsImplEfl()
     SCL_DEBUG();
 }
 
-static void window_show_cb (void *data, Evas *e, Evas_Object *obj, void *event)
+static void window_show_cb(void *data, Evas *e, Evas_Object *obj, void *event)
 {
     LOGD("INSIDE =-=-=-=- window_show_cb, Trying to Grab Key Board : \n");
 #ifdef USING_KEY_GRAB
@@ -101,12 +101,10 @@ static void window_show_cb (void *data, Evas *e, Evas_Object *obj, void *event)
 
 void CSCLWindowsImplEfl::init()
 {
-
 }
 
 void CSCLWindowsImplEfl::fini()
 {
-
 }
 
 /**
@@ -130,7 +128,7 @@ CSCLWindowsImplEfl::create_base_window(const sclwindow parent, SclWindowContext 
 
 #ifndef APPLY_WINDOW_MANAGER_CHANGE
 #ifndef WAYLAND
-        ecore_x_icccm_name_class_set(elm_win_xwindow_get(static_cast<Evas_Object*>(parent)), "Virtual Keyboard", "ISF" );
+        ecore_x_icccm_name_class_set(elm_win_xwindow_get(static_cast<Evas_Object*>(parent)), "Virtual Keyboard", "ISF");
 #endif
 #else
         if (parent) {
@@ -178,7 +176,7 @@ CSCLWindowsImplEfl::create_window(const sclwindow parent, SclWindowContext *wind
     scl16 new_width;
     scl16 new_height;
     CSCLContext *context = CSCLContext::get_instance();
-    if(context->get_rotation() == ROTATION_90_CW || context->get_rotation() == ROTATION_90_CCW) {
+    if (context->get_rotation() == ROTATION_90_CW || context->get_rotation() == ROTATION_90_CCW) {
         new_width = height;
         new_height = width;
     } else {
@@ -257,7 +255,7 @@ CSCLWindowsImplEfl::create_magnifier_window(const sclwindow parent, SclWindowCon
 
     set_window_accepts_focus(win, FALSE);
 
-    int rots[4] = {0,90,180,270};
+    int rots[4] = {0, 90, 180, 270};
     elm_win_wm_rotation_available_rotations_set(win, rots, 4);
 
 #ifdef DO_NOT_MOVE_MAGNIFIER_WINDOW
@@ -338,7 +336,7 @@ CSCLWindowsImplEfl::create_dim_window(const sclwindow parent, SclWindowContext *
 
     evas_object_resize(win, width, height);
 
-    int rots[4] = {0,90,180,270};
+    int rots[4] = {0, 90, 180, 270};
     elm_win_wm_rotation_available_rotations_set(win, rots, 4);
 
     set_window_accepts_focus(win, FALSE);
@@ -451,7 +449,7 @@ CSCLWindowsImplEfl::destroy_window(sclwindow window)
                                     evas_textblock_style_free(st);
                                 }
 #ifdef TEST_NEWBACKEND
-                                for(sclint loop = 0;loop < g_TextCache.size();loop++) {
+                                for (sclint loop = 0;loop < g_TextCache.size();loop++) {
                                     if (g_TextCache[loop].text == object->object) {
                                         g_TextCache[loop].used = FALSE;
                                     }
@@ -459,7 +457,7 @@ CSCLWindowsImplEfl::destroy_window(sclwindow window)
 #endif
                             } else if (object->type == EFLOBJECT_IMAGE) {
 #ifdef TEST_NEWBACKEND
-                                for(sclint loop = 0;loop < g_ImageCache.size();loop++) {
+                                for (sclint loop = 0;loop < g_ImageCache.size();loop++) {
                                     if (g_ImageCache[loop].image == object->object) {
                                         g_ImageCache[loop].used = FALSE;
                                     }
@@ -505,29 +503,29 @@ CSCLWindowsImplEfl::show_window(const sclwindow window, sclboolean queue)
     CSCLUtils *utils = CSCLUtils::get_instance();
     if (windows && context && window) {
 #ifdef USING_DIM_BG
-        if (window == windows->get_dim_window ()) {
-            Evas_Object *base_window = static_cast<Evas_Object*>(windows->get_base_window ());
+        if (window == windows->get_dim_window()) {
+            Evas_Object *base_window = static_cast<Evas_Object*>(windows->get_base_window());
             static Evas_Object *dim_bg = NULL;
             if (dim_bg == NULL) {
-                dim_bg = elm_bg_add (static_cast<Evas_Object*>(windows->get_base_window ()));
+                dim_bg = elm_bg_add(static_cast<Evas_Object*>(windows->get_base_window()));
                 SclColor color;
                 color.r = color.g = color.b = 0;
                 color.a = 102;
-                SclResParserManager *sclres_manager = SclResParserManager::get_instance ();
+                SclResParserManager *sclres_manager = SclResParserManager::get_instance();
                 if (sclres_manager) {
-                    PSclDefaultConfigure default_configure = sclres_manager->get_default_configure ();
+                    PSclDefaultConfigure default_configure = sclres_manager->get_default_configure();
                     if (default_configure)
                         color = default_configure->dim_color;
                 }
-                evas_object_color_set (dim_bg, color.r, color.g, color.b, color.a);
-                evas_object_data_set (base_window, "dim_bg", (void *)dim_bg);
+                evas_object_color_set(dim_bg, color.r, color.g, color.b, color.a);
+                evas_object_data_set(base_window, "dim_bg", (void *)dim_bg);
             }
             SclRectangle rect;
-            get_window_rect (windows->get_base_window (), &rect);
-            evas_object_resize (dim_bg, rect.width, rect.height);
-            evas_object_move (dim_bg, 0, 0);
-            evas_object_show (dim_bg);
-            evas_object_layer_set (dim_bg, SHRT_MAX);
+            get_window_rect(windows->get_base_window(), &rect);
+            evas_object_resize(dim_bg, rect.width, rect.height);
+            evas_object_move(dim_bg, 0, 0);
+            evas_object_show(dim_bg);
+            evas_object_layer_set(dim_bg, SHRT_MAX);
             return;
         }
 #endif
@@ -558,9 +556,9 @@ CSCLWindowsImplEfl::show_window(const sclwindow window, sclboolean queue)
             unsigned char   *data = NULL;
 
             Ecore_X_Window win = elm_win_xwindow_get(static_cast<Evas_Object*>(window));
-            ret = XGetWindowProperty ((Display *)ecore_x_display_get (),
-                    ecore_x_window_root_get (win),
-                    ecore_x_atom_get ("_ISF_ACTIVE_WINDOW"),
+            ret = XGetWindowProperty((Display *)ecore_x_display_get(),
+                    ecore_x_window_root_get(win),
+                    ecore_x_atom_get("_ISF_ACTIVE_WINDOW"),
                     0, G_MAXLONG, False, XA_WINDOW, &type_return,
                     &format_return, &nitems_return, &bytes_after_return,
                     &data);
@@ -569,7 +567,7 @@ CSCLWindowsImplEfl::show_window(const sclwindow window, sclboolean queue)
                 if ((type_return == XA_WINDOW) && (format_return == 32) && (data)) {
                     app_window = *(Window *)data;
                     if (data)
-                        XFree (data);
+                        XFree(data);
                 }
             }
         }
@@ -611,10 +609,10 @@ CSCLWindowsImplEfl::hide_window(const sclwindow window,  sclboolean fForce)
 
     if (windows && window) {
 #ifdef USING_DIM_BG
-        if (window == windows->get_dim_window ()) {
-            Evas_Object *base_window = static_cast<Evas_Object*>(windows->get_base_window ());
-            Evas_Object *dim_bg = (Evas_Object *)evas_object_data_get (base_window, "dim_bg");
-            evas_object_hide (dim_bg);
+        if (window == windows->get_dim_window()) {
+            Evas_Object *base_window = static_cast<Evas_Object*>(windows->get_base_window());
+            Evas_Object *dim_bg = (Evas_Object *)evas_object_data_get(base_window, "dim_bg");
+            evas_object_hide(dim_bg);
             return;
         }
 #endif
@@ -653,7 +651,6 @@ CSCLWindowsImplEfl::hide_window(const sclwindow window,  sclboolean fForce)
         if (window == windows->get_magnifier_window() || window == windows->get_dim_window()) {
             if (window_context) {
                 if (window_context->etc_info) {
-
                     Eina_List *list = (Eina_List*)(window_context->etc_info);
                     Eina_List *iter = NULL;
                     Eina_List *iter_next = NULL;
@@ -685,7 +682,7 @@ CSCLWindowsImplEfl::hide_window(const sclwindow window,  sclboolean fForce)
                                             evas_textblock_style_free(st);
                                         }
 #ifdef TEST_NEWBACKEND
-                                        for(sclint loop = 0;loop < g_TextCache.size();loop++) {
+                                        for (sclint loop = 0;loop < g_TextCache.size();loop++) {
                                             if (g_TextCache[loop].text == object->object) {
                                                 g_TextCache[loop].used = FALSE;
                                             }
@@ -693,7 +690,7 @@ CSCLWindowsImplEfl::hide_window(const sclwindow window,  sclboolean fForce)
 #endif
                                     } else if (object->type == EFLOBJECT_IMAGE) {
 #ifdef TEST_NEWBACKEND
-                                        for(sclint loop = 0;loop < g_ImageCache.size();loop++) {
+                                        for (sclint loop = 0;loop < g_ImageCache.size();loop++) {
                                             if (g_ImageCache[loop].image == object->object) {
                                                 g_ImageCache[loop].used = FALSE;
                                             }
@@ -928,7 +925,6 @@ CSCLWindowsImplEfl::update_window(const sclwindow window, scl16 x, scl16 y, scl1
             }
         }
         if (window_context->etc_info) {
-
             Eina_List *list = (Eina_List*)(window_context->etc_info);
             Eina_List *iter = NULL;
             Eina_List *iter_next = NULL;
@@ -980,7 +976,7 @@ CSCLWindowsImplEfl::update_window(const sclwindow window, scl16 x, scl16 y, scl1
                                     evas_textblock_style_free(st);
                                 }
 #ifdef TEST_NEWBACKEND
-                                for(sclint loop = 0;loop < g_TextCache.size();loop++) {
+                                for sclint loop = 0;loop < g_TextCache.size();loop++) {
                                     if (g_TextCache[loop].text == object->object) {
                                         g_TextCache[loop].used = FALSE;
                                     }
@@ -988,7 +984,7 @@ CSCLWindowsImplEfl::update_window(const sclwindow window, scl16 x, scl16 y, scl1
 #endif
                             } else if (object->type == EFLOBJECT_IMAGE) {
 #ifdef TEST_NEWBACKEND
-                                for(sclint loop = 0;loop < g_ImageCache.size();loop++) {
+                                for (sclint loop = 0;loop < g_ImageCache.size();loop++) {
                                     if (g_ImageCache[loop].image == object->object) {
                                         g_ImageCache[loop].used = FALSE;
                                     }
@@ -1176,7 +1172,6 @@ void release_all(Evas_Object *win)
     SclWindowContext *window_context = windows->get_window_context(win);
         if (window_context && win) {
             if (window_context->etc_info) {
-
                 Eina_List *list = (Eina_List*)(window_context->etc_info);
                 Eina_List *iter = NULL;
                 Eina_List *iter_next = NULL;
@@ -1208,7 +1203,7 @@ void release_all(Evas_Object *win)
                                         evas_textblock_style_free(st);
                                     }
 #ifdef TEST_NEWBACKEND
-                                    for(sclint loop = 0;loop < g_TextCache.size();loop++) {
+                                    for (sclint loop = 0;loop < g_TextCache.size();loop++) {
                                         if (g_TextCache[loop].text == object->object) {
                                             g_TextCache[loop].used = FALSE;
                                         }
@@ -1216,7 +1211,7 @@ void release_all(Evas_Object *win)
 #endif
                                 } else if (object->type == EFLOBJECT_IMAGE) {
 #ifdef TEST_NEWBACKEND
-                                    for(sclint loop = 0;loop < g_ImageCache.size();loop++) {
+                                    for (sclint loop = 0;loop < g_ImageCache.size();loop++) {
                                         if (g_ImageCache[loop].image == object->object) {
                                             g_ImageCache[loop].used = FALSE;
                                         }

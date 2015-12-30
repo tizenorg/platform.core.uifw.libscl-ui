@@ -41,7 +41,6 @@ void BinNinePatchFileParser::init(const FileStorage& storage, int offset, int si
 }
 
 void BinNinePatchFileParser::parsing_nine_patch_file_list() {
-
     Nine_patch_width record_width;
     set_nine_patch_width(*parser_info_provider, record_width);
 
@@ -74,7 +73,7 @@ bool
 BinNinePatchFileParser::get_nine_patch_info(const char* filename, SclNinePatchInfo *info) {
     if (filename == NULL) return false;
 
-    for(int i = 0; i < MAX_NINE_PATCH_FILE_LIST && i < m_size; ++i) {
+    for (int i = 0; i < MAX_NINE_PATCH_FILE_LIST && i < m_size; ++i) {
         if ( m_nine_patch_file_list[i].image_path != NULL &&
             0 == strcmp(m_nine_patch_file_list[i].image_path, filename) ) {
                 if (info) {
@@ -85,5 +84,4 @@ BinNinePatchFileParser::get_nine_patch_info(const char* filename, SclNinePatchIn
     }
 
     return false;
-
 }

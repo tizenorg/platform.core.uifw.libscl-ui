@@ -74,7 +74,6 @@ class CSCLAnimatorImpl
 
     friend class CSCLAnimator;
 private:
-
 };
 
 class CSCLAnimator

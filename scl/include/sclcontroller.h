@@ -78,7 +78,7 @@ private:
     sclboolean check_magnifier_available(sclwindow window, sclbyte key_index, scltouchdevice touch_id);
 
     SCLKeyModifier get_drag_key_modifier(sclint deltax, sclint deltay, sclfloat dist,
-        sclboolean check_farthest,scltouchdevice touch_id, sclbyte extra_option);
+        sclboolean check_farthest, scltouchdevice touch_id, sclbyte extra_option);
 
 public:
     void handle_engine_signal(SclInternalSignal signal, sclwindow skip_window = SCLWINDOW_INVALID);

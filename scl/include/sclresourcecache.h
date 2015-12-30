@@ -100,7 +100,6 @@ private:
                                    SclButtonContext (*pCurButtonContext)[MAX_KEY]);
 
 protected:
-
     SclLayout mCurBaseLayout;
     SclLayoutKeyCoordinate mCurBaseLayoutKeyCoordinates[MAX_KEY];
 

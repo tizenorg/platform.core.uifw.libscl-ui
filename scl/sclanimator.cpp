@@ -140,7 +140,7 @@ CSCLAnimator::destroy_animator(sclint id)
     }
 
     sclboolean destroy_timer = TRUE;
-    for(iter = m_animators.begin();iter != m_animators.end();std::advance(iter, 1)) {
+    for (iter = m_animators.begin();iter != m_animators.end();std::advance(iter, 1)) {
         if (iter != m_animators.end()) {
             SclAnimationState *state = &(iter->second);
             if (state->active) {
@@ -164,7 +164,7 @@ CSCLAnimator::find_animator_by_type(SCLAnimationType type)
 {
     sclint ret = NOT_USED;
 
-    for(std::map<sclint, SclAnimationState>::iterator iter = m_animators.begin();
+    for (std::map<sclint, SclAnimationState>::iterator iter = m_animators.begin();
         iter != m_animators.end();std::advance(iter, 1)) {
             if (iter != m_animators.end()) {
                 SclAnimationState *state = &(iter->second);
@@ -250,7 +250,7 @@ CSCLAnimator::stop_animator(sclint id)
     }
 
     sclboolean destroy_timer = TRUE;
-    for(iter = m_animators.begin();iter != m_animators.end();std::advance(iter, 1)) {
+    for (iter = m_animators.begin();iter != m_animators.end();std::advance(iter, 1)) {
         if (iter != m_animators.end()) {
             SclAnimationState *state = &(iter->second);
             if (state->active) {
@@ -327,7 +327,7 @@ sclboolean
 CSCLAnimator::animator_timer()
 {
     sclboolean destroy_timer = TRUE;
-    for(std::map<sclint, SclAnimationState>::iterator iter = m_animators.begin();
+    for (std::map<sclint, SclAnimationState>::iterator iter = m_animators.begin();
         iter != m_animators.end();std::advance(iter, 1)) {
             if (iter != m_animators.end()) {
                 CSCLWindows *windows = CSCLWindows::get_instance();

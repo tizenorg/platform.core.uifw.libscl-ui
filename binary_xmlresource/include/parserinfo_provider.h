@@ -32,7 +32,7 @@ class ParserInfo_Provider: public IParserInfo_Provider{
                 m_metadataProvider->set_current_metadata_record(record_name);
             }
         }
-         const int get_width(const char* field_name)const{
+         const int get_width(const char* field_name)const {
             assert(m_metadataProvider != NULL);
             if (m_metadataProvider != NULL)
                 return m_metadataProvider->get_width(field_name);
@@ -40,12 +40,13 @@ class ParserInfo_Provider: public IParserInfo_Provider{
             return 0 ;
         }
 
-        const char* get_string_by_id(const int id)const{
+        const char* get_string_by_id(const int id)const {
             if (m_stringProvider != NULL) {
                 return m_stringProvider->get_string_by_id(id);
             }
             return NULL;
         }
+
     private:
         IMetadata_Provider *m_metadataProvider;
         const IString_Provider *m_stringProvider;

@@ -63,7 +63,6 @@ public :
     virtual void destroy_all_timer() = 0;
 
     virtual void generate_mouse_event(SCLMouseEvent type, scl16 x, scl16 y) = 0;
-
 };
 
 class CSCLEvents

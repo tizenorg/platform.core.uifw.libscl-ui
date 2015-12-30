@@ -31,9 +31,8 @@
 class IParserInfo_Provider: public IString_Provider{
     public:
         virtual void set_current_metadata_record(const char* record_name) = 0;
-        virtual const int get_width(const char* field_name) const= 0;
+        virtual const int get_width(const char* field_name) const = 0;
         virtual const char* get_string_by_id(const int id) const = 0;
         virtual ~IParserInfo_Provider() {}
-
 };
 #endif

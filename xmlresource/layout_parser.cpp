@@ -321,7 +321,7 @@ LayoutParserImpl::add_layout_string(xmlChar* newstr) {
 
 void
 LayoutParserImpl::release_layout_strings() {
-    for(size_t loop = 0; loop < m_vec_layout_strings.size(); loop++) {
+    for (size_t loop = 0; loop < m_vec_layout_strings.size(); loop++) {
         if (m_vec_layout_strings[loop]) {
             xmlFree(m_vec_layout_strings[loop]);
         }
@@ -338,7 +338,7 @@ LayoutParserImpl::add_key_string(xmlChar* newstr) {
 
 void
 LayoutParserImpl::release_key_strings() {
-    for(size_t loop = 0; loop < m_vec_key_strings.size(); loop++) {
+    for (size_t loop = 0; loop < m_vec_key_strings.size(); loop++) {
         if (m_vec_key_strings[loop]) {
             xmlFree(m_vec_key_strings[loop]);
         }
@@ -420,20 +420,20 @@ LayoutParserImpl::parsing_background(
     assert(cur_layout != NULL);
 
     xmlNodePtr child_node = cur_node->xmlChildrenNode;
-    while ( child_node != NULL) {
-        if ( 0 == xmlStrcmp(child_node->name, (const xmlChar* )LAYOUT_BACKGROUND_NORMAL_TAG) ) {
+    while (child_node != NULL) {
+        if (0 == xmlStrcmp(child_node->name, (const xmlChar*)LAYOUT_BACKGROUND_NORMAL_TAG)) {
             xmlChar *key = xmlNodeGetContent(child_node);
             cur_layout->image_path[BUTTON_STATE_NORMAL] = (char *)key;
             add_layout_string(key);
-        } else if ( 0 == xmlStrcmp(child_node->name, (const xmlChar* )LAYOUT_BACKGROUND_PRESSED_TAG) ) {
+        } else if (0 == xmlStrcmp(child_node->name, (const xmlChar*)LAYOUT_BACKGROUND_PRESSED_TAG)) {
             xmlChar *key = xmlNodeGetContent(child_node);
             cur_layout->image_path[BUTTON_STATE_PRESSED] = (char *)key;
             add_layout_string(key);
-        } else if ( 0 == xmlStrcmp(child_node->name, (const xmlChar* )LAYOUT_BACKGROUND_DISABLED_TAG ) ) {
+        } else if (0 == xmlStrcmp(child_node->name, (const xmlChar*)LAYOUT_BACKGROUND_DISABLED_TAG )) {
             xmlChar *key = xmlNodeGetContent(child_node);
             cur_layout->image_path[BUTTON_STATE_DISABLED] = (char *)key;
             add_layout_string(key);
-        } else if ( 0 == xmlStrcmp(child_node->name, (const xmlChar* )LAYOUT_BACKGROUND_TOGGLED_TAG ) ) {
+        } else if (0 == xmlStrcmp(child_node->name, (const xmlChar*)LAYOUT_BACKGROUND_TOGGLED_TAG )) {
             xmlChar *key = xmlNodeGetContent(child_node);
             cur_layout->image_path[BUTTON_STATE_TOGGLED] = (char *)key;
             add_layout_string(key);
@@ -451,12 +451,12 @@ LayoutParserImpl::parsing_key_background(
     assert(cur_layout != NULL);
 
     xmlNodePtr child_node = cur_node->xmlChildrenNode;
-    while ( child_node != NULL) {
-        if ( 0 == xmlStrcmp(child_node->name, (const xmlChar* )"rec") ) {
+    while (child_node != NULL) {
+        if (0 == xmlStrcmp(child_node->name, (const xmlChar*)"rec")) {
             int shift_state = get_shift_state_prop(child_node);
             int button_state = get_button_state_prop(child_node);
-            for(int shift_loop = 0;shift_loop < SCL_SHIFT_STATE_MAX;shift_loop++) {
-                for(int button_loop = 0;button_loop < SCL_BUTTON_STATE_MAX;button_loop++) {
+            for (int shift_loop = 0;shift_loop < SCL_SHIFT_STATE_MAX;shift_loop++) {
+                for (int button_loop = 0;button_loop < SCL_BUTTON_STATE_MAX;button_loop++) {
                     if ((shift_state == shift_loop || shift_state == -1) &&
                         (button_state == button_loop || button_state == -1)) {
                             xmlChar* key = xmlNodeGetContent(child_node);
@@ -539,8 +539,8 @@ LayoutParserImpl::set_default_row_value(
         row->label_type = cur_rec_layout->label_type;
         row->vibe_style = cur_rec_layout->vibe_style;
         row->sound_style = cur_rec_layout->sound_style;
-        for(int shift_state = 0; shift_state < SCL_SHIFT_STATE_MAX; shift_state++) {
-            for( int button_state = 0; button_state < SCL_BUTTON_STATE_MAX; ++button_state) {
+        for (int shift_state = 0; shift_state < SCL_SHIFT_STATE_MAX; shift_state++) {
+            for (int button_state = 0; button_state < SCL_BUTTON_STATE_MAX; ++button_state) {
                 row->bg_image_path[shift_state][button_state] = cur_rec_layout->key_background_image[shift_state][button_state];
             }
         }
@@ -565,7 +565,7 @@ LayoutParserImpl::set_default_key_coordinate_value(
         cur_rec_coordinate->use_magnifier = (sclboolean)true;
         cur_rec_coordinate->use_long_key_magnifier = (sclboolean)false;
         //cur_rec_coordinate->enabled =(sclboolean) TRUE;
-        for(loop = 0;loop < SCL_DRAG_STATE_MAX;loop++) {
+        for (loop = 0;loop < SCL_DRAG_STATE_MAX;loop++) {
             cur_rec_coordinate->popup_input_mode[loop] = NULL;
         }
         cur_rec_coordinate->sound_style = row->sound_style;
@@ -586,30 +586,30 @@ LayoutParserImpl::set_default_key_coordinate_value(
         cur_rec_coordinate->image_label_type = NULL;
 
         cur_rec_coordinate->label_count = 0;
-        for(int shift_state = 0; shift_state < SCL_SHIFT_STATE_MAX; shift_state++) {
-            for( int label_for_one = 0; label_for_one < MAX_SIZE_OF_LABEL_FOR_ONE; ++ label_for_one) {
+        for (int shift_state = 0; shift_state < SCL_SHIFT_STATE_MAX; shift_state++) {
+            for (int label_for_one = 0; label_for_one < MAX_SIZE_OF_LABEL_FOR_ONE; ++label_for_one) {
                 cur_rec_coordinate->label[shift_state][label_for_one] = NULL;
             }
         }
-        for(int shift_state = 0; shift_state < SCL_SHIFT_STATE_MAX; shift_state++) {
-            for( int button_state = 0; button_state < SCL_BUTTON_STATE_MAX; ++button_state) {
+        for (int shift_state = 0; shift_state < SCL_SHIFT_STATE_MAX; shift_state++) {
+            for (int button_state = 0; button_state < SCL_BUTTON_STATE_MAX; ++button_state) {
                 cur_rec_coordinate->image_label_path[shift_state][button_state] = NULL;
             }
         }
-        for(int shift_state = 0; shift_state < SCL_SHIFT_STATE_MAX; shift_state++) {
-            for( int button_state = 0; button_state < SCL_BUTTON_STATE_MAX; ++button_state) {
-                //cur_rec_coordinate->bg_image_path[shift_state][button_state] = NULL;
+        for (int shift_state = 0; shift_state < SCL_SHIFT_STATE_MAX; shift_state++) {
+            for (int button_state = 0; button_state < SCL_BUTTON_STATE_MAX; ++button_state) {
+                //cur_rec_coordinate->bg_image_path[shift_state]![button_state] = NULL;
                 cur_rec_coordinate->bg_image_path[shift_state][button_state] = row->bg_image_path[shift_state][button_state];
-            }
+            }!
         }
         cur_rec_coordinate->key_value_count = 0;
-        for(int shift_state = 0; shift_state < SCL_SHIFT_STATE_MAX; shift_state++) {
-            for( int multitap_state = 0; multitap_state < MAX_SIZE_OF_MULTITAP_CHAR; ++multitap_state) {
+        for (int shift_state = 0; shift_state < SCL_SHIFT_STATE_MAX; shift_state++) {
+            for (int multitap_state = 0; multitap_state < MAX_SIZE_OF_MULTITAP_CHAR; ++multitap_state) {
                 cur_rec_coordinate->key_value[shift_state][multitap_state] = NULL;
             }
         }
-        for(int shift_state = 0; shift_state < SCL_SHIFT_STATE_MAX; shift_state++) {
-            for( int multitap_state = 0; multitap_state < MAX_SIZE_OF_MULTITAP_CHAR; ++multitap_state) {
+        for (int shift_state = 0; shift_state < SCL_SHIFT_STATE_MAX; shift_state++) {
+            for (int multitap_state = 0; multitap_state < MAX_SIZE_OF_MULTITAP_CHAR; ++multitap_state) {
                 cur_rec_coordinate->key_event[shift_state][multitap_state] = 0;
             }
         }
@@ -619,8 +619,8 @@ LayoutParserImpl::set_default_key_coordinate_value(
         cur_rec_coordinate->long_key_event = 0;
 
         cur_rec_coordinate->use_repeat_key = false;
-        for(int shift_state = 0; shift_state < SCL_SHIFT_STATE_MAX; shift_state++) {
-            for( int autopopup_state = 0; autopopup_state < MAX_SIZE_OF_AUTOPOPUP_STRING; ++autopopup_state) {
+        for (int shift_state = 0; shift_state < SCL_SHIFT_STATE_MAX; shift_state++) {
+            for (int autopopup_state = 0; autopopup_state < MAX_SIZE_OF_AUTOPOPUP_STRING; ++autopopup_state) {
                 cur_rec_coordinate->autopopup_key_labels[shift_state][autopopup_state] = NULL;
                 cur_rec_coordinate->autopopup_key_events[shift_state][autopopup_state] = 0;
                 cur_rec_coordinate->autopopup_key_values[shift_state][autopopup_state] = NULL;
@@ -630,8 +630,8 @@ LayoutParserImpl::set_default_key_coordinate_value(
         cur_rec_coordinate->extra_option = NOT_USED;
         cur_rec_coordinate->multitouch_type = SCL_MULTI_TOUCH_TYPE_EXCLUSIVE;
         cur_rec_coordinate->modifier_decorator = NULL;
-        for(int shift_state = 0; shift_state < SCL_SHIFT_STATE_MAX; shift_state++) {
-            for( int multitap_state = 0; multitap_state < MAX_SIZE_OF_MULTITAP_CHAR; ++multitap_state) {
+        for (int shift_state = 0; shift_state < SCL_SHIFT_STATE_MAX; shift_state++) {
+            for (int multitap_state = 0; multitap_state < MAX_SIZE_OF_MULTITAP_CHAR; ++multitap_state) {
                 cur_rec_coordinate->hint_string[shift_state][multitap_state] = NULL;
             }
         }
@@ -646,18 +646,18 @@ LayoutParserImpl::parsing_grab_area(
     assert(cur_node != NULL);
 
     xmlNodePtr child_node = cur_node->xmlChildrenNode;
-    while (child_node!=NULL) {
-        if (0 == xmlStrcmp(child_node->name, (const xmlChar*)LAYOUT_ADD_GRAB_LEFT_TAG) ) {
+    while (child_node != NULL) {
+        if (0 == xmlStrcmp(child_node->name, (const xmlChar*)LAYOUT_ADD_GRAB_LEFT_TAG)) {
             cur_rec_layout->add_grab_left = get_content_int(child_node);
         }
-        else if (0 == xmlStrcmp(child_node->name, (const xmlChar*)LAYOUT_ADD_GRAB_RIGHT_TAG) ) {
+        else if (0 == xmlStrcmp(child_node->name, (const xmlChar*)LAYOUT_ADD_GRAB_RIGHT_TAG)) {
             cur_rec_layout->add_grab_right = get_content_int(child_node);
         }
-        else if (0 == xmlStrcmp(child_node->name, (const xmlChar*)LAYOUT_ADD_GRAB_TOP_TAG) ) {
+        else if (0 == xmlStrcmp(child_node->name, (const xmlChar*)LAYOUT_ADD_GRAB_TOP_TAG)) {
             cur_rec_layout->add_grab_top = get_content_int(child_node);
         }
-        else if (0 == xmlStrcmp(child_node->name, (const xmlChar*)LAYOUT_ADD_GRAB_BOTTOM_TAG) ) {
-            cur_rec_layout->add_grab_bottom= get_content_int(child_node);
+        else if (0 == xmlStrcmp(child_node->name, (const xmlChar*)LAYOUT_ADD_GRAB_BOTTOM_TAG)) {
+            cur_rec_layout->add_grab_bottom = get_content_int(child_node);
         }
         child_node = child_node->next;
     }
@@ -729,13 +729,12 @@ LayoutParserImpl::parsing_layout_node(
 
     xmlNodePtr child_node = cur_node->xmlChildrenNode;
     while (child_node != NULL) {
-
         /* row node: layout coordinate resources is no need to parsing at this time */
 
-        if ( 0 == xmlStrcmp(child_node->name, (const xmlChar*)LAYOUT_BACKGROUND_TAG)) {
+        if (0 == xmlStrcmp(child_node->name, (const xmlChar*)LAYOUT_BACKGROUND_TAG)) {
             parsing_background(child_node, cur_rec_layout);
         }
-        else if ( 0 == xmlStrcmp(child_node->name, (const xmlChar*)LAYOUT_KEY_BACKGROUND_TAG)) {
+        else if (0 == xmlStrcmp(child_node->name, (const xmlChar*)LAYOUT_KEY_BACKGROUND_TAG)) {
             parsing_key_background(child_node, cur_rec_layout);
         }
         else if (0 == xmlStrcmp(cur_node->name, (const xmlChar *)LAYOUT_ADD_GRAB_TAG)) {
@@ -760,7 +759,7 @@ LayoutParserImpl::loading_coordinate_resources(
     if (*cur_key == NULL) {
         xmlNodePtr child_node = cur_node->xmlChildrenNode;
         while (child_node != NULL) {
-            if ( 0 == xmlStrcmp(child_node->name, (const xmlChar*)LAYOUT_ROW_TAG)) {
+            if (0 == xmlStrcmp(child_node->name, (const xmlChar*)LAYOUT_ROW_TAG)) {
                 parsing_layout_row_node(child_node, cur_rec_layout, &row_y, &cur_key);
             }
 
@@ -796,7 +795,7 @@ LayoutParserImpl::parsing_layout_row_node(
 
     xmlNodePtr child_node = cur_node->xmlChildrenNode;
     while (child_node != NULL) {
-        if ( 0 == xmlStrcmp(child_node->name, (const xmlChar*)LAYOUT_ROW_KEY_TAG)) {
+        if (0 == xmlStrcmp(child_node->name, (const xmlChar*)LAYOUT_ROW_KEY_TAG)) {
             parsing_key_coordinate_record_node(child_node, &row, *cur_key);
             (*cur_key)++;
         }
@@ -813,7 +812,7 @@ LayoutParserImpl::parsing_layout_row_node(
 int
 LayoutParserImpl::get_drag_state_prop(const xmlNodePtr cur_node) {
     assert(cur_node != NULL);
-    typedef struct _Match_Struct{
+    typedef struct _Match_Struct {
         int value;
         const char* key;
     }Match_Struct;
@@ -832,7 +831,7 @@ LayoutParserImpl::get_drag_state_prop(const xmlNodePtr cur_node) {
 
     int drag_state = SCL_DRAG_STATE_NONE;
 
-    for(size_t i = 0; i < sizeof(table)/sizeof(Match_Struct); ++i) {
+    for (size_t i = 0; i < sizeof(table)/sizeof(Match_Struct); ++i) {
         if (0 == strcmp((const char*)key, table[i].key))
         {
             drag_state = table[i].value;
@@ -879,7 +878,7 @@ LayoutParserImpl::get_button_state_prop(const xmlNodePtr cur_node) {
 int
 LayoutParserImpl::get_multitouch_type_prop(const xmlNodePtr cur_node) {
     assert(cur_node != NULL);
-    typedef struct _Match_Struct{
+    typedef struct _Match_Struct {
         int value;
         const char* key;
     }Match_Struct;
@@ -895,7 +894,7 @@ LayoutParserImpl::get_multitouch_type_prop(const xmlNodePtr cur_node) {
 
     int type = SCL_MULTI_TOUCH_TYPE_EXCLUSIVE;
 
-    for(size_t i = 0; i < sizeof(table)/sizeof(Match_Struct); ++i) {
+    for (size_t i = 0; i < sizeof(table)/sizeof(Match_Struct); ++i) {
         if (0 == strcmp((const char*)key, table[i].key))
         {
             type = table[i].value;
@@ -911,7 +910,7 @@ int
 LayoutParserImpl::get_extra_option_prop(
         const xmlNodePtr cur_node) {
     assert(cur_node != NULL);
-    typedef struct _Match_Struct{
+    typedef struct _Match_Struct {
         int value;
         const char* key;
     }Match_Struct;
@@ -930,7 +929,7 @@ LayoutParserImpl::get_extra_option_prop(
 
     int type = DIRECTION_EXTRA_OPTION_4_DIRECTIONS;
 
-    for(size_t i = 0; i < sizeof(table)/sizeof(Match_Struct); ++i) {
+    for (size_t i = 0; i < sizeof(table)/sizeof(Match_Struct); ++i) {
         if (0 == strcmp((const char*)key, table[i].key))
         {
             type = table[i].value;
@@ -953,7 +952,7 @@ LayoutParserImpl::parsing_label_record_node(
     xmlNodePtr child_node = cur_node->xmlChildrenNode;
 
     while (child_node != NULL) {
-        if (0 == xmlStrcmp(child_node->name, (const xmlChar*)"rec") ) {
+        if (0 == xmlStrcmp(child_node->name, (const xmlChar*)"rec")) {
             int shift_state = get_shift_state_prop(child_node);
 
             int label_for_one_state = 0;
@@ -966,7 +965,7 @@ LayoutParserImpl::parsing_label_record_node(
             get_prop_bool(child_node, "auto_upper", &auto_upper);
 
             if (label_for_one_state >= 0 && label_for_one_state < MAX_SIZE_OF_LABEL_FOR_ONE) {
-                for(int shift_loop = 0;shift_loop < SCL_SHIFT_STATE_MAX;shift_loop++) {
+                for (int shift_loop = 0;shift_loop < SCL_SHIFT_STATE_MAX;shift_loop++) {
                     if ((shift_state == shift_loop || shift_state == -1)) {
                         xmlChar* key = xmlNodeGetContent(child_node);
                         cur_rec->label[shift_loop][label_for_one_state] = (sclchar*)key;
@@ -1001,14 +1000,14 @@ LayoutParserImpl::parsing_magnifier_label_record_node(
     xmlNodePtr child_node = cur_node->xmlChildrenNode;
 
     while (child_node != NULL) {
-        if (0 == xmlStrcmp(child_node->name, (const xmlChar*)"rec") ) {
+        if (0 == xmlStrcmp(child_node->name, (const xmlChar*)"rec")) {
             int shift_state = get_shift_state_prop(child_node);
 
             int label_for_one_state = 0;
             get_prop_number(child_node, "multi", &label_for_one_state);
 
             if (label_for_one_state >= 0 && label_for_one_state < MAX_SIZE_OF_LABEL_FOR_ONE) {
-                for(int shift_loop = 0;shift_loop < SCL_SHIFT_STATE_MAX;shift_loop++) {
+                for (int shift_loop = 0;shift_loop < SCL_SHIFT_STATE_MAX;shift_loop++) {
                     if ((shift_state == shift_loop || shift_state == -1)) {
                         xmlChar* key = xmlNodeGetContent(child_node);
                         cur_rec->magnifier_label[shift_loop][label_for_one_state] = (sclchar*)key;
@@ -1031,13 +1030,13 @@ LayoutParserImpl::parsing_hint_string_record_node(
         xmlNodePtr child_node = cur_node->xmlChildrenNode;
 
         while (child_node != NULL) {
-            if (0 == xmlStrcmp(child_node->name, (const xmlChar*)"rec") ) {
+            if (0 == xmlStrcmp(child_node->name, (const xmlChar*)"rec")) {
                 int shift_state = get_shift_state_prop(child_node);
                 int multichar_state = 0;
                 get_prop_number(child_node, "multichar_state", &multichar_state);
 
                 if (multichar_state >= 0 && multichar_state < MAX_SIZE_OF_MULTITAP_CHAR) {
-                    for(int shift_loop = 0;shift_loop < SCL_SHIFT_STATE_MAX;shift_loop++) {
+                    for (int shift_loop = 0;shift_loop < SCL_SHIFT_STATE_MAX;shift_loop++) {
                         if ((shift_state == shift_loop || shift_state == -1)) {
                             xmlChar* key = xmlNodeGetContent(child_node);
                             cur_rec->hint_string[shift_loop][multichar_state] = (sclchar*)key;
@@ -1060,11 +1059,11 @@ LayoutParserImpl::parsing_label_image_record_node(
     xmlNodePtr child_node = cur_node->xmlChildrenNode;
 
     while (child_node != NULL) {
-        if (0 == xmlStrcmp(child_node->name, (const xmlChar*)"rec") ) {
+        if (0 == xmlStrcmp(child_node->name, (const xmlChar*)"rec")) {
             int shift_state = get_shift_state_prop(child_node);
             int button_state = get_button_state_prop(child_node);
-            for(int shift_loop = 0;shift_loop < SCL_SHIFT_STATE_MAX;shift_loop++) {
-                for(int button_loop = 0;button_loop < SCL_BUTTON_STATE_MAX;button_loop++) {
+            for (int shift_loop = 0;shift_loop < SCL_SHIFT_STATE_MAX;shift_loop++) {
+                for (int button_loop = 0;button_loop < SCL_BUTTON_STATE_MAX;button_loop++) {
                     if ((shift_state == shift_loop || shift_state == -1) &&
                         (button_state == button_loop || button_state == -1)) {
                             xmlChar* key = xmlNodeGetContent(child_node);
@@ -1088,11 +1087,11 @@ LayoutParserImpl::parsing_background_image_record_node(
     xmlNodePtr child_node = cur_node->xmlChildrenNode;
 
     while (child_node != NULL) {
-        if (0 == xmlStrcmp(child_node->name, (const xmlChar*)"rec") ) {
+        if (0 == xmlStrcmp(child_node->name, (const xmlChar*)"rec")) {
             int shift_state = get_shift_state_prop(child_node);
             int button_state = get_button_state_prop(child_node);
-            for(int shift_loop = 0;shift_loop < SCL_SHIFT_STATE_MAX;shift_loop++) {
-                for(int button_loop = 0;button_loop < SCL_BUTTON_STATE_MAX;button_loop++) {
+            for (int shift_loop = 0;shift_loop < SCL_SHIFT_STATE_MAX;shift_loop++) {
+                for (int button_loop = 0;button_loop < SCL_BUTTON_STATE_MAX;button_loop++) {
                     if ((shift_state == shift_loop || shift_state == -1) &&
                         (button_state == button_loop || button_state == -1)) {
                             xmlChar* key = xmlNodeGetContent(child_node);
@@ -1116,7 +1115,7 @@ LayoutParserImpl::parsing_key_value_record_node(
     xmlNodePtr child_node = cur_node->xmlChildrenNode;
 
     while (child_node != NULL) {
-        if (0 == xmlStrcmp(child_node->name, (const xmlChar*)"rec") ) {
+        if (0 == xmlStrcmp(child_node->name, (const xmlChar*)"rec")) {
             int shift_state = get_shift_state_prop(child_node);
             int multichar_state = 0;
             get_prop_number(child_node, "multichar_state", &multichar_state);
@@ -1125,7 +1124,7 @@ LayoutParserImpl::parsing_key_value_record_node(
             get_prop_bool(child_node, "auto_upper", &auto_upper);
 
             if (multichar_state >= 0 && multichar_state < MAX_SIZE_OF_MULTITAP_CHAR) {
-                for(int shift_loop = 0;shift_loop < SCL_SHIFT_STATE_MAX;shift_loop++) {
+                for (int shift_loop = 0;shift_loop < SCL_SHIFT_STATE_MAX;shift_loop++) {
                     if ((shift_state == shift_loop || shift_state == -1)) {
                         xmlChar* key = xmlNodeGetContent(child_node);
                         cur_rec->key_value[shift_loop][multichar_state] = (sclchar*)key;
@@ -1154,13 +1153,13 @@ LayoutParserImpl::parsing_key_event_record_node(
     xmlNodePtr child_node = cur_node->xmlChildrenNode;
 
     while (child_node != NULL) {
-        if (0 == xmlStrcmp(child_node->name, (const xmlChar*)"rec") ) {
+        if (0 == xmlStrcmp(child_node->name, (const xmlChar*)"rec")) {
             int shift_state = get_shift_state_prop(child_node);
             int multichar_state = 0;
             get_prop_number(child_node, "multichar_state", &multichar_state);
 
             if (multichar_state >= 0 && multichar_state < MAX_SIZE_OF_MULTITAP_CHAR) {
-                for(int shift_loop = 0;shift_loop < SCL_SHIFT_STATE_MAX;shift_loop++) {
+                for (int shift_loop = 0;shift_loop < SCL_SHIFT_STATE_MAX;shift_loop++) {
                     if ((shift_state == shift_loop || shift_state == -1)) {
                         cur_rec->key_event[shift_loop][multichar_state] = (sclulong)get_content_dex_string_int(child_node);
                     }
@@ -1189,10 +1188,10 @@ LayoutParserImpl::parsing_auto_popup_keys_record_node(
         get_prop_bool(child_node, "auto_upper", &auto_upper);
 
         if (autopopup_state >= 0 && autopopup_state < MAX_SIZE_OF_AUTOPOPUP_STRING) {
-            for(int shift_loop = 0;shift_loop < SCL_SHIFT_STATE_MAX;shift_loop++) {
+            for (int shift_loop = 0;shift_loop < SCL_SHIFT_STATE_MAX;shift_loop++) {
                 if ((shift_state == shift_loop || shift_state == -1)) {
                     xmlChar* key = xmlNodeGetContent(child_node);
-                    if (0 == xmlStrcmp(child_node->name, (const xmlChar*)"label") ) {
+                    if (0 == xmlStrcmp(child_node->name, (const xmlChar*)"label")) {
                         if (auto_upper) {
                             if (xmlStrlen(key) == 1 && shift_loop != SCL_SHIFT_STATE_OFF) {
                                 /* Let's manipulate the string for auto_upper */
@@ -1204,9 +1203,9 @@ LayoutParserImpl::parsing_auto_popup_keys_record_node(
                         if (cur_rec->autopopup_key_values[shift_loop][autopopup_state] == NULL) {
                             cur_rec->autopopup_key_values[shift_loop][autopopup_state] = (sclchar*)key;
                         }
-                    } else if (0 == xmlStrcmp(child_node->name, (const xmlChar*)"value") ) {
+                    } else if (0 == xmlStrcmp(child_node->name, (const xmlChar*)"value")) {
                         cur_rec->autopopup_key_values[shift_loop][autopopup_state] = (sclchar*)key;
-                    } else if (0 == xmlStrcmp(child_node->name, (const xmlChar*)"event") ) {
+                    } else if (0 == xmlStrcmp(child_node->name, (const xmlChar*)"event")) {
                         cur_rec->autopopup_key_events[shift_loop][autopopup_state] = atoi((sclchar*)key);
                     }
                     add_key_string(key);
@@ -1350,39 +1349,39 @@ LayoutParserImpl::parsing_key_coordinate_record_node(
 
     xmlNodePtr child_node = cur_node->xmlChildrenNode;
     while (child_node != NULL) {
-        if ( 0 == xmlStrcmp(child_node->name, (const xmlChar*)LAYOUT_ROW_KEY_LABEL_TAG)) {
+        if (0 == xmlStrcmp(child_node->name, (const xmlChar*)LAYOUT_ROW_KEY_LABEL_TAG)) {
             parsing_label_record_node(child_node, (*cur_rec_coordinate));
             (*cur_rec_coordinate)->valid = TRUE;
         }
-        else if ( 0 == xmlStrcmp(child_node->name, (const xmlChar*)LAYOUT_ROW_KEY_IMAGE_LABEL_TAG)) {
+        else if (0 == xmlStrcmp(child_node->name, (const xmlChar*)LAYOUT_ROW_KEY_IMAGE_LABEL_TAG)) {
             parsing_label_image_record_node(child_node, (*cur_rec_coordinate));
             (*cur_rec_coordinate)->valid = TRUE;
         }
-        else if ( 0 == xmlStrcmp(child_node->name, (const xmlChar*)LAYOUT_ROW_KEY_BACKGROUND_IMAGE_TAG)) {
+        else if (0 == xmlStrcmp(child_node->name, (const xmlChar*)LAYOUT_ROW_KEY_BACKGROUND_IMAGE_TAG)) {
             parsing_background_image_record_node(child_node, (*cur_rec_coordinate));
             (*cur_rec_coordinate)->valid = TRUE;
         }
-        else if ( 0 == xmlStrcmp(child_node->name, (const xmlChar*)LAYOUT_ROW_KEY_KEY_VALUE_TAG)) {
+        else if (0 == xmlStrcmp(child_node->name, (const xmlChar*)LAYOUT_ROW_KEY_KEY_VALUE_TAG)) {
             parsing_key_value_record_node(child_node, (*cur_rec_coordinate));
             (*cur_rec_coordinate)->valid = TRUE;
         }
-        else if ( 0 == xmlStrcmp(child_node->name, (const xmlChar*)LAYOUT_ROW_KEY_KEY_EVENT_TAG)) {
+        else if (0 == xmlStrcmp(child_node->name, (const xmlChar*)LAYOUT_ROW_KEY_KEY_EVENT_TAG)) {
             parsing_key_event_record_node(child_node, (*cur_rec_coordinate));
             (*cur_rec_coordinate)->valid = TRUE;
         }
-        else if ( 0 == xmlStrcmp(child_node->name, (const xmlChar*)LAYOUT_ROW_KEY_AUTOPOPUP_KEYS_TAG)) {
+        else if (0 == xmlStrcmp(child_node->name, (const xmlChar*)LAYOUT_ROW_KEY_AUTOPOPUP_KEYS_TAG)) {
             parsing_auto_popup_keys_record_node(child_node, (*cur_rec_coordinate));
             (*cur_rec_coordinate)->valid = TRUE;
         }
-        else if ( 0 == xmlStrcmp(child_node->name, (const xmlChar*)LAYOUT_ROW_KEY_POPUP_INPUTMODE_RECORD_TAG)) {
+        else if (0 == xmlStrcmp(child_node->name, (const xmlChar*)LAYOUT_ROW_KEY_POPUP_INPUTMODE_RECORD_TAG)) {
             parsing_popup_input_mode_record_node(child_node, (*cur_rec_coordinate));
             (*cur_rec_coordinate)->valid = TRUE;
         }
-        else if ( 0 == xmlStrcmp(child_node->name, (const xmlChar*)LAYOUT_ROW_KEY_MAGNIFIER_LABEL_TAG)) {
+        else if (0 == xmlStrcmp(child_node->name, (const xmlChar*)LAYOUT_ROW_KEY_MAGNIFIER_LABEL_TAG)) {
             parsing_magnifier_label_record_node(child_node, (*cur_rec_coordinate));
             (*cur_rec_coordinate)->valid = TRUE;
         }
-        else if ( 0 == xmlStrcmp(child_node->name, (const xmlChar*)LAYOUT_ROW_KEY_HINT_STRING_TAG)) {
+        else if (0 == xmlStrcmp(child_node->name, (const xmlChar*)LAYOUT_ROW_KEY_HINT_STRING_TAG)) {
             parsing_hint_string_record_node(child_node, (*cur_rec_coordinate));
             (*cur_rec_coordinate)->valid = TRUE;
         }
@@ -1405,7 +1404,7 @@ LayoutParserImpl::parsing_popup_input_mode_record_node(
     xmlNodePtr child_node = cur_node->xmlChildrenNode;
 
     while (child_node != NULL) {
-        if (0 == xmlStrcmp(child_node->name, (const xmlChar*)LAYOUT_ROW_KEY_POPUP_INPUTMODE_RECORD_INPUTMODE_TAG) ) {
+        if (0 == xmlStrcmp(child_node->name, (const xmlChar*)LAYOUT_ROW_KEY_POPUP_INPUTMODE_RECORD_INPUTMODE_TAG)) {
             int drag_state = get_drag_state_prop(child_node);
             assert(drag_state >=0);
             assert(drag_state < SCL_DRAG_STATE_MAX);

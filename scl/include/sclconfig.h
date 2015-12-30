@@ -91,7 +91,7 @@ typedef enum _SCLKeyType {
 }SCLKeyType;
 
 /**@brief Key Event Type definition */
-typedef enum _SCLEventType{
+typedef enum _SCLEventType {
     EVENT_TYPE_NONE = 0,	/**< none */
     EVENT_TYPE_PRESS,		/**< button press event */
     EVENT_TYPE_MOVE,		/**< button move event */

@@ -52,7 +52,6 @@ class MainEntryParserImpl {
             xmlFreeDoc(doc);
 
             return 0;
-
         }
         void make_xml_files(const xmlNodePtr p_node) {
             assert(p_node != NULL);
@@ -63,7 +62,6 @@ class MainEntryParserImpl {
                 }
                 node = node->next;
             }
-
         }
 
         void parsing_files_node(const xmlNodePtr p_node) {
@@ -97,7 +95,6 @@ class MainEntryParserImpl {
                 }
                 node = node->next;
             }
-
         }
         XMLFiles m_xml_files;
 };

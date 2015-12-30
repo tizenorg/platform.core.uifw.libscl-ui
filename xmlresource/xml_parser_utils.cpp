@@ -30,7 +30,7 @@ get_content_int(const xmlNodePtr cur_node) {
         if (0 == strcmp("NOT_USED", (const char*)key)) {
             num = -1;
         } else {
-            num = atoi( (const char*)key );
+            num = atoi((const char*)key);
         }
         xmlFree(key);
     }
@@ -96,7 +96,7 @@ dex_string_to_int(const char* str) {
     assert(str != NULL);
 
     int val = -1;
-    sscanf(str, "%x",&val);
+    sscanf(str, "%x", &val);
 
     return val;
 }

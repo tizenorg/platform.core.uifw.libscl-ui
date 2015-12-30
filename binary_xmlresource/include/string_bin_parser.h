@@ -24,7 +24,7 @@ class String_Bin_Parser{
     public:
     String_Bin_Parser(const FileStorage& storage, int offset, int size);
     ~String_Bin_Parser();
-    const std::vector<const char*>& get_string_depository()const{
+    const std::vector<const char*>& get_string_depository()const {
         return m_vec_str_depository;
     }
     private:

@@ -36,7 +36,6 @@ encode_modifier_decoration_record(ResourceStorage& storage, const PSclModifierDe
 
 int
 encode_modifier_decoration_file(ResourceStorage& storage, IMetaData_Helper& md_helper) {
-
     int init_size = storage.get_size();
 
     XMLResource *xmlresource = XMLResource::get_instance();

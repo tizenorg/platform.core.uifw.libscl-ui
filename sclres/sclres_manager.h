@@ -53,6 +53,7 @@ class SclResParserManager{
 
         const char* get_name();
         void destroy();
+
     private:
         SclResParserManager();
         bool m_initialized;

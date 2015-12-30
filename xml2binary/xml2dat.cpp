@@ -35,7 +35,7 @@ using namespace std;
 String_Encoder actual_string_encoder;
 IString_Encoder& string_encoder = actual_string_encoder;
 
-static inline void show_usage(){
+static inline void show_usage() {
     static const char* message = {  "xml2binary: missing folder operand\n"
                                     "-------------------------------------------------------\n"
                                     "|  Usage: xml2binary operand1 operand2                |\n"
@@ -52,7 +52,7 @@ int main(const int argc, char* argv[]) {
     }
 
     char* xml_text_dir = argv[1];
-    if ( 0 != access(xml_text_dir, R_OK)) {
+    if (0 != access(xml_text_dir, R_OK)) {
         perror(xml_text_dir);
         return -1;
     }
@@ -64,7 +64,7 @@ int main(const int argc, char* argv[]) {
         xml_bin_dir = argv[2];
     }
 
-    if ( 0 != access(xml_bin_dir, W_OK)) {
+    if (0 != access(xml_bin_dir, W_OK)) {
         perror(xml_bin_dir);
         return -1;
     }
@@ -80,7 +80,7 @@ int main(const int argc, char* argv[]) {
     xmlresource->init("main_entry.xml");
 
     static const char* metadata_path = "/usr/share/libscl-ui/metadata.xml";
-    if ( 0 != access(metadata_path, R_OK)) {
+    if (0 != access(metadata_path, R_OK)) {
         perror(metadata_path);
         return -1;
     }

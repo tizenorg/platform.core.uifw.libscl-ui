@@ -24,12 +24,12 @@
 
 static int get_key_modifier_state_prop(const char*);
 //UTILS
-typedef struct _Modifier_decoration_state_match_table{
+typedef struct _Modifier_decoration_state_match_table {
     int modifier_decoration_state;
     const char* key;
 }Modifier_decoration_state_match_table_t;
 
-typedef struct _Key_modifier_state_match_table{
+typedef struct _Key_modifier_state_match_table {
     int key_modifier_state;
     const char* key;
 }Key_modifier_state_match_table_t;
@@ -80,7 +80,7 @@ get_key_modifier_state_prop(const char* key ) {
 
     int key_modifier_state = KEY_MODIFIER_NONE;
 
-    for(size_t i = 0; i < sizeof(table)/sizeof(Key_modifier_state_match_table_t); ++i) {
+    for (size_t i = 0; i < sizeof(table)/sizeof(Key_modifier_state_match_table_t); ++i) {
         if (0 == strcmp(key, table[i].key) )
         {
             key_modifier_state = table[i].key_modifier_state;
@@ -97,16 +97,15 @@ class ModifierDecorationParserImpl {
         }
 
         ~ModifierDecorationParserImpl() {
-            for(int i = 0; i < MAX_SCL_MODIFIER_DECORATION_NUM; ++i) {
+            for (int i = 0; i < MAX_SCL_MODIFIER_DECORATION_NUM; ++i) {
                 SclModifierDecoration& cur_rec = m_modifier_decoration_table[i];
-                for (int display_state = 0; display_state < DISPLAYMODE_MAX; ++display_state ) {
-                    for( int key_modifier_state = 0; key_modifier_state < KEY_MODIFIER_MAX; ++key_modifier_state) {
+                for (int display_state = 0; display_state < DISPLAYMODE_MAX; ++display_state) {
+                    for (int key_modifier_state = 0; key_modifier_state < KEY_MODIFIER_MAX; ++key_modifier_state) {
                         if (cur_rec.bg_image_path[display_state][key_modifier_state])
                             delete cur_rec.bg_image_path[display_state][key_modifier_state];
                         cur_rec.bg_image_path[display_state][key_modifier_state] = NULL;
                     }
                 }
-
             }
         }
 
@@ -127,10 +126,10 @@ class ModifierDecorationParserImpl {
             }
             if (0 != xmlStrcmp(cur_node->name, (const xmlChar*)"modifier_decoration_table"))
             {
-                SCLLOG(SclLog::DEBUG, "ModifierDecorationParser: root name error: %s\n!", (char *)cur_node->name);
+                SCLLOG(SclLog::DEBUG!, "ModifierDecorationParser: root name error: %s\n!", (char *)cur_node->name);
                 xmlFreeDoc(doc);
                 return -1;
-            }
+            }!
 
             cur_node = cur_node->xmlChildrenNode;
 
@@ -154,7 +153,6 @@ class ModifierDecorationParserImpl {
             xmlFreeDoc(doc);
 
             return 0;
-
         }
 
         void parsing_modifier_decoration_record(const xmlNodePtr cur_node, const PSclModifierDecoration cur_rec) {
@@ -166,30 +164,29 @@ class ModifierDecorationParserImpl {
             xmlNodePtr child_node = cur_node->xmlChildrenNode;
 
             while (child_node != NULL) {
-                if ( 0 == xmlStrcmp(child_node->name, (const xmlChar*)"name")) {
+                if (0 == xmlStrcmp(child_node->name, (const xmlChar*)"name")) {
                     xmlChar* temp = xmlNodeGetContent(child_node);
                     cur_rec->name = (sclchar *)temp;
                     cur_rec->valid = TRUE;
                 }
-                else if ( 0 == xmlStrcmp(child_node->name, (const xmlChar*)"display_part_background")) {
+                else if (0 == xmlStrcmp(child_node->name, (const xmlChar*)"display_part_background")) {
                     cur_rec->extract_background = get_content_bool(child_node);
                     cur_rec->valid = TRUE;
                 }
-                else if ( 0 == xmlStrcmp(child_node->name, (const xmlChar*)"background_image_path")) {
+                else if (0 == xmlStrcmp(child_node->name, (const xmlChar*)"background_image_path")) {
                     parsing_background_image_record_node(child_node, cur_rec);
                     cur_rec->valid = TRUE;
                 }
                 child_node = child_node->next;
             }
-
         }
 
         void set_modifier_decoration_default_record(const PSclModifierDecoration cur_rec) {
             cur_rec->valid = FALSE;
             cur_rec->extract_background = false;
             cur_rec->name = NULL;
-            for (int display_state = 0; display_state < DISPLAYMODE_MAX; ++display_state ) {
-                for( int key_modifier_state = 0; key_modifier_state < KEY_MODIFIER_MAX; ++key_modifier_state) {
+            for (int display_state = 0; display_state < DISPLAYMODE_MAX; ++display_state) {
+                for (int key_modifier_state = 0; key_modifier_state < KEY_MODIFIER_MAX; ++key_modifier_state) {
                     cur_rec->bg_image_path[display_state][key_modifier_state] = NULL;
                 }
             }
@@ -202,7 +199,7 @@ class ModifierDecorationParserImpl {
             xmlNodePtr child_node = cur_node->xmlChildrenNode;
 
             while (child_node != NULL) {
-                if (0 == xmlStrcmp(child_node->name, (const xmlChar*)"image") ) {
+                if (0 == xmlStrcmp(child_node->name, (const xmlChar*)"image")) {
                     /* FIXME */
                     int display_state = DISPLAYMODE_PORTRAIT;
                     xmlChar* display_state_xml = xmlGetProp(child_node, (const xmlChar*)"display_state");
@@ -220,7 +217,7 @@ class ModifierDecorationParserImpl {
                         xmlFree(key_modifier_state_xml);
                     }
 
-                    if (display_state != -1 && key_modifier_state != -1 ) {
+                    if (display_state != -1 && key_modifier_state != -1) {
                         sclchar* key = (sclchar*)xmlNodeGetContent(child_node);
                         cur_rec->bg_image_path[display_state][key_modifier_state] = key;
                         //Warning:: Donot xmlFree key
@@ -263,7 +260,7 @@ ModifierDecorationParser::get_modifier_decoration_table() {
 }
 
 int
-ModifierDecorationParser::get_modifier_decoration_id( const char *name )
+ModifierDecorationParser::get_modifier_decoration_id(const char *name)
 {
     if (name == NULL) {
         SCLLOG(SclLog::DEBUG, "get_modifier_decoration_id() has failed");
@@ -275,9 +272,9 @@ ModifierDecorationParser::get_modifier_decoration_id( const char *name )
         SCLLOG(SclLog::DEBUG, "get_modifier_decoration_id() has failed");
         return -1;
     }
-    for(int i = 0; i < MAX_SCL_MODIFIER_DECORATION_NUM; ++i) {
-        if ( modifier_decoration_table[i].name) {
-            if ( 0 == strcmp(modifier_decoration_table[i].name, name) ) {
+    for (int i = 0; i < MAX_SCL_MODIFIER_DECORATION_NUM; ++i) {
+        if (modifier_decoration_table[i].name) {
+            if (0 == strcmp(modifier_decoration_table[i].name, name)) {
                 return i;
             }
         }

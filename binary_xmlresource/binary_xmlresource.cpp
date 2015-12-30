@@ -64,7 +64,7 @@ void BinResource::init(const char *entry_filepath) {
     snprintf(path, _POSIX_PATH_MAX, "%s/%s", get_resource_directory(), "sclresource.bin");
 
     FileStorage storageAllData;
-    if ( storageAllData.loadFile(path) <= 0) {
+    if (storageAllData.loadFile(path) <= 0) {
         return;
     }
 
@@ -81,7 +81,7 @@ void BinResource::init(const char *entry_filepath) {
         }
     }
 
-    for ( int i = ALLDATA; i < MAX_DATATYPE; ++i) {
+    for (int i = ALLDATA; i < MAX_DATATYPE; ++i) {
         m_info[i].offset = offset_table[i];
         m_info[i].size = size_table[i];
     }

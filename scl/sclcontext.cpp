@@ -87,7 +87,7 @@ CSCLContext::reset()
 }
 
 sclshort
-CSCLContext::get_popup_layout( sclwindow window ) const
+CSCLContext::get_popup_layout(sclwindow window) const
 {
     SCL_DEBUG();
 
@@ -104,7 +104,7 @@ CSCLContext::get_popup_layout( sclwindow window ) const
 }
 
 void
-CSCLContext::set_popup_layout( sclwindow window, sclshort val )
+CSCLContext::set_popup_layout(clwindow window, sclshort val )
 {
     SCL_DEBUG();
 
@@ -118,7 +118,7 @@ CSCLContext::set_popup_layout( sclwindow window, sclshort val )
 }
 
 void
-CSCLContext::set_base_layout( sclshort val )
+CSCLContext::set_base_layout(sclshort val )
 {
     SCL_DEBUG();
     CSCLWindows *windows = CSCLWindows::get_instance();
@@ -272,7 +272,7 @@ CSCLContext::set_cur_moving_window(scltouchdevice touch_id, sclwindow window)
 struct timeval
 CSCLContext::get_cur_pressed_time(scltouchdevice touch_id)
 {
-    struct timeval ret = {0,0};
+    struct timeval ret = {0, 0};
     MultiTouchContext *multi_touch_context = find_multi_touch_context(touch_id);
     if (multi_touch_context) {
         ret = multi_touch_context->cur_pressed_time;
@@ -468,7 +468,7 @@ CSCLContext::create_multi_touch_context(scltouchdevice touch_id, sclboolean is_s
 
     CSCLUtils *utils = CSCLUtils::get_instance();
     if (utils) {
-        for(std::list<scltouchdevice>::iterator iter = m_multi_touch_seq.begin();iter != m_multi_touch_seq.end();std::advance(iter, 1)) {
+        for (std::list<scltouchdevice>::iterator iter = m_multi_touch_seq.begin();iter != m_multi_touch_seq.end();std::advance(iter, 1)) {
             utils->log("LIST : %d\n", *iter);
         }
         utils->log("\n");
@@ -532,7 +532,7 @@ CSCLContext::get_multi_touch_event(sclint order, SclUIEventDesc *desc)
 
     CSCLResourceCache *cache = CSCLResourceCache::get_instance();
 
-    for(std::list<scltouchdevice>::iterator list_iter = m_multi_touch_seq.begin();
+    for (std::list<scltouchdevice>::iterator list_iter = m_multi_touch_seq.begin();
         !ret && list_iter != m_multi_touch_seq.end();std::advance(list_iter, 1)) {
             if (index == order) {
                 MultiTouchContext *multi_touch_context = find_multi_touch_context(*list_iter);
@@ -578,7 +578,7 @@ CSCLContext::get_multi_touch_event_order(scltouchdevice touch_id)
     sclint ret = -1;
     sclint iSeqIndex = 0;
 
-    for(std::list<scltouchdevice>::iterator list_iter = m_multi_touch_seq.begin();
+    for (std::list<scltouchdevice>::iterator list_iter = m_multi_touch_seq.begin();
         (ret == -1) && list_iter != m_multi_touch_seq.end();std::advance(list_iter, 1)) {
             if (touch_id == (*list_iter)) {
                 ret = iSeqIndex;

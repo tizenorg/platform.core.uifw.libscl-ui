@@ -46,6 +46,7 @@ class ResourceStorage{
     static const int __NEW_LENGTH__ = 0x10000;/*64k*/
     static const int __RE_NEW_LENGTH__ = 0x10000;/*64k*/
     static const int __MAX_NEW_SIZE__ = 0x2000000;/*32M*/
+
     public:
     ResourceStorage();
     ~ResourceStorage();
@@ -93,18 +94,19 @@ class ResourceStorage{
     // put the storage array to a big storage
     // return size that put
     int storage_cat(ResourceStorage& storage);
+
     private:
     void init();
 
     /*template <typename T>
     void put_primitive_data(T data, MetaType type, bool ignore = false);*/
 
-    // This function is used to check whether the 
+    // This function is used to check whether the
     // storage is enough
     // the para "width" is the size of request to use
     void check_storage(int width);
 
-    // If the space is not enough, use this function to 
+    // If the space is not enough, use this function to
     // new a new storage
     void expand_storage();
 

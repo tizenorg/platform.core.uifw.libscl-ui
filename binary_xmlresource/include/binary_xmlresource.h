@@ -51,7 +51,7 @@ enum{
     STRING,
     MAX_DATATYPE
 };
-namespace binary_xmlresource{
+namespace binary_xmlresource {
 class BinResource: public sclres::SclRes{
     public:
     ~BinResource();

@@ -738,7 +738,7 @@ CSCLUIImpl::set_custom_starting_coordinates_option(SCLStartingCoordinatesOption 
 SclRectangle
 CSCLUIImpl::get_main_window_rect()
 {
-    SclRectangle ret = {0,0,0,0};
+    SclRectangle ret = {0, 0, 0, 0};
 
     if (m_initialized) {
         CSCLResourceCache *cache = CSCLResourceCache::get_instance();
@@ -764,7 +764,7 @@ CSCLUIImpl::get_main_window_rect()
 SclSize
 CSCLUIImpl::get_input_mode_size(const sclchar *input_mode, SCLDisplayMode display_mode)
 {
-    SclSize ret = {0,0};
+    SclSize ret = {0, 0};
 
     if (m_initialized) {
         CSCLUtils *utils = CSCLUtils::get_instance();

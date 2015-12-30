@@ -42,7 +42,6 @@ encode_nine_patch_info(ResourceStorage& storage, const SclNinePatchInfo* cur, co
 
 int
 encode_nine_patch_file(ResourceStorage& storage, IMetaData_Helper& md_helper) {
-
     int init_size = storage.get_size();
 
     XMLResource *xmlresource = XMLResource::get_instance();
@@ -65,7 +64,7 @@ encode_nine_patch_file(ResourceStorage& storage, IMetaData_Helper& md_helper) {
     Nine_patch_width record_width;
     set_nine_patch_width(md_helper, record_width);
     SclNinePatchInfo* cur = ninePatchInfoTable;
-    for (int i = 0; i < MAX_NINE_PATCH_FILE_LIST; ++i ) {
+    for (int i = 0; i < MAX_NINE_PATCH_FILE_LIST; ++i) {
         encode_nine_patch_info(storage, cur, record_width);
         cur++;
     }

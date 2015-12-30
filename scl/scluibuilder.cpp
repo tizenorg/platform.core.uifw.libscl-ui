@@ -104,8 +104,7 @@ CSCLUIBuilder::init(sclwindow parent)
         }
         m_gwes->init(parent,
                     m_utils->get_scaled_x(sclres_layout[layout].width),
-                    m_utils->get_scaled_y(sclres_layout[layout].height)
-                   );
+                    m_utils->get_scaled_y(sclres_layout[layout].height));
 
         CSCLContext *context = CSCLContext::get_instance();
         context->set_display_mode(display_mode);
@@ -239,7 +238,7 @@ CSCLUIBuilder::show_layout(const sclwindow window, const scl16 x, const scl16 y,
                             cached_info.nine_patch_top = info_cache->bg_image_path[BUTTON_STATE_NORMAL].top;
                             cached_info.nine_patch_bottom = info_cache->bg_image_path[BUTTON_STATE_NORMAL].bottom;*/
 
-                            sclchar composed_path[_POSIX_PATH_MAX] = {0,};
+                            sclchar composed_path[_POSIX_PATH_MAX] = {0, };
                             m_utils->get_composed_path(composed_path, IMG_PATH_PREFIX, layout->image_path[BUTTON_STATE_NORMAL]);
                             // Temporary testing for EFL backend.. Otherwise the background image covers other buttons
                             if (window_context && (x + y + width + height == 0)) {
@@ -282,7 +281,7 @@ CSCLUIBuilder::show_layout(const sclwindow window, const scl16 x, const scl16 y,
                     }
 
                     if (draw_highlight_ui && context->get_highlight_ui_enabled()) {
-                        sclchar composed_path[_POSIX_PATH_MAX] = {0,};
+                        sclchar composed_path[_POSIX_PATH_MAX] = {0, };
                         const SclLayoutKeyCoordinate *coordinate = NULL;
                         scl8 current_key_index = focus_handler->get_current_focus_key();
                         coordinate = cache->get_cur_layout_key_coordinate(window, current_key_index);
@@ -472,7 +471,7 @@ CSCLUIBuilder::draw_button_label(const sclwindow window, const scldrawctx draw_c
         /* for image label  */
         if (coordinate->image_label_path[shift][state]) {
             if (strlen(coordinate->image_label_path[shift][state]) > 0) {
-                sclchar composed_path[_POSIX_PATH_MAX] = {0,};
+                sclchar composed_path[_POSIX_PATH_MAX] = {0, };
                 m_utils->get_composed_path(composed_path, IMG_PATH_PREFIX, coordinate->image_label_path[shift][state]);
 
                 SclSize imgSize = m_gwes->m_graphics->get_image_size(composed_path);
@@ -491,7 +490,7 @@ CSCLUIBuilder::draw_button_label(const sclwindow window, const scldrawctx draw_c
                     imgSize.height = coordinate->height;
                 }
 
-                SclPoint pos = {0,0};
+                SclPoint pos = {0, 0};
                 const SclLabelProperties *labelproperties = cache->get_label_properties(coordinate->image_label_type, 0);
                 if (labelproperties) {
                     SCLLabelAlignment align = labelproperties->alignment;
@@ -542,8 +541,7 @@ CSCLUIBuilder::draw_button_label(const sclwindow window, const scldrawctx draw_c
                     pos.x + targetaddx,
                     pos.y + targetaddy,
                     imgSize.width,
-                    imgSize.height
-                );
+                    imgSize.height);
             }
         }
 
@@ -613,8 +611,7 @@ CSCLUIBuilder::draw_button_label(const sclwindow window, const scldrawctx draw_c
                             labelproperties->padding_x * utils->get_custom_scale_rate_x(),
                             labelproperties->padding_y * utils->get_custom_scale_rate_y(),
                             labelproperties->inner_width * utils->get_custom_scale_rate_x(),
-                            labelproperties->inner_height * utils->get_custom_scale_rate_y()
-                        );
+                            labelproperties->inner_height * utils->get_custom_scale_rate_y());
                     }
                     graphics->draw_text(
                         targetwin,
@@ -631,8 +628,7 @@ CSCLUIBuilder::draw_button_label(const sclwindow window, const scldrawctx draw_c
                         labelproperties->padding_x * utils->get_custom_scale_rate_x(),
                         labelproperties->padding_y * utils->get_custom_scale_rate_y(),
                         labelproperties->inner_width * utils->get_custom_scale_rate_x(),
-                        labelproperties->inner_height * utils->get_custom_scale_rate_y()
-                    );
+                        labelproperties->inner_height * utils->get_custom_scale_rate_y());
                 }
             }
         }
@@ -753,7 +749,7 @@ CSCLUIBuilder::draw_button_bg_by_img(const sclwindow window, const scldrawctx dr
 
     scl_assert_return_false(state >= BUTTON_STATE_NORMAL && state < SCL_BUTTON_STATE_MAX);
 
-    sclchar composed_path[_POSIX_PATH_MAX] = {0,};
+    sclchar composed_path[_POSIX_PATH_MAX] = {0, };
 
     if (context && graphics && cache && coordinate) {
         sclboolean path_composed = FALSE;
@@ -832,8 +828,7 @@ CSCLUIBuilder::draw_button_bg_by_img(const sclwindow window, const scldrawctx dr
                 (sclint)targetx,
                 (sclint)targety,
                 (sclint)coordinate->width,
-                (sclint)coordinate->height
-                );
+                (sclint)coordinate->height);
         //}
     }
 
@@ -866,7 +861,7 @@ CSCLUIBuilder::draw_button_bg_by_layoutimg(const sclwindow window, const scldraw
     //SclWindowContext *window_context = windows->get_window_context(window, FALSE);
     SclWindowContext *window_context = windows->get_window_context(window);
 
-    sclchar composed_path[_POSIX_PATH_MAX] = {0,};
+    sclchar composed_path[_POSIX_PATH_MAX] = {0, };
     if (context && cache && coordinate && window_context) {
         sclboolean path_composed = FALSE;
         /* Check if we need to decorate the button's drag state */
@@ -945,8 +940,7 @@ CSCLUIBuilder::draw_button_bg_by_layoutimg(const sclwindow window, const scldraw
                 window_context->layout_image_offset.y + (sclint)coordinate->y,
                 (sclint)coordinate->width,
                 (sclint)coordinate->height,
-                TRUE
-            );
+                TRUE);
         //}
     }
     return TRUE;
@@ -1019,7 +1013,7 @@ CSCLUIBuilder::show_magnifier(const sclwindow window, scldrawctx draw_ctx)
             }
         }
         const sclchar* customstr = NULL;
-        for(sclint label_index = 0;label_index < MAX_SIZE_OF_LABEL_FOR_ONE && !customstr;label_index++) {
+        for (sclint label_index = 0;label_index < MAX_SIZE_OF_LABEL_FOR_ONE && !customstr;label_index++) {
             const sclchar *tempstr = context->get_custom_magnifier_label(context->get_last_touch_device_id(), label_index);
             if (tempstr) {
                 customstr = tempstr;
@@ -1042,7 +1036,7 @@ CSCLUIBuilder::show_magnifier(const sclwindow window, scldrawctx draw_ctx)
     }
 
 #if 0
-    SclPoint pos = {0,0};
+    SclPoint pos = {0, 0};
     /* calculates x position to be set */
     pos.x = (coordinate->x + (coordinate->width / 2)) - (utils->get_scale_x(scl_magnifier_configure.width) / 2);
 
@@ -1059,7 +1053,7 @@ CSCLUIBuilder::show_magnifier(const sclwindow window, scldrawctx draw_ctx)
         magnifier_configure = sclres_manager->get_magnifier_configure();
     }
     if (coordinate && magnifier_configure) {
-        sclchar composed_path[_POSIX_PATH_MAX] = {0,};
+        sclchar composed_path[_POSIX_PATH_MAX] = {0, };
         if (state && state->get_cur_action_state() == ACTION_STATE_BASE_LONGKEY) {
             m_utils->get_composed_path(composed_path, IMG_PATH_PREFIX, magnifier_configure->bg_long_key_image_path);
             m_gwes->m_graphics->draw_image(window, draw_ctx, composed_path, NULL, 0, 0,
@@ -1085,7 +1079,7 @@ CSCLUIBuilder::show_magnifier(const sclwindow window, scldrawctx draw_ctx)
         }
 
         sclboolean ended = FALSE;
-        for(int loop = 0;loop < MAX_SIZE_OF_LABEL_FOR_ONE && !ended;loop++) {
+        for (int loop = 0;loop < MAX_SIZE_OF_LABEL_FOR_ONE && !ended;loop++) {
             const SclLabelProperties *labelproperties = cache->get_label_properties(magnifier_configure->label_type, loop);
             if (labelproperties) {
                 if (labelproperties->valid) {
@@ -1136,7 +1130,6 @@ CSCLUIBuilder::show_magnifier(const sclwindow window, scldrawctx draw_ctx)
     }
 
     return TRUE;
-
 }
 
 
@@ -1197,8 +1190,7 @@ CSCLUIBuilder::draw_magnifier_label(const sclwindow window, const scldrawctx dra
                     labelproperties->padding_x * utils->get_custom_scale_rate_x(),
                     labelproperties->padding_y * utils->get_custom_scale_rate_y(),
                     labelproperties->inner_width * utils->get_custom_scale_rate_x(),
-                    labelproperties->inner_height * utils->get_custom_scale_rate_y()
-                );
+                    labelproperties->inner_height * utils->get_custom_scale_rate_y());
             }
         }
     }

@@ -25,7 +25,7 @@ static int
 match_alignment(const char* key) {
   assert(key != NULL);
 
-    typedef struct _match_table_t{
+    typedef struct _match_table_t {
         int value;
         const char* key;
     }Match_table_t;
@@ -45,7 +45,7 @@ match_alignment(const char* key) {
 
     int value = LABEL_ALIGN_LEFT_TOP;
 
-    for(size_t i = 0; i < sizeof(table)/sizeof(Match_table_t); ++i) {
+    for (size_t i = 0; i < sizeof(table)/sizeof(Match_table_t); ++i) {
         if (0 == strcmp(key, table[i].key))
         {
             value = table[i].value;
@@ -58,7 +58,7 @@ static int
 match_shadow_direction(const char* key) {
   assert(key != NULL);
 
-    typedef struct _match_table_t{
+    typedef struct _match_table_t {
         int value;
         const char* key;
     }Match_table_t;
@@ -80,7 +80,7 @@ match_shadow_direction(const char* key) {
 
     int value = SHADOW_DIRECTION_NONE;
 
-    for(size_t i = 0; i < sizeof(table)/sizeof(Match_table_t); ++i) {
+    for (size_t i = 0; i < sizeof(table)/sizeof(Match_table_t); ++i) {
         if (0 == strcmp(key, table[i].key))
         {
             value = table[i].value;
@@ -97,8 +97,8 @@ class LabelPropertiesParserImpl {
         }
 
         ~LabelPropertiesParserImpl() {
-            for(int i = 0; i < MAX_SCL_LABEL_PROPERTIES && i < m_size; ++i) {
-                for(int j = 0; j < MAX_SIZE_OF_LABEL_FOR_ONE; ++j) {
+            for (int i = 0; i < MAX_SCL_LABEL_PROPERTIES && i < m_size; ++i) {
+                for (int j = 0; j < MAX_SIZE_OF_LABEL_FOR_ONE; ++j) {
                     if (m_label_properties_frame[i][j].font_name)
                         delete m_label_properties_frame[i][j].font_name;
                     m_label_properties_frame[i][j].font_name = NULL;
@@ -108,7 +108,6 @@ class LabelPropertiesParserImpl {
                 }
             }
             m_size = 0;
-
         }
 
         int parsing_label_properties_frame(const char* input_file) {
@@ -140,7 +139,7 @@ class LabelPropertiesParserImpl {
             PSclLabelPropertiesTable curTable = m_label_properties_frame;
             while (cur_node != NULL) {
                 if (0 == xmlStrcmp(cur_node->name, (const xmlChar *)"label_properties_table")) {
-                    parsing_label_properties_table( cur_node, curTable);
+                    parsing_label_properties_table(cur_node, curTable);
                     xmlChar* key = xmlGetProp(cur_node, (const xmlChar*)"label_type");
                     PSclLabelProperties cur_rec = (PSclLabelProperties)curTable;
                     cur_rec->label_type = (sclchar *)key;
@@ -157,7 +156,6 @@ class LabelPropertiesParserImpl {
             xmlFreeDoc(doc);
 
             return 0;
-
         }
         void parsing_label_properties_table(const xmlNodePtr cur_node, const PSclLabelPropertiesTable curTable) {
             assert(cur_node != NULL);
@@ -174,7 +172,6 @@ class LabelPropertiesParserImpl {
 
                 child_node = child_node->next;
             }
-
         }
         void parsing_label_properties_record(const xmlNodePtr cur_node, const PSclLabelProperties cur_rec) {
             assert(cur_node != NULL);
@@ -210,9 +207,9 @@ class LabelPropertiesParserImpl {
             xmlNodePtr child_node = cur_node->xmlChildrenNode;
 
             while (child_node != NULL) {
-                if ( 0 == xmlStrcmp(child_node->name, (const xmlChar*)"font_color_record")) {
+                if (0 == xmlStrcmp(child_node->name, (const xmlChar*)"font_color_record")) {
                     parsing_font_color_record(child_node, cur_rec);
-                } else if ( 0 == xmlStrcmp(child_node->name, (const xmlChar*)"shadow_color_record")) {
+                } else if (0 == xmlStrcmp(child_node->name, (const xmlChar*)"shadow_color_record")) {
                     parsing_shadow_color_record(child_node, cur_rec);
                 }
 
@@ -224,8 +221,8 @@ class LabelPropertiesParserImpl {
         cur_rec->valid = true;
         cur_rec->font_name = NULL;
         cur_rec->font_size = 0;
-        for(int shift_state = 0; shift_state < SCL_SHIFT_STATE_MAX; ++shift_state) {
-            for(int button_state = 0; button_state < SCL_BUTTON_STATE_MAX; ++button_state) {
+        for (int shift_state = 0; shift_state < SCL_SHIFT_STATE_MAX; ++shift_state) {
+            for (int button_state = 0; button_state < SCL_BUTTON_STATE_MAX; ++button_state) {
                 cur_rec->font_color[shift_state][button_state].r = 0;
                 cur_rec->font_color[shift_state][button_state].g = 0;
                 cur_rec->font_color[shift_state][button_state].b = 0;
@@ -241,14 +238,13 @@ class LabelPropertiesParserImpl {
 
         cur_rec->shadow_direction = SHADOW_DIRECTION_NONE;
 
-        for(int shift_state = 0; shift_state < SCL_SHIFT_STATE_MAX; ++shift_state) {
-            for(int button_state = 0; button_state < SCL_BUTTON_STATE_MAX; ++button_state) {
+        for (int shift_state = 0; shift_state < SCL_SHIFT_STATE_MAX; ++shift_state) {
+            for (int button_state = 0; button_state < SCL_BUTTON_STATE_MAX; ++button_state) {
                 cur_rec->shadow_color[shift_state][button_state].r = 0;
                 cur_rec->shadow_color[shift_state][button_state].g = 0;
                 cur_rec->shadow_color[shift_state][button_state].b = 0;
             }
         }
-
     }
 
     void parsing_font_color_record(const xmlNodePtr cur_node, const PSclLabelProperties cur_rec) {
@@ -258,15 +254,15 @@ class LabelPropertiesParserImpl {
         xmlNodePtr child_node = cur_node->xmlChildrenNode;
 
         while (child_node != NULL) {
-            if (0 == xmlStrcmp(child_node->name, (const xmlChar*)"color") ) {
+            if (0 == xmlStrcmp(child_node->name, (const xmlChar*)"color")) {
                 SclColor font_color = {0x00, 0x00, 0x00, 0xFF};
                 parsing_rgb(child_node, font_color);
 
                 int shift_state = get_shift_state_prop(child_node);
                 int button_state = get_button_state_prop(child_node);
 
-                for(int shift_loop = 0;shift_loop < SCL_SHIFT_STATE_MAX;shift_loop++) {
-                    for(int button_loop = 0;button_loop < SCL_BUTTON_STATE_MAX;button_loop++) {
+                for (int shift_loop = 0;shift_loop < SCL_SHIFT_STATE_MAX;shift_loop++) {
+                    for (int button_loop = 0;button_loop < SCL_BUTTON_STATE_MAX;button_loop++) {
                         if ((shift_state == shift_loop || shift_state == -1) &&
                                 (button_state == button_loop || button_state == -1)) {
                             cur_rec->font_color[shift_loop][button_loop] = font_color;
@@ -285,10 +281,10 @@ class LabelPropertiesParserImpl {
         xmlNodePtr child_node = cur_node->xmlChildrenNode;
 
         while (child_node != NULL) {
-            if (0 == xmlStrcmp(child_node->name, (const xmlChar*)"color") ) {
+            if (0 == xmlStrcmp(child_node->name, (const xmlChar*)"color")) {
                 int shift_state = get_shift_state_prop(child_node);
                 int button_state = get_button_state_prop(child_node);
-                if (shift_state != -1 && button_state != -1 ) {
+                if (shift_state != -1 && button_state != -1) {
                     parsing_rgb(child_node, cur_rec->shadow_color[shift_state][button_state]);
                 }
             }

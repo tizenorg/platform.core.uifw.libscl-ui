@@ -52,13 +52,13 @@ class String_Encoder:public IString_Encoder{
             m_vec_string.push_back(str_temp);
             return m_vec_string.size() -1;
         }
-        int encode() const{
+        int encode() const {
             ResourceStorage storage;
             encode(storage);
             storage.toFile(m_file);
             return storage.get_size();
         }
-        int encode(int& offset) const{
+        int encode(int& offset) const {
             ResourceStorage storage;
             encode(storage);
             storage.toFile(m_file, offset);
@@ -66,7 +66,7 @@ class String_Encoder:public IString_Encoder{
             return storage.get_size();
         }
 
-        int encode(ResourceStorage& storage) const{
+        int encode(ResourceStorage& storage) const {
             /* record the strings' num*/
             storage.put<sint_t>(m_vec_string.size(), MAX_NUM_WIDTH);
 

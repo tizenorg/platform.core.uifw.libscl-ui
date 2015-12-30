@@ -29,7 +29,7 @@
 #include "nine_patch_file_list_parser.h"
 #include "sclres.h"
 
-namespace xmlresource{
+namespace xmlresource {
 class XMLResource: public sclres::SclRes{
     public:
     ~XMLResource();
@@ -66,6 +66,7 @@ class XMLResource: public sclres::SclRes{
     }
 
     void destroy();
+
     private:
     XMLResource();
 

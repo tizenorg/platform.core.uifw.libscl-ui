@@ -186,7 +186,7 @@ encode_key_coordinate_record(ResourceStorage& storage, const PSclLayoutKeyCoordi
 const int get_layout_num(const PSclLayoutKeyCoordinatePointerTable keyCoordinatePointerFrame) {
     assert(keyCoordinatePointerFrame != NULL);
     int layout_num = MAX_SCL_LAYOUT;
-    for ( int i = 0; i < MAX_SCL_LAYOUT; ++i) {
+    for ( int i = 0; i < MAX_SCL_LAYOUT; ++i ) {
         // NULL is the end flag
         if (keyCoordinatePointerFrame[i][0] == NULL) {
             layout_num = i;
@@ -215,7 +215,6 @@ const int get_key_num(const PSclLayoutKeyCoordinatePointerTable keyCoordinatePoi
 
 int
 encode_key_coordinate_frame_file(ResourceStorage& storage, IMetaData_Helper& md_helper) {
-
     XMLResource *xmlresource = XMLResource::get_instance();
 
     int layout_num = xmlresource->get_layout_size();
@@ -260,8 +259,8 @@ encode_key_coordinate_frame_file(ResourceStorage& storage, IMetaData_Helper& md_
 
 
     int key_coordinate_rec_data_size = 0;
-    for ( int i = 0; i < layout_num; ++i) {
-        for ( int j = 0; j < pKey_num_array[i]; ++j) {
+    for ( int i = 0; i < layout_num; ++i ) {
+        for ( int j = 0; j < pKey_num_array[i]; ++j ) {
             int pre_size = storage.get_size();
 
             SclLayoutKeyCoordinatePointer cur = _key_coordinate_pointer_frame[i][j];

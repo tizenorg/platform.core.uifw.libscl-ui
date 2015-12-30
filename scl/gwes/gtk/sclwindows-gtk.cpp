@@ -44,27 +44,27 @@ CSCLWindowsImplGtk::~CSCLWindowsImplGtk()
  * Make a transparent window
  */
 static void
-make_transparent_window (GtkWidget *window)
+make_transparent_window(GtkWidget *window)
 {
     SCL_DEBUG();
     GdkScreen *screen;
     GdkColormap *colormap;
 
-    screen = gtk_widget_get_screen (window);
+    screen = gtk_widget_get_screen(window);
     if (!screen) {
-        g_warning ("failed to get window's screen");
+        g_warning("failed to get window's screen");
         return;
     }
 
-    colormap = gdk_screen_get_rgba_colormap (screen);
+    colormap = gdk_screen_get_rgba_colormap(screen);
     if (!colormap) {
-        g_warning ("failed to get RGBA colormap");
+        g_warning("failed to get RGBA colormap");
         return;
     }
 
-    gtk_widget_set_colormap (window, colormap);
-    gtk_widget_set_app_paintable (window, TRUE);
-    gtk_widget_realize (window);
+    gtk_widget_set_colormap(window, colormap);
+    gtk_widget_set_app_paintable(window, TRUE);
+    gtk_widget_realize(window);
     //gdk_gc_set_alpha(window->style->bg_gc[GTK_STATE_NORMAL], 0);
     //gdk_window_set_alpha(window->window, 0);
 }
@@ -100,8 +100,8 @@ CSCLWindowsImplGtk::create_base_window(const sclwindow parent, SclWindowContext 
             gtk_widget_set_size_request(window, width, height);
             gtk_widget_set_size_request(drawarea, width, height);
             gtk_box_pack_start(GTK_BOX(window), drawarea, TRUE, TRUE, 0);
-            gtk_widget_show (drawarea);
-            gtk_widget_show (window);
+            gtk_widget_show(drawarea);
+            gtk_widget_show(window);
             window_context->etc_info = static_cast<void*>(drawarea);
             window_context->window = drawarea;
             make_transparent_window(drawarea);
@@ -126,8 +126,8 @@ CSCLWindowsImplGtk::create_window(const sclwindow parent, SclWindowContext *wind
     GtkWidget* window = NULL;
 
     if (window_context->window == NULL) {
-        window = gtk_window_new (GTK_WINDOW_TOPLEVEL);
-        gtk_window_set_type_hint(GTK_WINDOW (window), GDK_WINDOW_TYPE_HINT_UTILITY);
+        window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
+        gtk_window_set_type_hint(GTK_WINDOW(window), GDK_WINDOW_TYPE_HINT_UTILITY);
 #ifdef NO_SOCKETPLUG
         //gtk_window_set_type_hint(GTK_WINDOW (window), GDK_WINDOW_TYPE_HINT_NOTIFICATION);
         //gtk_window_set_keep_above(GTK_WINDOW(window), TRUE);
@@ -178,7 +178,7 @@ CSCLWindowsImplGtk::create_dim_window(const sclwindow parent, SclWindowContext *
 
     if (window_context->window == NULL) {
         window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
-        gtk_window_set_type_hint(GTK_WINDOW (window), GDK_WINDOW_TYPE_HINT_UTILITY);
+        gtk_window_set_type_hint(GTK_WINDOW(window), GDK_WINDOW_TYPE_HINT_UTILITY);
 #ifdef NO_SOCKETPLUG
         //gtk_window_set_type_hint(GTK_WINDOW (window), GDK_WINDOW_TYPE_HINT_NOTIFICATION);
 #endif
@@ -293,9 +293,8 @@ CSCLWindowsImplGtk::hide_window(const sclwindow window,  sclboolean force)
         /* Fix me : The below is a temporary code for magnifier speed enhancement */
 #ifdef NO_SOCKETPLUG
         gint root_x, root_y;
-        gtk_window_get_position (GTK_WINDOW(widget), &root_x, &root_y);
+        gtk_window_get_position(GTK_WINDOW(widget), &root_x, &root_y);
         if (GTK_WIDGET_MAPPED(widget)) {
-
             /* Window rotation*/
             CSCLContext* context = CSCLContext::get_instance();
             if (context->get_display() == DISPLAY_LANDSCAPE) {
@@ -390,7 +389,6 @@ CSCLWindowsImplGtk::get_window_rect(const sclwindow window, SclRectangle *rect) 
     sclboolean ret = FALSE;
     GtkWidget* widget = static_cast<GtkWidget*>(window);
     if (rect && GTK_WIDGET_REALIZED(widget)) {
-
 #if 0
         /* FIXME : We need to get appropriate position of the base window somehow */
         // {
@@ -405,7 +403,7 @@ CSCLWindowsImplGtk::get_window_rect(const sclwindow window, SclRectangle *rect) 
         CSCLContext *context = CSCLContext::get_instance();
         CSCLWindows *windows = CSCLWindows::get_instance();
         if (context->get_display() == DISPLAY_LANDSCAPE) {
-            gdk_window_get_root_origin (GDK_WINDOW(gtk_widget_get_toplevel(widget)->window),  &(rect->x), &(rect->y));
+            gdk_window_get_root_origin(GDK_WINDOW(gtk_widget_get_toplevel(widget)->window),  &(rect->x), &(rect->y));
             if (window == windows->get_base_window()) {
                 CSCLUtils *utils = CSCLUtils::get_instance();
                 CSCLResourceCache *cache = CSCLResourceCache::get_instance();
@@ -415,7 +413,7 @@ CSCLWindowsImplGtk::get_window_rect(const sclwindow window, SclRectangle *rect) 
                 rect->y = scnWidth - cache->get_cur_layout(window)->height;
             }
         } else {
-            gdk_window_get_root_origin (GDK_WINDOW(gtk_widget_get_toplevel(widget)->window),  &(rect->x), &(rect->y));
+            gdk_window_get_root_origin(GDK_WINDOW(gtk_widget_get_toplevel(widget)->window),  &(rect->x), &(rect->y));
             if (window == windows->get_base_window()) {
                 CSCLUtils *utils = CSCLUtils::get_instance();
                 CSCLResourceCache *cache = CSCLResourceCache::get_instance();
@@ -425,7 +423,7 @@ CSCLWindowsImplGtk::get_window_rect(const sclwindow window, SclRectangle *rect) 
                 rect->y = scnHeight - cache->get_cur_layout(window)->height;
             }
         }
-        gtk_window_get_size (GTK_WINDOW(gtk_widget_get_toplevel(widget)), &(rect->width), &(rect->height));
+        gtk_window_get_size(GTK_WINDOW(gtk_widget_get_toplevel(widget)), &(rect->width), &(rect->height));
 
         ret = TRUE;
     }

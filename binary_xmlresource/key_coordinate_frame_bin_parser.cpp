@@ -114,7 +114,7 @@ load(int layout_id)
                 m_key_coordinate_pointer_frame[i][j] = curPointer;
             }
             break;
-        }else{
+        } else {
             storage.advance(pKey_num_array[i] * key_coordinate_rec_data_size);
         }
     }

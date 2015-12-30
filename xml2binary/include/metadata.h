@@ -37,7 +37,7 @@ class MetaData_Field{
        MetaData_Field(const char*name, const char* type, const int width) {
             assert(name);
             assert(type);
-            assert(width >= 0 );
+            assert(width >= 0);
 
             memset(m_name, 0, FIELD_NAME_WIDTH);
             memset(m_type, 0, FIELD_TYPE_WIDTH);

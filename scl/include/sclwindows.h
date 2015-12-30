@@ -32,7 +32,7 @@
 namespace scl
 {
 #define MAX_POPUP_WINDOW 1
-#define MAX_ZORDER_NUM ( MAX_POPUP_WINDOW + 1 ) /* Popup + Base */
+#define MAX_ZORDER_NUM (MAX_POPUP_WINDOW + 1 ) /* Popup + Base */
 
 #define SCL_WINDOW_Z_TOP 0
 

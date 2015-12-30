@@ -43,7 +43,6 @@ class DefaultConfigureParserImpl {
                 xmlFree(m_default_configure.image_file_base_path);
                 m_default_configure.image_file_base_path = NULL;
             }
-
         }
 
         int parsing_default_configure(const char* input_file) {
@@ -126,30 +125,29 @@ class DefaultConfigureParserImpl {
             xmlFreeDoc(doc);
 
             return 0;
-
         }
 
         void parsing_touch_offset(const xmlNodePtr cur_node) {
             assert(cur_node != NULL);
 
             xmlNodePtr child_node = cur_node->xmlChildrenNode;
-            while (child_node!=NULL) {
-                if (0 == xmlStrcmp(child_node->name, (const xmlChar *)"portrait") ) {
+            while (child_node != NULL) {
+                if (0 == xmlStrcmp(child_node->name, (const xmlChar *)"portrait")) {
                     xmlNodePtr grandChildNode = child_node->xmlChildrenNode;
-                    while (grandChildNode!=NULL) {
-                        if (0 == xmlStrcmp(grandChildNode->name, (const xmlChar*)"x") ) {
+                    while (grandChildNode != NULL) {
+                        if (0 == xmlStrcmp(grandChildNode->name, (const xmlChar*)"x")) {
                             m_default_configure.touch_offset[DISPLAYMODE_PORTRAIT].x = get_content_int(grandChildNode);
-                        } else if (0 == xmlStrcmp(grandChildNode->name, (const xmlChar*)"y") ) {
+                        } else if (0 == xmlStrcmp(grandChildNode->name, (const xmlChar*)"y")) {
                             m_default_configure.touch_offset[DISPLAYMODE_PORTRAIT].y = get_content_int(grandChildNode);
                         }
                         grandChildNode = grandChildNode->next;
                     }
-                } else if (0 == xmlStrcmp(child_node->name, (const xmlChar *)"landscape") ) {
+                } else if (0 == xmlStrcmp(child_node->name, (const xmlChar *)"landscape")) {
                     xmlNodePtr grandChildNode = child_node->xmlChildrenNode;
-                    while (grandChildNode!=NULL) {
-                        if (0 == xmlStrcmp(grandChildNode->name, (const xmlChar*)"x") ) {
+                    while (grandChildNode != NULL) {
+                        if (0 == xmlStrcmp(grandChildNode->name, (const xmlChar*)"x")) {
                             m_default_configure.touch_offset[DISPLAYMODE_LANDSCAPE].x = get_content_int(grandChildNode);
-                        } else if (0 == xmlStrcmp(grandChildNode->name, (const xmlChar*)"y") ) {
+                        } else if (0 == xmlStrcmp(grandChildNode->name, (const xmlChar*)"y")) {
                             m_default_configure.touch_offset[DISPLAYMODE_LANDSCAPE].y = get_content_int(grandChildNode);
                         }
                         grandChildNode = grandChildNode->next;
@@ -158,30 +156,28 @@ class DefaultConfigureParserImpl {
 
                 child_node = child_node->next;
             }
-
         }
 
         void parsing_dim_color(const xmlNodePtr cur_node) {
             assert(cur_node != NULL);
 
             xmlNodePtr child_node = cur_node->xmlChildrenNode;
-            while (child_node!=NULL) {
-                if (0 == xmlStrcmp(child_node->name, (const xmlChar *)"r") ) {
+            while (child_node != NULL) {
+                if (0 == xmlStrcmp(child_node->name, (const xmlChar *)"r")) {
                     m_default_configure.dim_color.r = get_content_int(child_node);
                 }
-                else if (0 == xmlStrcmp(child_node->name, (const xmlChar *)"g") ) {
+                else if (0 == xmlStrcmp(child_node->name, (const xmlChar *)"g")) {
                     m_default_configure.dim_color.g = get_content_int(child_node);
                 }
-                else if (0 == xmlStrcmp(child_node->name, (const xmlChar *)"b") ) {
+                else if (0 == xmlStrcmp(child_node->name, (const xmlChar *)"b")) {
                     m_default_configure.dim_color.b = get_content_int(child_node);
                 }
-                else if (0 == xmlStrcmp(child_node->name, (const xmlChar *)"a") ) {
+                else if (0 == xmlStrcmp(child_node->name, (const xmlChar *)"a")) {
                     m_default_configure.dim_color.a = get_content_int(child_node);
                 }
 
                 child_node = child_node->next;
             }
-
         }
 
         SCLDisplayMode get_content_display_mode(const xmlNodePtr cur_node) {

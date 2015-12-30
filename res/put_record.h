@@ -327,7 +327,6 @@ static void put_key_coordinate_record(FILE* fp, const SclLayoutKeyCoordinate& re
     for (int i = 0; i < SCL_SHIFT_STATE_MAX; ++i) {
         for (int j = 0; j < MAX_SIZE_OF_LABEL_FOR_ONE; ++j) {
             put_int(fp, record.key_event[i][j]);
-
         }
     }
     put_seperator(fp);
@@ -386,7 +385,7 @@ static void put_layout_record(FILE* fp, const SclLayout& record ) {
     put_int(fp, record.add_grab_top);
     put_int(fp, record.add_grab_bottom);
     put_seperator(fp);
-    for(int i = 0; i < SCL_BUTTON_STATE_MAX; ++i) {
+    for (int i = 0; i < SCL_BUTTON_STATE_MAX; ++i) {
         put_str(fp, record.image_path[i]);
     }
     put_seperator(fp);
@@ -448,7 +447,7 @@ put_key_coordinate_frame(int flag, const PSclLayoutKeyCoordinatePointerTable fra
     string file_name;
     if (flag == ENCODE) {
         file_name = "encode_key_coordinate_frame.txt";
-    } else if (flag == DECODE){
+    } else if (flag == DECODE) {
         file_name = "decode_key_coordinate_frame.txt";
     } else
         file_name = "sclres_key_coordinate_frame.txt";
@@ -478,7 +477,7 @@ put_label_properties_frame(int flag, const PSclLabelPropertiesTable frame) {
     string file_name;
     if (flag == ENCODE) {
         file_name = "encode_label_properties_frame.txt";
-    } else if (flag == DECODE){
+    } else if (flag == DECODE) {
         file_name = "decode_label_properties_frame.txt";
     } else
         file_name = "sclres_label_properties_frame.txt";
@@ -490,7 +489,7 @@ put_label_properties_frame(int flag, const PSclLabelPropertiesTable frame) {
         return;
     }
     for (int i = 0; i < MAX_SCL_LABEL_PROPERTIES; ++i) {
-        for(int j = 0; j < MAX_SIZE_OF_LABEL_FOR_ONE; ++j) {
+        for (int j = 0; j < MAX_SIZE_OF_LABEL_FOR_ONE; ++j) {
             put_note(fp, i, j);
             put_label_properties_record(fp, frame[i][j]);
         }
@@ -500,7 +499,6 @@ put_label_properties_frame(int flag, const PSclLabelPropertiesTable frame) {
 
 static void
 put_default_configure(int flag, const SclDefaultConfigure& record) {
-
     string file_name;
     if (flag == ENCODE) {
         file_name = "encode_default_configure.txt";
@@ -521,11 +519,10 @@ put_default_configure(int flag, const SclDefaultConfigure& record) {
 
 static void
 put_autopopup_configure(int flag, const SclAutoPopupConfigure& record) {
-
     string file_name;
     if (flag == ENCODE) {
         file_name = "encode_autopopup_configure.txt";
-    } else if (flag == DECODE){
+    } else if (flag == DECODE) {
         file_name = "decode_autopopup_configure.txt";
     } else
         file_name = "sclres_autopopup_configure.txt";

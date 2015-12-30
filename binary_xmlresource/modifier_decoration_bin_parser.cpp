@@ -75,12 +75,12 @@ BinModifierDecorationParser::parsing_modifier_decoration_table() {
 }
 
 int
-BinModifierDecorationParser::get_modifier_decoration_id( const char *name )
+BinModifierDecorationParser::get_modifier_decoration_id(const char *name )
 {
     if (name == NULL) return -1;
 
-    for(int i = 0; i < MAX_SCL_MODIFIER_DECORATION_NUM; ++i) {
-        if ( m_modifier_decoration_table[i].name) {
+    for (int i = 0; i < MAX_SCL_MODIFIER_DECORATION_NUM; ++i) {
+        if ( m_modifier_decoration_table[i].name ) {
             if ( 0 == strcmp(m_modifier_decoration_table[i].name, name) ) {
                 return i;
             }

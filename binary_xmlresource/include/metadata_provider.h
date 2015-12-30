@@ -28,22 +28,21 @@ class Metadata_Provider:public IMetadata_Provider{
             curRecordIndex = -1;
         }
 
-        const int get_width(const char* field_name)const{
+        const int get_width(const char* field_name)const {
             const MetaData* metadata = m_metadataParser->get_metadata();
             const MetaData_Record& metadata_record = metadata->m_vec_metadata_record.at(curRecordIndex);
             std::vector<MetaData_Field>::const_iterator it;
-            for(it = metadata_record.vField.begin(); it != metadata_record.vField.end(); ++it) {
+            for (it = metadata_record.vField.begin(); it != metadata_record.vField.end(); ++it) {
                 if (0 == strcmp(it->m_name,  field_name)) {
                     return it->m_width;
                 }
             }
 
             return 0;
-
         }
         void set_current_metadata_record(const char*record_name) {
             assert(record_name != NULL);
-            if ( current_record_name == NULL ||0 != strcmp(current_record_name, record_name)) {
+            if (current_record_name == NULL ||0 != strcmp(current_record_name, record_name)) {
                 current_record_name = record_name;
                 curRecordIndex = (int)find_metadata_record_index(record_name);
                 if (curRecordIndex == -1) {
@@ -51,12 +50,13 @@ class Metadata_Provider:public IMetadata_Provider{
                 }
             }
         }
+
     private:
-       size_t find_metadata_record_index(const char* name)const{
+       size_t find_metadata_record_index(const char* name)const {
             if (name == NULL) return -1;
 
             const MetaData* metadata = m_metadataParser->get_metadata();
-            for ( size_t i = 0; i < metadata->m_vec_metadata_record.size(); ++i) {
+            for (size_t i = 0; i < metadata->m_vec_metadata_record.size(); ++i) {
                 const MetaData_Record& metadata_record = metadata->m_vec_metadata_record.at(i);
 
                 if (0 == strcmp(metadata_record.m_name, name)) {

@@ -43,7 +43,6 @@ public:
     static CSCLErrorAdjustment* get_instance();
 
 private:
-
 public:
     void enable_touch_offset(sclboolean enable);
     sclboolean apply_touch_offset(SCLTouchOffsetLevel level, sclint *x, sclint *y);

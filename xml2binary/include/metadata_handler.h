@@ -26,9 +26,10 @@
 #include "imetadata_helper.h"
 class MetaData_Handler:private IMetaData_Encoder, IMetaData_Parser, public IMetaData_Helper{
     private:
-        typedef struct __Metadata_Width{
+        typedef struct __Metadata_Width {
             int string_id_width;
         }MetaData_Width;
+
     public:
         MetaData_Handler(const char* file);
         void set_current_metadata_record(const char* record_name);
@@ -44,6 +45,7 @@ class MetaData_Handler:private IMetaData_Encoder, IMetaData_Parser, public IMeta
         int encode(ResourceStorage& storage)const;
 
         const unsigned short get_width(const char* field_name) const;
+
     private:
         const unsigned short
             get_width(const char* name, const MetaData_Record& metadata_record) const;
@@ -53,6 +55,7 @@ class MetaData_Handler:private IMetaData_Encoder, IMetaData_Parser, public IMeta
         int parsing_metadata_type(const xmlNodePtr curNode, MetaData_Width& metadataWidth);
         void parsing_metadata();
         const MetaData* get_metadata()const;
+
     private:
         MetaData metadata;
         int m_current_metadata_record_id;

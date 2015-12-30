@@ -63,7 +63,6 @@ encode_magnifier_configure_record(ResourceStorage& storage, const PSclMagnifierW
 
 int
 encode_magnifier_configure_file(ResourceStorage& storage, IMetaData_Helper& md_helper) {
-
     int init_size = storage.get_size();
 
     XMLResource *xmlresource = XMLResource::get_instance();

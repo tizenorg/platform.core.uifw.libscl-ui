@@ -44,14 +44,13 @@ init(const FileStorage& storage, int offset, int size, IParserInfo_Provider* pro
     m_storage.get_storage(storage, offset, size);
     this->parser_info_provider = provider;
     parsing_layout_table();
-
 }
 
 int BinLayoutParser::
 get_layout_index(const char *name) {
     int ret = NOT_USED;
     if (name) {
-        for(int loop = 0;loop < MAX_SCL_LAYOUT && ret == NOT_USED;loop++) {
+        for (int loop = 0;loop < MAX_SCL_LAYOUT && ret == NOT_USED;loop++) {
             if (m_layout_table[loop].name) {
                 if (strcmp(m_layout_table[loop].name, name) == 0) {
                     ret = loop;
@@ -108,7 +107,6 @@ parsing_layout_table() {
 #ifdef __SCL_TXT_DEBUG
     put_layout_table(DECODE, m_layout_table);
 #endif
-
 }
 
 void

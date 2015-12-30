@@ -76,7 +76,7 @@ float SCL_DEBUG_ELAPASED_TIME(const char* fileStr, int line, const char* str, in
         gettimeofday(&s_tv2, NULL);
         s_end_line = line;
         char printStr[100];
-        sprintf(printStr,"%s(Line:%d~%d)", str, s_start_line, s_end_line);
+        sprintf(printStr, "%s(Line:%d~%d)", str, s_start_line, s_end_line);
         _SCL_DEBUG_ELAPASED_TIME(printStr, s_tv1, s_tv2);
     }
 }

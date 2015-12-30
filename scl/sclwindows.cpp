@@ -274,7 +274,7 @@ sclwindow CSCLWindows::open_popup(const SclWindowOpener opener, const SclRectang
 
 bool CSCLWindows::close_popup(sclwindow window)
 {
-    LOGD("close_popup window (%p)",window);
+    LOGD("close_popup window (%p)", window);
 
     CSCLKeyFocusHandler *focus_handler = CSCLKeyFocusHandler::get_instance();
     if (focus_handler) {
@@ -557,7 +557,7 @@ CSCLWindows::is_base_window(sclwindow window)
 }
 
 sclwindow
-CSCLWindows::find_by_etcinfo( void* etc_info )
+CSCLWindows::find_by_etcinfo(void* etc_info)
 {
     SCL_DEBUG();
 
@@ -625,7 +625,7 @@ CSCLWindows::set_window_context(sclwindow window, SclWindowContext* context)
     SCL_DEBUG();
 
     if (window == m_base_window_context.window) {
-        memcpy(&m_base_window_context,context, sizeof(SclWindowContext));
+        memcpy(&m_base_window_context, context, sizeof(SclWindowContext));
     } else {
         for (sclint loop = 0;loop < MAX_POPUP_WINDOW;loop++) {
             if (m_popup_window_context[loop].window == window) {
@@ -822,7 +822,7 @@ sclwindow CSCLWindows::get_nth_window_in_Z_order_list(sclbyte index)
     return SCLWINDOW_INVALID;
 }
 
-sclwindow CSCLWindows::get_nth_popup_window( sclbyte index )
+sclwindow CSCLWindows::get_nth_popup_window(sclbyte index)
 {
     SCL_DEBUG();
 
@@ -848,7 +848,7 @@ sclbyte CSCLWindows::get_Z_order(sclwindow window)
     return NOT_USED;
 }
 
-void CSCLWindows::set_parent( const sclwindow parent, const sclwindow window )
+void CSCLWindows::set_parent(const sclwindow parent, const sclwindow window)
 {
     /* Do not set parent if the window is a virtual window */
     //SclWindowContext *window_context = get_window_context(window, FALSE);

@@ -65,7 +65,7 @@ typedef struct { // A struct for identifying Magnifier custom label information
 } MagnifierCustomLabelIdx;
 class MagnifierCustomLabelIdxCompare { // Comparison class for MagnifierCustomLabelIdx
 public:
-    bool operator()(const MagnifierCustomLabelIdx x ,const MagnifierCustomLabelIdx y) {
+    bool operator()(const MagnifierCustomLabelIdx x, const MagnifierCustomLabelIdx y) {
         if (x.touch_id != y.touch_id) {
             return x.touch_id > y.touch_id;
         } else {

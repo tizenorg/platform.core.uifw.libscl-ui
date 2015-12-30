@@ -43,7 +43,6 @@ encode_input_mode_configure_record(ResourceStorage& storage, const PSclInputMode
 }
 
 int encode_input_mode_configure_file(ResourceStorage& storage, IMetaData_Helper& md_helper) {
-
     int init_size = storage.get_size();
     /*size 4bytes*/
     const int INPUT_MODE_CONFIGURE_SIZE_WIDTH = 4;
@@ -64,7 +63,7 @@ int encode_input_mode_configure_file(ResourceStorage& storage, IMetaData_Helper&
 
     Input_mode_configure_width record_width;
     set_input_mode_configure_width(md_helper, record_width);
-    for ( int i = 0; i < size; ++i) {
+    for ( int i = 0; i < size; ++i ) {
         encode_input_mode_configure_record(storage, cur, record_width);
         cur++;
     }

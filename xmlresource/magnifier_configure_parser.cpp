@@ -68,7 +68,6 @@ class MagnifierConfigureParserImpl {
             xmlFree(m_magnifier_configure.label_type);
             m_magnifier_configure.label_type = NULL;
         }
-
     }
 
     int parsing_magnifier_configure(const char* input_file) {
@@ -136,17 +135,17 @@ class MagnifierConfigureParserImpl {
         assert(cur_node != NULL);
 
         xmlNodePtr child_node = cur_node->xmlChildrenNode;
-        while (child_node!=NULL) {
-            if (0 == xmlStrcmp(child_node->name, (const xmlChar *)"left") ) {
+        while (child_node != NULL) {
+            if (0 == xmlStrcmp(child_node->name, (const xmlChar *)"left")) {
                 m_magnifier_configure.label_area_rect.left = get_content_int(child_node);
             }
-            else if (0 == xmlStrcmp(child_node->name, (const xmlChar *)"top") ) {
+            else if (0 == xmlStrcmp(child_node->name, (const xmlChar *)"top")) {
                 m_magnifier_configure.label_area_rect.top = get_content_int(child_node);
             }
-            else if (0 == xmlStrcmp(child_node->name, (const xmlChar *)"right") ) {
+            else if (0 == xmlStrcmp(child_node->name, (const xmlChar *)"right")) {
                 m_magnifier_configure.label_area_rect.right = get_content_int(child_node);
             }
-            else if (0 == xmlStrcmp(child_node->name, (const xmlChar *)"bottom") ) {
+            else if (0 == xmlStrcmp(child_node->name, (const xmlChar *)"bottom")) {
                 m_magnifier_configure.label_area_rect.bottom = get_content_int(child_node);
             }
 
@@ -157,8 +156,8 @@ class MagnifierConfigureParserImpl {
         assert(cur_node != NULL);
 
         xmlNodePtr child_node = cur_node->xmlChildrenNode;
-        while (child_node!=NULL) {
-            if (0 == xmlStrcmp(child_node->name, (const xmlChar *)"image") ) {
+        while (child_node != NULL) {
+            if (0 == xmlStrcmp(child_node->name, (const xmlChar *)"image")) {
                 if (equal_prop(child_node, "state", "normal")) {
                     xmlChar* temp = xmlNodeGetContent(child_node);
                     m_magnifier_configure.bg_image_path = (sclchar *)temp;
@@ -184,17 +183,16 @@ class MagnifierConfigureParserImpl {
         assert(cur_node != NULL);
 
         xmlNodePtr child_node = cur_node->xmlChildrenNode;
-        while (child_node!=NULL) {
-            if (0 == xmlStrcmp(child_node->name, (const xmlChar *)"x") ) {
+        while (child_node != NULL) {
+            if (0 == xmlStrcmp(child_node->name, (const xmlChar *)"x")) {
                 m_magnifier_configure.padding_x = get_content_int(child_node);
             }
-            else if (0 == xmlStrcmp(child_node->name, (const xmlChar *)"y") ) {
+            else if (0 == xmlStrcmp(child_node->name, (const xmlChar *)"y")) {
                 m_magnifier_configure.padding_y = get_content_int(child_node);
             }
 
             child_node = child_node->next;
         }
-
     }
     SclMagnifierWndConfigure m_magnifier_configure;
 };

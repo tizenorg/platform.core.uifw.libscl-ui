@@ -55,7 +55,7 @@ class InputModeConfigureParserImpl {
         }
 
         ~InputModeConfigureParserImpl() {
-            for(int input_mode = 0; input_mode < MAX_SCL_INPUT_MODE; ++input_mode) {
+            for (int input_mode = 0; input_mode < MAX_SCL_INPUT_MODE; ++input_mode) {
                 SclInputModeConfigure& cur_rec = m_input_mode_configure_table[input_mode];
                 if (cur_rec.name) {
                     xmlFree(cur_rec.name);
@@ -115,11 +115,10 @@ class InputModeConfigureParserImpl {
             xmlFreeDoc(doc);
 
             return 0;
-
         }
 
         void set_input_mode_configure_default_record(const PSclInputModeConfigure cur_rec) {
-            cur_rec->name=NULL;
+            cur_rec->name = NULL;
             cur_rec->layouts[DISPLAYMODE_PORTRAIT] = NULL;
             cur_rec->layouts[DISPLAYMODE_LANDSCAPE] = NULL;
             cur_rec->use_virtual_window = FALSE;
@@ -138,12 +137,12 @@ class InputModeConfigureParserImpl {
             cur_rec->name = (sclchar *)temp;
 
             xmlNodePtr child_node = cur_node->xmlChildrenNode;
-            while (child_node!=NULL) {
-                if (0 == xmlStrcmp(child_node->name, (const xmlChar *)"text") ) {
+            while (child_node != NULL) {
+                if (0 == xmlStrcmp(child_node->name, (const xmlChar *)"text")) {
                     child_node = child_node->next;
                     continue;
                 }
-                if (0 == xmlStrcmp(child_node->name, (const xmlChar *)INPUT_MODE_CONFIGURE_LAYOUT_TAG) ) {
+                if (0 == xmlStrcmp(child_node->name, (const xmlChar *)INPUT_MODE_CONFIGURE_LAYOUT_TAG)) {
                     parsing_layouts(child_node, cur_rec);
                 } else {
                     SCLLOG(SclLog::WARNING, "input_mode_configure has no such node name: %s\n", (char *)child_node->name);
@@ -213,8 +212,8 @@ InputModeConfigParser::get_inputmode_id(const char *name) {
         return -1;
     }
 
-    for(int i = 0; i < get_inputmode_size(); ++i) {
-        if ( config_table[i].name) {
+    for (int i = 0; i < get_inputmode_size(); ++i) {
+        if (config_table[i].name) {
             if ( 0 == strcmp(config_table[i].name, name) ) {
                 return i;
             }

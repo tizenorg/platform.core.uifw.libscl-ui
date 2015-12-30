@@ -51,9 +51,7 @@ public:
     sclboolean button_pressed(sclwindow window, sclbyte key_index);
     sclboolean button_moved(sclwindow window, sclbyte key_index);
     sclboolean button_released(sclwindow window, sclbyte key_index);
-
 protected:
-
 };
 
 }

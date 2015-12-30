@@ -217,10 +217,9 @@ CSCLController::process_input_mode_change(const sclbyte mode)
         handle_engine_signal(SCL_SIG_INPMODE_CHANGE, window);
 
 #ifdef TEST_NEWBACKEND
-        SclWindowContext *window_context= windows->get_window_context(window, FALSE);
+        SclWindowContext *window_context = windows->get_window_context(window, FALSE);
         if (window_context) {
             if (window_context->etc_info) {
-
                 Eina_List *list = (Eina_List*)(window_context->etc_info);
                 Eina_List *iter = NULL;
                 Eina_List *iter_next = NULL;
@@ -240,12 +239,12 @@ CSCLController::process_input_mode_change(const sclbyte mode)
                             }
 
                             sclint loop;
-                            for(loop = 0;loop < g_ImageCache.size();loop++) {
+                            for (loop = 0;loop < g_ImageCache.size();loop++) {
                                 if (g_ImageCache[loop].image == object->object) {
                                     g_ImageCache[loop].used = FALSE;
                                 }
                             }
-                            for(loop = 0;loop < g_TextCache.size();loop++) {
+                            for (loop = 0;loop < g_TextCache.size();loop++) {
                                 if (g_TextCache[loop].text == object->object) {
                                     g_TextCache[loop].used = FALSE;
                                 }
@@ -261,7 +260,7 @@ CSCLController::process_input_mode_change(const sclbyte mode)
                     }
                     iIndex++;
                 }
-                window_context->etc_info= list;
+                window_context->etc_info = list;
             }
         }
 #endif
@@ -334,11 +333,10 @@ CSCLController::check_magnifier_available(sclwindow window, sclbyte key_index, s
             shift_index = (shift_index == SCL_SHIFT_STATE_OFF) ? SCL_SHIFT_STATE_ON : SCL_SHIFT_STATE_OFF;
         }
 
-        if (layout && coordinate && button_context && context->get_magnifier_enabled() ) {
+        if (layout && coordinate && button_context && context->get_magnifier_enabled()) {
             if (coordinate->key_type != KEY_TYPE_CONTROL &&
                 coordinate->key_type != KEY_TYPE_MODECHANGE &&
                 coordinate->key_type != KEY_TYPE_NONE) {
-
                     ret = TRUE;
 
                     /* Do not show if current layout does not allow magnifier */
@@ -349,7 +347,7 @@ CSCLController::check_magnifier_available(sclwindow window, sclbyte key_index, s
 
                     /* Do not show if there's nothing to show */
                     const sclchar* custom_label = NULL;
-                    for(sclint label_index = 0;label_index < MAX_SIZE_OF_LABEL_FOR_ONE && !custom_label;label_index++) {
+                    for (sclint label_index = 0;label_index < MAX_SIZE_OF_LABEL_FOR_ONE && !custom_label;label_index++) {
                         const sclchar *temp_label = context->get_custom_magnifier_label(touch_id, label_index);
                         if (temp_label) {
                             custom_label = temp_label;
@@ -432,12 +430,12 @@ CSCLController::process_button_pressed_event(sclwindow window, sclint x, sclint 
                     sclint loop = 0;
                     sclint multi_touch_context_num = context->get_multi_touch_context_num();
                     std::vector<SclUIEventDesc> multi_touch_events;
-                    for(loop = 0;loop < multi_touch_context_num;loop++) {
+                    for (loop = 0;loop < multi_touch_context_num;loop++) {
                         SclUIEventDesc desc;
                         context->get_multi_touch_event(loop, &desc);
                         multi_touch_events.push_back(desc);
                     }
-                    for(loop = 0;loop < multi_touch_context_num;loop++) {
+                    for (loop = 0;loop < multi_touch_context_num;loop++) {
                         SclUIEventDesc desc = multi_touch_events[loop];
                         if (desc.touch_id != touch_id) {
                             mouse_release(context->get_cur_moving_window(desc.touch_id),
@@ -566,7 +564,7 @@ CSCLController::process_button_pressed_event(sclwindow window, sclint x, sclint 
                                 //popupRect.width = utils->get_scale_x(layout->width);
                                 //popupRect.height= utils->get_scale_y(layout->height);
                                 popupRect.width = layout->width;
-                                popupRect.height= layout->height;
+                                popupRect.height = layout->height;
                                 windows->close_all_popups();
 
                                 SclWindowOpener opener;
@@ -582,8 +580,7 @@ CSCLController::process_button_pressed_event(sclwindow window, sclint x, sclint 
                                     sclres_input_mode_configure[popup_input_mode].use_dim_window,
                                     coordinate->extract_offset_x,
                                     coordinate->extract_offset_y,
-                                    sclres_input_mode_configure[popup_input_mode].timeout
-                                    );
+                                    sclres_input_mode_configure[popup_input_mode].timeout);
 
                                 SclNotiPopupOpenedDesc opened_desc;
                                 opened_desc.ui_event_desc = &key_event_desc;
@@ -624,7 +621,7 @@ CSCLController::process_button_pressed_event(sclwindow window, sclint x, sclint 
                     magnifier_configure = sclres_manager->get_magnifier_configure();
                 }
                 if (showMagnifier && magnifier_configure) {
-                    SclPoint pos = {0,0};
+                    SclPoint pos = {0, 0};
                     /* calculates x position to be set */
                     pos.x = (coordinate->x + (coordinate->width / 2)) -
                         (magnifier_configure->width * utils->get_custom_scale_rate_x() / 2);
@@ -802,7 +799,6 @@ CSCLController::process_button_long_pressed_event(sclwindow window, sclbyte key_
         if (coordinate) {
             if (coordinate->popup_type == POPUP_TYPE_BTN_LONGPRESS_POPUP ||
                 coordinate->popup_type == POPUP_TYPE_BTN_LONGPRESS_POPUP_ONCE ) {
-
                     SclUIEventDesc key_event_desc;
                     key_event_desc.key_type = coordinate->long_key_type;
                     if (coordinate->long_key_value == NULL && coordinate->long_key_event == 0) {
@@ -860,7 +856,7 @@ CSCLController::process_button_long_pressed_event(sclwindow window, sclbyte key_
                                     //popupRect.width = utils->get_scale_x(layout->width);
                                     //popupRect.height= utils->get_scale_y(layout->height);
                                     popupRect.width = layout->width;
-                                    popupRect.height= layout->height;
+                                    popupRect.height = layout->height;
 
                                     SclWindowOpener opener;
                                     opener.window = window;
@@ -876,8 +872,7 @@ CSCLController::process_button_long_pressed_event(sclwindow window, sclbyte key_
                                         sclres_input_mode_configure[popup_input_mode].use_dim_window,
                                         coordinate->extract_offset_x,
                                         coordinate->extract_offset_y,
-                                        sclres_input_mode_configure[popup_input_mode].timeout
-                                        );
+                                        sclres_input_mode_configure[popup_input_mode].timeout);
 
                                     SclNotiPopupOpenedDesc opened_desc;
                                     opened_desc.ui_event_desc = &key_event_desc;
@@ -907,7 +902,7 @@ CSCLController::process_button_long_pressed_event(sclwindow window, sclbyte key_
                         }
                         if (coordinate->use_long_key_magnifier && magnifier_configure) {
                             CSCLUtils *utils = CSCLUtils::get_instance();
-                            SclPoint pos = {0,0};
+                            SclPoint pos = {0, 0};
 
                             const SclLayout* layout = cache->get_cur_layout(window);
                             if (layout) {
@@ -937,7 +932,7 @@ CSCLController::process_button_long_pressed_event(sclwindow window, sclbyte key_
                                 pos.y += coordinate->magnifier_offset_y;
                                 windows->move_window(windows->get_magnifier_window(), pos.x, pos.y);
                                 windows->update_window(windows->get_magnifier_window());
-                                windows->show_window(windows->get_magnifier_window(),TRUE);
+                                windows->show_window(windows->get_magnifier_window(), TRUE);
                             }
                         }
 
@@ -1112,7 +1107,7 @@ CSCLController::process_button_move_event(sclwindow window, sclint x, sclint y, 
                 return FALSE;
             }
 
-            if (key_index != pressed_key || window != pressed_window ) {
+            if (key_index != pressed_key || window != pressed_window) {
                 /* When the focus has moved to another button, destroy all the timers */
                 events->destroy_all_timer();
 
@@ -1139,7 +1134,7 @@ CSCLController::process_button_move_event(sclwindow window, sclint x, sclint y, 
                             magnifier_configure = sclres_manager->get_magnifier_configure();
                         }
                         if (showMagnifier && magnifier_configure) {
-                            SclPoint pos = {0,0};
+                            SclPoint pos = {0, 0};
                             /* calculates x position to be set */
                             pos.x = (coordinate->x + (coordinate->width / 2)) -
                                 (magnifier_configure->width * utils->get_custom_scale_rate_x() / 2);
@@ -1175,7 +1170,7 @@ CSCLController::process_button_move_event(sclwindow window, sclint x, sclint y, 
                         if (pressed_context) {
                             /* But, if this button should be in pressed state in other multitouch id, do not initialize it */
                             sclboolean found = FALSE;
-                            for(sclint loop = 0;loop < context->get_multi_touch_context_num() && !found;loop++) {
+                            for (sclint loop = 0;loop < context->get_multi_touch_context_num() && !found;loop++) {
                                 SclUIEventDesc desc;
                                 context->get_multi_touch_event(loop, &desc);
                                 if (desc.touch_id != touch_id) {
@@ -1233,7 +1228,7 @@ CSCLController::process_button_move_event(sclwindow window, sclint x, sclint y, 
                             }
                             sclboolean processed = handler->on_event_drag_state_changed(key_event_desc);
                             if (processed && context->get_magnifier_enabled() && magnifier_configure) {
-                                SclPoint zoomwinpos = {0,0};
+                                SclPoint zoomwinpos = {0, 0};
                                 /* calculates x position to be set */
                                 zoomwinpos.x = (coordinate->x + (coordinate->width / 2)) -
                                     (magnifier_configure->width * utils->get_custom_scale_rate_x() / 2);
@@ -1365,12 +1360,12 @@ CSCLController::process_button_over_event(sclwindow window, sclint x, sclint y, 
     SclButtonContext *button_context = NULL;
 
     const SclLayoutKeyCoordinate *coordinate = NULL;
-    if(cache) {
+    if (cache) {
         coordinate = cache->get_cur_layout_key_coordinate(window, key_index);
         button_context = cache->get_cur_button_context(window, key_index);
     }
 
-    if(button_context && coordinate && feedback && utils && context && cache && events && windows) {
+    if (button_context && coordinate && feedback && utils && context && cache && events && windows) {
        /* If this key is the key previously pressed, add threshold value for avoiding unintended moving */
         sclboolean subLayoutMatch = TRUE;
         if (coordinate->sub_layout && context->get_cur_sublayout()) {
@@ -1397,12 +1392,12 @@ CSCLController::process_button_over_event(sclwindow window, sclint x, sclint y, 
             scl8 highlighted_key = context->get_cur_highlighted_key();
             SclButtonContext *cur_context = cache->get_cur_button_context(window, key_index);
 
-            if(cur_context == NULL) {
+            if (cur_context == NULL) {
                 return FALSE;
             }
-            if (key_index != highlighted_key || window != highlighted_window ) {
+            if (key_index != highlighted_key || window != highlighted_window) {
                 SECURE_LOGD("%d != %d || %p != %p", key_index, highlighted_key, window, highlighted_window);
-                if(layout) {
+                if (layout) {
                     if (coordinate->key_type != KEY_TYPE_NONE) {
                         if (context->get_tts_enabled()) {
                             const sclchar *targetstr = coordinate->hint_string[shift_index][button_context->multikeyIdx];
@@ -1576,12 +1571,12 @@ CSCLController::process_button_release_event(sclwindow window, sclint x, sclint 
                  sclint loop = 0;
                  sclint multi_touch_context_num = context->get_multi_touch_context_num();
                  std::vector<SclUIEventDesc> multi_touch_events;
-                 for(loop = 0;loop < multi_touch_context_num;loop++) {
+                 for (loop = 0;loop < multi_touch_context_num;loop++) {
                      SclUIEventDesc desc;
                      context->get_multi_touch_event(loop, &desc);
                      multi_touch_events.push_back(desc);
                  }
-                 for(loop = 0;loop < multi_touch_context_num && !finished;loop++) {
+                 for (loop = 0;loop < multi_touch_context_num && !finished;loop++) {
                      SclUIEventDesc desc = multi_touch_events[loop];
                      if (desc.touch_id != touch_id) {
                          sclwindow cur_pressed_window = context->get_cur_pressed_window(desc.touch_id);
@@ -1812,7 +1807,6 @@ CSCLController::process_button_release_event(sclwindow window, sclint x, sclint 
                     case BUTTON_TYPE_UIITEM: break;
                     case MAX_BUTTON_TYPE: break;
                     default: break;
-
                     }
                     switch (coordinate->popup_type) {
                     case POPUP_TYPE_BTN_RELEASE_POPUP:
@@ -1841,7 +1835,7 @@ CSCLController::process_button_release_event(sclwindow window, sclint x, sclint 
                                 scl_check_arrindex(display_mode, DISPLAYMODE_MAX)) {
                                 sclshort popupLayoutId =
                                     sclres_manager->get_layout_id(sclres_input_mode_configure[popup_input_mode].layouts[display_mode]);
-                                if (popupLayoutId == NOT_USED){
+                                if (popupLayoutId == NOT_USED) {
                                     // deal with NOT_USED
                                     LOGD("popupLayoutID is not used.");
                                 }
@@ -1861,7 +1855,7 @@ CSCLController::process_button_release_event(sclwindow window, sclint x, sclint 
                                     //popupRect.width = utils->get_scale_x(layout->width);
                                     //popupRect.height= utils->get_scale_y(layout->height);
                                     popupRect.width = layout->width;
-                                    popupRect.height= layout->height;
+                                    popupRect.height = layout->height;
 
                                     /* Let's make sure this popup window does not go beyond the screen area */
                                     sclint scr_w, scr_h;
@@ -1888,8 +1882,7 @@ CSCLController::process_button_release_event(sclwindow window, sclint x, sclint 
                                         sclres_input_mode_configure[popup_input_mode].use_dim_window,
                                         coordinate->extract_offset_x,
                                         coordinate->extract_offset_y,
-                                        sclres_input_mode_configure[popup_input_mode].timeout
-                                        );
+                                        sclres_input_mode_configure[popup_input_mode].timeout);
 
                                     SclNotiPopupOpenedDesc opened_desc;
                                     opened_desc.ui_event_desc = &key_event_desc;
@@ -1950,7 +1943,7 @@ CSCLController::process_button_release_event(sclwindow window, sclint x, sclint 
         if (button_context->state == BUTTON_STATE_PRESSED) {
             /* But, if this button should be in pressed state in other multitouch id, do not initialize */
             sclboolean found = FALSE;
-            for(sclint loop = 0;loop < context->get_multi_touch_context_num() && !found;loop++) {
+            for (sclint loop = 0;loop < context->get_multi_touch_context_num() && !found;loop++) {
                 SclUIEventDesc desc;
                 context->get_multi_touch_event(loop, &desc);
                 if (desc.touch_id != touch_id) {
@@ -2020,7 +2013,7 @@ CSCLController::mouse_press(sclwindow window, sclint x, sclint y, scltouchdevice
         if (windows->is_base_window(window)) {
             SclWindowContext *dim_window_context = windows->get_window_context(windows->get_dim_window());
             if (dim_window_context) {
-                LOGD ("dim window is_virtual:%d, hidden:%d", dim_window_context->is_virtual, dim_window_context->hidden);
+                LOGD("dim window is_virtual:%d, hidden:%d", dim_window_context->is_virtual, dim_window_context->hidden);
                 if (/*dim_window_context->is_virtual &&*/ !(dim_window_context->hidden)) {
                     window = windows->get_dim_window();
                     window_context = dim_window_context;
@@ -2064,7 +2057,7 @@ CSCLController::mouse_press(sclwindow window, sclint x, sclint y, scltouchdevice
         context->set_last_touch_device_id(touch_id);
         context->set_cur_drag_state(touch_id, SCL_DRAG_STATE_NONE);
         context->set_cur_key_modifier(touch_id, KEY_MODIFIER_NONE);
-        for(sclint labelidx = 0;labelidx < MAX_SIZE_OF_LABEL_FOR_ONE;labelidx++) {
+        for (sclint labelidx = 0;labelidx < MAX_SIZE_OF_LABEL_FOR_ONE;labelidx++) {
             context->set_custom_magnifier_label(touch_id, labelidx, NULL);
         }
 
@@ -3049,7 +3042,7 @@ CSCLController::mouse_move(sclwindow window, sclint x, sclint y, scltouchdevice 
 
                 const SclLayout *base_layout = cache->get_cur_layout(windows->get_base_window());
                 if (base_layout && magnifier_configure) {
-                    SclPoint zoomwinpos = {0,0};
+                    SclPoint zoomwinpos = {0, 0};
                     /* calculates x position to be set */
                     zoomwinpos.x = (coordinate->x + (coordinate->width / 2)) -
                         (magnifier_configure->width * utils->get_custom_scale_rate_x() / 2);
@@ -3214,7 +3207,7 @@ CSCLController::mouse_over(sclwindow window, sclint x, sclint y)
     SCL_DEBUG();
     sclboolean ret = FALSE;
 
-    if(m_input_events_disabled)
+    if (m_input_events_disabled)
         return FALSE;
 
     /* Adjust x,y coordinate by touch offset */
@@ -3308,7 +3301,7 @@ CSCLController::timer_event(const scl32 data)
             return FALSE;
         }
 
-        SclRectangle rect = {0,0,0,0};
+        SclRectangle rect = {0, 0, 0, 0};
         sclwindow window = context->get_cur_pressed_window(context->get_last_touch_device_id());
         sclbyte key_index = context->get_cur_pressed_key(context->get_last_touch_device_id());
 
@@ -3346,8 +3339,7 @@ CSCLController::timer_event(const scl32 data)
                         NOT_USED,
                         SCL_LAYOUT_AUTOPOPUP, POPUP_TYPE_AUTO_POPUP,
                         FALSE,
-                        FALSE
-                        );
+                        FALSE);
 
                     SclNotiPopupOpenedDesc opened_desc;
                     opened_desc.ui_event_desc = NULL;
@@ -3565,7 +3557,7 @@ CSCLController::timer_event(const scl32 data)
 }
 
 /* Handles signals to manage contexts mainly focusing on resetting variables and cleaning up states */
-void CSCLController::handle_engine_signal( SclInternalSignal signal, sclwindow targetWindow )
+void CSCLController::handle_engine_signal(SclInternalSignal signal, sclwindow targetWindow )
 {
     SCL_DEBUG();
 
@@ -3686,7 +3678,6 @@ void CSCLController::handle_engine_signal( SclInternalSignal signal, sclwindow t
             case SIGACTION_UNSET_SHIFT: {
                 CSCLEventHandler *handler = CSCLEventHandler::get_instance();
                 if (handler) {
-
                     SclNotiShiftStateChangeDesc desc;
                     desc.ui_event_desc = NULL;
                     desc.shift_state = SCL_SHIFT_STATE_OFF;
@@ -3831,7 +3822,6 @@ CSCLController::configure_autopopup_window(sclwindow window, sclbyte key_index, 
 
         if (utils->get_autopopup_window_variables(coordinate->autopopup_key_labels[shift_index],
                 &num_keys, &num_columns, &num_rows, &rect->width, &rect->height)) {
-
             /* There is no need for an autopopup window if number of keys are equal to or less than 0 */
             if (!(num_keys > 0)) {
                 ret = FALSE;

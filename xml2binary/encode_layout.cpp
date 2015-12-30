@@ -149,7 +149,7 @@ encode_layout_file(ResourceStorage& storage, IMetaData_Helper& md_helper) {
     set_layout_width(md_helper, record_width);
 
     int layout_rec_data_size = 0;
-    for ( int i = 0; i < size; ++i) {
+    for ( int i = 0; i < size; ++i ) {
         int pre_size = storage.get_size();
         encode_layout_record(storage, cur, record_width);
 

@@ -73,8 +73,7 @@ CSCLGraphicsImplGtk::draw_image(sclwindow window, const scldrawctx draw_ctx,
                 imgdata,
                 srcX, srcY,
                 destX, destY,
-                destWidth, destHeight
-            );
+                destWidth, destHeight);
         }
     }
 }
@@ -90,12 +89,12 @@ load_pixmap(const gchar *filename)
     int width = 0;
     int height = 0;
     int stride = 0;
-    int i =0;
+    int i = 0;
 
     GdkPixmap *pixmap = NULL;
     GdkColormap *rgba;
     GdkBitmap* mask = NULL;
-    if (g_file_test(filename,G_FILE_TEST_EXISTS)) {
+    if (g_file_test(filename, G_FILE_TEST_EXISTS)) {
         pixbuf = gdk_pixbuf_new_from_file(filename, NULL);
     } else {
         return NULL;
@@ -111,7 +110,7 @@ load_pixmap(const gchar *filename)
     width = gdk_pixbuf_get_width(pixbuf);
     height = gdk_pixbuf_get_height(pixbuf);
     pixmap = gdk_pixmap_new(NULL, width, height, 32);
-    gdk_draw_pixbuf (pixmap,
+    gdk_draw_pixbuf(pixmap,
                      NULL,
                      pixbuf,
                      0,
@@ -165,7 +164,7 @@ CSCLGraphicsImplGtk::begin_paint(const sclwindow window, const sclboolean force_
     if (!GTK_WIDGET_REALIZED(widget)) {
         gtk_widget_realize(widget);
     }
-    cr = gdk_cairo_create (widget->window);
+    cr = gdk_cairo_create(widget->window);
     return static_cast<scldrawctx>(cr);
 }
 
@@ -267,57 +266,57 @@ CSCLGraphicsImplGtk::draw_rectangle(sclwindow window, const scldrawctx draw_ctx,
     /* a custom shape that could be wrapped in a function */
     //double radius = 0;//102.4;   /* and an approximate curvature radius */
 
-    double x1,y1;
+    double x1, y1;
 
-    x1=posx+width;
-    y1=posy+height;
+    x1 = posx+width;
+    y1 = posy+height;
     if (!width || !height)
         return;
-    if (width/2<radius) {
-        if (height/2<radius) {
-            cairo_move_to  (cr, posx, (posy + y1)/2);
-            cairo_curve_to (cr, posx ,posy, posx, posy, (posx + x1)/2, posy);
-            cairo_curve_to (cr, x1, posy, x1, posy, x1, (posy + y1)/2);
-            cairo_curve_to (cr, x1, y1, x1, y1, (x1 + posx)/2, y1);
-            cairo_curve_to (cr, posx, y1, posx, y1, posx, (posy + y1)/2);
+    if (width/2 < radius) {
+        if (height/2 < radius) {
+            cairo_move_to(cr, posx, (posy + y1)/2);
+            cairo_curve_to(cr, posx, posy, posx, posy, (posx + x1)/2, posy);
+            cairo_curve_to(cr, x1, posy, x1, posy, x1, (posy + y1)/2);
+            cairo_curve_to(cr, x1, y1, x1, y1, (x1 + posx)/2, y1);
+            cairo_curve_to(cr, posx, y1, posx, y1, posx, (posy + y1)/2);
         } else {
-            cairo_move_to  (cr, posx, posy + radius);
-            cairo_curve_to (cr, posx ,posy, posx, posy, (posx + x1)/2, posy);
-            cairo_curve_to (cr, x1, posy, x1, posy, x1, posy + radius);
-            cairo_line_to (cr, x1 , y1 - radius);
-            cairo_curve_to (cr, x1, y1, x1, y1, (x1 + posx)/2, y1);
-            cairo_curve_to (cr, posx, y1, posx, y1, posx, y1- radius);
+            cairo_move_to(cr, posx, posy + radius);
+            cairo_curve_to(cr, posx, posy, posx, posy, (posx + x1)/2, posy);
+            cairo_curve_to(cr, x1, posy, x1, posy, x1, posy + radius);
+            cairo_line_to(cr, x1 , y1 - radius);
+            cairo_curve_to(cr, x1, y1, x1, y1, (x1 + posx)/2, y1);
+            cairo_curve_to(cr, posx, y1, posx, y1, posx, y1- radius);
         }
     } else {
-        if (height/2<radius) {
-            cairo_move_to  (cr, posx, (posy + y1)/2);
-            cairo_curve_to (cr, posx , posy, posx , posy, posx + radius, posy);
-            cairo_line_to (cr, x1 - radius, posy);
-            cairo_curve_to (cr, x1, posy, x1, posy, x1, (posy + y1)/2);
-            cairo_curve_to (cr, x1, y1, x1, y1, x1 - radius, y1);
-            cairo_line_to (cr, posx + radius, y1);
-            cairo_curve_to (cr, posx, y1, posx, y1, posx, (posy + y1)/2);
+        if (height/2 < radius) {
+            cairo_move_to(cr, posx, (posy + y1)/2);
+            cairo_curve_to(cr, posx , posy, posx , posy, posx + radius, posy);
+            cairo_line_to(cr, x1 - radius, posy);
+            cairo_curve_to(cr, x1, posy, x1, posy, x1, (posy + y1)/2);
+            cairo_curve_to(cr, x1, y1, x1, y1, x1 - radius, y1);
+            cairo_line_to(cr, posx + radius, y1);
+            cairo_curve_to(cr, posx, y1, posx, y1, posx, (posy + y1)/2);
         } else {
-            cairo_move_to  (cr, posx, posy + radius);
-            cairo_curve_to (cr, posx , posy, posx , posy, posx + radius, posy);
-            cairo_line_to (cr, x1 - radius, posy);
-            cairo_curve_to (cr, x1, posy, x1, posy, x1, posy + radius);
-            cairo_line_to (cr, x1 , y1 - radius);
-            cairo_curve_to (cr, x1, y1, x1, y1, x1 - radius, y1);
-            cairo_line_to (cr, posx + radius, y1);
-            cairo_curve_to (cr, posx, y1, posx, y1, posx, y1- radius);
+            cairo_move_to(cr, posx, posy + radius);
+            cairo_curve_to(cr, posx , posy, posx , posy, posx + radius, posy);
+            cairo_line_to(cr, x1 - radius, posy);
+            cairo_curve_to(cr, x1, posy, x1, posy, x1, posy + radius);
+            cairo_line_to(cr, x1 , y1 - radius);
+            cairo_curve_to(cr, x1, y1, x1, y1, x1 - radius, y1);
+            cairo_line_to(cr, posx + radius, y1);
+            cairo_curve_to(cr, posx, y1, posx, y1, posx, y1- radius);
         }
     }
-    cairo_close_path (cr);
+    cairo_close_path(cr);
 
     if (fill) {
-        cairo_set_source_rgba (cr, fillColor.r / 256.0, fillColor.g / 256.0, fillColor.b / 256.0, alpha); //0.9
-        cairo_fill_preserve (cr);
+        cairo_set_source_rgba(cr, fillColor.r / 256.0, fillColor.g / 256.0, fillColor.b / 256.0, alpha); //0.9
+        cairo_fill_preserve(cr);
     }
 
-    cairo_set_source_rgb (cr, lineColor.r / 256.0, lineColor.g / 256.0, lineColor.b / 256.0); // 1  . 0
-    cairo_set_line_width (cr, lineWidth);//5.0
-    cairo_stroke (cr);
+    cairo_set_source_rgb(cr, lineColor.r / 256.0, lineColor.g / 256.0, lineColor.b / 256.0); // 1  . 0
+    cairo_set_line_width(cr, lineWidth);//5.0
+    cairo_stroke(cr);
 }
 
 SclSize
@@ -326,7 +325,7 @@ CSCLGraphicsImplGtk::get_image_size(sclchar* image_path)
     SCL_DEBUG();
     SclSize ret = { 0, 0 };
     GdkPixbuf *pixbuf = NULL;
-    if (g_file_test(imgPath,G_FILE_TEST_EXISTS)) {
+    if (g_file_test(imgPath, G_FILE_TEST_EXISTS)) {
         pixbuf = gdk_pixbuf_new_from_file(imgPath, NULL);
     } else {
         return ret;

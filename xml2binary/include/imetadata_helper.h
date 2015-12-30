@@ -20,7 +20,7 @@
 class IMetaData_Helper{
     public:
         virtual void set_current_metadata_record(const char* record_name) = 0;
-        virtual const unsigned short get_width(const char* field_name) const= 0;
+        virtual const unsigned short get_width(const char* field_name) const = 0;
         virtual ~IMetaData_Helper() {}
 };
 #endif

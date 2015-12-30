@@ -25,7 +25,7 @@ class Metadata_Bin_Parser{
         static const int FIELD_NUM_WIDTH = 2;
         Metadata_Bin_Parser(const FileStorage& storage, int, int);
         ~Metadata_Bin_Parser();
-        const MetaData* get_metadata()const{
+        const MetaData* get_metadata()const {
             return &metadata;
         }
     private:

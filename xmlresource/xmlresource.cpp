@@ -86,7 +86,7 @@ XMLResource::init(const char *entry_filepath) {
         m_main_entry_parser = MainEntryParser::get_instance();
         char input_file[_POSIX_PATH_MAX] = {0};
         snprintf(input_file, _POSIX_PATH_MAX, "%s/%s", get_resource_directory(), entry_filepath);
-        if ( 0 != m_main_entry_parser->init(input_file)) {
+        if (0 != m_main_entry_parser->init(input_file)) {
             /* main entry is necessary */
             SCLLOG(SclLog::ERROR, "main entry init");
         }

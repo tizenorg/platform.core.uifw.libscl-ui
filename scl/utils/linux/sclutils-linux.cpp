@@ -42,7 +42,7 @@ using namespace scl;
 
 static tts_h tts = NULL;
 #ifndef WAYLAND
-static Eina_Bool _get_default_zone_geometry_info (Ecore_X_Window root, scluint *x, scluint *y, scluint *w, scluint *h)
+static Eina_Bool _get_default_zone_geometry_info(Ecore_X_Window root, scluint *x, scluint *y, scluint *w, scluint *h)
 {
     Ecore_X_Atom zone_geometry_atom;
     Ecore_X_Window* zone_lists;
@@ -76,7 +76,7 @@ static Eina_Bool _get_default_zone_geometry_info (Ecore_X_Window root, scluint *
 
     if (zone_lists) {
         /* We must free zone_lists */
-        free (zone_lists);
+        free(zone_lists);
     }
 
     return ret;
@@ -96,7 +96,7 @@ static void accessibility_changed_cb(keynode_t *key, void* data)
                 if (TTS_ERROR_NONE != r) {
                     LOGD("tts_create FAILED : result(%d)", r);
                 } else {
-                    r = tts_set_mode (tts, TTS_MODE_SCREEN_READER);
+                    r = tts_set_mode(tts, TTS_MODE_SCREEN_READER);
                 }
                 if (TTS_ERROR_NONE != r) {
                     LOGD("tts_set_mode FAILED : result(%d)", r);

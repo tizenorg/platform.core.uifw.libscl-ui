@@ -269,7 +269,7 @@ CSCLResourceCache::resize_resource_elements_by_resolution()
             /* FIXME */
             //for (loop = 0;loop < MODIFIER_DECORATION_NUM;loop++) {
             for (loop = 0;loop < MAX_SCL_MODIFIER_DECORATION_NUM;loop++) {
-                for(innerLoop = 0;innerLoop < KEY_MODIFIER_MAX;innerLoop++) {
+                for (innerLoop = 0;innerLoop < KEY_MODIFIER_MAX;innerLoop++) {
                     sclchar *temp;
                     temp = sclres_modifier_decoration[loop].bg_image_path[0][innerLoop];
                     sclres_modifier_decoration[loop].bg_image_path[0][innerLoop] = sclres_modifier_decoration[loop].bg_image_path[1][innerLoop];
@@ -818,7 +818,6 @@ CSCLResourceCache::remove_private_key(sclint id)
                     SclLayoutKeyCoordinatePointer the_key = mCurBaseLayoutKeyCoordinates + loop;
                     assert(the_key != NULL);
                     memcpy(the_key, p, sizeof(SclLayoutKeyCoordinate));
-
                 }
             }
         }
@@ -1088,7 +1087,7 @@ CSCLResourceCache::get_label_properties(sclchar *label_type, sclbyte index) cons
     if (sclres_label_properties && label_type) {
         /* FIXME */
         //if (scl_check_arrindex(labeltype, MAX_LABEL_PROPERTIES) && scl_check_arrindex(index, MAX_SIZE_OF_LABEL_FOR_ONE)) {
-        for(sclshort labeltype = 0;
+        for (sclshort labeltype = 0;
             labeltype < MAX_SCL_LABEL_PROPERTIES && labeltype < sclres_manager->get_labelproperty_size();
             labeltype++) {
                 if (sclres_label_properties[labeltype][0].label_type) {
@@ -1135,7 +1134,7 @@ CSCLResourceCache::get_cur_button_context(sclwindow window, sclbyte key_index)
 }
 
 /* Generate and fill autopopup layout data */
-void CSCLResourceCache::generate_autopopup_layout( const SclLayoutKeyCoordinate *coordinate,
+void CSCLResourceCache::generate_autopopup_layout(const SclLayoutKeyCoordinate *coordinate,
         SclLayout *pCurLayout, SclLayoutKeyCoordinate (*pCurLayoutKeyCoordinates)[MAX_KEY],
         SclButtonContext (*pCurButtonContext)[MAX_KEY] )
 {
@@ -1410,7 +1409,7 @@ void CSCLResourceCache::generate_autopopup_layout( const SclLayoutKeyCoordinate 
 * Sets the current theme name
 */
 sclboolean
-CSCLResourceCache::set_cur_themename( const sclchar *themename )
+CSCLResourceCache::set_cur_themename(const sclchar *themename)
 {
     if (themename) {
         strncpy(mCurThemename, themename, _POSIX_PATH_MAX - 1);
@@ -1573,7 +1572,7 @@ CSCLResourceCache::unset_private_key(const sclchar* custom_id)
 {
     int loop;
     if (custom_id) {
-        for(loop = 0;loop < MAX_PRIVATE_KEY;loop++) {
+        for (loop = 0;loop < MAX_PRIVATE_KEY;loop++) {
             if (mPrivateKeyProperties[loop].valid &&
                 mPrivateKeyProperties[loop].custom_id.compare(custom_id) == 0) {
                 remove_private_key(loop);

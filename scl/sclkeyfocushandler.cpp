@@ -104,7 +104,7 @@ CSCLKeyFocusHandler::ungrab_keyboard(const sclwindow parent)
     Display *x_display = (Display *)ecore_x_display_get();
     int grab_result;
     grab_result = utilx_ungrab_key(x_display, x_window, "Return");
-    if(0 == grab_result) {
+    if (0 == grab_result) {
         LOGD("Return Key UnGrabbed successfully\n");
     } else {
         LOGD("Failed to UnGrab Return key\n");
@@ -119,7 +119,6 @@ CSCLKeyFocusHandler::ungrab_keyboard(const sclwindow parent)
 void
 CSCLKeyFocusHandler::popup_opened(sclwindow window)
 {
-
 }
 
 void
@@ -171,7 +170,7 @@ CSCLKeyFocusHandler::reset_key_navigation_info(sclwindow window)
  * Compares the sub-layout values
  */
 inline bool
-CSCLKeyFocusHandler::sub_layout_match(sclchar *layout1,sclchar *layout2)
+CSCLKeyFocusHandler::sub_layout_match(sclchar *layout1, sclchar *layout2)
 {
     if (layout1) {
         if (layout2) {
@@ -193,7 +192,6 @@ CSCLKeyFocusHandler::sub_layout_match(sclchar *layout1,sclchar *layout2)
 void
 CSCLKeyFocusHandler::update_key_navigation_info(sclwindow window, scl8 index, SclLayoutKeyCoordinatePointer p_next_key)
 {
-
 }
 
 /**
@@ -202,7 +200,6 @@ CSCLKeyFocusHandler::update_key_navigation_info(sclwindow window, scl8 index, Sc
 void
 CSCLKeyFocusHandler::finalize_key_navigation_info(sclwindow window)
 {
-
 }
 
 /**
@@ -211,7 +208,6 @@ CSCLKeyFocusHandler::finalize_key_navigation_info(sclwindow window)
 void
 CSCLKeyFocusHandler::init_key_index()
 {
-
 }
 
 /**
@@ -233,10 +229,10 @@ CSCLKeyFocusHandler::get_current_focus_window(void)
 }
 
 #ifndef min
-#define min(a,b)    (((a) < (b)) ? (a) : (b))
+#define min(a, b)    (((a) < (b)) ? (a) : (b))
 #endif
 #ifndef max
-#define max(a,b)    (((a) > (b)) ? (a) : (b))
+#define max(a, b)    (((a) > (b)) ? (a) : (b))
 #endif
 /* If 2 lines overlap, this will return minus value of overlapping length,
     and return positive distance value otherwise */
@@ -304,7 +300,7 @@ CSCLKeyFocusHandler::get_next_candidate_key(SCLHighlightNavigationDirection dire
                 int temp_distance_x;
                 int temp_distance_y;
 
-                switch(direction) {
+                switch (direction) {
                     case HIGHLIGHT_NAVIGATE_LEFT:
                         temp_distance_y = calculate_distance(btn.y, btn.y + btn.height, cur.y, cur.y + cur.height);
                         //if (temp_distance_y <= candidate_distance_y) {
@@ -622,7 +618,7 @@ CSCLKeyFocusHandler::process_navigation(SCLHighlightNavigationDirection directio
             if (animator) {
                 sclboolean start_animation = FALSE;
                 if (windows->is_base_window(desc.window_to) && windows->is_base_window(desc.window_from)) {
-                    if(desc.key_to != desc.key_from) {
+                    if (desc.key_to != desc.key_from) {
                         start_animation = TRUE;
                     }
                 } else {
@@ -659,8 +655,8 @@ CSCLKeyFocusHandler::process_navigation(SCLHighlightNavigationDirection directio
 
                         SclRectangle prev_rect;
                         SclRectangle next_rect;
-                        copy_rectangle( prev_coordinate, &(prev_rect) );
-                        copy_rectangle( next_coordinate, &(next_rect) );
+                        copy_rectangle(prev_coordinate, &(prev_rect));
+                        copy_rectangle(next_coordinate, &(next_rect));
 
                         if (windows->is_base_window(desc.window_from)) {
                             prev_rect.x += cache->get_custom_starting_coordinates().x;
@@ -753,7 +749,7 @@ CSCLKeyFocusHandler::process_navigation(SCLHighlightNavigationDirection directio
 /**
  * callback for window show event (sniffer window)
  */
-static void sniffer_window_show_cb (void *data, Evas *e, Evas_Object *obj, void *event)
+static void sniffer_window_show_cb(void *data, Evas *e, Evas_Object *obj, void *event)
 {
     LOGD("INSIDE =-=-=-=- x_event_sniffer_window_show_cb, Trying to Grab Key Board : \n");
 #ifndef WAYLAND
@@ -781,7 +777,7 @@ CSCLKeyFocusHandler::create_sniffer_window(void)
     elm_win_borderless_set(win, EINA_TRUE);
     elm_win_alpha_set(win, EINA_FALSE);
     elm_win_title_set(win, "KEY_SNIFFER");
-    elm_win_fullscreen_set(win,EINA_FALSE);
+    elm_win_fullscreen_set(win, EINA_FALSE);
     set_window_accepts_focus(win, FALSE);
     evas_object_show(win);
     evas_object_resize(win, 100, 100);

@@ -30,7 +30,7 @@ class NinePatchFileListParserImpl {
             memset(m_nine_patch_file_list, 0x00, sizeof(SclNinePatchInfo) * MAX_NINE_PATCH_FILE_LIST);
         }
         ~NinePatchFileListParserImpl() {
-            for(int i = 0; i < m_size; ++i) {
+            for (int i = 0; i < m_size; ++i) {
                 if (m_nine_patch_file_list[i].image_path)
                     delete m_nine_patch_file_list[i].image_path;
                 m_nine_patch_file_list[i].image_path = NULL;
@@ -89,11 +89,9 @@ class NinePatchFileListParserImpl {
             xmlFreeDoc(doc);
 
             return 0;
-
         }
         SclNinePatchInfo m_nine_patch_file_list[MAX_NINE_PATCH_FILE_LIST];
         int m_size;
-
 };
 
 NinePatchFileParser::NinePatchFileParser() {
@@ -131,7 +129,7 @@ NinePatchFileParser::get_nine_patch_info(const char* filename, SclNinePatchInfo 
         return false;
     }
 
-    for(int i = 0; i < MAX_NINE_PATCH_FILE_LIST && i < m_impl->m_size; ++i) {
+    for (int i = 0; i < MAX_NINE_PATCH_FILE_LIST && i < m_impl->m_size; ++i) {
         if ( nine_patch_list[i].image_path != NULL &&
             0 == strcmp(nine_patch_list[i].image_path, filename) ) {
                 if (info) {
@@ -143,7 +141,6 @@ NinePatchFileParser::get_nine_patch_info(const char* filename, SclNinePatchInfo 
 
     SCLLOG(SclLog::DEBUG, "get_nine_patch_info() has failed.");
     return false;
-
 }
 
 SclNinePatchInfo*

@@ -88,7 +88,7 @@ CSCLEvents* CSCLEvents::get_instance()
 }
 
 void
-CSCLEvents::connect_window_events( sclwindow wnd, const sclint evt )
+CSCLEvents::connect_window_events(sclwindow wnd, const sclint evt )
 {
     CSCLWindows *windows = CSCLWindows::get_instance();
     //SclWindowContext *window_context = windows->get_window_context(wnd, FALSE);
@@ -118,7 +118,7 @@ CSCLEvents::process_key_event(const char *key)
     const char *keyname = key;
     LOGD("=-=-=-=- key_pressed \n");
     CSCLController *controller = CSCLController::get_instance();
-    LOGD("=-=-=-=- keyname(char) = %s \n",keyname);
+    LOGD("=-=-=-=- keyname(char) = %s \n", keyname);
 
     CSCLResourceCache *cache = CSCLResourceCache::get_instance();
     const SclLayoutKeyCoordinate *prevcoordinate = NULL;
@@ -148,7 +148,7 @@ CSCLEvents::process_key_event(const char *key)
         focus_handler->process_navigation(HIGHLIGHT_NAVIGATE_DOWN);
         focus_window = focus_handler->get_current_focus_window();
         key_index = focus_handler->get_current_focus_key();
-    } else if ((strcmp(keyname, "Return") == 0)||(strcmp(keyname, "Enter") == 0)) {
+    } else if ((strcmp(keyname, "Return") == 0) || (strcmp(keyname, "Enter") == 0)) {
         coordinate = cache->get_cur_layout_key_coordinate(current_focus_window, current_key_index);
         //button_context->state = BUTTON_STATE_NORMAL;
         if (coordinate && controller) {
@@ -175,7 +175,7 @@ CSCLEvents::process_key_event(const char *key)
         //button_context->state = BUTTON_STATE_PRESSED;
         if (coordinate && prevcoordinate) {
             if (current_focus_window == focus_window) {
-                sclshort x,y,width,height;
+                sclshort x, y, width, height;
                 if (prevcoordinate->x < coordinate->x) {
                     x = prevcoordinate->x;
                 } else {

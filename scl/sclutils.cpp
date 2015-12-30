@@ -400,7 +400,7 @@ CSCLUtils::is_rect_overlap(SclRectangle rect1, SclRectangle rect2)
 }
 
 sclfloat
-CSCLUtils::get_distance( sclint x1, sclint y1, sclint x2, sclint y2 )
+CSCLUtils::get_distance(sclint x1, sclint y1, sclint x2, sclint y2)
 {
     sclint dx = x1 - x2;
     sclint dy = y1 - y2;
@@ -408,13 +408,13 @@ CSCLUtils::get_distance( sclint x1, sclint y1, sclint x2, sclint y2 )
 }
 
 sclfloat
-CSCLUtils::get_distance( SclPoint pt1, SclPoint pt2 )
+CSCLUtils::get_distance(SclPoint pt1, SclPoint pt2)
 {
     return get_distance(pt1.x, pt1.y, pt2.x, pt2.y);
 }
 
 sclfloat
-CSCLUtils::get_approximate_distance( sclint x1, sclint y1, sclint x2, sclint y2 )
+CSCLUtils::get_approximate_distance(sclint x1, sclint y1, sclint x2, sclint y2)
 {
     sclint dx = abs(x1 - x2);
     sclint dy = abs(y1 - y2);
@@ -422,7 +422,7 @@ CSCLUtils::get_approximate_distance( sclint x1, sclint y1, sclint x2, sclint y2 
 }
 
 sclfloat
-CSCLUtils::get_approximate_distance( SclPoint pt1, SclPoint pt2 )
+CSCLUtils::get_approximate_distance(SclPoint pt1, SclPoint pt2)
 {
     return get_approximate_distance(pt1.x, pt1.y, pt2.x, pt2.y);
 }
@@ -445,7 +445,6 @@ CSCLUtils::get_nine_patch_info(const sclchar *image_path)
             finished = TRUE;
         }
     }
-    
     SclResParserManager *sclres_manager = SclResParserManager::get_instance();
     if (sclres_manager) {
         if (sclres_manager->get_nine_patch_info(buf, &ret)) {

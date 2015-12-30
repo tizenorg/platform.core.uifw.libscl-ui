@@ -47,8 +47,8 @@ int
 BinInputModeConfigParser::get_inputmode_id(const char *name) {
     if (name == NULL) return -1;
 
-    for(int i = 0; i < MAX_SCL_INPUT_MODE; ++i) {
-        if ( m_input_mode_configure_table[i].name) {
+    for (int i = 0; i < MAX_SCL_INPUT_MODE; ++i) {
+        if ( m_input_mode_configure_table[i].name ) {
             if ( 0 == strcmp(m_input_mode_configure_table[i].name, name) ) {
                 return i;
             }
@@ -74,7 +74,6 @@ BinInputModeConfigParser::get_inputmode_size() {
 
 void
 BinInputModeConfigParser::parsing_input_mode_configure_table() {
-
     // skip data_size
     m_storage.advance(8);
 

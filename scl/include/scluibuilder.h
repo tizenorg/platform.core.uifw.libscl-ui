@@ -66,7 +66,6 @@ private:
     sclboolean draw_magnifier_label(const sclwindow window, const scldrawctx draw_ctx, const scl16 label_index, const sclchar* label);
 
 protected:
-
     /* Backend Primitive */
     CSCLGwes *m_gwes;
     CSCLUtils *m_utils;

@@ -50,7 +50,6 @@ BinDefaultConfigParser::decode_color(SclColor& color, int width) {
 }
 
 void BinDefaultConfigParser::parsing_default_configure() {
-
     PSclDefaultConfigure cur = &m_default_configure;
 
     Default_configure_width record_width;

@@ -20,7 +20,7 @@
 #include "metadata.h"
 class IMetaData_Parser{
     public:
-        virtual const MetaData* get_metadata() const= 0;
+        virtual const MetaData* get_metadata() const = 0;
         virtual ~IMetaData_Parser() {}
 };
 #endif

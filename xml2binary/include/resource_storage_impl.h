@@ -44,7 +44,7 @@ inline ResourceStorage::
 }
 
 inline const int ResourceStorage::
-get_size() const{
+get_size() const {
     return m_size;
 }
 
@@ -69,7 +69,7 @@ put(const char* str) {
 }
 
 inline const int ResourceStorage::
-capability() const{
+capability() const {
     return m_capability;
 }
 
@@ -136,7 +136,6 @@ storage_cat(ResourceStorage& storage) {
 
 inline void ResourceStorage::
 check_storage(int width) {
-
     if (m_size + width > m_capability) {
         expand_storage();
     }
@@ -150,7 +149,7 @@ expand_storage() {
     }
 
     char* _p = new char[_new_size];
-    if(_p == NULL) {
+    if (_p == NULL) {
         LOGW("expand_storage error");
         return;
     }

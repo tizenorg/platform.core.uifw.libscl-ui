@@ -24,7 +24,7 @@
 class String_Provider: public IString_Provider{
     public:
         String_Provider(const String_Bin_Parser* sp): m_sp(sp) {}
-        const char* get_string_by_id(int id)const{
+        const char* get_string_by_id(int id)const {
             if (m_sp == NULL) return NULL;
 
             const std::vector<const char*>& string_depository = m_sp->get_string_depository();

@@ -41,8 +41,8 @@ class StringCollector: public IStringCollector{
             }
 
             m_vec_string_collection.clear();
-
         }
+
     private:
         std::vector<char*> m_vec_string_collection;
 };

@@ -20,7 +20,7 @@
 #include "sclres_type.h"
 #include <string>
 
-namespace sclres{
+namespace sclres {
 class SclRes{
 public:
     SclRes();
@@ -32,7 +32,6 @@ public:
     virtual const char* get_resource_directory();
 
 public: /* These are the functions need to be implemented by the descendants of SclRes */
-
     /* Initialize SclRes, with the given entry file that exists under the resource directory */
     virtual void init(const char *entry_filename) = 0;
 

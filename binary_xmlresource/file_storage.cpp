@@ -82,7 +82,6 @@ get_str() {
 
 int FileStorage::
     loadFile(const char* file_name) {
-
     if (file_name == NULL) return -1;
 
     FILE* fp = fopen(file_name, "rb");
@@ -114,7 +113,7 @@ int FileStorage::
         fclose(fp);
         return -1;
     }
-    if ( 1 != fread(m_storage, size, 1, fp)) {
+    if (1 != fread(m_storage, size, 1, fp)) {
         if (m_storage) {
             delete []m_storage;
         }
@@ -174,7 +173,7 @@ int FileStorage::
     return m_size;
 }
 int FileStorage::
-get_size() const{
+get_size() const {
     return m_size;
 }
 int FileStorage::

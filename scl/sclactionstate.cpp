@@ -51,5 +51,4 @@ CSCLActionState::reset()
 void
 CSCLActionState::clear_action_buf()
 {
-
 }

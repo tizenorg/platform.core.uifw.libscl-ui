@@ -121,7 +121,7 @@ private:
 #ifdef USING_KEY_GRAB
     bool m_keyboard_grabbed;
 #endif
-    bool sub_layout_match(sclchar *layout1,sclchar *layout2);
+    bool sub_layout_match(sclchar *layout1, sclchar *layout2);
 
     CSCLKeyFocusHandler();
 #ifdef TARGET_EMULATOR
@@ -129,7 +129,6 @@ private:
     void create_sniffer_window(void);
     void set_window_accepts_focus(const sclwindow window, sclboolean acceptable);
 #endif
-
 };
 
 }

@@ -224,33 +224,33 @@ mouse_release(GtkWidget *widget, GdkEventButton *event, gpointer user_data)
  * Generates a update window event to CSCLController class
  */
 bool
-update_window (GtkWidget *widget, GdkEventExpose *event,gpointer user_data)
+update_window(GtkWidget *widget, GdkEventExpose *event, gpointer user_data)
 {
     SCL_DEBUG();
     /* pre-condition */
     CSCLGwes* gwes = CSCLGwes::get_instance();
     CSCLUIBuilder *builder = CSCLUIBuilder::get_instance();
 
-    if (gwes && builder)	{
+    if (gwes && builder) {
         sclwindow window = static_cast<sclwindow>(widget);
 
 #if 0
         /* For making the transparent window */
         cairo_t   *cr;
-        cr = gdk_cairo_create (widget->window);
+        cr = gdk_cairo_create(widget->window);
         /* Make it transparent */
-        cairo_set_operator (cr, CAIRO_OPERATOR_CLEAR);
-        gdk_cairo_region (cr, event->region);
-        cairo_fill_preserve (cr);
+        cairo_set_operator(cr, CAIRO_OPERATOR_CLEAR);
+        gdk_cairo_region(cr, event->region);
+        cairo_fill_preserve(cr);
         /* Make it half-transparent */
         if (gwes->mWnd->get_base_window() == window) {
-            cairo_set_source_rgba (cr, 0.0, 0.0, 0.0, 0.9);
+            cairo_set_source_rgba(cr, 0.0, 0.0, 0.0, 0.9);
         } else {
-            cairo_set_source_rgba (cr, 0.0, 0.0, 0.0, 0.0);
+            cairo_set_source_rgba(cr, 0.0, 0.0, 0.0, 0.0);
         }
-        cairo_set_operator (cr, CAIRO_OPERATOR_OVER);
-        cairo_fill (cr);
-        cairo_destroy (cr);
+        cairo_set_operator(cr, CAIRO_OPERATOR_OVER);
+        cairo_fill(cr);
+        cairo_destroy(cr);
 #endif
 
         return builder->show_layout(window);
@@ -355,7 +355,7 @@ CSCLEventsImplGtk::connect_window_events(const sclwindow window, const sclint ev
 
     GtkWidget* widget = static_cast<GtkWidget*>(wnd);
 
-    gtk_widget_add_events ((GtkWidget*)widget, GDK_BUTTON_PRESS_MASK |
+    gtk_widget_add_events((GtkWidget*)widget, GDK_BUTTON_PRESS_MASK |
                            GDK_BUTTON_RELEASE_MASK |
                            GDK_BUTTON_MOTION_MASK |
                            GDK_POINTER_MOTION_HINT_MASK);
@@ -398,7 +398,7 @@ CSCLEventsImplGtk::create_timer(const scl16 id, const scl32 interval, scl16 valu
 {
     SCL_DEBUG();
     sclint data = SCL_MAKELONG(id, value);
-    gint timerId = gtk_timeout_add (static_cast<guint32>(interval), timer_event, (gpointer)data);
+    gint timerId = gtk_timeout_add(static_cast<guint32>(interval), timer_event, (gpointer)data);
     if (add_to_map) {
         id_map[id] = timerId;
     }
@@ -411,9 +411,9 @@ void
 CSCLEventsImplGtk::destroy_timer(const scl32 id)
 {
     SCL_DEBUG();
-    for ( std::map<int, int>::iterator idx = id_map.begin(); idx != id_map.end(); ++idx) {
+    for ( std::map<int, int>::iterator idx = id_map.begin(); idx != id_map.end(); ++idx ) {
         if ((*idx).first == id) {
-            gtk_timeout_remove ((*idx).second);
+            gtk_timeout_remove((*idx).second);
             id_map.erase((*idx).first);
             break;
         }
@@ -427,8 +427,8 @@ void
 CSCLEventsImplGtk::destroy_all_timer()
 {
     SCL_DEBUG();
-    for ( std::map<int, int>::iterator idx = id_map.begin(); idx != id_map.end(); ++idx) {
-        gtk_timeout_remove ((*idx).second);
+    for ( std::map<int, int>::iterator idx = id_map.begin(); idx != id_map.end(); ++idx ) {
+        gtk_timeout_remove((*idx).second);
     }
     id_map.clear();
 }

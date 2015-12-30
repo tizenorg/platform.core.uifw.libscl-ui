@@ -50,7 +50,6 @@ public :
     static CSCLGwes* get_instance();
 
 private:
-
 public:
     void init(sclwindow parent, scl16 width, scl16 height);
     void fini();
