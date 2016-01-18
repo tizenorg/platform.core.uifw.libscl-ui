@@ -32,7 +32,7 @@ class NinePatchFileListParserImpl {
         ~NinePatchFileListParserImpl() {
             for (int i = 0; i < m_size; ++i) {
                 if (m_nine_patch_file_list[i].image_path)
-                    delete m_nine_patch_file_list[i].image_path;
+                    xmlFree(m_nine_patch_file_list[i].image_path);
                 m_nine_patch_file_list[i].image_path = NULL;
             }
             m_size = 0;
@@ -68,7 +68,7 @@ class NinePatchFileListParserImpl {
                 if (0 == xmlStrcmp(cur_node->name, (const xmlChar *)"file")) {
                     assert(m_size >= 0 && m_size < MAX_NINE_PATCH_FILE_LIST);
                     if (m_size >= 0 && m_size < MAX_NINE_PATCH_FILE_LIST) {
-                        m_nine_patch_file_list[m_size].image_path = (const char*)xmlNodeGetContent(cur_node);
+                        m_nine_patch_file_list[m_size].image_path = (char*)xmlNodeGetContent(cur_node);
                         get_prop_number(cur_node, "left", &(m_nine_patch_file_list[m_size].left));
                         get_prop_number(cur_node, "right", &(m_nine_patch_file_list[m_size].right));
                         get_prop_number(cur_node, "top", &(m_nine_patch_file_list[m_size].top));

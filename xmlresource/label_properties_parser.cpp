@@ -100,10 +100,10 @@ class LabelPropertiesParserImpl {
             for (int i = 0; i < MAX_SCL_LABEL_PROPERTIES && i < m_size; ++i) {
                 for (int j = 0; j < MAX_SIZE_OF_LABEL_FOR_ONE; ++j) {
                     if (m_label_properties_frame[i][j].font_name)
-                        delete m_label_properties_frame[i][j].font_name;
+                        xmlFree(m_label_properties_frame[i][j].font_name);
                     m_label_properties_frame[i][j].font_name = NULL;
                     if (m_label_properties_frame[i][j].label_type)
-                        delete m_label_properties_frame[i][j].label_type;
+                        xmlFree(m_label_properties_frame[i][j].label_type);
                     m_label_properties_frame[i][j].label_type = NULL;
                 }
             }

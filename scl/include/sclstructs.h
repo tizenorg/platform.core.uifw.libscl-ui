@@ -404,7 +404,7 @@ typedef struct _SclAutoPopupConfigure {
 *@brief 9 patch image information struct - image files registered here would be displayed in 9 patch style
 */
 typedef struct _SclNinePatchInfo {
-    const sclchar *image_path;			/* File path for identifying nine patch image file */
+    sclchar *image_path;					/* File path for identifying nine patch image file */
     sclshort left;						/* Amount of left pixels for describing area that should not be scaled */
     sclshort right;						/* Amount of right pixels for describing area that should not be scaled */
     sclshort top;						/* Amount of top pixels for describing area that should not be scaled */

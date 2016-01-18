@@ -52,7 +52,7 @@ void BinNinePatchFileParser::parsing_nine_patch_file_list() {
     for (int i = 0; i < m_size; ++i) {
         char* temp = NULL;
         m_storage.get_str(&(temp), record_width.image_path, m_string_collector);
-        cur->image_path = (const char*)temp;
+        cur->image_path = (char*)temp;
 
         cur->left = m_storage.get<sint_t>(record_width.left);
         cur->right = m_storage.get<sint_t>(record_width.right);

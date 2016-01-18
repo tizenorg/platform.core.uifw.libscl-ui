@@ -50,9 +50,15 @@ class AutoPopupConfigureParserImpl {
                     m_autopopup_configure.decoration_image_path[loop] = NULL;
                 }
             }
+
             if (m_autopopup_configure.label_type) {
                 xmlFree(m_autopopup_configure.label_type);
                 m_autopopup_configure.label_type = NULL;
+            }
+
+            if (m_autopopup_configure.bg_image_path) {
+                xmlFree(m_autopopup_configure.bg_image_path);
+                m_autopopup_configure.bg_image_path = NULL;
             }
         }
 

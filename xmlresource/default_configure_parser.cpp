@@ -35,13 +35,20 @@ class DefaultConfigureParserImpl {
                 xmlFree(m_default_configure.input_mode);
                 m_default_configure.input_mode = NULL;
             }
+
             if (m_default_configure.input_mode) {
                 xmlFree(m_default_configure.input_mode);
                 m_default_configure.input_mode = NULL;
             }
+
             if (m_default_configure.image_file_base_path) {
                 xmlFree(m_default_configure.image_file_base_path);
                 m_default_configure.image_file_base_path = NULL;
+            }
+
+            if (m_default_configure.default_sub_layout) {
+                xmlFree(m_default_configure.default_sub_layout);
+                m_default_configure.default_sub_layout = NULL;
             }
         }
 

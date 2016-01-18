@@ -15,6 +15,8 @@
  *
  */
 
+#include <libxml/parser.h>
+
 #ifndef __MainEntryParser__H__
 #define __MainEntryParser__H__
 class XMLFiles{
@@ -41,21 +43,21 @@ class XMLFiles{
     }
     ~XMLFiles() {
         if (input_mode_configure)
-            delete input_mode_configure;
+            xmlFree(input_mode_configure);
         if (layout)
-            delete layout;
+            xmlFree(layout);
         if (key_label_property)
-            delete key_label_property;
+            xmlFree(key_label_property);
         if (modifier_decoration)
-            delete modifier_decoration;
+            xmlFree(modifier_decoration);
         if (default_configure)
-            delete default_configure;
+            xmlFree(default_configure);
         if (autopopup_configure)
-            delete autopopup_configure;
+            xmlFree(autopopup_configure);
         if (magnifier_configure)
-            delete magnifier_configure;
+            xmlFree(magnifier_configure);
         if (nine_patch_file_list)
-            delete nine_patch_file_list;
+            xmlFree(nine_patch_file_list);
     }
 };
 
