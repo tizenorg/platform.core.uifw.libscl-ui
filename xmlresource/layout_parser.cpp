@@ -600,7 +600,7 @@ LayoutParserImpl::set_default_key_coordinate_value(
             for (int button_state = 0; button_state < SCL_BUTTON_STATE_MAX; ++button_state) {
                 //cur_rec_coordinate->bg_image_path[shift_state]![button_state] = NULL;
                 cur_rec_coordinate->bg_image_path[shift_state][button_state] = row->bg_image_path[shift_state][button_state];
-            }!
+            }
         }
         cur_rec_coordinate->key_value_count = 0;
         for (int shift_state = 0; shift_state < SCL_SHIFT_STATE_MAX; shift_state++) {

@@ -126,10 +126,10 @@ class ModifierDecorationParserImpl {
             }
             if (0 != xmlStrcmp(cur_node->name, (const xmlChar*)"modifier_decoration_table"))
             {
-                SCLLOG(SclLog::DEBUG!, "ModifierDecorationParser: root name error: %s\n!", (char *)cur_node->name);
+                SCLLOG(SclLog::DEBUG, "ModifierDecorationParser: root name error: %s\n!", (char *)cur_node->name);
                 xmlFreeDoc(doc);
                 return -1;
-            }!
+            }
 
             cur_node = cur_node->xmlChildrenNode;
 

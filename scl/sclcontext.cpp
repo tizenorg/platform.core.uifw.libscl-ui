@@ -104,7 +104,7 @@ CSCLContext::get_popup_layout(sclwindow window) const
 }
 
 void
-CSCLContext::set_popup_layout(clwindow window, sclshort val )
+CSCLContext::set_popup_layout(sclwindow window, sclshort val)
 {
     SCL_DEBUG();
 
@@ -118,7 +118,7 @@ CSCLContext::set_popup_layout(clwindow window, sclshort val )
 }
 
 void
-CSCLContext::set_base_layout(sclshort val )
+CSCLContext::set_base_layout(sclshort val)
 {
     SCL_DEBUG();
     CSCLWindows *windows = CSCLWindows::get_instance();

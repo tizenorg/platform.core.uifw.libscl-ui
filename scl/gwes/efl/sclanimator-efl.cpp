@@ -84,7 +84,7 @@ CSCLAnimatorImplEfl::animator_timer(SclAnimationState *state)
                         Evas_Object *window_object = static_cast<Evas_Object*>(windows->get_base_window());
                         Evas *evas = evas_object_evas_get(window_object);
                         m_highlight_ui_object = evas_object_image_add(evas);
-                        sclchar composed_path[POSIX_PATH_MAX] = {0, };
+                        sclchar composed_path[_POSIX_PATH_MAX] = {0, };
                         utils->get_composed_path(composed_path, IMG_PATH_PREFIX, SCL_HIGHLIGHT_UI_IMAGE);
                         evas_object_image_file_set(m_highlight_ui_object, composed_path, NULL);
                     }
