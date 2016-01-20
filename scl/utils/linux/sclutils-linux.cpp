@@ -225,6 +225,10 @@ sclboolean
 CSCLUtilsImplLinux::play_sound(const sclchar* snd_style) {
     SCL_DEBUG();
 
+#ifdef _TV
+    return FALSE;
+#endif
+
     typedef struct {
         const char *name;
         feedback_pattern_e type_value;
@@ -262,6 +266,10 @@ CSCLUtilsImplLinux::play_sound(const sclchar* snd_style) {
 sclboolean
 CSCLUtilsImplLinux::play_vibration(const sclchar* vibe_style, const scllong duration) {
     SCL_DEBUG();
+
+#ifdef _TV
+    return FALSE;
+#endif
 
     typedef struct {
         const char *name;
