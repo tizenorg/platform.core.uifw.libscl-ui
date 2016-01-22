@@ -64,6 +64,9 @@ CSCLContext::reset()
     m_prev_display_mode = DISPLAYMODE_PORTRAIT;
     m_prev_input_mode = NOT_USED;
 
+    m_hidden = false;
+    m_caps_lock_mode = false;
+
     m_magnifier_enabled = TRUE;
     m_sounce_enabled = TRUE;
     m_vibration_enabled = TRUE;
@@ -76,6 +79,8 @@ CSCLContext::reset()
     m_highlight_ui_animation_enabled = FALSE;
 
     m_tts_enabled = FALSE;
+    m_cur_highlighted_key = 0;
+    m_cur_highlighted_window = SCLWINDOW_INVALID;
 
     m_multi_touch_context.clear();
     m_last_touch_device_id = SCLTOUCHDEVICE_INVALID;

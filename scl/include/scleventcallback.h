@@ -43,6 +43,12 @@ struct SclUIEventDesc {
         mouse_farthest_point.x = 0;
         mouse_farthest_point.y = 0;
         event_type = EVENT_TYPE_NONE;
+        mouse_pressed_point.x = 0;
+        mouse_pressed_point.y = 0;
+        mouse_current_point.x = 0;
+        mouse_current_point.y = 0;
+        mouse_farthest_point.x = 0;
+        mouse_farthest_point.y = 0;
     }
     const sclchar *key_value;
     sclulong key_event;

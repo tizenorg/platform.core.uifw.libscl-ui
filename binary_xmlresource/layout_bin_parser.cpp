@@ -29,6 +29,7 @@ BinLayoutParser::
 BinLayoutParser() {
     m_layout_size = 0;
     memset(m_layout_table, 0x00, sizeof(SclLayout) * MAX_SCL_LAYOUT);
+    parser_info_provider = NULL;
 }
 BinLayoutParser::
 ~BinLayoutParser() {

@@ -3021,7 +3021,7 @@ CSCLController::mouse_move(sclwindow window, sclint x, sclint y, scltouchdevice 
                         desc.mouse_farthest_point = context->get_farthest_move_point(touch_id);
                         desc.key_modifier = key_modifier;
 
-                        if (handler->on_event_drag_state_changed(desc) && context->get_magnifier_enabled()) {
+                        if (handler && handler->on_event_drag_state_changed(desc) && context->get_magnifier_enabled()) {
                             update_magnifier = TRUE;
                         }
                     }
@@ -3514,13 +3514,19 @@ CSCLController::timer_event(const scl32 data)
     }
     break;
     case SCL_TIMER_AUTOTEST: {
+        srand(time(NULL));
         sclint rnd = rand() % 100;
 
-        if (cache->get_cur_layout(windows->get_base_window()) == NULL) {
+        const SclLayout *layout = cache->get_cur_layout(windows->get_base_window());
+
+        if (layout == NULL) {
             return FALSE;
         }
-        sclint x = (rand() % (cache->get_cur_layout(windows->get_base_window())->width));
-        sclint y = (rand() % (cache->get_cur_layout(windows->get_base_window())->height));
+        srand(time(NULL));
+        sclint x = (rand() % (layout->width));
+
+        srand(time(NULL));
+        sclint y = (rand() % (layout->height));
 
         if (rnd < 80) {
             events->generate_mouse_event(SCL_MOUSE_EVENT_PRESS, x, y);
@@ -3684,14 +3690,17 @@ void CSCLController::handle_engine_signal(SclInternalSignal signal, sclwindow ta
 
                     if (SCL_EVENT_PASS_ON ==
                         handler->on_event_notification(SCL_UINOTITYPE_SHIFT_STATE_CHANGE, &desc)) {
-                        context->set_shift_state(SCL_SHIFT_STATE_OFF);
+                        if (context)
+                            context->set_shift_state(SCL_SHIFT_STATE_OFF);
                     }
                 }
             }
             break;
             case SIGACTION_UNPRESS_KEYS:
-                context->set_cur_pressed_key(context->get_last_touch_device_id(), NOT_USED);
-                context->set_cur_pressed_window(context->get_last_touch_device_id(), SCLWINDOW_INVALID);
+                if (context) {
+                    context->set_cur_pressed_key(context->get_last_touch_device_id(), NOT_USED);
+                    context->set_cur_pressed_window(context->get_last_touch_device_id(), SCLWINDOW_INVALID);
+                }
             break;
             default:
             break;

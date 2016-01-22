@@ -113,7 +113,7 @@ int FileStorage::
         fclose(fp);
         return -1;
     }
-    if (1 != fread(m_storage, size, 1, fp)) {
+    if (size > 0 && 1 != fread(m_storage, size, 1, fp)) {
         if (m_storage) {
             delete []m_storage;
         }

@@ -51,22 +51,41 @@ int main(const int argc, char* argv[]) {
         return -1;
     }
 
-    char* xml_text_dir = argv[1];
-    if (0 != access(xml_text_dir, R_OK)) {
-        perror(xml_text_dir);
-        return -1;
+    char* xml_text_dir = NULL;
+    if (argv[1])
+        xml_text_dir = strdup(argv[1]);
+
+    if (xml_text_dir) {
+        if (0 != access(xml_text_dir, R_OK)) {
+            perror(xml_text_dir);
+            free(xml_text_dir);
+            return -1;
+        }
+        else {
+            free(xml_text_dir);
+            xml_text_dir = NULL;
+        }
     }
 
     char* xml_bin_dir = NULL;
     if (argc < 3) {
-        xml_bin_dir = argv[1];
+        if (argv[1])
+            xml_bin_dir = strdup(argv[1]);
     } else {
-        xml_bin_dir = argv[2];
+        if (argv[2])
+            xml_bin_dir = strdup(argv[2]);
     }
 
-    if (0 != access(xml_bin_dir, W_OK)) {
-        perror(xml_bin_dir);
-        return -1;
+    if (xml_bin_dir) {
+        if (0 != access(xml_bin_dir, W_OK)) {
+            perror(xml_bin_dir);
+            free(xml_bin_dir);
+            return -1;
+        }
+        else {
+            free(xml_bin_dir);
+            xml_bin_dir = NULL;
+        }
     }
 
     XMLResource *xmlresource = XMLResource::get_instance();
@@ -74,7 +93,6 @@ int main(const int argc, char* argv[]) {
         printf("Failed build xmlresource instance.\n");
         return -1;
     }
-
 
     xmlresource->set_resource_directory(xml_text_dir);
     xmlresource->init("main_entry.xml");

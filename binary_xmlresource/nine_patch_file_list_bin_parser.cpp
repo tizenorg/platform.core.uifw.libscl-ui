@@ -23,6 +23,7 @@
 BinNinePatchFileParser::BinNinePatchFileParser() {
     m_size = 0;
     memset(m_nine_patch_file_list, 0x00, sizeof(SclNinePatchInfo) * MAX_NINE_PATCH_FILE_LIST);
+    parser_info_provider = NULL;
 }
 
 BinNinePatchFileParser::~BinNinePatchFileParser() {

@@ -70,6 +70,8 @@ CSCLGraphicsImplEfl::CSCLGraphicsImplEfl()
 CSCLGraphicsImplEfl::~CSCLGraphicsImplEfl()
 {
     SCL_DEBUG();
+
+    fini ();
 }
 
 void CSCLGraphicsImplEfl::init()
@@ -304,15 +306,17 @@ CSCLGraphicsImplEfl::draw_image(sclwindow window, const scldrawctx draw_ctx, scl
                             evas_object_show(clipper);
 
                             clip_object = new EFLObject;
-                            clip_object->object = clipper;
-                            clip_object->type = EFLOBJECT_CLIPOBJECT;
-                            clip_object->position.x = dest_x;
-                            clip_object->position.y = dest_y;
-                            clip_object->position.width = dest_width;
-                            clip_object->position.height = dest_height;
-                            clip_object->etc_info = image_path;
-                            clip_object->extracted = FALSE;
-                            clip_object->data = NULL;
+                            if (clip_object) {
+                                clip_object->object = clipper;
+                                clip_object->type = EFLOBJECT_CLIPOBJECT;
+                                clip_object->position.x = dest_x;
+                                clip_object->position.y = dest_y;
+                                clip_object->position.width = dest_width;
+                                clip_object->position.height = dest_height;
+                                clip_object->etc_info = image_path;
+                                clip_object->extracted = FALSE;
+                                clip_object->data = NULL;
+                            }
     #endif
                         } else {
                             evas_object_move(image_object, dest_x, dest_y);

@@ -27,6 +27,7 @@ const int MAX_NUM_WIDTH = 4;
 class String_Encoder:public IString_Encoder{
     public:
         String_Encoder() {
+            m_file = NULL;
         }
 
         void set_path(const char* file) {

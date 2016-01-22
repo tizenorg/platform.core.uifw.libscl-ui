@@ -64,7 +64,7 @@ CSCLErrorAdjustment::apply_touch_offset(SCLTouchOffsetLevel level, sclint *x, sc
     SclPoint *pos;
     pos = events->get_touch_event_offset();
 
-    if (m_enabled) {
+    if (m_enabled && utils) {
         if (level == TOUCH_OFFSET_LEVEL_1) {
             *x = *x + utils->get_scaled_x(pos->x);
         } else if (level == TOUCH_OFFSET_LEVEL_2) {

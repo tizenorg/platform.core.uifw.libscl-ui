@@ -263,7 +263,7 @@ sclwindow CSCLWindows::open_popup(const SclWindowOpener opener, const SclRectang
                     button_context->state = BUTTON_STATE_NORMAL;
                 }*/
 
-                if (coordinate)
+                if (windows && coordinate)
                     windows->update_window(window, coordinate->x, coordinate->y, coordinate->width, coordinate->height);
             }
         }

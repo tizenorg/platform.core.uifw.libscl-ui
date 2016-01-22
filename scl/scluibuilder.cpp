@@ -102,9 +102,12 @@ CSCLUIBuilder::init(sclwindow parent)
             !scl_check_arrindex_unsigned(layout, sclres_manager->get_layout_size())) {
             layout = 0;
         }
-        m_gwes->init(parent,
-                    m_utils->get_scaled_x(sclres_layout[layout].width),
-                    m_utils->get_scaled_y(sclres_layout[layout].height));
+
+        if (m_utils) {
+            m_gwes->init(parent,
+                        m_utils->get_scaled_x(sclres_layout[layout].width),
+                        m_utils->get_scaled_y(sclres_layout[layout].height));
+        }
 
         CSCLContext *context = CSCLContext::get_instance();
         context->set_display_mode(display_mode);

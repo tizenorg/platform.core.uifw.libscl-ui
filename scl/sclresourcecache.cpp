@@ -37,6 +37,11 @@ CSCLResourceCache::CSCLResourceCache()
     SCL_DEBUG();
 
     memset(mCurThemename, 0x00, sizeof(mCurThemename));
+    memset(&mCurBaseLayout, 0x00, sizeof(SclLayout));
+
+    mCurStartingCoordinates.x = 0;
+    mCurStartingCoordinates.y = 0;
+    mCurStartingCoordinatesOption = SCL_STARTING_COORDINATES_OPTION_ALL;
 }
 
 CSCLResourceCache::~CSCLResourceCache()

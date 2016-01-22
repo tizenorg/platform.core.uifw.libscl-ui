@@ -590,9 +590,11 @@ CSCLWindowsImplEfl::show_window(const sclwindow window, sclboolean queue)
         }
 #endif
 
-        utils->log("WinEfl_showwin %p %p (basewin %p mag %p)\n",
-            window,
-            windows->get_base_window(), windows->get_magnifier_window());
+        if (utils) {
+            utils->log("WinEfl_showwin %p %p (basewin %p mag %p)\n",
+                window,
+                windows->get_base_window(), windows->get_magnifier_window());
+        }
     }
 }
 
