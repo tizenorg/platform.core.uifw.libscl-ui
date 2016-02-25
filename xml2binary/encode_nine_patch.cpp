@@ -46,12 +46,12 @@ encode_nine_patch_file(ResourceStorage& storage, IMetaData_Helper& md_helper) {
 
     XMLResource *xmlresource = XMLResource::get_instance();
     if (xmlresource == NULL) {
-        LOGW("Error: failed to get xmlresource instance.");
+        LOGW("Error: failed to get xmlresource instance.\n");
         return 0;
     }
     SclNinePatchInfo* ninePatchInfoTable = xmlresource->get_nine_patch_list();
     if (ninePatchInfoTable == NULL) {
-        LOGW("Warning: nine patch list is null");
+        LOGW("Warning: nine patch list is null\n");
         return 0;
     }
 #ifdef __SCL_TXT_DEBUG
