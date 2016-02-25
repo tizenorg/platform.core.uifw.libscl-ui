@@ -91,9 +91,7 @@ INCLUDE(FindPkgConfig)
 SET(PKGS_CHECK_MODULES
         elementary
         feedback
-        sensor
         dlog
-        ecore-imf
         libxml-2.0
         tts
         vconf

@@ -21,7 +21,6 @@ BuildRequires:  pkgconfig(x11)
 %endif
 BuildRequires:  pkgconfig(vconf)
 BuildRequires:  pkgconfig(feedback)
-BuildRequires:  pkgconfig(sensor)
 BuildRequires:  pkgconfig(dlog)
 BuildRequires:  pkgconfig(libxml-2.0)
 BuildRequires:  pkgconfig(tts)
