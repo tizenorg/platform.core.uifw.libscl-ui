@@ -41,7 +41,7 @@ encode_modifier_decoration_file(ResourceStorage& storage, IMetaData_Helper& md_h
     XMLResource *xmlresource = XMLResource::get_instance();
     PSclModifierDecoration modifierDecorationTable = xmlresource->get_modifier_decoration_table();
     if (modifierDecorationTable == NULL) {
-        LOGW("Error. modifier decoration table is NULL");
+        LOGW("Error. modifier decoration table is NULL\n");
         return 0;
     }
 
