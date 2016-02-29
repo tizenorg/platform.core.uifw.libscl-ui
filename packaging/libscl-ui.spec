@@ -16,7 +16,6 @@ BuildRequires:  cmake
 BuildRequires:  pkgconfig(elementary)
 %if %{with wayland}
 %else
-BuildRequires:  pkgconfig(utilX)
 BuildRequires:  pkgconfig(x11)
 %endif
 BuildRequires:  pkgconfig(vconf)

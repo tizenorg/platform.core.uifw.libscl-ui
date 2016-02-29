@@ -100,10 +100,9 @@ SET(PKGS_CHECK_MODULES
 
 IF (with_wayland)
         ADD_DEFINITIONS("-DWAYLAND")
-        pkg_check_modules(pkgs REQUIRED ${PKGS_CHECK_MODULES})
-ELSE (with_wayland)
-        pkg_check_modules(pkgs REQUIRED ${PKGS_CHECK_MODULES} utilX)
 ENDIF(with_wayland)
+
+pkg_check_modules(pkgs REQUIRED ${PKGS_CHECK_MODULES})
 
 FOREACH(flag ${pkgs_CFLAGS})
     SET(EXTRA_CFLAGS "${EXTRA_CFLAGS} ${flag}")

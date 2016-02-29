@@ -31,7 +31,6 @@
 #include <Ecore_Wayland.h>
 #else
 #include <Ecore_X.h>
-#include <utilX.h>
 #endif
 
 #include "sclkeyfocushandler.h"

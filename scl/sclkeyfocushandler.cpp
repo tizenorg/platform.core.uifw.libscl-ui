@@ -20,7 +20,6 @@
 #include <dlog.h>
 #ifndef WAYLAND
 #include <Ecore_X.h>
-#include <utilX.h>
 #endif
 #include "sclres_type.h"
 #include "scldebug.h"
