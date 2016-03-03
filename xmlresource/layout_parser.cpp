@@ -1191,24 +1191,26 @@ LayoutParserImpl::parsing_auto_popup_keys_record_node(
             for (int shift_loop = 0;shift_loop < SCL_SHIFT_STATE_MAX;shift_loop++) {
                 if ((shift_state == shift_loop || shift_state == -1)) {
                     xmlChar* key = xmlNodeGetContent(child_node);
-                    if (0 == xmlStrcmp(child_node->name, (const xmlChar*)"label")) {
-                        if (auto_upper) {
-                            if (xmlStrlen(key) == 1 && shift_loop != SCL_SHIFT_STATE_OFF) {
-                                /* Let's manipulate the string for auto_upper */
-                                *key = toupper(*(cur_rec->autopopup_key_labels[SCL_SHIFT_STATE_OFF][autopopup_state]));
+                    if (key) {
+                        if (0 == xmlStrcmp(child_node->name, (const xmlChar*)"label")) {
+                            if (auto_upper) {
+                                if (xmlStrlen(key) == 1 && shift_loop != SCL_SHIFT_STATE_OFF) {
+                                    /* Let's manipulate the string for auto_upper */
+                                    *key = toupper(*(cur_rec->autopopup_key_labels[SCL_SHIFT_STATE_OFF][autopopup_state]));
+                                }
                             }
-                        }
-                        cur_rec->autopopup_key_labels[shift_loop][autopopup_state] = (sclchar*)key;
-                        /* If current key_value is NULL, let's just consider this label is the default key_value */
-                        if (cur_rec->autopopup_key_values[shift_loop][autopopup_state] == NULL) {
+                            cur_rec->autopopup_key_labels[shift_loop][autopopup_state] = (sclchar*)key;
+                            /* If current key_value is NULL, let's just consider this label is the default key_value */
+                            if (cur_rec->autopopup_key_values[shift_loop][autopopup_state] == NULL) {
+                                cur_rec->autopopup_key_values[shift_loop][autopopup_state] = (sclchar*)key;
+                            }
+                        } else if (0 == xmlStrcmp(child_node->name, (const xmlChar*)"value")) {
                             cur_rec->autopopup_key_values[shift_loop][autopopup_state] = (sclchar*)key;
+                        } else if (0 == xmlStrcmp(child_node->name, (const xmlChar*)"event")) {
+                            cur_rec->autopopup_key_events[shift_loop][autopopup_state] = atoi((sclchar*)key);
                         }
-                    } else if (0 == xmlStrcmp(child_node->name, (const xmlChar*)"value")) {
-                        cur_rec->autopopup_key_values[shift_loop][autopopup_state] = (sclchar*)key;
-                    } else if (0 == xmlStrcmp(child_node->name, (const xmlChar*)"event")) {
-                        cur_rec->autopopup_key_events[shift_loop][autopopup_state] = atoi((sclchar*)key);
+                        add_key_string(key);
                     }
-                    add_key_string(key);
                 }
             }
         }

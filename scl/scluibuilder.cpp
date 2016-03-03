@@ -1055,9 +1055,9 @@ CSCLUIBuilder::show_magnifier(const sclwindow window, scldrawctx draw_ctx)
     if (sclres_manager) {
         magnifier_configure = sclres_manager->get_magnifier_configure();
     }
-    if (coordinate && magnifier_configure) {
+    if (coordinate && magnifier_configure && utils && state) {
         sclchar composed_path[_POSIX_PATH_MAX] = {0, };
-        if (state && state->get_cur_action_state() == ACTION_STATE_BASE_LONGKEY) {
+        if (state->get_cur_action_state() == ACTION_STATE_BASE_LONGKEY) {
             m_utils->get_composed_path(composed_path, IMG_PATH_PREFIX, magnifier_configure->bg_long_key_image_path);
             m_gwes->m_graphics->draw_image(window, draw_ctx, composed_path, NULL, 0, 0,
                 magnifier_configure->width * utils->get_custom_scale_rate_x(),

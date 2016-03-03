@@ -1935,7 +1935,7 @@ CSCLController::process_button_release_event(sclwindow window, sclint x, sclint 
 
                 key_event_desc.touch_event_order = context->get_multi_touch_event_order(touch_id);
 
-                SCLEventReturnType evt = handler->on_event_drag_state_changed(key_event_desc);
+                handler->on_event_drag_state_changed(key_event_desc);
             }
         }
 
@@ -2002,7 +2002,7 @@ CSCLController::mouse_press(sclwindow window, sclint x, sclint y, scltouchdevice
 
     sclint button_index = NOT_USED;
     SclWindowContext *window_context = NULL;
-    if (windows) {
+    if (windows && cache) {
         const SclLayout *layout = cache->get_cur_layout(window);
         if (layout) {
             x += layout->mouse_manipulate_x;
