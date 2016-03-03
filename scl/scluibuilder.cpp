@@ -70,7 +70,7 @@ CSCLUIBuilder::init(sclwindow parent)
     /* It will create the base window */
 
     scl8 mode = NOT_USED;
-    sclbyte layout = NOT_USED;
+    sclint layout = NOT_USED;
     SCLDisplayMode display_mode = DISPLAYMODE_PORTRAIT;
 
     PSclDefaultConfigure default_configure = NULL;
