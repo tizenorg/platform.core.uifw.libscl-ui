@@ -70,7 +70,7 @@ CSCLUIBuilder::init(sclwindow parent)
     /* It will create the base window */
 
     scl8 mode = NOT_USED;
-    sclbyte layout = NOT_USED;
+    int layout = NOT_USED;
     SCLDisplayMode display_mode = DISPLAYMODE_PORTRAIT;
 
     PSclDefaultConfigure default_configure = NULL;
@@ -98,7 +98,7 @@ CSCLUIBuilder::init(sclwindow parent)
         }
 
         layout = sclres_manager->get_layout_id(sclres_input_mode_configure[mode].layouts[display_mode]);
-        if (!scl_check_arrindex_unsigned(layout, MAX_SCL_LAYOUT) ||
+        if (layout < 0 || !scl_check_arrindex_unsigned(layout, MAX_SCL_LAYOUT) ||
             !scl_check_arrindex_unsigned(layout, sclres_manager->get_layout_size())) {
             layout = 0;
         }
