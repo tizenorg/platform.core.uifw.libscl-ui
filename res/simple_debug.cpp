@@ -83,10 +83,13 @@ SclLog::log(enum LOG_LEVEL level, char* fmt, ...) {
     struct tm *timenow;
 
     time(&now);
-    timenow = localtime(&now);
+    localtime_r(&now, timenow);
 
     if (timenow) {
-        fprintf(m_flog, "[ %s ] %s\n", log_message[level], asctime(timenow));
+        char buf[64] = { 0 };
+        asctime_r(timenow, buf);
+
+        fprintf(m_flog, "[ %s ] %s\n", log_message[level], buf);
         fprintf(m_flog, "\t%s\n", str_log);
 
         fflush(m_flog);

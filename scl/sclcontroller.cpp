@@ -3515,7 +3515,9 @@ CSCLController::timer_event(const scl32 data)
     break;
     case SCL_TIMER_AUTOTEST: {
         srand(time(NULL));
-        sclint rnd = rand() % 100;
+
+        unsigned int seed;
+        sclint rnd = rand_r(&seed) % 100;
 
         const SclLayout *layout = cache->get_cur_layout(windows->get_base_window());
 
@@ -3523,10 +3525,10 @@ CSCLController::timer_event(const scl32 data)
             return FALSE;
         }
         srand(time(NULL));
-        sclint x = (rand() % (layout->width));
+        sclint x = (rand_r(&seed) % (layout->width));
 
         srand(time(NULL));
-        sclint y = (rand() % (layout->height));
+        sclint y = (rand_r(&seed) % (layout->height));
 
         if (rnd < 80) {
             events->generate_mouse_event(SCL_MOUSE_EVENT_PRESS, x, y);
