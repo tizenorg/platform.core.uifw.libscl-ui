@@ -65,8 +65,10 @@ typedef struct {
 
 class CSCLAnimatorImpl
 {
+public:
     virtual void init() = 0;
     virtual void fini() = 0;
+    virtual ~CSCLAnimatorImpl() = 0;
 
     /* By default, animation is not supported */
     virtual sclboolean check_animation_supported() { return FALSE; }

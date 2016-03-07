@@ -66,8 +66,10 @@ const SclColor SCLCOLOR_BLUE = {0, 0, 255, 255};
  */
 class CSCLGraphicsImpl
 {
+public:
     virtual void init() = 0;
     virtual void fini() = 0;
+    virtual ~CSCLGraphicsImpl() = 0;
 
     friend class CSCLGraphics;
 private:

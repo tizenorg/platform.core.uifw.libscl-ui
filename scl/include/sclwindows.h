@@ -71,6 +71,7 @@ class CSCLWindowsImpl
 public :
     virtual void init() = 0;
     virtual void fini() = 0;
+    virtual ~CSCLWindowsImpl() = 0;
 
     virtual sclwindow create_base_window(const sclwindow parent,
         SclWindowContext *window_context, scl16 width, scl16 height) = 0;
