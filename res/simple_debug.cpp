@@ -80,7 +80,7 @@ SclLog::log(enum LOG_LEVEL level, char* fmt, ...) {
      * log current time
      */
     time_t now;
-    struct tm *timenow;
+    struct tm *timenow = NULL;
 
     time(&now);
     localtime_r(&now, timenow);
