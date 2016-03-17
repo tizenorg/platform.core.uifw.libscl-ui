@@ -71,7 +71,7 @@ CSCLGraphicsImplEfl::~CSCLGraphicsImplEfl()
 {
     SCL_DEBUG();
 
-    fini ();
+    fini();
 }
 
 void CSCLGraphicsImplEfl::init()
