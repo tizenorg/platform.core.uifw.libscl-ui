@@ -1051,7 +1051,7 @@ CSCLWindowsImplEfl::get_window_rect(const sclwindow window, SclRectangle *rect)
         int x = 0, y = 0, width = 0, height = 0;
         sclint scr_w = 0, scr_h = 0;
         elm_win_screen_position_get(static_cast<Evas_Object*>(window), &x, &y);
-        elm_win_screen_size_get(static_cast<Evas_Object*>(window), NULL, NULL, &width, &height);
+        evas_object_geometry_get(static_cast<Evas_Object*>(window), NULL, NULL, &width, &height);
 
         utils->log("WinEfl_getwinrect %p %d %d %d %d\n",
             window, x, y, width, height);
@@ -1063,9 +1063,9 @@ CSCLWindowsImplEfl::get_window_rect(const sclwindow window, SclRectangle *rect)
         {
         case ROTATION_90_CW:
             {
-                rect->width = height;
-                rect->height = width;
-                rect->x = scr_w - y - height;
+                rect->width = width;
+                rect->height = height;
+                rect->x = scr_w - y - width;
                 rect->y = x;
             }
             break;
@@ -1079,10 +1079,10 @@ CSCLWindowsImplEfl::get_window_rect(const sclwindow window, SclRectangle *rect)
             break;
         case ROTATION_90_CCW:
             {
-                rect->width = height;
-                rect->height = width;
+                rect->width = width;
+                rect->height = height;
                 rect->x = y;
-                rect->y = scr_h - x - width;
+                rect->y = scr_h - x - height;
             }
             break;
         default:
