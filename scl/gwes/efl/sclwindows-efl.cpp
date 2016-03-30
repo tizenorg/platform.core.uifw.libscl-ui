@@ -40,8 +40,6 @@
 
 using namespace scl;
 
-#define USING_DIM_BG
-
 #ifndef WAYLAND
 static Ecore_X_Atom ATOM_WM_CLASS = 0;
 static Ecore_X_Window app_window = 0;
@@ -501,33 +499,6 @@ CSCLWindowsImplEfl::show_window(const sclwindow window, sclboolean queue)
     CSCLContext *context = CSCLContext::get_instance();
     CSCLUtils *utils = CSCLUtils::get_instance();
     if (windows && context && window) {
-#ifdef USING_DIM_BG
-        if (window == windows->get_dim_window()) {
-            Evas_Object *base_window = static_cast<Evas_Object*>(windows->get_base_window());
-            static Evas_Object *dim_bg = NULL;
-            if (dim_bg == NULL) {
-                dim_bg = elm_bg_add(static_cast<Evas_Object*>(windows->get_base_window()));
-                SclColor color;
-                color.r = color.g = color.b = 0;
-                color.a = 102;
-                SclResParserManager *sclres_manager = SclResParserManager::get_instance();
-                if (sclres_manager) {
-                    PSclDefaultConfigure default_configure = sclres_manager->get_default_configure();
-                    if (default_configure)
-                        color = default_configure->dim_color;
-                }
-                evas_object_color_set(dim_bg, color.r, color.g, color.b, color.a);
-                evas_object_data_set(base_window, "dim_bg", (void *)dim_bg);
-            }
-            SclRectangle rect;
-            get_window_rect(windows->get_base_window(), &rect);
-            evas_object_resize(dim_bg, rect.width, rect.height);
-            evas_object_move(dim_bg, 0, 0);
-            evas_object_show(dim_bg);
-            evas_object_layer_set(dim_bg, SHRT_MAX);
-            return;
-        }
-#endif
         SclWindowContext *window_context = windows->get_window_context(window);
         if (!(context->get_hidden_state())) {
             if (window_context) {
@@ -609,14 +580,6 @@ CSCLWindowsImplEfl::hide_window(const sclwindow window,  sclboolean fForce)
     SclWindowContext *window_context = NULL;
 
     if (windows && window) {
-#ifdef USING_DIM_BG
-        if (window == windows->get_dim_window()) {
-            Evas_Object *base_window = static_cast<Evas_Object*>(windows->get_base_window());
-            Evas_Object *dim_bg = (Evas_Object *)evas_object_data_get(base_window, "dim_bg");
-            evas_object_hide(dim_bg);
-            return;
-        }
-#endif
 #ifdef USING_KEY_GRAB
     if (window == windows->get_base_window()) {
         CSCLKeyFocusHandler* focus_handler = CSCLKeyFocusHandler::get_instance();
