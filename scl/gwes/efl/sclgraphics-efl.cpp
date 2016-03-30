@@ -795,20 +795,15 @@ CSCLGraphicsImplEfl::draw_rectangle(sclwindow window, const scldrawctx draw_ctx,
             Evas_Object *window_object = (Evas_Object*)window;
             if (window_context->is_virtual) {
                 window_object = static_cast<Evas_Object*>(windows->get_base_window());
-            //    //window_context = windows->get_window_context(windows->get_base_window());
             }
 
             Evas *evas = evas_object_evas_get(window_object);
             Evas_Object *rectobj = evas_object_rectangle_add(evas);
 
-            evas_object_size_hint_weight_set(rectobj, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
-            elm_win_resize_object_add(window_object, rectobj);
             evas_object_color_set(rectobj, fill_color.r, fill_color.g, fill_color.b, fill_color.a);
 
             evas_object_move(rectobj, pos_x, pos_y);
             evas_object_resize(rectobj, width, height);
-
-//            evas_object_raise(rectobj);
             evas_object_show(rectobj);
 
             object->extracted = FALSE;

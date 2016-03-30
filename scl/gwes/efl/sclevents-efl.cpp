@@ -58,6 +58,83 @@ Eina_Bool client_message_cb(void *data, int type, void *event);
 Eina_Bool key_pressed(void *data, int type, void *event_info);
 #endif
 
+static sclboolean get_window_rect(const sclwindow window, SclRectangle *rect)
+{
+    SCL_DEBUG();
+    sclboolean ret = FALSE;
+    CSCLUtils *utils = CSCLUtils::get_instance();
+    CSCLWindows *windows = CSCLWindows::get_instance();
+    CSCLContext *context = CSCLContext::get_instance();
+    if (windows && context && utils && rect) {
+        SclWindowContext *window_context = windows->get_window_context(window);
+        sclint scr_w, scr_h;
+        /* get window size */
+        if (window_context && utils->get_screen_resolution(&scr_w, &scr_h)) {
+            switch (context->get_rotation()) {
+                case ROTATION_90_CW:
+                    {
+                        rect->height = window_context->geometry.width;
+                        rect->width = window_context->geometry.height;
+                        rect->y = scr_w - rect->height - window_context->geometry.x;
+                        rect->x = window_context->geometry.y;
+                    }
+                    break;
+                case ROTATION_180:
+                    {
+                        rect->width = window_context->geometry.width;
+                        rect->height = window_context->geometry.height;
+                        rect->x = scr_w - window_context->geometry.x - rect->width;
+                        rect->y = scr_h - window_context->geometry.y - rect->height;
+                    }
+                    break;
+                case ROTATION_90_CCW:
+                    {
+                        rect->height = window_context->geometry.width;
+                        rect->width = window_context->geometry.height;
+                        rect->y = window_context->geometry.x;
+                        rect->x = scr_h - window_context->geometry.y - rect->width;
+                    }
+                    break;
+                default:
+                    {
+                        rect->x = window_context->geometry.x;
+                        rect->y = window_context->geometry.y;
+                        rect->width = window_context->geometry.width;
+                        rect->height = window_context->geometry.height;
+                    }
+                    break;
+            }
+            ret = TRUE;
+        } else {
+            rect->x = rect->y = rect->width = rect->height = 0;
+        }
+    }
+    return ret;
+}
+
+#ifdef WAYLAND
+/* In wayland, root.x / root.y is not available, so need to apply virtual offset
+   when event occurred on a virtual window */
+static void apply_virtual_offset(SclRectangle rect, int *adjustx, int *adjusty)
+{
+    int virtual_offset_x = 0;
+    int virtual_offset_y = 0;
+    SclRectangle base_rect = {0, 0, 0, 0};
+
+    CSCLWindows *windows = CSCLWindows::get_instance();
+    if (windows) {
+        if (get_window_rect(windows->get_base_window(), &base_rect)) {
+            virtual_offset_x = rect.x - base_rect.x;
+            virtual_offset_y = rect.y - base_rect.y;
+        }
+        if (adjustx && adjusty) {
+            *adjustx -= virtual_offset_x;
+            *adjusty -= virtual_offset_y;
+        }
+    }
+}
+#endif
+
 /**
  * Constructor
  */
@@ -112,61 +189,6 @@ void CSCLEventsImplEfl::fini()
     if (m_key_pressed_handler) ecore_event_handler_del(m_key_pressed_handler);
 #endif
     m_key_pressed_handler = NULL;
-}
-
-sclboolean get_window_rect(const sclwindow window, SclRectangle *rect)
-{
-    SCL_DEBUG();
-    sclboolean ret = FALSE;
-    CSCLUtils *utils = CSCLUtils::get_instance();
-    CSCLWindows *windows = CSCLWindows::get_instance();
-    CSCLContext *context = CSCLContext::get_instance();
-    if (windows && context && utils && rect) {
-        SclWindowContext *window_context = windows->get_window_context(window);
-        sclint scr_w, scr_h;
-        /* get window size */
-        utils->get_screen_resolution(&scr_w, &scr_h);
-        if (window_context) {
-            switch (context->get_rotation()) {
-                case ROTATION_90_CW:
-                    {
-                        rect->height = window_context->geometry.width;
-                        rect->width = window_context->geometry.height;
-                        rect->y = scr_w - rect->height - window_context->geometry.x;
-                        rect->x = window_context->geometry.y;
-                    }
-                    break;
-                case ROTATION_180:
-                    {
-                        rect->width = window_context->geometry.width;
-                        rect->height = window_context->geometry.height;
-                        rect->x = scr_w - window_context->geometry.x - rect->width;
-                        rect->y = scr_h - window_context->geometry.y - rect->height;
-                    }
-                    break;
-                case ROTATION_90_CCW:
-                    {
-                        rect->height = window_context->geometry.width;
-                        rect->width = window_context->geometry.height;
-                        rect->y = window_context->geometry.x;
-                        rect->x = scr_h - window_context->geometry.y - rect->width;
-                    }
-                    break;
-                default:
-                    {
-                        rect->x = window_context->geometry.x;
-                        rect->y = window_context->geometry.y;
-                        rect->width = window_context->geometry.width;
-                        rect->height = window_context->geometry.height;
-                    }
-                    break;
-            }
-            ret = TRUE;
-        } else {
-            rect->x = rect->y = rect->width = rect->height = 0;
-        }
-    }
-    return ret;
 }
 
 /**  Here x and y contains "actual" x and y position relative to portrait root window,
@@ -301,48 +323,50 @@ Eina_Bool mouse_press(void *data, int type, void *event_info)
                     windows->get_window_rect(window, &(window_context->geometry));
                     if (get_window_rect(window, &rect)) {
 #ifdef WAYLAND
-                        int adjustx = ev->x + rect.x;
-                        int adjusty = ev->y + rect.y;
+                        int root_x = ev->x + rect.x;
+                        int root_y = ev->y + rect.y;
+                        if (window_context->is_virtual) {
+                            apply_virtual_offset(rect, &root_x, &root_y);
+                        }
 #else
-                        int adjustx = ev->root.x;
-                        int adjusty = ev->root.y;
+                        int root_x = ev->root.x;
+                        int root_y = ev->root.y;
 #endif
+                        int adjust_x = root_x;
+                        int adjust_y = root_y;
 
                         SclResParserManager *sclres_manager = SclResParserManager::get_instance();
                         PSclDefaultConfigure default_configure = NULL;
                         if (sclres_manager) {
                             default_configure = sclres_manager->get_default_configure();
                         }
+
                         if (default_configure) {
                             SCLDisplayMode display_mode = context->get_display_mode();
                             if (scl_check_arrindex(display_mode, DISPLAYMODE_MAX)) {
-                                adjustment->apply_touch_offset(default_configure->touch_offset_level[display_mode], &adjustx, &adjusty);
+                                adjustment->apply_touch_offset(
+                                        default_configure->touch_offset_level[display_mode],
+                                        &adjust_x, &adjust_y);
                             }
                         }
 
-                        sclint winwidth = rect.width;
-                        sclint winheight = rect.height;
+                        sclint win_width = rect.width;
+                        sclint win_height = rect.height;
                         if (context->get_display_mode() != DISPLAYMODE_PORTRAIT) {
-                            rect.height = winwidth;
-                            rect.width = winheight;
+                            rect.height = win_width;
+                            rect.width = win_height;
                         }
 
+                        /* Check whether will-be-adjusted coordinate is within the window area */
                         sclboolean process_event = FALSE;
-                        if ((adjustx >= rect.x && adjustx <= (rect.x + winwidth)) &&
-                            (adjusty >= rect.y && adjusty <= (rect.y + winheight))) {
+                        if ((adjust_x >= rect.x && adjust_x <= (rect.x + win_width)) &&
+                            (adjust_y >= rect.y && adjust_y <= (rect.y + win_height))) {
                                 process_event = TRUE;
                         }
-                        if (process_event)
-                        {
-                            // Now convert the global coordinate to appropriate local coordinate
-#ifdef WAYLAND
-                            int root_x = ev->x + rect.x;
-                            int root_y = ev->y + rect.y;
-#else
-                            int root_x = ev->root.x;
-                            int root_y = ev->root.y;
-#endif
-                            SclPoint coords = get_rotated_local_coords(root_x, root_y, context->get_rotation(), &rect);
+                        if (process_event) {
+                            /* Now convert the global coordinate to appropriate local coordinate */
+                            SclPoint coords = get_rotated_local_coords(
+                                    root_x, root_y, context->get_rotation(), &rect);
                             controller->mouse_press(window, coords.x, coords.y, ev->multi.device);
                             mouse_pressed = TRUE;
                             processed = TRUE;
@@ -356,7 +380,8 @@ Eina_Bool mouse_press(void *data, int type, void *event_info)
 
         if (!processed) {
             window = pressed_window;
-            if (get_window_rect(window, &rect)) {
+            SclWindowContext *window_context = windows->get_window_context(window);
+            if (window_context && get_window_rect(window, &rect)) {
                 if (context->get_rotation() == ROTATION_90_CW || context->get_rotation() == ROTATION_90_CCW) {
                     sclint temp = rect.width;
                     rect.width = rect.height;
@@ -367,6 +392,9 @@ Eina_Bool mouse_press(void *data, int type, void *event_info)
 #ifdef WAYLAND
                 int root_x = ev->x + rect.x;
                 int root_y = ev->y + rect.y;
+                if (window_context->is_virtual) {
+                    apply_virtual_offset(rect, &root_x, &root_y);
+                }
 #else
                 int root_x = ev->root.x;
                 int root_y = ev->root.y;
@@ -430,50 +458,51 @@ Eina_Bool mouse_release(void *data, int type, void *event_info)
                         windows->get_window_rect(window, &(window_context->geometry));
                         if (get_window_rect(window, &rect)) {
 #ifdef WAYLAND
-                            int adjustx = ev->x + rect.x;
-                            int adjusty = ev->y + rect.y;
+                            int root_x = ev->x + rect.x;
+                            int root_y = ev->y + rect.y;
+                            if (window_context->is_virtual) {
+                                apply_virtual_offset(rect, &root_x, &root_y);
+                            }
 #else
-                            int adjustx = ev->root.x;
-                            int adjusty = ev->root.y;
+                            int root_x = ev->root.x;
+                            int root_y = ev->root.y;
 #endif
+                            int adjust_x = root_x;
+                            int adjust_y = root_y;
 
                             SclResParserManager *sclres_manager = SclResParserManager::get_instance();
                             PSclDefaultConfigure default_configure = NULL;
                             if (sclres_manager) {
                                 default_configure = sclres_manager->get_default_configure();
                             }
+
                             if (default_configure) {
                                 SCLDisplayMode display_mode = context->get_display_mode();
                                 CSCLErrorAdjustment *adjustment = CSCLErrorAdjustment::get_instance();
                                 if (adjustment && scl_check_arrindex(display_mode, DISPLAYMODE_MAX)) {
-                                    adjustment->apply_touch_offset(default_configure->touch_offset_level[display_mode], &adjustx, &adjusty);
+                                    adjustment->apply_touch_offset(
+                                            default_configure->touch_offset_level[display_mode],
+                                            &adjust_x, &adjust_y);
                                 }
                             }
 
-                            sclint winwidth = rect.width;
-                            sclint winheight = rect.height;
+                            sclint win_width = rect.width;
+                            sclint win_height = rect.height;
                             if (context->get_display_mode() != DISPLAYMODE_PORTRAIT) {
-                                rect.height = winwidth;
-                                rect.width = winheight;
+                                rect.height = win_width;
+                                rect.width = win_height;
                             }
 
+                            /* Check whether will-be-adjusted coordinate is within the window area */
                             sclboolean process_event = FALSE;
-                            if ((adjustx >= rect.x && adjustx <= (rect.x + winwidth)) &&
-                                (adjusty >= rect.y && adjusty <= (rect.y + winheight))) {
+                            if ((adjust_x >= rect.x && adjust_x <= (rect.x + win_width)) &&
+                                (adjust_y >= rect.y && adjust_y <= (rect.y + win_height))) {
                                     process_event = TRUE;
                             }
-                            if (process_event)
-                            {
+                            if (process_event) {
                                 /* Now convert the global coordinate to appropriate local coordinate */
-#ifdef WAYLAND
-                                int root_x = ev->x + rect.x;
-                                int root_y = ev->y + rect.y;
-#else
-                                int root_x = ev->root.x;
-                                int root_y = ev->root.y;
-#endif
-
-                                SclPoint coords = get_rotated_local_coords(root_x, root_y, context->get_rotation(), &rect);
+                                SclPoint coords = get_rotated_local_coords(
+                                        root_x, root_y, context->get_rotation(), &rect);
                                 controller->mouse_release(window, coords.x, coords.y, ev->multi.device);
                                 processed = TRUE;
                             }
@@ -486,7 +515,8 @@ Eina_Bool mouse_release(void *data, int type, void *event_info)
 
         if (!processed) {
             window = pressed_window;
-            if (get_window_rect(window, &rect)) {
+            SclWindowContext *window_context = windows->get_window_context(window);
+            if (window_context && get_window_rect(window, &rect)) {
                 if (context->get_rotation() == ROTATION_90_CW || context->get_rotation() == ROTATION_90_CCW) {
                     sclint temp = rect.width;
                     rect.width = rect.height;
@@ -497,6 +527,9 @@ Eina_Bool mouse_release(void *data, int type, void *event_info)
 #ifdef WAYLAND
                 int root_x = ev->x + rect.x;
                 int root_y = ev->y + rect.y;
+                if (window_context->is_virtual) {
+                    apply_virtual_offset(rect, &root_x, &root_y);
+                }
 #else
                 int root_x = ev->root.x;
                 int root_y = ev->root.y;
@@ -668,12 +701,18 @@ Eina_Bool mouse_move(void *data, int type, void *event_info)
                         windows->get_window_rect(window, &(window_context->geometry));
                         if (get_window_rect(window, &rect)) {
 #ifdef WAYLAND
-                            int adjustx = ev->x + rect.x;
-                            int adjusty = ev->y + rect.y;
+                            int root_x = ev->x + rect.x;
+                            int root_y = ev->y + rect.y;
+                            if (window_context->is_virtual) {
+                                apply_virtual_offset(rect, &root_x, &root_y);
+                            }
 #else
-                            int adjustx = ev->root.x;
-                            int adjusty = ev->root.y;
+                            int root_x = ev->root.x;
+                            int root_y = ev->root.y;
 #endif
+                            int adjust_x = root_x;
+                            int adjust_y = root_y;
+
                             SclResParserManager *sclres_manager = SclResParserManager::get_instance();
                             PSclDefaultConfigure default_configure = NULL;
                             if (sclres_manager) {
@@ -683,20 +722,22 @@ Eina_Bool mouse_move(void *data, int type, void *event_info)
                                 SCLDisplayMode display_mode = context->get_display_mode();
                                 CSCLErrorAdjustment *adjustment = CSCLErrorAdjustment::get_instance();
                                 if (adjustment && scl_check_arrindex(display_mode, DISPLAYMODE_MAX)) {
-                                    adjustment->apply_touch_offset(default_configure->touch_offset_level[display_mode], &adjustx, &adjusty);
+                                    adjustment->apply_touch_offset(
+                                            default_configure->touch_offset_level[display_mode],
+                                            &adjust_x, &adjust_y);
                                 }
                             }
 
-                            sclint winwidth = rect.width;
-                            sclint winheight = rect.height;
+                            sclint win_width = rect.width;
+                            sclint win_height = rect.height;
                             if (context->get_display_mode() != DISPLAYMODE_PORTRAIT) {
-                                rect.height = winwidth;
-                                rect.width = winheight;
+                                rect.height = win_width;
+                                rect.width = win_height;
                             }
 
                             sclboolean process_event = FALSE;
-                            if ((adjustx >= rect.x && adjustx <= (rect.x + winwidth)) &&
-                                (adjusty >= rect.y && adjusty <= (rect.y + winheight))) {
+                            if ((adjust_x >= rect.x && adjust_x <= (rect.x + win_width)) &&
+                                (adjust_y >= rect.y && adjust_y <= (rect.y + win_height))) {
                                     process_event = TRUE;
                             }
                             /* Process this event regardless of the coordinate if the top window has the POPUP_GRAB layout style */
@@ -708,18 +749,10 @@ Eina_Bool mouse_move(void *data, int type, void *event_info)
                                     }
                                 }
                             }
-                            if (process_event)
-                            {
+                            if (process_event) {
                                 /* Now convert the global coordinate to appropriate local coordinate */
-#ifdef WAYLAND
-                                int root_x = ev->x + rect.x;
-                                int root_y = ev->y + rect.y;
-#else
-                                int root_x = ev->root.x;
-                                int root_y = ev->root.y;
-#endif
-
-                                SclPoint coords = get_rotated_local_coords(root_x, root_y, context->get_rotation(), &rect);
+                                SclPoint coords = get_rotated_local_coords(
+                                        root_x, root_y, context->get_rotation(), &rect);
                                 controller->mouse_move(window, coords.x, coords.y, ev->multi.device);
                                 processed = TRUE;
                             }
@@ -732,11 +765,15 @@ Eina_Bool mouse_move(void *data, int type, void *event_info)
 
         if (!processed) {
             window = pressed_window;
-            if (get_window_rect(window, &rect)) {
+            SclWindowContext *window_context = windows->get_window_context(window);
+            if (window_context && get_window_rect(window, &rect)) {
                 /* Now convert the global coordinate to appropriate local coordinate */
 #ifdef WAYLAND
                 int root_x = ev->x + rect.x;
                 int root_y = ev->y + rect.y;
+                if (window_context->is_virtual) {
+                    apply_virtual_offset(rect, &root_x, &root_y);
+                }
 #else
                 int root_x = ev->root.x;
                 int root_y = ev->root.y;
