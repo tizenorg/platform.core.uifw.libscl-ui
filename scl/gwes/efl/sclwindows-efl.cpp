@@ -123,15 +123,8 @@ CSCLWindowsImplEfl::create_base_window(const sclwindow parent, SclWindowContext 
 
         set_window_accepts_focus(parent, FALSE);
 
-#ifndef APPLY_WINDOW_MANAGER_CHANGE
 #ifndef WAYLAND
         ecore_x_icccm_name_class_set(elm_win_xwindow_get(static_cast<Evas_Object*>(parent)), "Virtual Keyboard", "ISF");
-#endif
-#else
-        if (parent) {
-            evas_object_show((Evas_Object*)parent);
-            //elm_win_keyboard_mode_set((Evas_Object*)parent, ELM_WIN_KEYBOARD_OFF);
-        }
 #endif
 
         ret = window_context->window;
@@ -205,7 +198,6 @@ CSCLWindowsImplEfl::create_window(const sclwindow parent, SclWindowContext *wind
     ecore_x_e_window_rotation_geometry_set(elm_win_xwindow_get(win),
         rotation_values_EFL[ROTATION_90_CCW], 0, 0, new_width, new_height);
     */
-#ifndef APPLY_WINDOW_MANAGER_CHANGE
     ecore_x_icccm_name_class_set(elm_win_xwindow_get(static_cast<Evas_Object*>(win)), "ISF Popup", "ISF");
 
     Ecore_X_Atom ATOM_WINDOW_EFFECT_ENABLE  = 0;
@@ -219,7 +211,6 @@ CSCLWindowsImplEfl::create_window(const sclwindow parent, SclWindowContext *wind
             utils->log("Could not get _NET_CM_WINDOW_EFFECT_ENABLE ATOM \n");
         }
     }
-#endif
 #endif
 
     set_window_rotation(win, context->get_rotation());
@@ -284,7 +275,6 @@ CSCLWindowsImplEfl::create_magnifier_window(const sclwindow parent, SclWindowCon
     ecore_x_e_window_rotation_geometry_set(elm_win_xwindow_get(win),
         rotation_values_EFL[ROTATION_90_CCW], 0, 0, height, width);
     */
-#ifndef APPLY_WINDOW_MANAGER_CHANGE
     ecore_x_icccm_name_class_set(elm_win_xwindow_get(static_cast<Evas_Object*>(win)), "Key Magnifier", "ISF");
     Ecore_X_Atom ATOM_WINDOW_EFFECT_ENABLE  = 0;
     unsigned int effect_state = 0; // 0 -> disable effect 1-> enable effect
@@ -297,16 +287,10 @@ CSCLWindowsImplEfl::create_magnifier_window(const sclwindow parent, SclWindowCon
         }
     }
 #endif
-#endif
 
     CSCLContext *context = CSCLContext::get_instance();
     set_window_rotation(win, context->get_rotation());
 
-    /*Ecore_X_Display* dpy;
-    dpy = ecore_x_display_get();
-    utilx_set_window_effect_state((Display*)dpy, elm_win_xwindow_get(static_cast<Evas_Object*>(win)), EINA_TRUE);*/
-
-    //elm_win_override_set(win, EINA_TRUE);
     if (utils) {
         utils->log("WinEfl_createmagwin %p, %d %d\n",
             win, width, height);
@@ -339,7 +323,6 @@ CSCLWindowsImplEfl::create_dim_window(const sclwindow parent, SclWindowContext *
     set_window_accepts_focus(win, FALSE);
 
 #ifndef WAYLAND
-#ifndef APPLY_WINDOW_MANAGER_CHANGE
     ecore_x_icccm_name_class_set(elm_win_xwindow_get(static_cast<Evas_Object*>(win)), "ISF Popup", "ISF");
 
     Ecore_X_Atom ATOM_WINDOW_EFFECT_ENABLE  = 0;
@@ -353,7 +336,6 @@ CSCLWindowsImplEfl::create_dim_window(const sclwindow parent, SclWindowContext *
             utils->log("Could not get _NET_CM_WINDOW_EFFECT_ENABLE ATOM \n");
         }
     }
-#endif
 #endif
 
     CSCLContext *context = CSCLContext::get_instance();
@@ -505,17 +487,13 @@ CSCLWindowsImplEfl::show_window(const sclwindow window, sclboolean queue)
                 if (!(window_context->is_virtual)) {
                     evas_object_show((Evas_Object*)window);
                 }
-#ifdef APPLY_WINDOW_MANAGER_CHANGE
-                if (windows->is_base_window(window)) {
-                    elm_win_keyboard_mode_set((Evas_Object*)window, ELM_WIN_KEYBOARD_ON);
-                }
-#endif
+
                 if (!(windows->get_update_pending())) {
                     update_window(window);
                 }
             }
         }
-#ifndef APPLY_WINDOW_MANAGER_CHANGE
+
 #ifndef WAYLAND
         if (windows->get_base_window() == window) {
             int  ret = 0;
@@ -558,7 +536,6 @@ CSCLWindowsImplEfl::show_window(const sclwindow window, sclboolean queue)
                 elm_win_raise((Evas_Object *)window);
             }
         }
-#endif
 
         if (utils) {
             utils->log("WinEfl_showwin %p %p (basewin %p mag %p)\n",
@@ -591,21 +568,13 @@ CSCLWindowsImplEfl::hide_window(const sclwindow window,  sclboolean fForce)
         if (window_context) {
             if (!(window_context->is_virtual)) {
                 Evas_Object *win = (Evas_Object*)window;
-#ifdef APPLY_WINDOW_MANAGER_CHANGE
-                if (windows->is_base_window(window)) {
-                    elm_win_keyboard_mode_set(win, ELM_WIN_KEYBOARD_OFF);
+                /* FIXME : A workaround for the bug that event on a window being hidden is delivered to
+                   e17, instead of the window itself or the window right below - Should report to WM */
+                if (window == windows->get_nth_popup_window(SCL_WINDOW_Z_TOP)) {
+                    evas_object_move(win, -10000, -10000);
                 } else {
-#endif
-                    /* FIXME : A workaround for the bug that event on a window being hidden is delivered to
-                        e17, instead of the window itself or the window right below - Should report to WM */
-                    if (window == windows->get_nth_popup_window(SCL_WINDOW_Z_TOP)) {
-                        evas_object_move(win, -10000, -10000);
-                    } else {
-                        evas_object_hide(win);
-                    }
-#ifdef APPLY_WINDOW_MANAGER_CHANGE
+                    evas_object_hide(win);
                 }
-#endif
             }
         }
     }
@@ -1201,9 +1170,7 @@ void release_all(Evas_Object *win)
     malloc_trim(0);*/
 }
 
-#ifndef APPLY_WINDOW_MANAGER_CHANGE
 void CSCLWindowsImplEfl::set_window_accepts_focus(const sclwindow window, sclboolean acceptable)
 {
     elm_win_prop_focus_skip_set(static_cast<Evas_Object*>(window), !acceptable);
 }
-#endif
