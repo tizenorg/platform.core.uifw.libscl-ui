@@ -66,11 +66,8 @@ public :
     void set_parent(const sclwindow parent, const sclwindow window);
     void set_keep_above(const sclwindow window, sclboolean keepabove);
 
-
-#ifndef APPLY_WINDOW_MANAGER_CHANGE
     /* EFL specific utility functions */
     void set_window_accepts_focus(const sclwindow window, sclboolean accepts);
-#endif
 };
 } /* End of scl namespace */
 #endif
