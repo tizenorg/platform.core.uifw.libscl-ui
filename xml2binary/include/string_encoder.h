@@ -21,10 +21,15 @@
 #include "resource_storage_impl.h"
 #include <vector>
 #include <string>
+
+#ifndef LIBSCL_EXPORT_API
+#define LIBSCL_EXPORT_API 
+#endif // LIBSCL_EXPORT_API
+
 /* limit the max num to 2^32-1*/
 const int MAX_NUM_WIDTH = 4;
 
-class String_Encoder:public IString_Encoder{
+class LIBSCL_EXPORT_API String_Encoder:public IString_Encoder{
     public:
         String_Encoder() {
             m_file = NULL;

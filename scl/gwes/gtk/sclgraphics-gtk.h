@@ -21,9 +21,14 @@
 #ifndef __SCL_GRAPHICS_GTK_H__
 #define __SCL_GRAPHICS_GTK_H__
 
+#ifndef LIBSCL_EXPORT_API
+#define LIBSCL_EXPORT_API 
+#endif // LIBSCL_EXPORT_API
+
+
 namespace scl
 {
-class CSCLGraphicsImplGtk : public CSCLGraphicsImpl
+class LIBSCL_EXPORT_API CSCLGraphicsImplGtk : public CSCLGraphicsImpl
 {
 public :
     CSCLGraphicsImplGtk();

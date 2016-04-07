@@ -21,9 +21,14 @@
 #include "sclres_type.h"
 #include <vector>
 
+#ifndef LIBSCL_EXPORT_API
+#define LIBSCL_EXPORT_API 
+#endif // LIBSCL_EXPORT_API
+
+
 class LayoutParserImpl;
 
-class LayoutParser {
+class LIBSCL_EXPORT_API LayoutParser {
     LayoutParserImpl *m_impl;
     public:
     ~LayoutParser();

@@ -28,6 +28,11 @@
 #include <list>
 #include <string>
 
+#ifndef LIBSCL_EXPORT_API
+#define LIBSCL_EXPORT_API 
+#endif // LIBSCL_EXPORT_API
+
+
 namespace scl
 {
 
@@ -63,7 +68,7 @@ typedef struct { // A struct for identifying Magnifier custom label information
     scltouchdevice touch_id;
     sclint index;
 } MagnifierCustomLabelIdx;
-class MagnifierCustomLabelIdxCompare { // Comparison class for MagnifierCustomLabelIdx
+class LIBSCL_EXPORT_API MagnifierCustomLabelIdxCompare { // Comparison class for MagnifierCustomLabelIdx
 public:
     bool operator()(const MagnifierCustomLabelIdx x, const MagnifierCustomLabelIdx y) {
         if (x.touch_id != y.touch_id) {
@@ -82,7 +87,7 @@ typedef std::map<MagnifierCustomLabelIdx, std::string, MagnifierCustomLabelIdxCo
  * This class implements all functions for working as a soft-based keyboard
  * In side of ISE developer, they can modify it by their requirements.
  */
-class CSCLContext
+class LIBSCL_EXPORT_API CSCLContext
 {
 private:
     CSCLContext();

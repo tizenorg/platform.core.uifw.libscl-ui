@@ -17,8 +17,13 @@
 
 #ifndef __INTERFACE_STRING_ENCODER_H__
 #define __INTERFACE_STRING_ENCODER_H__
+
+#ifndef LIBSCL_EXPORT_API
+#define LIBSCL_EXPORT_API 
+#endif // LIBSCL_EXPORT_API
+
 class ResourceStorage;
-class IString_Encoder{
+class LIBSCL_EXPORT_API IString_Encoder{
     public:
         virtual const int add(const char*) = 0;
         virtual int encode() const = 0;

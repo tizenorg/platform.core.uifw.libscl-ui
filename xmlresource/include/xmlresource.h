@@ -29,8 +29,13 @@
 #include "nine_patch_file_list_parser.h"
 #include "sclres.h"
 
+#ifndef LIBSCL_EXPORT_API
+#define LIBSCL_EXPORT_API 
+#endif // LIBSCL_EXPORT_API
+
+
 namespace xmlresource {
-class XMLResource: public sclres::SclRes{
+class LIBSCL_EXPORT_API XMLResource: public sclres::SclRes{
     public:
     ~XMLResource();
     static XMLResource* get_instance();

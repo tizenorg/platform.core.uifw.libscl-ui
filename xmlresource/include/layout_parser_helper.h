@@ -19,7 +19,12 @@
 #define __KEYSET_ATTR_HELPER__H__
 #include <string>
 
-class RotationHelper{
+#ifndef LIBSCL_EXPORT_API
+#define LIBSCL_EXPORT_API 
+#endif // LIBSCL_EXPORT_API
+
+
+class LIBSCL_EXPORT_API RotationHelper{
     public:
         static const int PORTRAIT = 0;
         static const int LANDSCAPE = 1;
@@ -32,7 +37,7 @@ class RotationHelper{
 
         static const int Int(const std::string str);
 };
-class PopStyleHelper{
+class LIBSCL_EXPORT_API PopStyleHelper{
     public:
         static const int BASE = 0;
         static const int POPUP = 1;
@@ -46,7 +51,7 @@ class PopStyleHelper{
         static const std::string toString(const int val);
         static const int Int(const std::string str);
 };
-class ButtonTypeHelper{
+class LIBSCL_EXPORT_API ButtonTypeHelper{
     public:
         //button type
         static const int NORMAL = 0;
@@ -77,7 +82,7 @@ class ButtonTypeHelper{
 
         static const int Int(const std::string str);
 };
-class ShiftStateHelper{
+class LIBSCL_EXPORT_API ShiftStateHelper{
     public:
         static const int ON = 0;
         static const int OFF = 1;
@@ -93,7 +98,7 @@ class ShiftStateHelper{
 
         static const int Int(const std::string str);
 };
-class ButtonStateHelper{
+class LIBSCL_EXPORT_API ButtonStateHelper{
     public:
         static const int NORMAL = 0;
         static const int PRESSED = 1;
@@ -107,7 +112,7 @@ class ButtonStateHelper{
         static const std::string toString(const int val);
         static const int Int(const std::string str);
 };
-class KeyTypeHelper{
+class LIBSCL_EXPORT_API KeyTypeHelper{
     public:
         //key type
         static const int NONE = 0;
@@ -129,7 +134,7 @@ class KeyTypeHelper{
 
         static const int Int(const std::string str);
 };
-class PopupTypeHelper {
+class LIBSCL_EXPORT_API PopupTypeHelper {
     public:
         //popup type
         static const int NONE = 0;
@@ -153,7 +158,7 @@ class PopupTypeHelper {
         static const std::string toString(const int val);
         static const int Int(const std::string str);
 };
-class DragStateHelper{
+class LIBSCL_EXPORT_API DragStateHelper{
     public:
         //drag state
         static const int NONE = 0;
@@ -178,7 +183,7 @@ class DragStateHelper{
 
         static const int Int(const std::string str);
 };
-class ExtraOptionHelper {
+class LIBSCL_EXPORT_API ExtraOptionHelper {
     public:
         //extra option
         static const int OPTION_4_DIRECTIONS = 0;
@@ -203,7 +208,7 @@ class ExtraOptionHelper {
         static const int Int(const std::string str);
 };
 
-class MultitouchTypeHelper{
+class LIBSCL_EXPORT_API MultitouchTypeHelper{
     public:
         //multitouch type
         static const int EXCLUSIVE = 0;
@@ -220,7 +225,7 @@ class MultitouchTypeHelper{
         static const int Int(const std::string str);
 };
 
-class BOOLTypeHelper{
+class LIBSCL_EXPORT_API BOOLTypeHelper{
     public:
         static const bool DEFAULT = false;
         static const std::string pcTrue;
@@ -229,7 +234,7 @@ class BOOLTypeHelper{
         static const std::string toString(const bool val);
         static const int Bool(const std::string str);
 };
-class INTTypeHelper{
+class LIBSCL_EXPORT_API INTTypeHelper{
     public:
         static const int DEFAULT = 0;
         static const std::string dextoString(const int val);

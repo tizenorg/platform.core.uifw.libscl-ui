@@ -18,9 +18,14 @@
 #ifndef __SCL_IMAGE_PROXY_H__
 #define __SCL_IMAGE_PROXY_H__
 
+#ifndef LIBSCL_EXPORT_API
+#define LIBSCL_EXPORT_API 
+#endif // LIBSCL_EXPORT_API
+
+
 namespace scl
 {
-class CSCLImageProxy
+class LIBSCL_EXPORT_API CSCLImageProxy
 {
 private:
 	CSCLImageProxy();

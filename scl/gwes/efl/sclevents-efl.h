@@ -24,9 +24,14 @@
 #ifndef __SCL_EVENTS_EFL_H__
 #define __SCL_EVENTS_EFL_H__
 
+#ifndef LIBSCL_EXPORT_API
+#define LIBSCL_EXPORT_API 
+#endif // LIBSCL_EXPORT_API
+
+
 namespace scl
 {
-class CSCLEventsImplEfl : public CSCLEventsImpl
+class LIBSCL_EXPORT_API CSCLEventsImplEfl : public CSCLEventsImpl
 {
 public :
     CSCLEventsImplEfl();

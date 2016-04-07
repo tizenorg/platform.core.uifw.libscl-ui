@@ -19,9 +19,14 @@
 #define __ENCODE_INPUT_MODE_CONFIGURE_H__
 #include "imetadata_helper.h"
 #include "resource_storage_impl.h"
-int encode_input_mode_configure_file(const char* file, IMetaData_Helper& metadata);
 
-int encode_input_mode_configure_file(const char* file, int& offset, IMetaData_Helper& metadata);
+#ifndef LIBSCL_EXPORT_API
+#define LIBSCL_EXPORT_API 
+#endif // LIBSCL_EXPORT_API
 
-int encode_input_mode_configure_file(ResourceStorage& storage, IMetaData_Helper& metadata);
+LIBSCL_EXPORT_API int encode_input_mode_configure_file(const char* file, IMetaData_Helper& metadata);
+
+LIBSCL_EXPORT_API int encode_input_mode_configure_file(const char* file, int& offset, IMetaData_Helper& metadata);
+
+LIBSCL_EXPORT_API int encode_input_mode_configure_file(ResourceStorage& storage, IMetaData_Helper& metadata);
 #endif

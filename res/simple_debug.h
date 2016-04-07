@@ -19,7 +19,12 @@
 #define __SIMPLE_DEBUG_H__
 #include <stdio.h>
 
-class SclLog {
+#ifndef LIBSCL_EXPORT_API
+#define LIBSCL_EXPORT_API 
+#endif // LIBSCL_EXPORT_API
+
+
+class LIBSCL_EXPORT_API SclLog {
     public:
         enum LOG_LEVEL {
             MESSAGE = 0,
@@ -39,8 +44,8 @@ class SclLog {
 };
 
 
-void SCLLOG(enum SclLog::LOG_LEVEL level, char* fmt, ...);
+LIBSCL_EXPORT_API void SCLLOG(enum SclLog::LOG_LEVEL level, char* fmt, ...);
 
-void SCLLOG_TIME_BEGIN();
-void SCLLOG_TIME_END(char *msg);
+LIBSCL_EXPORT_API void SCLLOG_TIME_BEGIN();
+LIBSCL_EXPORT_API void SCLLOG_TIME_END(char *msg);
 #endif

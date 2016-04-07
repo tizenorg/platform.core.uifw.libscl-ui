@@ -25,10 +25,15 @@
 #include "sclconfig.h"
 #include "sclstructs.h"
 
+#ifndef LIBSCL_EXPORT_API
+#define LIBSCL_EXPORT_API 
+#endif // LIBSCL_EXPORT_API
+
+
 namespace scl
 {
 
-struct SclUIEventDesc {
+struct LIBSCL_EXPORT_API SclUIEventDesc {
     SclUIEventDesc() {
         key_value = NULL;
         key_event = 0;
@@ -66,44 +71,44 @@ struct SclUIEventDesc {
     SCLEventType event_type;
 };
 
-struct SclNotiDesc {
+struct LIBSCL_EXPORT_API SclNotiDesc {
     SclUIEventDesc *ui_event_desc;
 };
 
-struct SclNotiPopupOpeningDesc : SclNotiDesc {
+struct LIBSCL_EXPORT_API SclNotiPopupOpeningDesc : SclNotiDesc {
     const char *input_mode;
 }; // SCL_UINOTITYPE_POPUP_OPENING
 
-struct SclNotiPopupOpenedDesc : SclNotiDesc {
+struct LIBSCL_EXPORT_API SclNotiPopupOpenedDesc : SclNotiDesc {
     sclwindow window;
     const char *input_mode;
 }; // SCL_UINOTITYPE_POPUP_OPENED
 
-struct SclNotiPopupClosingDesc : SclNotiDesc {
+struct LIBSCL_EXPORT_API SclNotiPopupClosingDesc : SclNotiDesc {
     sclwindow window;
     const char *input_mode;
     sclboolean timed_out;
 }; // SCL_UINOTITYPE_POPUP_CLOSING
 
-struct SclNotiPopupClosedDesc : SclNotiDesc {
+struct LIBSCL_EXPORT_API SclNotiPopupClosedDesc : SclNotiDesc {
     sclwindow window;
     const char *input_mode;
     sclboolean timed_out;
 }; // SCL_UINOTITYPE_POPUP_CLOSED
 
-struct SclNotiGestureFlickDesc : SclNotiDesc {
+struct LIBSCL_EXPORT_API SclNotiGestureFlickDesc : SclNotiDesc {
     SCLDragType drag_type;
 }; // SCL_UINOTITYPE_GESTURE_FLICK
 
-struct SclNotiShiftStateChangeDesc : SclNotiDesc {
+struct LIBSCL_EXPORT_API SclNotiShiftStateChangeDesc : SclNotiDesc {
     SCLShiftState shift_state;
 }; // SCL_UINOTITYPE_SHIFT_STATE_CHANGE
 
-struct SclNotiInputModeChangeDesc : SclNotiDesc {
+struct LIBSCL_EXPORT_API SclNotiInputModeChangeDesc : SclNotiDesc {
     const char *input_mode;
 }; // SCL_UINOTITYPE_INPUT_MODE_CHANGE
 
-struct SclNotiHighlighNavigateDesc : SclNotiDesc {
+struct LIBSCL_EXPORT_API SclNotiHighlighNavigateDesc : SclNotiDesc {
     SCLHighlightNavigationDirection direction;
     sclwindow window_from;
     scl8 key_from;
@@ -117,7 +122,7 @@ struct SclNotiHighlighNavigateDesc : SclNotiDesc {
 * ISE developers can inherit this interface and register it to the SCLCore class
 * to handle SCL events as they want.
 */
-struct ISCLUIEventCallback {
+struct LIBSCL_EXPORT_API ISCLUIEventCallback {
     virtual SCLEventReturnType on_event_key_clicked(SclUIEventDesc ui_event_desc) { return SCL_EVENT_PASS_ON; }
     virtual SCLEventReturnType on_event_drag_state_changed(SclUIEventDesc ui_event_desc) { return SCL_EVENT_PASS_ON; }
     virtual SCLEventReturnType on_event_notification(SCLUINotiType noti_type, SclNotiDesc *etc_info) { return SCL_EVENT_PASS_ON; }

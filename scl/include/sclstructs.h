@@ -22,6 +22,11 @@
 #ifndef __SCL_STRUCTS_H__
 #define __SCL_STRUCTS_H__
 
+#ifndef LIBSCL_EXPORT_API
+#define LIBSCL_EXPORT_API 
+#endif // LIBSCL_EXPORT_API
+
+
 //SCL_BEGIN_DECLS
 
 namespace scl
@@ -30,7 +35,7 @@ namespace scl
 /**
   *@brief SCL input mode configuration structure, which indicates a type of SW keyboard
   */
-typedef struct _SclInputModeConfigure {
+typedef struct LIBSCL_EXPORT_API _SclInputModeConfigure {
     sclchar* name;						/* Name of this inputmode */
     sclchar* layouts[DISPLAYMODE_MAX];	/* This contains the filename of each layouts */
     sclboolean use_virtual_window;		/* Whether to use a new window or make a popup window as a layer of existing base window */
@@ -41,7 +46,7 @@ typedef struct _SclInputModeConfigure {
 /**
   *@brief SCL Layout structure, which is a physical keyboard representation defined by a group of SclLayoutKeyCoordinates
   */
-typedef struct _SclLayout {
+typedef struct LIBSCL_EXPORT_API _SclLayout {
     sclboolean valid;					/* Indicates whether this information is in use or not */
 
     sclchar* name;						/* Name of this layout */
@@ -95,7 +100,7 @@ typedef struct _SclLayout {
 /**
   *@brief SCL Layout key coordinate structure, which represents a key's position-related information
   */
-typedef struct _SclLayoutKeyCoordinate {
+typedef struct LIBSCL_EXPORT_API _SclLayoutKeyCoordinate {
     sclboolean valid;					/* Indicates whether this information is in use or not */
     sclshort x;							/* X coordinate of this button */
     sclshort y;							/* Y coordinate of this button */
@@ -205,7 +210,7 @@ typedef struct _SclLayoutKeyCoordinate {
 /**
   *@brief SCL Label properties structure
   */
-typedef struct _SclLabelProperties {
+typedef struct LIBSCL_EXPORT_API _SclLabelProperties {
     sclboolean valid;						/* Indicates whether this information is in use or not */
     sclchar* label_type;					/* Identifies the current label property */
     sclchar* font_name;						/* Font name of this label property */
@@ -276,7 +281,7 @@ typedef struct _SclLabelProperties {
 /**
   *@brief SCL private key structure for application, to change the configuration and property of a specific key
   */
-typedef struct _SclPrivateKeyProperties {
+typedef struct LIBSCL_EXPORT_API _SclPrivateKeyProperties {
     sclboolean valid;				/* Indicates whether this information is in use or not */
     sclshort input_mode_index;		/* Target inputmode index that this private key wants to affect */
     sclshort layout_index;			/* Target layout index that this private key wants to affect */
@@ -322,7 +327,7 @@ typedef struct _SclPrivateKeyProperties {
 /**
   *@brief SCL S/W button style structure
   */
-typedef struct _SclSWButtonStyle {
+typedef struct LIBSCL_EXPORT_API _SclSWButtonStyle {
     scldouble line_width[SCL_BUTTON_STATE_MAX];	/* A border line width when drawing a SW button */
     SclColor line_color[SCL_BUTTON_STATE_MAX];	/* A border line color when drawing a SW buttton */
     SclColor bg_color[SCL_BUTTON_STATE_MAX];	/* A background color when drawing a SW button */
@@ -333,7 +338,7 @@ typedef struct _SclSWButtonStyle {
 /**
   *@brief SCL input mode configuration structure
   */
-typedef struct _SclDefaultConfigure {
+typedef struct LIBSCL_EXPORT_API _SclDefaultConfigure {
     SCLDisplayMode display_mode;			/* Initial display mode */
     sclchar *input_mode;					/* Initial input mode */
     sclchar *image_file_base_path;			/* Default image files directory */
@@ -357,7 +362,7 @@ typedef struct _SclDefaultConfigure {
 /**
   *@brief SCL magnifier(preview) window configuration structure. It will show the selected key label on the magnifier window
   */
-typedef struct _SclMagnifierWndConfigure {
+typedef struct LIBSCL_EXPORT_API _SclMagnifierWndConfigure {
     SCLMagnifierStyle style;			/* Magnifier style description */
     sclshort width;						/* Width of magnifier window */
     sclshort height;					/* Height of magnifier window */
@@ -376,7 +381,7 @@ typedef struct _SclMagnifierWndConfigure {
 /**
 *@brief SCL auto-generated popup configuration structure. Mostly used for umlaut alternate characters in european languages
 */
-typedef struct _SclAutoPopupConfigure {
+typedef struct LIBSCL_EXPORT_API _SclAutoPopupConfigure {
     sclchar* bg_image_path;				/* File path for background image */
     SclColor bg_color;					/* Background color for SW background */
     scldouble bg_line_width;			/* Background SW border width */
@@ -403,7 +408,7 @@ typedef struct _SclAutoPopupConfigure {
 /**
 *@brief 9 patch image information struct - image files registered here would be displayed in 9 patch style
 */
-typedef struct _SclNinePatchInfo {
+typedef struct LIBSCL_EXPORT_API _SclNinePatchInfo {
     sclchar *image_path;					/* File path for identifying nine patch image file */
     sclshort left;						/* Amount of left pixels for describing area that should not be scaled */
     sclshort right;						/* Amount of right pixels for describing area that should not be scaled */
@@ -414,7 +419,7 @@ typedef struct _SclNinePatchInfo {
 /**
 *@brief A struct for decorating a button depending on the current modifier state
 */
-typedef struct _SclModifierDecoration {
+typedef struct LIBSCL_EXPORT_API _SclModifierDecoration {
     sclboolean valid;					/* Indicates whether this information is in use or not */
     sclboolean extract_background;		/* Whether to display only some part of background image */
     sclchar *name;

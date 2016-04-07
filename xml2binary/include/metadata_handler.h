@@ -24,7 +24,12 @@
 #include "imetadata_encoder.h"
 #include "imetadata_parser.h"
 #include "imetadata_helper.h"
-class MetaData_Handler:private IMetaData_Encoder, IMetaData_Parser, public IMetaData_Helper{
+
+#ifndef LIBSCL_EXPORT_API
+#define LIBSCL_EXPORT_API 
+#endif // LIBSCL_EXPORT_API
+
+class LIBSCL_EXPORT_API MetaData_Handler:private IMetaData_Encoder, IMetaData_Parser, public IMetaData_Helper{
     private:
         typedef struct __Metadata_Width {
             int string_id_width;

@@ -25,7 +25,12 @@
 #include "string_collector.h"
 #include "_auto_metadata.h"
 
-class BinInputModeConfigParser {
+#ifndef LIBSCL_EXPORT_API
+#define LIBSCL_EXPORT_API 
+#endif // LIBSCL_EXPORT_API
+
+
+class LIBSCL_EXPORT_API BinInputModeConfigParser {
     public:
         ~BinInputModeConfigParser();
         static BinInputModeConfigParser *get_instance();

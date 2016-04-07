@@ -21,9 +21,14 @@
 #ifndef __SCL_WINDOWS_GTK_H__
 #define __SCL_WINDOWS_GTK_H__
 
+#ifndef LIBSCL_EXPORT_API
+#define LIBSCL_EXPORT_API 
+#endif // LIBSCL_EXPORT_API
+
+
 namespace scl
 {
-class CSCLWindowsImplGtk : public CSCLWindowsImpl
+class LIBSCL_EXPORT_API CSCLWindowsImplGtk : public CSCLWindowsImpl
 {
 public :
     CSCLWindowsImplGtk();

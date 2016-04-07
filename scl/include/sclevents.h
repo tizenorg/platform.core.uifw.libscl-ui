@@ -29,17 +29,22 @@
 //SCL_BEGIN_DECLS
 #endif
 
+#ifndef LIBSCL_EXPORT_API
+#define LIBSCL_EXPORT_API 
+#endif // LIBSCL_EXPORT_API
+
+
 namespace scl
 {
 
 /**@brief window event definition */
-typedef enum _SCLCbEvent {
+typedef enum LIBSCL_EXPORT_API _SCLCbEvent {
     SCL_EVENT_MOUSE = 1 << 1, /**< for mouse event */
     SCL_EVENT_EXPOSE = 1 << 2 /**< for expose */
 }SCLCbEvent;
 
 /**@brief window event definition */
-typedef enum _SCLMouseEvent {
+typedef enum LIBSCL_EXPORT_API _SCLMouseEvent {
     SCL_MOUSE_EVENT_PRESS,
     SCL_MOUSE_EVENT_MOVE,
     SCL_MOUSE_EVENT_RELEASE,
@@ -51,7 +56,7 @@ typedef enum _SCLMouseEvent {
  * This class implements all functions for working as a soft-based keyboard
  * In side of ISE developer, they can modify it by their requirements.
  */
-class CSCLEventsImpl
+class LIBSCL_EXPORT_API CSCLEventsImpl
 {
 public :
     virtual void init() = 0;
@@ -66,7 +71,7 @@ public :
     virtual void generate_mouse_event(SCLMouseEvent type, scl16 x, scl16 y) = 0;
 };
 
-class CSCLEvents
+class LIBSCL_EXPORT_API CSCLEvents
 {
 public :
     CSCLEvents();

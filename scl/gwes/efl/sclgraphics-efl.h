@@ -73,9 +73,14 @@ typedef struct {
 #else
 #endif
 
+#ifndef LIBSCL_EXPORT_API
+#define LIBSCL_EXPORT_API 
+#endif // LIBSCL_EXPORT_API
+
+
 namespace scl
 {
-class CSCLGraphicsImplEfl : public CSCLGraphicsImpl
+class LIBSCL_EXPORT_API CSCLGraphicsImplEfl : public CSCLGraphicsImpl
 {
 public :
     CSCLGraphicsImplEfl();

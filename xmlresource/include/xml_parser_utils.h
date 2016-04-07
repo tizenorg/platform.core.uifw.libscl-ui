@@ -22,16 +22,21 @@
 #include <libxml/parser.h>
 #include "scltypes.h"
 
+#ifndef LIBSCL_EXPORT_API
+#define LIBSCL_EXPORT_API
+#endif // LIBSCL_EXPORT_API
+
+
 using namespace scl;
 
-int get_content_int(const xmlNodePtr cur_node);
-bool get_content_bool(const xmlNodePtr cur_node);
+LIBSCL_EXPORT_API int get_content_int(const xmlNodePtr cur_node);
+LIBSCL_EXPORT_API bool get_content_bool(const xmlNodePtr cur_node);
 
 
-bool equal_prop(const xmlNodePtr cur_node, const char* prop, const char* str);
+LIBSCL_EXPORT_API bool equal_prop(const xmlNodePtr cur_node, const char* prop, const char* str);
 
 template <class T>
-bool get_prop_number(const xmlNodePtr cur_node, const char* prop, T *ret) {
+LIBSCL_EXPORT_API bool get_prop_number(const xmlNodePtr cur_node, const char* prop, T *ret) {
     assert(cur_node != NULL);
 
     bool succeeded = false;
@@ -46,7 +51,7 @@ bool get_prop_number(const xmlNodePtr cur_node, const char* prop, T *ret) {
 
     return succeeded;
 }
-bool get_prop_bool(const xmlNodePtr cur_node, const char* prop, sclboolean *ret);
-int dex_string_to_int(const char* str);
-int get_content_dex_string_int(const xmlNodePtr cur_node);
+LIBSCL_EXPORT_API bool get_prop_bool(const xmlNodePtr cur_node, const char* prop, sclboolean *ret);
+LIBSCL_EXPORT_API int dex_string_to_int(const char* str);
+LIBSCL_EXPORT_API int get_content_dex_string_int(const xmlNodePtr cur_node);
 #endif

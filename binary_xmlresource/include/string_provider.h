@@ -21,7 +21,12 @@
 #include <vector>
 #include "string_bin_parser.h"
 #include "istring_provider.h"
-class String_Provider: public IString_Provider{
+
+#ifndef LIBSCL_EXPORT_API
+#define LIBSCL_EXPORT_API 
+#endif // LIBSCL_EXPORT_API
+
+class LIBSCL_EXPORT_API String_Provider: public IString_Provider{
     public:
         String_Provider(const String_Bin_Parser* sp): m_sp(sp) {}
         const char* get_string_by_id(int id)const {

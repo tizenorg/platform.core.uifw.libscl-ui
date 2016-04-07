@@ -25,6 +25,11 @@
 #include "istring_provider.h"
 #include "istring_collector.h"
 
+#ifndef LIBSCL_EXPORT_API
+#define LIBSCL_EXPORT_API 
+#endif // LIBSCL_EXPORT_API
+
+
 typedef unsigned char uint8;
 typedef unsigned short uint16;
 typedef unsigned int uint32;
@@ -40,7 +45,7 @@ typedef int64 sint_t;
 typedef uint64 uint_t;
 typedef float64 float_t;
 using namespace std;
-class FileStorage{
+class LIBSCL_EXPORT_API FileStorage{
     public:
         FileStorage(const IString_Provider* string_provider = NULL);
     ~FileStorage();

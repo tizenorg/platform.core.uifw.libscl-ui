@@ -21,9 +21,14 @@
 #ifndef __SCL_GRAPHICS_CAIRO_H__
 #define __SCL_GRAPHICS_CAIRO_H__
 
+#ifndef LIBSCL_EXPORT_API
+#define LIBSCL_EXPORT_API 
+#endif // LIBSCL_EXPORT_API
+
+
 namespace scl
 {
-class CSCLGraphicsImplCairo : public CSCLGraphicsImpl
+class LIBSCL_EXPORT_API CSCLGraphicsImplCairo : public CSCLGraphicsImpl
 {
 public :
     CSCLGraphicsImplCairo();

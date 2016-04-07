@@ -19,6 +19,11 @@
 #ifndef __SCL_KEY_FOCUS_HANDLER_H__
 #define __SCL_KEY_FOCUS_HANDLER_H__
 
+#ifndef LIBSCL_EXPORT_API
+#define LIBSCL_EXPORT_API 
+#endif // LIBSCL_EXPORT_API
+
+
 //#define TARGET_EMULATOR
 //SCL_BEGIN_DECLS
 
@@ -85,7 +90,7 @@ typedef struct _SclPopupNavigationInfo {
 * 3. Focus navigation API: Invoked while handling remote controller key press events
 * - Client class: CSCLEventsImplEfl
 */
-class CSCLKeyFocusHandler
+class LIBSCL_EXPORT_API CSCLKeyFocusHandler
 {
 public:
     ~CSCLKeyFocusHandler();

@@ -26,6 +26,11 @@
 #define MAX_SCL_LABEL_PROPERTIES 128
 #define MAX_SCL_MODIFIER_DECORATION_NUM 64
 
+#ifndef LIBSCL_EXPORT_API
+#define LIBSCL_EXPORT_API
+#endif // LIBSCL_EXPORT_API
+
+
 using namespace scl;
 
 typedef SclInputModeConfigure (*PSclInputModeConfigure);
@@ -47,4 +52,3 @@ typedef SclAutoPopupConfigure (*PSclAutoPopupConfigure);
 typedef SclMagnifierWndConfigure (*PSclMagnifierWndConfigure);
 
 #endif
-

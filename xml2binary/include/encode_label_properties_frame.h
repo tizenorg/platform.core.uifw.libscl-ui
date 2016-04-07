@@ -21,8 +21,13 @@
 #include "metadata.h"
 #include "imetadata_helper.h"
 #include "resource_storage_impl.h"
-int encode_label_properties_frame_file(ResourceStorage& storage, IMetaData_Helper& md_helper);
-int encode_label_properties_frame_file(const char* file, int& offset, IMetaData_Helper& md_helper);
-int encode_label_properties_frame_file(const char* file, IMetaData_Helper& md_helper);
+
+#ifndef LIBSCL_EXPORT_API
+#define LIBSCL_EXPORT_API 
+#endif // LIBSCL_EXPORT_API
+
+LIBSCL_EXPORT_API int encode_label_properties_frame_file(ResourceStorage& storage, IMetaData_Helper& md_helper);
+LIBSCL_EXPORT_API int encode_label_properties_frame_file(const char* file, int& offset, IMetaData_Helper& md_helper);
+LIBSCL_EXPORT_API int encode_label_properties_frame_file(const char* file, IMetaData_Helper& md_helper);
 
 #endif

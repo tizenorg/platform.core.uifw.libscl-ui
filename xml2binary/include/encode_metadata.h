@@ -19,5 +19,10 @@
 #define __ENCODE_METADATA_H__
 #include "metadata.h"
 #include "resource_storage_impl.h"
-void encode_metadata(ResourceStorage& storage, const MetaData& metadata);
+
+#ifndef LIBSCL_EXPORT_API
+#define LIBSCL_EXPORT_API 
+#endif // LIBSCL_EXPORT_API
+
+LIBSCL_EXPORT_API void encode_metadata(ResourceStorage& storage, const MetaData& metadata);
 #endif

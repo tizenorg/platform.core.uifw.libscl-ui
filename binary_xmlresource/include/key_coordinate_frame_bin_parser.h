@@ -23,7 +23,12 @@
 #include "string_collector.h"
 #include "file_storage_impl.h"
 #include "_auto_metadata.h"
-class BinKeyCoordFrameParser {
+
+#ifndef LIBSCL_EXPORT_API
+#define LIBSCL_EXPORT_API 
+#endif // LIBSCL_EXPORT_API
+
+class LIBSCL_EXPORT_API BinKeyCoordFrameParser {
     public:
         static BinKeyCoordFrameParser *get_instance();
     void init(const FileStorage& storage, int, int, IParserInfo_Provider*);

@@ -22,11 +22,16 @@
 #ifndef __SCL_CONTROLLER_H__
 #define __SCL_CONTROLLER_H__
 
+#ifndef LIBSCL_EXPORT_API
+#define LIBSCL_EXPORT_API 
+#endif // LIBSCL_EXPORT_API
+
+
 //SCL_BEGIN_DECLS
 
 namespace scl
 {
-enum SclInternalSignal {
+enum LIBSCL_EXPORT_API SclInternalSignal {
     SCL_SIG_START,
     SCL_SIG_SHOW,
     SCL_SIG_HIDE,
@@ -49,7 +54,7 @@ enum SclInternalSignal {
  * This class implements all functions for working as a soft-based keyboard
  * In side of ISE developer, they can modify it by their requirements.
  */
-class CSCLController
+class LIBSCL_EXPORT_API CSCLController
 {
 private:
     CSCLController();

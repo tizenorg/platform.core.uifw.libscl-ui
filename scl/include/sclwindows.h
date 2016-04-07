@@ -29,6 +29,11 @@
 //SCL_BEGIN_DECLS
 #endif
 
+#ifndef LIBSCL_EXPORT_API
+#define LIBSCL_EXPORT_API 
+#endif // LIBSCL_EXPORT_API
+
+
 namespace scl
 {
 #define MAX_POPUP_WINDOW 1
@@ -37,13 +42,13 @@ namespace scl
 #define SCL_WINDOW_Z_TOP 0
 
 /**@brief A struct for identifying who opened this window */
-typedef struct _SclWindowOpener {
+typedef struct LIBSCL_EXPORT_API _SclWindowOpener {
     sclwindow   window;
     sclint      key;
 } SclWindowOpener;
 
 /**@brief  window context structure */
-typedef struct _SclWindowContext {
+typedef struct LIBSCL_EXPORT_API _SclWindowContext {
     sclboolean          is_virtual;
     sclwindow           window;
     sclshort            inputmode;
@@ -66,7 +71,7 @@ typedef struct _SclWindowContext {
  * This class implements all functions for working as a soft-based keyboard
  * In side of ISE developer, they can modify it by their requirements.
  */
-class CSCLWindowsImpl
+class LIBSCL_EXPORT_API CSCLWindowsImpl
 {
 public :
     virtual void init() = 0;
@@ -95,7 +100,7 @@ public :
     virtual void set_keep_above(const sclwindow window, sclboolean keep_above) = 0;
 };
 
-class CSCLWindows
+class LIBSCL_EXPORT_API CSCLWindows
 {
 private:
     CSCLWindows();

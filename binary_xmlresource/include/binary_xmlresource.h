@@ -30,7 +30,12 @@
 #include "magnifier_configure_bin_parser.h"
 #include "nine_patch_file_list_bin_parser.h"
 #include "sclres.h"
-struct resource_info_t{
+
+#ifndef LIBSCL_EXPORT_API
+#define LIBSCL_EXPORT_API 
+#endif // LIBSCL_EXPORT_API
+
+struct LIBSCL_EXPORT_API resource_info_t{
     int offset;
     int size;
 };
@@ -52,7 +57,7 @@ enum{
     MAX_DATATYPE
 };
 namespace binary_xmlresource {
-class BinResource: public sclres::SclRes{
+class LIBSCL_EXPORT_API BinResource: public sclres::SclRes{
     public:
     ~BinResource();
     static BinResource* get_instance();

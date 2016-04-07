@@ -18,7 +18,12 @@
 #ifndef __INTERFACE_METADATA_PARSER_H__
 #define __INTERFACE_METADATA_PARSER_H__
 #include "metadata.h"
-class IMetaData_Parser{
+
+#ifndef LIBSCL_EXPORT_API
+#define LIBSCL_EXPORT_API 
+#endif // LIBSCL_EXPORT_API
+
+class LIBSCL_EXPORT_API IMetaData_Parser{
     public:
         virtual const MetaData* get_metadata() const = 0;
         virtual ~IMetaData_Parser() {}

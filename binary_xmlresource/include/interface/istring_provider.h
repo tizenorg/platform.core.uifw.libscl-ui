@@ -19,7 +19,12 @@
 #define __ISTRING_PROVIDER_H__
 #include <string>
 
-class IString_Provider{
+#ifndef LIBSCL_EXPORT_API
+#define LIBSCL_EXPORT_API 
+#endif // LIBSCL_EXPORT_API
+
+
+class LIBSCL_EXPORT_API IString_Provider{
     public:
         virtual const char* get_string_by_id(const int id)const = 0;
         virtual ~IString_Provider() {}

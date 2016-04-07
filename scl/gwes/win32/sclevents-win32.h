@@ -20,9 +20,14 @@
 #ifndef __SCL_EVENTS_WIN32_H__
 #define __SCL_EVENTS_WIN32_H__
 
+#ifndef LIBSCL_EXPORT_API
+#define LIBSCL_EXPORT_API 
+#endif // LIBSCL_EXPORT_API
+
+
 namespace scl
 {
-class CSCLEventsImplWin32 : public CSCLEventsImpl
+class LIBSCL_EXPORT_API CSCLEventsImplWin32 : public CSCLEventsImpl
 {
 public :
     void init();

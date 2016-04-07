@@ -19,11 +19,16 @@
 #define __MagnifierConfigParser__H__
 #include "sclres_type.h"
 
+#ifndef LIBSCL_EXPORT_API
+#define LIBSCL_EXPORT_API 
+#endif // LIBSCL_EXPORT_API
+
+
 typedef SclMagnifierWndConfigure *PSclMagnifierWndConfigure;
 
 class MagnifierConfigureParserImpl;
 
-class MagnifierConfigParser {
+class LIBSCL_EXPORT_API MagnifierConfigParser {
     MagnifierConfigureParserImpl *m_impl;
 public:
     int init(const char* file);

@@ -30,25 +30,30 @@
 //SCL_BEGIN_DECLS
 #endif
 
+#ifndef LIBSCL_EXPORT_API
+#define LIBSCL_EXPORT_API 
+#endif // LIBSCL_EXPORT_API
+
+
 namespace scl
 {
 #define MAX_FONT_NAME_LEN 32
 /**@brief  font information structure */
-typedef struct _SclFontInfo {
+typedef struct LIBSCL_EXPORT_API _SclFontInfo {
     sclchar font_name[MAX_FONT_NAME_LEN];
     sclshort font_size;
     sclboolean is_italic;
     sclboolean is_bold;
 } SclFontInfo;
 
-typedef struct _SclImageCachedInfo {
+typedef struct LIBSCL_EXPORT_API _SclImageCachedInfo {
     sclint nine_patch_left;
     sclint nine_patch_right;
     sclint nine_patch_top;
     sclint nine_patch_bottom;
 }SclImageCachedInfo;
 
-typedef struct _SclTextCachedInfo {
+typedef struct LIBSCL_EXPORT_API _SclTextCachedInfo {
     SclSize actual_size;
 }SclTextCachedInfo;
 
@@ -64,7 +69,7 @@ const SclColor SCLCOLOR_BLUE = {0, 0, 255, 255};
  * This class implements all functions for working as a soft-based keyboard
  * In side of ISE developer, they can modify it by their requirements.
  */
-class CSCLGraphicsImpl
+class LIBSCL_EXPORT_API CSCLGraphicsImpl
 {
 public:
     virtual void init() = 0;
@@ -95,7 +100,7 @@ private:
     virtual SclSize get_text_size(const SclFontInfo &fontinfo, const sclchar *str) = 0;
 };
 
-class CSCLGraphics
+class LIBSCL_EXPORT_API CSCLGraphics
 {
     friend class CSCLImageProxy;
     friend class CSCLFontProxy;

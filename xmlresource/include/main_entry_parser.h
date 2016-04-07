@@ -19,7 +19,12 @@
 
 #ifndef __MainEntryParser__H__
 #define __MainEntryParser__H__
-class XMLFiles{
+
+#ifndef LIBSCL_EXPORT_API
+#define LIBSCL_EXPORT_API 
+#endif // LIBSCL_EXPORT_API
+
+class LIBSCL_EXPORT_API XMLFiles{
     public:
     char* input_mode_configure;
     char* layout;
@@ -62,7 +67,7 @@ class XMLFiles{
 };
 
 class MainEntryParserImpl;
-class MainEntryParser {
+class LIBSCL_EXPORT_API MainEntryParser {
     MainEntryParserImpl *m_impl;
     public:
     /* parsing xml file, path is assigned */

@@ -18,8 +18,13 @@
 #ifndef __INTERFACE_STRING_COLLECTOR_H__
 #define __INTERFACE_STRING_COLLECTOR_H__
 
+#ifndef LIBSCL_EXPORT_API
+#define LIBSCL_EXPORT_API 
+#endif // LIBSCL_EXPORT_API
+
+
 /*Use this interface to collect all the new strings*/
-class IStringCollector{
+class LIBSCL_EXPORT_API IStringCollector{
     public:
         virtual void add(char* str) = 0;
         virtual ~IStringCollector() {}

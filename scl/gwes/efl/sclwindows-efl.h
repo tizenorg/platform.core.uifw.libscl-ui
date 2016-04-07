@@ -22,7 +22,12 @@
 #ifndef __SCL_WINDOWS_EFL_H__
 #define __SCL_WINDOWS_EFL_H__
 
-typedef enum {
+typedef
+
+#ifndef LIBSCL_EXPORT_API
+#define LIBSCL_EXPORT_API 
+#endif // LIBSCL_EXPORT_API
+ enum {
     EFLOBJECT_NONE,
     EFLOBJECT_IMAGE,
     EFLOBJECT_CLIPOBJECT,
@@ -40,7 +45,7 @@ typedef struct {
     sclboolean extracted;
     void *data;
 } EFLObject;
-class CSCLWindowsImplEfl : public CSCLWindowsImpl
+class LIBSCL_EXPORT_API CSCLWindowsImplEfl : public CSCLWindowsImpl
 {
 public :
     CSCLWindowsImplEfl();

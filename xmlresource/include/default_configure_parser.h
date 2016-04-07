@@ -19,11 +19,16 @@
 #define __DEFAULT_CONFIGURE_PARSER__H__
 #include "sclres_type.h"
 
+#ifndef LIBSCL_EXPORT_API
+#define LIBSCL_EXPORT_API 
+#endif // LIBSCL_EXPORT_API
+
+
 typedef SclDefaultConfigure *PSclDefaultConfigure;
 
 class DefaultConfigureParserImpl;
 
-class DefaultConfigParser {
+class LIBSCL_EXPORT_API DefaultConfigParser {
     DefaultConfigureParserImpl *m_impl;
 public:
     int init(const char* file);

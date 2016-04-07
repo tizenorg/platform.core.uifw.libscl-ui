@@ -24,7 +24,12 @@
 #include "file_storage_impl.h"
 #include "_auto_metadata.h"
 
-class BinLabelPropertyParser {
+#ifndef LIBSCL_EXPORT_API
+#define LIBSCL_EXPORT_API 
+#endif // LIBSCL_EXPORT_API
+
+
+class LIBSCL_EXPORT_API BinLabelPropertyParser {
     public:
         ~BinLabelPropertyParser();
         static BinLabelPropertyParser *get_instance();

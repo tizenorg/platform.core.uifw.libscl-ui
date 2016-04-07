@@ -23,6 +23,11 @@
 #ifndef __SCL_EVENT_HANDLER_H__
 #define __SCL_EVENT_HANDLER_H__
 
+#ifndef LIBSCL_EXPORT_API
+#define LIBSCL_EXPORT_API 
+#endif // LIBSCL_EXPORT_API
+
+
 //SCL_BEGIN_DECLS
 
 namespace scl
@@ -31,7 +36,7 @@ namespace scl
  * @brief The default event handler class
  *
  */
-class CSCLEventHandler : public ISCLUIEventCallback
+class LIBSCL_EXPORT_API CSCLEventHandler : public ISCLUIEventCallback
 {
 private:
     CSCLEventHandler();

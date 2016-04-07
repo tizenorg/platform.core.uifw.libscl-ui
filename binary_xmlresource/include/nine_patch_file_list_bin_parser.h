@@ -23,7 +23,12 @@
 #include "file_storage_impl.h"
 #include "_auto_metadata.h"
 
-class BinNinePatchFileParser {
+#ifndef LIBSCL_EXPORT_API
+#define LIBSCL_EXPORT_API 
+#endif // LIBSCL_EXPORT_API
+
+
+class LIBSCL_EXPORT_API BinNinePatchFileParser {
     static const int MAX_NINE_PATCH_FILE_LIST = 128;
     public:
         ~BinNinePatchFileParser();

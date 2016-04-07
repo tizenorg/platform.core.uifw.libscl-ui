@@ -25,8 +25,13 @@
 #include <string.h>
 #include <stdio.h>
 #include <vector>
+
+#ifndef LIBSCL_EXPORT_API
+#define LIBSCL_EXPORT_API 
+#endif // LIBSCL_EXPORT_API
+
 const int FIELD_SIZE_WIDTH = 2;
-class MetaData_Field{
+class LIBSCL_EXPORT_API MetaData_Field{
     public:
         MetaData_Field():m_name(NULL), m_type(NULL), m_width(0) {
         }
@@ -37,14 +42,14 @@ class MetaData_Field{
 };
 
 const int RECORD_SIZE_WIDTH = 2;
-class MetaData_Record{
+class LIBSCL_EXPORT_API MetaData_Record{
     public:
         MetaData_Record():m_name(NULL) {}
         const char* m_name;
         std::vector<MetaData_Field> vField;
 };
 
-class MetaData{
+class LIBSCL_EXPORT_API MetaData{
     public:
         MetaData():m_version(NULL) {}
         const char* m_version;

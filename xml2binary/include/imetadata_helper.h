@@ -17,7 +17,12 @@
 
 #ifndef __INTERFACE_METADATA_HELPER_H__
 #define __INTERFACE_METADATA_HELPER_H__
-class IMetaData_Helper{
+
+#ifndef LIBSCL_EXPORT_API
+#define LIBSCL_EXPORT_API 
+#endif // LIBSCL_EXPORT_API
+
+class LIBSCL_EXPORT_API IMetaData_Helper{
     public:
         virtual void set_current_metadata_record(const char* record_name) = 0;
         virtual const unsigned short get_width(const char* field_name) const = 0;

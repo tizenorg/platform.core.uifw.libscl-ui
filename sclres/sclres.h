@@ -20,8 +20,13 @@
 #include "sclres_type.h"
 #include <string>
 
+#ifndef LIBSCL_EXPORT_API
+#define LIBSCL_EXPORT_API 
+#endif // LIBSCL_EXPORT_API
+
+
 namespace sclres {
-class SclRes{
+class LIBSCL_EXPORT_API SclRes{
 public:
     SclRes();
     virtual ~SclRes();

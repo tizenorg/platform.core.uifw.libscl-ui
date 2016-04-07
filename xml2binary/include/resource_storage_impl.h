@@ -20,12 +20,17 @@
 #include "resource_storage.h"
 #include <dlog.h>
 
-inline ResourceStorage::
+#ifndef LIBSCL_EXPORT_API
+#define LIBSCL_EXPORT_API 
+#endif // LIBSCL_EXPORT_API
+
+
+LIBSCL_EXPORT_API inline ResourceStorage::
 ResourceStorage() {
     init();
 }
 
-inline void ResourceStorage::init() {
+LIBSCL_EXPORT_API inline void ResourceStorage::init() {
     m_storage = new char[__NEW_LENGTH__];
     if (m_storage == NULL) {
         //throw "init error of ResourceStorage";
@@ -36,20 +41,20 @@ inline void ResourceStorage::init() {
         m_capability = __NEW_LENGTH__;
     }
 }
-inline ResourceStorage::
+LIBSCL_EXPORT_API inline ResourceStorage::
 ~ResourceStorage() {
     delete []m_storage;
     m_size = 0;
     m_capability = 0;
 }
 
-inline const int ResourceStorage::
+LIBSCL_EXPORT_API inline const int ResourceStorage::
 get_size() const {
     return m_size;
 }
 
 
-inline void ResourceStorage::
+LIBSCL_EXPORT_API inline void ResourceStorage::
 put(const char* str) {
     /*Not allowed str null here*/
     assert(str != NULL);
@@ -68,12 +73,12 @@ put(const char* str) {
     m_size += 1;
 }
 
-inline const int ResourceStorage::
+LIBSCL_EXPORT_API inline const int ResourceStorage::
 capability() const {
     return m_capability;
 }
 
-inline int ResourceStorage::
+LIBSCL_EXPORT_API inline int ResourceStorage::
 toFile(const char* fileName) {
     if (m_storage == NULL) {
         return -1;
@@ -90,7 +95,7 @@ toFile(const char* fileName) {
 
     return actual_size;
 }
-inline int ResourceStorage::
+LIBSCL_EXPORT_API inline int ResourceStorage::
 toFile(const char* fileName, int& offset) {
     if (m_storage == NULL) {
         return -1;
@@ -117,12 +122,12 @@ toFile(const char* fileName, int& offset) {
     offset += m_size;
     return m_size;
 }
-inline void ResourceStorage::
+LIBSCL_EXPORT_API inline void ResourceStorage::
 reserve(int bytes) {
     check_storage(bytes);
     m_size += bytes;
 }
-inline int ResourceStorage::
+LIBSCL_EXPORT_API inline int ResourceStorage::
 storage_cat(ResourceStorage& storage) {
     if (storage.get_size() == 0) return 0;
 
@@ -134,13 +139,13 @@ storage_cat(ResourceStorage& storage) {
     return m_size;
 }
 
-inline void ResourceStorage::
+LIBSCL_EXPORT_API inline void ResourceStorage::
 check_storage(int width) {
     if (m_size + width > m_capability) {
         expand_storage();
     }
 }
-inline void ResourceStorage::
+LIBSCL_EXPORT_API inline void ResourceStorage::
 expand_storage() {
     unsigned int _new_size = (unsigned int)(m_capability + __RE_NEW_LENGTH__);
     if (_new_size > (unsigned int)__MAX_NEW_SIZE__) {
@@ -163,28 +168,28 @@ expand_storage() {
     _p = NULL;
 }
 ///////////////////////////////////////
-inline void ResourceStorage::
+LIBSCL_EXPORT_API inline void ResourceStorage::
 put_uint8(uint8 data) {
     check_storage(sizeof(uint8));
     uint8* p = (uint8*)(m_storage + m_size);
     *p = data;
     m_size += sizeof(uint8);
 }
-inline void ResourceStorage::
+LIBSCL_EXPORT_API inline void ResourceStorage::
 put_uint16(uint16 data) {
     check_storage(sizeof(uint16));
     uint16* p = (uint16*)(m_storage + m_size);
     *p = data;
     m_size += sizeof(uint16);
 }
-inline void ResourceStorage::
+LIBSCL_EXPORT_API inline void ResourceStorage::
 put_uint32(uint32 data) {
     check_storage(sizeof(uint32));
     uint32* p = (uint32*)(m_storage + m_size);
     *p = data;
     m_size += sizeof(uint32);
 }
-inline void ResourceStorage::
+LIBSCL_EXPORT_API inline void ResourceStorage::
 put_uint64(uint64 data) {
     check_storage(sizeof(uint64));
     uint64* p = (uint64*)(m_storage + m_size);
@@ -193,25 +198,25 @@ put_uint64(uint64 data) {
 }
 // signed value --> unsigned value
 //that is ok
-inline void ResourceStorage::
+LIBSCL_EXPORT_API inline void ResourceStorage::
 put_int8(int8 data) {
     put_uint8(data);
 }
-inline void ResourceStorage::
+LIBSCL_EXPORT_API inline void ResourceStorage::
 put_int16(int16 data) {
     put_uint16(data);
 }
-inline void ResourceStorage::
+LIBSCL_EXPORT_API inline void ResourceStorage::
 put_int32(int32 data) {
     put_uint32(data);
 }
-inline void ResourceStorage::
+LIBSCL_EXPORT_API inline void ResourceStorage::
 put_int64(int64 data) {
     put_uint64(data);
 }
 
 //float32
-inline void ResourceStorage::
+LIBSCL_EXPORT_API inline void ResourceStorage::
 put_float32(float32 data) {
     union{
         float32 m;
@@ -222,7 +227,7 @@ put_float32(float32 data) {
     put_uint32(n);
 }
 //float64
-inline void ResourceStorage::
+LIBSCL_EXPORT_API inline void ResourceStorage::
 put_float64(float64 data) {
     union{
         float64 m;
@@ -417,7 +422,7 @@ random_put<float_t>(float_t data, int width, int offset) {
 }
 
 ///////////////////////////////////////
-inline void ResourceStorage::
+LIBSCL_EXPORT_API inline void ResourceStorage::
 encode_string(const char* str, int width) {
     if (width <= 0) return;
 

@@ -22,7 +22,12 @@
 #include "iparserinfo_provider.h"
 #include "file_storage_impl.h"
 #include "_auto_metadata.h"
-class BinDefaultConfigParser {
+
+#ifndef LIBSCL_EXPORT_API
+#define LIBSCL_EXPORT_API 
+#endif // LIBSCL_EXPORT_API
+
+class LIBSCL_EXPORT_API BinDefaultConfigParser {
 public:
     ~BinDefaultConfigParser();
     static BinDefaultConfigParser *get_instance();

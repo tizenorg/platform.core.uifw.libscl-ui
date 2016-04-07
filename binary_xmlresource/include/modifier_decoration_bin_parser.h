@@ -25,7 +25,12 @@
 #include "file_storage_impl.h"
 #include "_auto_metadata.h"
 
-class BinModifierDecorationParser {
+#ifndef LIBSCL_EXPORT_API
+#define LIBSCL_EXPORT_API 
+#endif // LIBSCL_EXPORT_API
+
+
+class LIBSCL_EXPORT_API BinModifierDecorationParser {
     public:
         ~BinModifierDecorationParser();
         static BinModifierDecorationParser *get_instance();

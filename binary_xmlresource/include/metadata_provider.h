@@ -21,7 +21,12 @@
 #include "metadata_bin_parser.h"
 #include <dlog.h>
 
-class Metadata_Provider:public IMetadata_Provider{
+#ifndef LIBSCL_EXPORT_API
+#define LIBSCL_EXPORT_API 
+#endif // LIBSCL_EXPORT_API
+
+
+class LIBSCL_EXPORT_API Metadata_Provider:public IMetadata_Provider{
     public:
         Metadata_Provider(const Metadata_Bin_Parser* metadataParser):m_metadataParser(metadataParser) {
             current_record_name = NULL;

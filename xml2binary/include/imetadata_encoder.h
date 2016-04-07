@@ -17,7 +17,12 @@
 
 #ifndef __INTERFACE_METADATA_ENCODER_H__
 #define __INTERFACE_METADATA_ENCODER_H__
-class IMetaData_Encoder{
+
+#ifndef LIBSCL_EXPORT_API
+#define LIBSCL_EXPORT_API 
+#endif // LIBSCL_EXPORT_API
+
+class LIBSCL_EXPORT_API IMetaData_Encoder{
     public:
         virtual int encode(const char* file) const = 0;
         virtual int encode(const char* file, int& offset) const = 0;

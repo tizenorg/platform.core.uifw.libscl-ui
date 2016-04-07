@@ -18,26 +18,31 @@
 #ifndef __FILE_STORAGE_IMPL_H__
 #define __FILE_STORAGE_IMPL_H__
 #include "file_storage.h"
+
+#ifndef LIBSCL_EXPORT_API
+#define LIBSCL_EXPORT_API 
+#endif // LIBSCL_EXPORT_API
+
 ///////////////////////////////////////
-inline uint8 FileStorage::
+LIBSCL_EXPORT_API inline uint8 FileStorage::
 get_uint8() {
     uint8* p = (uint8*)(m_storage + m_offset);
     m_offset += sizeof(uint8);
     return *p;
 }
-inline uint16 FileStorage::
+LIBSCL_EXPORT_API inline uint16 FileStorage::
 get_uint16() {
     uint16* p = (uint16*)(m_storage + m_offset);
     m_offset += sizeof(uint16);
     return *p;
 }
-inline uint32 FileStorage::
+LIBSCL_EXPORT_API inline uint32 FileStorage::
 get_uint32() {
     uint32* p = (uint32*)(m_storage + m_offset);
     m_offset += sizeof(uint32);
     return *p;
 }
-inline uint64 FileStorage::
+LIBSCL_EXPORT_API inline uint64 FileStorage::
 get_uint64() {
     uint64* p = (uint64*)(m_storage + m_offset);
     m_offset += sizeof(uint64);
@@ -48,25 +53,25 @@ get_uint64() {
 //    put_uintx(data);
 // }
 // so below is ok
-inline int8 FileStorage::
+LIBSCL_EXPORT_API inline int8 FileStorage::
 get_int8() {
     return (int)get_uint8();
 }
 
-inline int16 FileStorage::
+LIBSCL_EXPORT_API inline int16 FileStorage::
 get_int16() {
     return (int)get_uint16();
 }
-inline int32 FileStorage::
+LIBSCL_EXPORT_API inline int32 FileStorage::
 get_int32() {
     return (int)get_uint32();
 }
-inline int64 FileStorage::
+LIBSCL_EXPORT_API inline int64 FileStorage::
 get_int64() {
     return (int)get_uint64();
 }
 //float32
-inline float32 FileStorage::
+LIBSCL_EXPORT_API inline float32 FileStorage::
 get_float32() {
     union{
         float32 m;
@@ -77,7 +82,7 @@ get_float32() {
     return m;
 }
 //float64
-inline float64 FileStorage::
+LIBSCL_EXPORT_API inline float64 FileStorage::
 get_float64() {
     union{
         float64 m;

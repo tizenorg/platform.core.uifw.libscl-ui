@@ -23,6 +23,11 @@
 #include <sstream>
 #include "istring_encoder.h"
 
+#ifndef LIBSCL_EXPORT_API
+#define LIBSCL_EXPORT_API 
+#endif // LIBSCL_EXPORT_API
+
+
 typedef unsigned char uint8;
 typedef unsigned short uint16;
 typedef unsigned int uint32;
@@ -39,9 +44,9 @@ typedef int64 sint_t;
 typedef float64 float_t;
 
 /* use string_encoder to collect strings and encode them when necessary*/
-extern IString_Encoder& string_encoder;
+LIBSCL_EXPORT_API extern IString_Encoder& string_encoder;
 
-class ResourceStorage{
+class LIBSCL_EXPORT_API ResourceStorage{
     private:
     static const int __NEW_LENGTH__ = 0x10000;/*64k*/
     static const int __RE_NEW_LENGTH__ = 0x10000;/*64k*/

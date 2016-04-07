@@ -19,10 +19,15 @@
 #define __NinePatchFileParser__H__
 #include "sclres_type.h"
 
+#ifndef LIBSCL_EXPORT_API
+#define LIBSCL_EXPORT_API 
+#endif // LIBSCL_EXPORT_API
+
+
 const int MAX_NINE_PATCH_FILE_LIST = 128;
 class NinePatchFileListParserImpl;
 
-class NinePatchFileParser {
+class LIBSCL_EXPORT_API NinePatchFileParser {
     NinePatchFileListParserImpl *m_impl;
     public:
     int init(const char* file);

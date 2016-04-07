@@ -18,6 +18,11 @@
 #ifndef __SCL_CONFIG_H__
 #define __SCL_CONFIG_H__
 
+#ifndef LIBSCL_EXPORT_API
+#define LIBSCL_EXPORT_API 
+#endif // LIBSCL_EXPORT_API
+
+
 namespace scl
 {
 
@@ -26,14 +31,14 @@ namespace scl
 #endif
 
 /* Display direction definition */
-typedef enum _SCLDisplayMode {
+typedef enum LIBSCL_EXPORT_API _SCLDisplayMode {
     DISPLAYMODE_PORTRAIT = 0,	/* portrait display mode */
     DISPLAYMODE_LANDSCAPE,		/* landscape display mode */
     DISPLAYMODE_MAX,			/* maximum count of display mode */
 }SCLDisplayMode;
 
 /* Rotation definition */
-typedef enum _SCLRotation {
+typedef enum LIBSCL_EXPORT_API _SCLRotation {
     ROTATION_0 = 0,		/* No rotation */
     ROTATION_90_CW,		/* 90 degree, clockwise */
     ROTATION_180,		/* 180 degree */
@@ -42,7 +47,7 @@ typedef enum _SCLRotation {
 }SCLRotation;
 
 /**@brief  Layout and Input mode Style definition */
-typedef enum _SCLLayoutStyle {
+typedef enum LIBSCL_EXPORT_API _SCLLayoutStyle {
     LAYOUT_STYLE_BASE = 0,
     LAYOUT_STYLE_POPUP,
     LAYOUT_STYLE_POPUP_GRAB,
@@ -52,7 +57,7 @@ typedef enum _SCLLayoutStyle {
 /* Key Define */
 
 /**@brief  Button Type definition */
-typedef enum _SCLButtonType {
+typedef enum LIBSCL_EXPORT_API _SCLButtonType {
     BUTTON_TYPE_NORMAL	 = 0,		/**< Normal key */
     BUTTON_TYPE_GRAB,				/**< Focus grab */
     /* No button gets focus when cursor moves out of this button's area */
@@ -80,7 +85,7 @@ typedef enum _SCLButtonType {
 #define DIRECTION_EXTRA_OPTION_4_DIRECTIONS_WITH_RETURN_AND_CURVE 6
 
 /**@brief Key Type definition */
-typedef enum _SCLKeyType {
+typedef enum LIBSCL_EXPORT_API _SCLKeyType {
     KEY_TYPE_NONE = 0,		/**< none */
     KEY_TYPE_CHAR,			/**< key that can be displayed independently */
     KEY_TYPE_CONTROL,		/**< key to use as control */
@@ -91,7 +96,7 @@ typedef enum _SCLKeyType {
 }SCLKeyType;
 
 /**@brief Key Event Type definition */
-typedef enum _SCLEventType {
+typedef enum LIBSCL_EXPORT_API _SCLEventType {
     EVENT_TYPE_NONE = 0,	/**< none */
     EVENT_TYPE_PRESS,		/**< button press event */
     EVENT_TYPE_MOVE,		/**< button move event */
@@ -103,7 +108,7 @@ typedef enum _SCLEventType {
 
 
 /**@brief Key Modifier definition */
-typedef enum _SCLKeyModifier {
+typedef enum LIBSCL_EXPORT_API _SCLKeyModifier {
     KEY_MODIFIER_NONE = 0,						/**< none */
     KEY_MODIFIER_LONGKEY,						/**< longkey event */
     KEY_MODIFIER_MULTITAP_START,				/**< multitap started */
@@ -152,7 +157,7 @@ typedef enum _SCLKeyModifier {
 
 
 /**@brief  Popup Type definition */
-typedef enum _SCLPopupType {
+typedef enum LIBSCL_EXPORT_API _SCLPopupType {
     /**< doesn't use popup */
     POPUP_TYPE_NONE = 0,
     /**< to use popup (It is used in extention character sign. After to be selected, this action is continued until selecting another area) */
@@ -172,7 +177,7 @@ typedef enum _SCLPopupType {
 }SCLPopupType;
 
 /**@brief Candidate position style definition */
-typedef enum _SCLCandidatePosition {
+typedef enum LIBSCL_EXPORT_API _SCLCandidatePosition {
     CAND_POS_ABOVE_KEYPAD = 0,
     CAND_POS_BELOW_TEXT,
     CAND_POS_MANUAL,
@@ -180,7 +185,7 @@ typedef enum _SCLCandidatePosition {
 }SCLCandidatePosition;
 
 /**@brief Candidate style definition */
-typedef enum _SCLCandidateStyle {
+typedef enum LIBSCL_EXPORT_API _SCLCandidateStyle {
     CAND_STYLE_DEFAULT = 0,
     CAND_STYLE_A,
     CAND_STYLE_B,
@@ -189,14 +194,14 @@ typedef enum _SCLCandidateStyle {
 }SCLCandidateStyle;
 
 /**@brief Magnifier display style definition */
-typedef enum _SCLMagnifierStyle {
+typedef enum LIBSCL_EXPORT_API _SCLMagnifierStyle {
     MAGNIFIER_STYLE_LABEL_ONLY = 0,
     MAGNIFIER_STYLE_SEL_AREA_CAPTURE,
     MAX_MAGNIFIER_STYLE
 }SCLMagnifierStyle;
 
 /**@brief Preview window position type definition */
-typedef enum _SCLPreviewPosition {
+typedef enum LIBSCL_EXPORT_API _SCLPreviewPosition {
     PREVIEW_POS_CENTER_OF_APPL_AREA = 0,
     PREVIEW_POS_ABOVE_SELECTED_BUTTON,
     PREVIEW_POS_MANUAL,
@@ -204,7 +209,7 @@ typedef enum _SCLPreviewPosition {
 }SCLPreviewPosition;
 
 /**@brief Action state definition */
-typedef enum _SCLActionState {
+typedef enum LIBSCL_EXPORT_API _SCLActionState {
     ACTION_STATE_BASE_INIT = 0,
     ACTION_STATE_BASE_PRESS,
     ACTION_STATE_BASE_MOVING,
@@ -221,7 +226,7 @@ typedef enum _SCLActionState {
 }SCLActionState;
 
 /**@brief  Button state definition */
-typedef enum _SCLButtonState {
+typedef enum LIBSCL_EXPORT_API _SCLButtonState {
     BUTTON_STATE_NORMAL = 0,	/**< normal state */
     BUTTON_STATE_PRESSED,		/**< pressed state */
     BUTTON_STATE_DISABLED,		/**< disabled state */
@@ -233,7 +238,7 @@ typedef enum _SCLButtonState {
 
 
 /**@brief  Drag Direction definition */
-typedef enum _SCLDragType {
+typedef enum LIBSCL_EXPORT_API _SCLDragType {
     DRAG_NONE = 0,		/* doesn't use Drag */
     DRAG_LEFT,			/* drag to left side */
     DRAG_RIGHT,			/* drag to right side */
@@ -247,7 +252,7 @@ typedef enum _SCLDragType {
 }SCLDragType;
 
 /**@brief  Label alignment definition */
-typedef enum _SCLLabelAlignment {
+typedef enum LIBSCL_EXPORT_API _SCLLabelAlignment {
     LABEL_ALIGN_LEFT_TOP = 0,
     LABEL_ALIGN_CENTER_TOP,
     LABEL_ALIGN_RIGHT_TOP,
@@ -261,7 +266,7 @@ typedef enum _SCLLabelAlignment {
 }SCLLabelAlignment;
 
 /**@brief  Shadow direction definition */
-typedef enum _SCLShadowDirection {
+typedef enum LIBSCL_EXPORT_API _SCLShadowDirection {
     SHADOW_DIRECTION_NONE = 0,
     SHADOW_DIRECTION_LEFT_TOP ,
     SHADOW_DIRECTION_CENTER_TOP,
@@ -276,7 +281,7 @@ typedef enum _SCLShadowDirection {
 }SCLShadowDirection;
 
 /**@brief  timer id */
-typedef enum _SCLTimer {
+typedef enum LIBSCL_EXPORT_API _SCLTimer {
     SCL_TIMER_AUTOPOPUP = 100,
     SCL_TIMER_SHORT_LONGKEY,
     SCL_TIMER_LONGKEY,
@@ -289,14 +294,14 @@ typedef enum _SCLTimer {
 }SCLTimer;
 
 /**@brief  Feedback style */
-typedef enum _SCLFeedbackStyle {
+typedef enum LIBSCL_EXPORT_API _SCLFeedbackStyle {
     FEEDBACK_STYLE_SOUND,
     FEEDBACK_STYLE_VIBRATION,
     MAX_FEEDBACK_STYLE
 }SCLFeedbackStyle;
 
 /**@brief  Touch Offset */
-typedef enum _SCLTouchOffsetLevel {
+typedef enum LIBSCL_EXPORT_API _SCLTouchOffsetLevel {
     TOUCH_OFFSET_LEVEL_1,
     TOUCH_OFFSET_LEVEL_2,
     TOUCH_OFFSET_LEVEL_3,
@@ -316,7 +321,7 @@ typedef enum _SCLTouchOffsetLevel {
 #define MAX_SIZE_OF_SUBLAYOUT_STRING 32
 
 /**@brief  Window Decorator Images */
-typedef enum _SCLWindowDecorator {
+typedef enum LIBSCL_EXPORT_API _SCLWindowDecorator {
     WND_DECORATOR_TOP_LEFT,
     WND_DECORATOR_TOP_CENTER,
     WND_DECORATOR_TOP_RIGHT,
@@ -329,7 +334,7 @@ typedef enum _SCLWindowDecorator {
 }SCLWindowDecorator;
 
 /**@brief  Highligh moving direction */
-typedef enum _SCLHighlightNavigationDirection {
+typedef enum LIBSCL_EXPORT_API _SCLHighlightNavigationDirection {
     HIGHLIGHT_NAVIGATE_NONE,
     HIGHLIGHT_NAVIGATE_LEFT,
     HIGHLIGHT_NAVIGATE_RIGHT,
@@ -339,7 +344,7 @@ typedef enum _SCLHighlightNavigationDirection {
 }SCLHighlightNavigationDirection;
 
 /**@brief  SCL Notification to ISEs */
-typedef enum _SCLUINotiType {
+typedef enum LIBSCL_EXPORT_API _SCLUINotiType {
     SCL_UINOTITYPE_POPUP_OPENING,
     SCL_UINOTITYPE_POPUP_OPENED,
     SCL_UINOTITYPE_POPUP_CLOSING,
@@ -352,7 +357,7 @@ typedef enum _SCLUINotiType {
 }SCLUINotiType;
 
 /**@brief  Current dragging state */
-typedef enum _SCLDragState {
+typedef enum LIBSCL_EXPORT_API _SCLDragState {
     SCL_DRAG_STATE_NONE,
     SCL_DRAG_STATE_LEFT,
     SCL_DRAG_STATE_RIGHT,
@@ -363,7 +368,7 @@ typedef enum _SCLDragState {
     SCL_DRAG_STATE_MAX,
 } SCLDragState;
 
-typedef enum _SCLMultitouchType {
+typedef enum LIBSCL_EXPORT_API _SCLMultitouchType {
     SCL_MULTI_TOUCH_TYPE_EXCLUSIVE,			/* On a new PRESS event, previous touch events will be forcefully released */
     SCL_MULTI_TOUCH_TYPE_SETTLE_PREVIOUS,	/* On a new PRESS event, previous touch events will be forcefully settled */
     SCL_MULTI_TOUCH_TYPE_COOPERATIVE,		/* New touch events do not affect previous touch events */
@@ -371,7 +376,7 @@ typedef enum _SCLMultitouchType {
 } SCLMultiTouchType;
 
 /* Shift flag */
-typedef enum _SCLShiftState {
+typedef enum LIBSCL_EXPORT_API _SCLShiftState {
     SCL_SHIFT_STATE_OFF,
     SCL_SHIFT_STATE_ON,
     SCL_SHIFT_STATE_LOCK,
@@ -379,7 +384,7 @@ typedef enum _SCLShiftState {
 } SCLShiftState;
 
 /* Shift Multi-touch state */
-typedef enum _SCLShiftMultitouchState {
+typedef enum LIBSCL_EXPORT_API _SCLShiftMultitouchState {
     SCL_SHIFT_MULTITOUCH_OFF,				/* Shift button is set to OFF state */
     SCL_SHIFT_MULTITOUCH_ON_PRESSED,		/* When OFF state, shift button is just pressed  */
     SCL_SHIFT_MULTITOUCH_ON_KEY_ENTERED,	/* While the shift button is in pressed state, another key was entered  */
@@ -389,13 +394,13 @@ typedef enum _SCLShiftMultitouchState {
 } SCLShiftMultitouchState;
 
 /* UI Parser types */
-typedef enum _SCLParserType {
+typedef enum LIBSCL_EXPORT_API _SCLParserType {
     SCL_PARSER_TYPE_XML,
     SCL_PARSER_TYPE_BINARY_XML,
 } SCLParserType;
 
 /* Starting Coordinates Options */
-typedef enum _SCLStartingCoordinatesOption {
+typedef enum LIBSCL_EXPORT_API _SCLStartingCoordinatesOption {
     SCL_STARTING_COORDINATES_OPTION_ALL,			/* Draw everything relative to the starting coordinate */
     SCL_STARTING_COORDINATES_OPTION_BUTTONS_ONLY,	/* Affect starting coordinates only to the buttons */
 } SCLStartingCoordinatesOption;
@@ -459,7 +464,7 @@ typedef enum _SCLStartingCoordinatesOption {
 #define SCL_ANIMATION_TIMER_INTERVAL (1000 / 30) // 30 frames per second
 #define SCL_ANIMATION_TIME 300 // Animation for 300 ms
 
-typedef enum _SCLDebugMode {
+typedef enum LIBSCL_EXPORT_API _SCLDebugMode {
     DEBUGMODE_DISABLED,
     DEBUGMODE_DISPLAY_INTERNAL,
     DEBUGMODE_AUTOTEST,

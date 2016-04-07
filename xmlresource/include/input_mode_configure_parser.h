@@ -19,9 +19,14 @@
 #define __INPUT_MODE_PARSER__H__
 #include "sclres_type.h"
 
+#ifndef LIBSCL_EXPORT_API
+#define LIBSCL_EXPORT_API 
+#endif // LIBSCL_EXPORT_API
+
+
 class InputModeConfigureParserImpl;
 
-class InputModeConfigParser {
+class LIBSCL_EXPORT_API InputModeConfigParser {
     InputModeConfigureParserImpl *m_impl;
     public:
         int init(const char* file);

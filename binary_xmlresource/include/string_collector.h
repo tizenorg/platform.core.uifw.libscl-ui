@@ -19,7 +19,12 @@
 #define __NEW_STRING_COLLECTOR_H__
 #include <vector>
 #include "istring_collector.h"
-class StringCollector: public IStringCollector{
+
+#ifndef LIBSCL_EXPORT_API
+#define LIBSCL_EXPORT_API 
+#endif // LIBSCL_EXPORT_API
+
+class LIBSCL_EXPORT_API StringCollector: public IStringCollector{
     public:
         StringCollector() {
         }

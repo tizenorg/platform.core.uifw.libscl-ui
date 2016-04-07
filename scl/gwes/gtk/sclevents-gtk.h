@@ -23,9 +23,14 @@
 #ifndef __SCL_EVENTS_GTK_H__
 #define __SCL_EVENTS_GTK_H__
 
+#ifndef LIBSCL_EXPORT_API
+#define LIBSCL_EXPORT_API 
+#endif // LIBSCL_EXPORT_API
+
+
 namespace scl
 {
-class CSCLEventsImplGtk : public CSCLEventsImpl
+class LIBSCL_EXPORT_API CSCLEventsImplGtk : public CSCLEventsImpl
 {
 public :
     CSCLEventsImplGtk();

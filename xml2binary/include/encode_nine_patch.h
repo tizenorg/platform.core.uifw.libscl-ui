@@ -19,8 +19,13 @@
 #define __ENCODE_NINE_PATCH_H__
 #include "imetadata_helper.h"
 #include "resource_storage_impl.h"
-int encode_nine_patch_file(ResourceStorage& storage, IMetaData_Helper& metadata);
 
-int encode_nine_patch_file(const char* file, int& offset, IMetaData_Helper& metadata);
-int encode_nine_patch_file(const char* file, IMetaData_Helper& metadata);
+#ifndef LIBSCL_EXPORT_API
+#define LIBSCL_EXPORT_API 
+#endif // LIBSCL_EXPORT_API
+
+LIBSCL_EXPORT_API int encode_nine_patch_file(ResourceStorage& storage, IMetaData_Helper& metadata);
+
+LIBSCL_EXPORT_API int encode_nine_patch_file(const char* file, int& offset, IMetaData_Helper& metadata);
+LIBSCL_EXPORT_API int encode_nine_patch_file(const char* file, IMetaData_Helper& metadata);
 #endif

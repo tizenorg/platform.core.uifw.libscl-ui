@@ -28,6 +28,11 @@
 //SCL_BEGIN_DECLS
 #endif
 
+#ifndef LIBSCL_EXPORT_API
+#define LIBSCL_EXPORT_API 
+#endif // LIBSCL_EXPORT_API
+
+
 namespace scl
 {
 
@@ -63,7 +68,7 @@ typedef struct {
 }SclAnimationState;
 
 
-class CSCLAnimatorImpl
+class LIBSCL_EXPORT_API CSCLAnimatorImpl
 {
 public:
     virtual void init() = 0;
@@ -78,7 +83,7 @@ public:
 private:
 };
 
-class CSCLAnimator
+class LIBSCL_EXPORT_API CSCLAnimator
 {
 private:
     CSCLAnimator();

@@ -19,11 +19,16 @@
 #define __AutoPopupConfigParser__H__
 #include "sclres_type.h"
 
+#ifndef LIBSCL_EXPORT_API
+#define LIBSCL_EXPORT_API 
+#endif // LIBSCL_EXPORT_API
+
+
 typedef SclAutoPopupConfigure *PSclAutoPopupConfigure;
 
 class AutoPopupConfigureParserImpl;
 
-class AutoPopupConfigParser {
+class LIBSCL_EXPORT_API AutoPopupConfigParser {
     AutoPopupConfigureParserImpl *m_impl;
     public:
         int init(const char* file);

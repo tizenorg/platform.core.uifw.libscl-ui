@@ -23,7 +23,12 @@
 #include "file_storage_impl.h"
 #include "_auto_metadata.h"
 
-class BinAutoPopupConfigParser {
+#ifndef LIBSCL_EXPORT_API
+#define LIBSCL_EXPORT_API 
+#endif // LIBSCL_EXPORT_API
+
+
+class LIBSCL_EXPORT_API BinAutoPopupConfigParser {
 public:
     ~BinAutoPopupConfigParser();
     static BinAutoPopupConfigParser *get_instance();

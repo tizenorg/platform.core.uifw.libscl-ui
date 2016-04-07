@@ -20,9 +20,14 @@
 #ifndef __SCL_GRAPHICS_WIN32_H__
 #define __SCL_GRAPHICS_WIN32_H__
 
+#ifndef LIBSCL_EXPORT_API
+#define LIBSCL_EXPORT_API 
+#endif // LIBSCL_EXPORT_API
+
+
 namespace scl
 {
-class CSCLGraphicsImplWin32 : public CSCLGraphicsImpl
+class LIBSCL_EXPORT_API CSCLGraphicsImplWin32 : public CSCLGraphicsImpl
 {
 public :
     void draw_image(sclchar *imgPath);

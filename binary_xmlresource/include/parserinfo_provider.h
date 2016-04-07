@@ -21,7 +21,12 @@
 #include "istring_provider.h"
 #include "imetadata_provider.h"
 
-class ParserInfo_Provider: public IParserInfo_Provider{
+#ifndef LIBSCL_EXPORT_API
+#define LIBSCL_EXPORT_API 
+#endif // LIBSCL_EXPORT_API
+
+
+class LIBSCL_EXPORT_API ParserInfo_Provider: public IParserInfo_Provider{
     public:
         ParserInfo_Provider(IMetadata_Provider* metadataProvider,
                             const IString_Provider* stringProvider) :m_metadataProvider(metadataProvider),

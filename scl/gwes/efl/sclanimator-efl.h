@@ -22,9 +22,14 @@
 
 #include <Evas.h>
 
+#ifndef LIBSCL_EXPORT_API
+#define LIBSCL_EXPORT_API 
+#endif // LIBSCL_EXPORT_API
+
+
 namespace scl
 {
-class CSCLAnimatorImplEfl : public CSCLAnimatorImpl
+class LIBSCL_EXPORT_API CSCLAnimatorImplEfl : public CSCLAnimatorImpl
 {
 public :
     CSCLAnimatorImplEfl();

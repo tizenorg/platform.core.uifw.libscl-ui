@@ -19,7 +19,12 @@
 #define __SCLRES_MANAGER__
 #include "sclres_type.h"
 
-class SclResParserManager{
+#ifndef LIBSCL_EXPORT_API
+#define LIBSCL_EXPORT_API 
+#endif // LIBSCL_EXPORT_API
+
+
+class LIBSCL_EXPORT_API SclResParserManager{
     public:
         ~SclResParserManager();
         static SclResParserManager* get_instance();

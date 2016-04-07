@@ -22,12 +22,17 @@
 #ifndef __SCL_RESOURCE_CACHE_H__
 #define __SCL_RESOURCE_CACHE_H__
 
+#ifndef LIBSCL_EXPORT_API
+#define LIBSCL_EXPORT_API 
+#endif // LIBSCL_EXPORT_API
+
+
 //SCL_BEGIN_DECLS
 
 namespace scl
 {
 
-typedef struct _SclButtonContext {
+typedef struct LIBSCL_EXPORT_API _SclButtonContext {
     sclboolean used;
     sclbyte multikeyIdx;
     sclboolean toggled;
@@ -39,7 +44,7 @@ typedef struct _SclButtonContext {
 * This class implements all functions for working as a soft-based keyboard
 * In side of ISE developer, they can modify it by their requirements.
 */
-class CSCLResourceCache
+class LIBSCL_EXPORT_API CSCLResourceCache
 {
 private:
     CSCLResourceCache();

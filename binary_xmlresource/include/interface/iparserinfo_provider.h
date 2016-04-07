@@ -28,7 +28,12 @@
     2) use get_string_by_id(string_id);
 */
 #include "istring_provider.h"
-class IParserInfo_Provider: public IString_Provider{
+
+#ifndef LIBSCL_EXPORT_API
+#define LIBSCL_EXPORT_API 
+#endif // LIBSCL_EXPORT_API
+
+class LIBSCL_EXPORT_API IParserInfo_Provider: public IString_Provider{
     public:
         virtual void set_current_metadata_record(const char* record_name) = 0;
         virtual const int get_width(const char* field_name) const = 0;
