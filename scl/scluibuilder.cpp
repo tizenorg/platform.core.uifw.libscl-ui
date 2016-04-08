@@ -561,8 +561,8 @@ CSCLUIBuilder::draw_button_label(const sclwindow window, const scldrawctx draw_c
                     if (coordinate->button_type == BUTTON_TYPE_ROTATION) {
                         SclButtonContext* button_context = cache->get_cur_button_context(window, key_index);
                         if (button_context) {
-                            if (button_context->multikeyIdx < MAX_SIZE_OF_MULTITAP_CHAR) {
-                                label = coordinate->key_value[shift][button_context->multikeyIdx];
+                            if (button_context->multitap_index < MAX_SIZE_OF_MULTITAP_CHAR) {
+                                label = coordinate->key_value[shift][button_context->multitap_index];
                             }
                         }
                     }
@@ -1117,7 +1117,7 @@ CSCLUIBuilder::show_magnifier(const sclwindow window, scldrawctx draw_ctx)
                         } else if (loop == 0) {
                             /* Don't display sublabels of each buttons in magnifier window - this policy can be changed, but for now */
                             if (button_context) {
-                                targetstr = coordinate->label[shift_index][button_context->multikeyIdx];
+                                targetstr = coordinate->label[shift_index][button_context->multitap_index];
                                 targetstr = cache->find_substituted_string(targetstr);
                             }
                         }
