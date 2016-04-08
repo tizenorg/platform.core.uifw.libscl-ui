@@ -111,6 +111,7 @@ protected:
     scllong m_autopopup_key_duration;
 
     scllong m_button_delay_duration;
+    scllong m_multitap_delay_duration;
 
     SCLDebugMode m_debug_mode;
     sclint m_debug_variable;

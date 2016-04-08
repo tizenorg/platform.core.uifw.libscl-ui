@@ -87,6 +87,7 @@ CSCLController::CSCLController()
     m_autopopup_key_duration = SCL_AUTOPOPUP_KEY_DURATION;
 
     m_button_delay_duration = SCL_BUTTON_MIN_DURATION;
+    m_multitap_delay_duration = SCL_MULTITAP_DEFAULT_DURATION;
 
     m_key_repeated_num = 0;
 
@@ -355,11 +356,11 @@ CSCLController::check_magnifier_available(sclwindow window, sclbyte key_index, s
                     }
                     if (!custom_label) {
                         //if (coordinate->key_value[shift_index][button_context->multikeyIdx] == NULL) {
-                        if (coordinate->label[shift_index][button_context->multikeyIdx] == NULL) {
+                        if (coordinate->label[shift_index][button_context->multitap_index] == NULL) {
                             //utils->log("show_magnifier coordinate->key_value[shift][button_context->multikeyIdx] == NULL \n");
                             ret = FALSE;
                             //} else if (strlen(coordinate->key_value[shift_index][button_context->multikeyIdx]) == 0) {
-                        } else if (strlen(coordinate->label[shift_index][button_context->multikeyIdx]) == 0) {
+                        } else if (strlen(coordinate->label[shift_index][button_context->multitap_index]) == 0) {
                             //utils->log("show_magnifier coordinate->key_value[shift][button_context->multikeyIdx]) == 0 \n");
                             ret = FALSE;
                         }
@@ -713,7 +714,7 @@ CSCLController::process_button_pressed_event(sclwindow window, sclint x, sclint 
             //}
             /* BUTTON_TYPE_MULTITAP type button should restore its multikey index when another button is clicked */
             if (coordinate->button_type & BUTTON_TYPE_MULTITAP) {
-                button_context->multikeyIdx = 0;
+                button_context->multitap_index = 0;
             }
         }
 
@@ -756,6 +757,7 @@ CSCLController::process_button_long_pressed_event(sclwindow window, sclbyte key_
     assert(sclres_layout != NULL);
     if (context && cache && handler && windows && state) {
         const SclLayoutKeyCoordinate* coordinate = cache->get_cur_layout_key_coordinate(window, key_index);
+        SclButtonContext *button_context = cache->get_cur_button_context(window, key_index);
 
         /* Should return FALSE if this key does not have any longkey related property */
         if (coordinate) {
@@ -957,6 +959,9 @@ CSCLController::process_button_long_pressed_event(sclwindow window, sclbyte key_
         }
         if (ret) {
             context->set_cur_key_modifier(touch_id, KEY_MODIFIER_LONGKEY);
+            if (coordinate->button_type & BUTTON_TYPE_MULTITAP) {
+                button_context->multitap_index = 0;
+            }
         }
     }
     /* Longkey processing in here */
@@ -1400,12 +1405,12 @@ CSCLController::process_button_over_event(sclwindow window, sclint x, sclint y, 
                 if (layout) {
                     if (coordinate->key_type != KEY_TYPE_NONE) {
                         if (context->get_tts_enabled()) {
-                            const sclchar *targetstr = coordinate->hint_string[shift_index][button_context->multikeyIdx];
+                            const sclchar *targetstr = coordinate->hint_string[shift_index][button_context->multitap_index];
                             if (targetstr == NULL) {
                                 targetstr = coordinate->label[shift_index][0];
                             }
                             if (targetstr == NULL) {
-                                targetstr = coordinate->key_value[shift_index][button_context->multikeyIdx];
+                                targetstr = coordinate->key_value[shift_index][button_context->multitap_index];
                             }
                             /*if(state->get_cur_action_state() == ACTION_STATE_BASE_LONGKEY ||
                                 state->get_cur_action_state() == ACTION_STATE_POPUP_LONGKEY ) {
@@ -1764,21 +1769,25 @@ CSCLController::process_button_release_event(sclwindow window, sclint x, sclint 
                         } else {
                             key_modifier = KEY_MODIFIER_NONE;
                         }
-                        if (button_context->multikeyIdx < MAX_SIZE_OF_MULTITAP_CHAR) {
-                            key_event_desc.key_value = coordinate->key_value[shift_index][button_context->multikeyIdx];
-                            key_event_desc.key_event = coordinate->key_event[shift_index][button_context->multikeyIdx];
+                        if (button_context->multitap_index < MAX_SIZE_OF_MULTITAP_CHAR) {
+                            key_event_desc.key_value = coordinate->key_value[shift_index][button_context->multitap_index];
+                            key_event_desc.key_event = coordinate->key_event[shift_index][button_context->multitap_index];
                             key_event_desc.key_modifier = key_modifier;
-                            handler->on_event_key_clicked(key_event_desc);
+                            if (SCL_EVENT_PASS_ON == handler->on_event_key_clicked(key_event_desc)) {
+                                CSCLEvents *events = CSCLEvents::get_instance();
+                                events->destroy_timer(SCL_TIMER_MULTITAP);
+                                events->create_timer(SCL_TIMER_MULTITAP, m_multitap_delay_duration, 0);
+                            }
                         }
                         /* Check if the multikey index is in valid range, and increase by one */
-                        if (button_context->multikeyIdx >= MAX_SIZE_OF_MULTITAP_CHAR - 1) {
-                            button_context->multikeyIdx = 0;
+                        if (button_context->multitap_index >= MAX_SIZE_OF_MULTITAP_CHAR - 1) {
+                            button_context->multitap_index = 0;
                         } else {
-                            sclbyte orgindex = button_context->multikeyIdx;
-                            button_context->multikeyIdx = 0;
+                            sclbyte orgindex = button_context->multitap_index;
+                            button_context->multitap_index = 0;
                             if (targetCoordinate->key_value[shift_index][orgindex + 1]) {
                                 if (strlen(targetCoordinate->key_value[shift_index][orgindex + 1]) > 0) {
-                                    button_context->multikeyIdx = orgindex + 1;
+                                    button_context->multitap_index = orgindex + 1;
                                 }
                             }
                         }
@@ -1923,8 +1932,8 @@ CSCLController::process_button_release_event(sclwindow window, sclint x, sclint 
                 SclUIEventDesc key_event_desc;
                 key_event_desc.key_type = targetCoordinate->key_type;
 
-                key_event_desc.key_value = targetCoordinate->key_value[shift_index][button_context->multikeyIdx];
-                key_event_desc.key_event = targetCoordinate->key_event[shift_index][button_context->multikeyIdx];
+                key_event_desc.key_value = targetCoordinate->key_value[shift_index][button_context->multitap_index];
+                key_event_desc.key_event = targetCoordinate->key_event[shift_index][button_context->multitap_index];
                 key_event_desc.key_modifier = key_modifier;
 
                 key_event_desc.event_type = EVENT_TYPE_RELEASE;
@@ -2082,6 +2091,7 @@ CSCLController::mouse_press(sclwindow window, sclint x, sclint y, scltouchdevice
         events->destroy_timer(SCL_TIMER_SHORT_LONGKEY);
         events->destroy_timer(SCL_TIMER_LONGKEY);
         events->destroy_timer(SCL_TIMER_REPEATKEY);
+        events->destroy_timer(SCL_TIMER_MULTITAP);
 
         /* Do what has to be done when mouse gets pressed */
         handle_engine_signal(SCL_SIG_MOUSE_PRESS, window);
@@ -3509,6 +3519,16 @@ CSCLController::timer_event(const scl32 data)
             closed_desc.timed_out = desc.timed_out;
             handler->on_event_notification(SCL_UINOTITYPE_POPUP_CLOSED, &desc);
         }
+        events->destroy_timer(id);
+        return FALSE;
+    }
+    break;
+    case SCL_TIMER_MULTITAP: {
+        SclUIEventDesc key_event_desc;
+        key_event_desc.event_type = EVENT_TYPE_RELEASE;
+        key_event_desc.key_modifier = KEY_MODIFIER_MULTITAP_RELEASE;
+        handler->on_event_key_clicked(key_event_desc);
+
         events->destroy_timer(id);
         return FALSE;
     }
