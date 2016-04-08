@@ -69,8 +69,6 @@ make %{?jobs:-j%jobs}
 
 %install
 rm -rf %{buildroot}
-mkdir -p %{buildroot}/usr/share/license
-cp LICENSE %{buildroot}/usr/share/license/%{name}
 
 %make_install
 
@@ -85,7 +83,7 @@ cp LICENSE %{buildroot}/usr/share/license/%{name}
 %defattr(-,root,root,-)
 %{_libdir}/libscl-ui.so
 %{_datadir}/libscl-ui/metadata.xml
-/usr/share/license/%{name}
+%license LICENSE
 
 %files devel
 %defattr(-,root,root,-)
