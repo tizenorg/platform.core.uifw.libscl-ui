@@ -108,6 +108,7 @@ typedef enum _SCLKeyModifier {
     KEY_MODIFIER_LONGKEY,						/**< longkey event */
     KEY_MODIFIER_MULTITAP_START,				/**< multitap started */
     KEY_MODIFIER_MULTITAP_REPEAT,				/**< multitap repeated */
+    KEY_MODIFIER_MULTITAP_RELEASE,				/**< multitap repeated */
 
     KEY_MODIFIER_DIRECTION_LEFT,				/**< drag left */
     KEY_MODIFIER_DIRECTION_RIGHT,				/**< drag right */
@@ -286,6 +287,7 @@ typedef enum _SCLTimer {
     SCL_TIMER_POPUP_TIMEOUT,
     SCL_TIMER_ANIMATION,
     SCL_TIMER_AUTOTEST,
+    SCL_TIMER_MULTITAP,
 }SCLTimer;
 
 /**@brief  Feedback style */
@@ -425,6 +427,7 @@ typedef enum _SCLStartingCoordinatesOption {
 #define SCL_REPEATKEY_MIN_DURATION 50
 
 #define SCL_BUTTON_MIN_DURATION 100
+#define SCL_MULTITAP_DEFAULT_DURATION 3000
 
 #define SCL_DIRECTION_RECOG_DIST 60
 #define SCL_DIRECTION_RECOG_DIST_SIDE 20

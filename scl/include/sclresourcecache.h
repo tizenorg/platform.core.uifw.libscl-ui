@@ -29,7 +29,7 @@ namespace scl
 
 typedef struct _SclButtonContext {
     sclboolean used;
-    sclbyte multikeyIdx;
+    sclbyte multitap_index;
     sclboolean toggled;
     SCLButtonState state;
 } SclButtonContext;
