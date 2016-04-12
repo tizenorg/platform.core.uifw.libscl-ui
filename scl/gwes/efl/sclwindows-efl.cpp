@@ -573,7 +573,16 @@ CSCLWindowsImplEfl::hide_window(const sclwindow window,  sclboolean fForce)
                 if (window == windows->get_nth_popup_window(SCL_WINDOW_Z_TOP)) {
                     evas_object_move(win, -10000, -10000);
                 } else {
+#ifdef WAYLAND
+                    /* Under wayland environment, the visibility of keyboard window is controlled by
+                     * wayland server, so it is not allowed to call evas_object_hide() for keyboard window
+                     * directly on the keyboard side */
+                    if (win != windows->get_base_window()) {
+                        evas_object_hide(win);
+                    }
+#else
                     evas_object_hide(win);
+#endif
                 }
             }
         }
