@@ -277,12 +277,14 @@ Eina_Bool mouse_press(void *data, int type, void *event_info)
 #endif
         sclboolean is_scl_window = FALSE;
 #ifdef WAYLAND
+        sclboolean is_magnifier_window = FALSE;
         wl_base_window = elm_win_wl_window_get(static_cast<Evas_Object*>(windows->get_base_window()));
         wl_magnifier_window = (elm_win_wl_window_get(static_cast<Evas_Object*>(windows->get_magnifier_window())));
         if (wl_base_window && (unsigned int)ecore_wl_window_id_get(wl_base_window) == ev->window) {
             is_scl_window = TRUE;
         } else if (wl_magnifier_window && (unsigned int)ecore_wl_window_id_get(wl_magnifier_window) == ev->window) {
             is_scl_window = TRUE;
+            is_magnifier_window = TRUE;
 #else
         if (elm_win_xwindow_get(static_cast<Evas_Object*>(windows->get_base_window())) == ev->window) {
             is_scl_window = TRUE;
@@ -323,8 +325,18 @@ Eina_Bool mouse_press(void *data, int type, void *event_info)
                     windows->get_window_rect(window, &(window_context->geometry));
                     if (get_window_rect(window, &rect)) {
 #ifdef WAYLAND
-                        int root_x = ev->x + rect.x;
-                        int root_y = ev->y + rect.y;
+                        int root_x = 0;
+                        int root_y = 0;
+                        if (is_magnifier_window) {
+                            SclRectangle magnifier_rect = { 0, 0, 0, 0 };
+                            if (get_window_rect(windows->get_magnifier_window(), &magnifier_rect)) {
+                                root_x = ev->x + magnifier_rect.x;
+                                root_y = ev->y + magnifier_rect.y;
+                            }
+                        } else {
+                            root_x = ev->x + rect.x;
+                            root_y = ev->y + rect.y;
+                        }
                         if (window_context->is_virtual) {
                             apply_virtual_offset(rect, &root_x, &root_y);
                         }
@@ -458,8 +470,21 @@ Eina_Bool mouse_release(void *data, int type, void *event_info)
                         windows->get_window_rect(window, &(window_context->geometry));
                         if (get_window_rect(window, &rect)) {
 #ifdef WAYLAND
-                            int root_x = ev->x + rect.x;
-                            int root_y = ev->y + rect.y;
+                            int root_x = 0;
+                            int root_y = 0;
+                            Ecore_Wl_Window *wl_magnifier_window =
+                                (elm_win_wl_window_get(static_cast<Evas_Object*>(windows->get_magnifier_window())));
+                            if (wl_magnifier_window &&
+                                (unsigned int)ecore_wl_window_id_get(wl_magnifier_window) == ev->window) {
+                                SclRectangle magnifier_rect = { 0, 0, 0, 0 };
+                                if (get_window_rect(windows->get_magnifier_window(), &magnifier_rect)) {
+                                    root_x = ev->x + magnifier_rect.x;
+                                    root_y = ev->y + magnifier_rect.y;
+                                }
+                            } else {
+                                root_x = ev->x + rect.x;
+                                root_y = ev->y + rect.y;
+                            }
                             if (window_context->is_virtual) {
                                 apply_virtual_offset(rect, &root_x, &root_y);
                             }
@@ -673,15 +698,27 @@ Eina_Bool mouse_move(void *data, int type, void *event_info)
                 rect.width = winheight;
             }
 #ifdef WAYLAND
-            int root_x = ev->x + rect.x;
-            int root_y = ev->y + rect.y;
+            int root_x = 0;
+            int root_y = 0;
 
-            Ecore_Wl_Window *wl_base_window = elm_win_wl_window_get(static_cast<Evas_Object*>(windows->get_base_window()));
+            Ecore_Wl_Window *wl_base_window =
+                elm_win_wl_window_get(static_cast<Evas_Object*>(windows->get_base_window()));
+            Ecore_Wl_Window  *wl_magnifier_window =
+                (elm_win_wl_window_get(static_cast<Evas_Object*>(windows->get_magnifier_window())));
             if (wl_base_window && (unsigned int)ecore_wl_window_id_get(wl_base_window) == ev->window) {
                 SclRectangle base_rect;
                 get_window_rect(windows->get_base_window(), &base_rect);
                 root_x = ev->x + base_rect.x;
                 root_y = ev->y + base_rect.y;
+            } else if (wl_magnifier_window && (unsigned int)ecore_wl_window_id_get(wl_magnifier_window) == ev->window) {
+                SclRectangle magnifier_rect = { 0, 0, 0, 0 };
+                if (get_window_rect(windows->get_magnifier_window(), &magnifier_rect)) {
+                    root_x = ev->x + magnifier_rect.x;
+                    root_y = ev->y + magnifier_rect.y;
+                }
+            } else {
+                root_x = ev->x + rect.x;
+                root_y = ev->y + rect.y;
             }
 #else
             int root_x = ev->root.x;
