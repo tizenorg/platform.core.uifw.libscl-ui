@@ -1,21 +1,18 @@
 %bcond_with x
 %bcond_with wayland
 
-%define _optdir /opt
-%define _appdir %{_optdir}/apps
-
 Name:       libscl-ui
 Summary:    A library for developing XML-based software keyboards
 Version:    0.6.17
 Release:    1
 Group:      Graphics & UI Framework/Input
 License:    Apache-2.0
-Source0:    libscl-ui-%{version}.tar.gz
-BuildRequires:  gettext-tools
+Source0:    %{name}-%{version}.tar.gz
 BuildRequires:  cmake
 BuildRequires:  pkgconfig(elementary)
 %if %{with wayland}
 %else
+BuildRequires:  pkgconfig(ecore-x)
 BuildRequires:  pkgconfig(x11)
 %endif
 BuildRequires:  pkgconfig(vconf)
@@ -30,7 +27,7 @@ BuildRequires:  pkgconfig(libscl-common)
 A library that helps developing S/W Keyboard
 
 %package devel
-Summary:    SCL header file
+Summary:    SCL UI header file
 Group:      Development/Libraries
 Requires:   %{name} = %{version}-%{release}
 
