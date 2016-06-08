@@ -229,7 +229,7 @@ void gestures_tracker_register()
 
         eldbus_init();
         LOGD("Registering callback for GestureDetected signal");
-        if (!(conn = eldbus_address_connection_get("unix:path=/var/run/dbus/system_bus_socket"))) {
+        if (!(conn = eldbus_connection_get(ELDBUS_CONNECTION_TYPE_SYSTEM))) {
                 LOGD("Error: Unable to get system bus");
                 return;
         }
