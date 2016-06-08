@@ -1068,7 +1068,13 @@ CSCLUIImpl::set_cur_sublayout(const sclchar *sub_layout_name)
         CSCLWindows *windows = CSCLWindows::get_instance();
         if (context && windows) {
             ret = context->set_cur_sublayout(sub_layout_name);
-            windows->update_window(windows->get_base_window());
+            SclWindowContext *window_context = windows->get_window_context(windows->get_base_window());
+            if (window_context) {
+                if (!(window_context->hidden)) {
+                    /* Update main window only when it is in visible state */
+                    windows->update_window(windows->get_base_window());
+                }
+            }
         }
     }
     return ret;
@@ -1106,7 +1112,13 @@ CSCLUIImpl::set_string_substitution(const sclchar *original, const sclchar *subs
         CSCLResourceCache *cache = CSCLResourceCache::get_instance();
         if (cache && windows) {
             cache->set_string_substitution(original, substitute);
-            windows->update_window(windows->get_base_window());
+            SclWindowContext *window_context = windows->get_window_context(windows->get_base_window());
+            if (window_context) {
+                if (!(window_context->hidden)) {
+                    /* Update main window only when it is in visible state */
+                    windows->update_window(windows->get_base_window());
+                }
+            }
         }
     }
 }
@@ -1119,7 +1131,13 @@ CSCLUIImpl::unset_string_substitution(const sclchar *original)
         CSCLResourceCache *cache = CSCLResourceCache::get_instance();
         if (cache && windows) {
             cache->unset_string_substitution(original);
-            windows->update_window(windows->get_base_window());
+            SclWindowContext *window_context = windows->get_window_context(windows->get_base_window());
+            if (window_context) {
+                if (!(window_context->hidden)) {
+                    /* Update main window only when it is in visible state */
+                    windows->update_window(windows->get_base_window());
+                }
+            }
         }
     }
 }
