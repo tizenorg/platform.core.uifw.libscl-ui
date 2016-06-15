@@ -80,20 +80,18 @@ SclLog::log(enum LOG_LEVEL level, char* fmt, ...) {
      * log current time
      */
     time_t now;
-    struct tm *timenow = NULL;
+    struct tm timenow;
 
     time(&now);
-    localtime_r(&now, timenow);
+    localtime_r(&now, &timenow);
 
-    if (timenow) {
-        char buf[64] = { 0 };
-        asctime_r(timenow, buf);
+    char buf[64] = { 0 };
+    asctime_r(&timenow, buf);
 
-        fprintf(m_flog, "[ %s ] %s\n", log_message[level], buf);
-        fprintf(m_flog, "\t%s\n", str_log);
+    fprintf(m_flog, "[ %s ] %s\n", log_message[level], buf);
+    fprintf(m_flog, "\t%s\n", str_log);
 
-        fflush(m_flog);
-    }
+    fflush(m_flog);
 }
 
 void

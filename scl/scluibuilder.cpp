@@ -961,6 +961,9 @@ CSCLUIBuilder::show_magnifier(const sclwindow window, scldrawctx draw_ctx)
     CSCLUtils *utils = CSCLUtils::get_instance();
     CSCLContext *context = CSCLContext::get_instance();
     CSCLResourceCache *cache = CSCLResourceCache::get_instance();
+
+    if (!utils || !context || !cache) return FALSE;
+
     sclwindow pressed_window = context->get_cur_pressed_window(context->get_last_touch_device_id());
     scl8 pressed_key = context->get_cur_pressed_key(context->get_last_touch_device_id());
 

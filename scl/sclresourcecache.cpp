@@ -1441,7 +1441,6 @@ CSCLResourceCache::clone_keyproperties(SclPrivateKeyProperties* priv, sclbyte in
 
     SCL_DEBUG();
     if (priv && sclres_layout_key_coordinate_pointer_frame) {
-        CSCLResourceCache *cache = CSCLResourceCache::get_instance();
         clear_privatekeyproperties(priv);
 
         /* gets the value of the previous key properties */
@@ -1458,7 +1457,10 @@ CSCLResourceCache::clone_keyproperties(SclPrivateKeyProperties* priv, sclbyte in
         scl_assert_return(keyCoordinate.valid == TRUE);
 
         /* Sets the default properties base on the properties values of the given context */
-        cache->copy_to_privatekeyproperties(&keyCoordinate, priv);
+        CSCLResourceCache *cache = CSCLResourceCache::get_instance();
+        if (cache) {
+            cache->copy_to_privatekeyproperties(&keyCoordinate, priv);
+        }
     }
 }
 

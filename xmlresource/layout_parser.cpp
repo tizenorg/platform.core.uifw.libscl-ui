@@ -776,7 +776,7 @@ LayoutParserImpl::parsing_layout_row_node(
         SclLayoutKeyCoordinatePointer **cur_key) {
     assert(cur_node != NULL);
 
-    Row row;
+    Row row = {0};
     if (row_y) {
         set_default_row_value(&row, cur_rec_layout, *row_y);
     }
@@ -1127,14 +1127,16 @@ LayoutParserImpl::parsing_key_value_record_node(
                 for (int shift_loop = 0;shift_loop < SCL_SHIFT_STATE_MAX;shift_loop++) {
                     if ((shift_state == shift_loop || shift_state == -1)) {
                         xmlChar* key = xmlNodeGetContent(child_node);
-                        cur_rec->key_value[shift_loop][multichar_state] = (sclchar*)key;
-                        if (auto_upper) {
-                            if (xmlStrlen(key) == 1 && shift_loop != SCL_SHIFT_STATE_OFF) {
-                                /* Let's manipulate the string for auto_upper */
-                                *key = toupper(*(cur_rec->key_value[SCL_SHIFT_STATE_OFF][multichar_state]));
+                        if (key) {
+                            cur_rec->key_value[shift_loop][multichar_state] = (sclchar*)key;
+                            if (auto_upper) {
+                                if (xmlStrlen(key) == 1 && shift_loop != SCL_SHIFT_STATE_OFF) {
+                                    /* Let's manipulate the string for auto_upper */
+                                    *key = toupper(*(cur_rec->key_value[SCL_SHIFT_STATE_OFF][multichar_state]));
+                                }
                             }
+                            add_key_string(key);
                         }
-                        add_key_string(key);
                     }
                 }
             }

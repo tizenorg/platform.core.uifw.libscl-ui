@@ -907,7 +907,7 @@ CSCLController::process_button_long_pressed_event(sclwindow window, sclbyte key_
                             SclPoint pos = {0, 0};
 
                             const SclLayout* layout = cache->get_cur_layout(window);
-                            if (layout) {
+                            if (utils && layout) {
                                 sclint scnWidth, scnHeight;
                                 utils->get_screen_resolution(&scnWidth, &scnHeight);
 
@@ -959,8 +959,10 @@ CSCLController::process_button_long_pressed_event(sclwindow window, sclbyte key_
         }
         if (ret) {
             context->set_cur_key_modifier(touch_id, KEY_MODIFIER_LONGKEY);
-            if (coordinate->button_type & BUTTON_TYPE_MULTITAP) {
-                button_context->multitap_index = 0;
+            if (coordinate && button_context) {
+                if (coordinate->button_type & BUTTON_TYPE_MULTITAP) {
+                    button_context->multitap_index = 0;
+                }
             }
         }
     }

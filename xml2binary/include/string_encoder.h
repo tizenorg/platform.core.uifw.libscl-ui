@@ -27,11 +27,11 @@ const int MAX_NUM_WIDTH = 4;
 class String_Encoder:public IString_Encoder{
     public:
         String_Encoder() {
-            m_file = NULL;
+            m_file.clear();
         }
 
         void set_path(const char* file) {
-            this->m_file = file;
+            m_file = file;
         }
 
         /* @ insert str to string vector */
@@ -56,13 +56,13 @@ class String_Encoder:public IString_Encoder{
         int encode() const {
             ResourceStorage storage;
             encode(storage);
-            storage.toFile(m_file);
+            storage.toFile(m_file.c_str());
             return storage.get_size();
         }
         int encode(int& offset) const {
             ResourceStorage storage;
             encode(storage);
-            storage.toFile(m_file, offset);
+            storage.toFile(m_file.c_str(), offset);
 
             return storage.get_size();
         }
@@ -82,6 +82,6 @@ class String_Encoder:public IString_Encoder{
 
     private:
         std::vector<std::string> m_vec_string;
-        const char* m_file;
+        std::string m_file;
 };
 #endif

@@ -511,12 +511,13 @@ CSCLWindowsImplEfl::show_window(const sclwindow window, sclboolean queue)
                     &format_return, &nitems_return, &bytes_after_return,
                     &data);
 
-            if (ret == Success) {
-                if ((type_return == XA_WINDOW) && (format_return == 32) && (data)) {
-                    app_window = *(Window *)data;
-                    if (data)
-                        XFree(data);
+            if (data) {
+                if (ret == Success) {
+                    if ((type_return == XA_WINDOW) && (format_return == 32) && (data)) {
+                        app_window = *(Window *)data;
+                    }
                 }
+                XFree(data);
             }
         }
 #endif

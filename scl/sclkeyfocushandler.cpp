@@ -137,7 +137,7 @@ CSCLKeyFocusHandler::popup_closed(sclwindow window)
         scl_check_arrindex(layout, MAX_SCL_LAYOUT) && scl_check_arrindex(m_focus_key, MAX_KEY)) {
             SclLayoutKeyCoordinatePointer cur = sclres_layout_key_coordinate_pointer_frame[layout][m_focus_key];
             SclWindowContext *window_context = windows->get_window_context(m_focus_window);
-            SclRectangle cur_key_coordinate;
+            SclRectangle cur_key_coordinate = {0, 0, 0, 0};
             if (window_context) {
                 cur_key_coordinate.x = cur->x + window_context->geometry.x;
                 cur_key_coordinate.y = cur->y + window_context->geometry.y;
@@ -416,6 +416,9 @@ CSCLKeyFocusHandler::process_navigation(SCLHighlightNavigationDirection directio
     CSCLEventHandler *handler = CSCLEventHandler::get_instance();
     CSCLResourceCache *cache = CSCLResourceCache::get_instance();
     SclResParserManager *sclres_manager = SclResParserManager::get_instance();
+
+    if (!context || !windows || !handler || !cache || !sclres_manager) return;
+
     sclshort layout = NOT_USED;
 
     sclwindow prev_window = m_focus_window;
@@ -441,7 +444,7 @@ CSCLKeyFocusHandler::process_navigation(SCLHighlightNavigationDirection directio
 
         /* To compare with buttons in popup window, let's convert to global coordinates */
         SclWindowContext *window_context = windows->get_window_context(m_focus_window);
-        SclRectangle cur_key_coordinate;
+        SclRectangle cur_key_coordinate = {0, 0, 0, 0};
         if (window_context && cur && cache) {
             cur_key_coordinate.x = cur->x + window_context->geometry.x;
             cur_key_coordinate.y = cur->y + window_context->geometry.y;
@@ -513,7 +516,7 @@ CSCLKeyFocusHandler::process_navigation(SCLHighlightNavigationDirection directio
             SclWindowContext *base_window_context = windows->get_window_context(windows->get_base_window());
             SclWindowContext *popup_window_context = windows->get_window_context(popup_window);
 
-            SclRectangle base_key_coordinate;
+            SclRectangle base_key_coordinate = {0, 0, 0, 0};
             if (base_window_context) {
                 base_key_coordinate.x = base_key->x + base_window_context->geometry.x;
                 base_key_coordinate.y = base_key->y + base_window_context->geometry.y;
