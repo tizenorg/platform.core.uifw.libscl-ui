@@ -868,12 +868,12 @@ void CSCLWindows::set_window_rotation(const sclwindow window, SCLRotation rotati
     SCL_DEBUG();
 
     CSCLWindowsImpl* impl = get_scl_windows_impl();
+    CSCLUtils *utils = CSCLUtils::get_instance();
 
-    if (impl) {
+    if (impl && utils) {
         if (window == NULL) {
             impl->set_window_rotation(m_base_window_context.window, rotation);
             if (SCLWINDOW_INVALID != m_magnifier_window_context.window) {
-                CSCLUtils *utils = CSCLUtils::get_instance();
 
                 SclResParserManager *sclres_manager = SclResParserManager::get_instance();
                 PSclMagnifierWndConfigure magnifier_configure = NULL;

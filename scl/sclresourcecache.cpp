@@ -802,6 +802,8 @@ CSCLResourceCache::remove_private_key(sclint id)
     sclint loop;
     CSCLContext *context = CSCLContext::get_instance();
 
+    if (!context) return;
+
     /* resets the current properties to predefined properties */
     sclshort layout =  context->get_base_layout();
 

@@ -968,20 +968,22 @@ LayoutParserImpl::parsing_label_record_node(
                 for (int shift_loop = 0;shift_loop < SCL_SHIFT_STATE_MAX;shift_loop++) {
                     if ((shift_state == shift_loop || shift_state == -1)) {
                         xmlChar* key = xmlNodeGetContent(child_node);
-                        cur_rec->label[shift_loop][label_for_one_state] = (sclchar*)key;
-                        if (auto_upper) {
-                            if (xmlStrlen(key) == 1 && shift_loop != SCL_SHIFT_STATE_OFF) {
-                                /* Let's manipulate the string for auto_upper */
-                                *key = toupper(*(cur_rec->label[SCL_SHIFT_STATE_OFF][label_for_one_state]));
+                        if (key) {
+                            cur_rec->label[shift_loop][label_for_one_state] = (sclchar*)key;
+                            if (auto_upper) {
+                                if (xmlStrlen(key) == 1 && shift_loop != SCL_SHIFT_STATE_OFF) {
+                                    /* Let's manipulate the string for auto_upper */
+                                    *key = toupper(*(cur_rec->label[SCL_SHIFT_STATE_OFF][label_for_one_state]));
+                                }
                             }
-                        }
-                        /* If current key_value is NULL, let's just consider this label is the default key_value */
-                        if (label_for_one_state == 0) {
-                            if (cur_rec->key_value[shift_loop][label_for_one_state] == NULL) {
-                                cur_rec->key_value[shift_loop][label_for_one_state] = (sclchar*)key;
+                            /* If current key_value is NULL, let's just consider this label is the default key_value */
+                            if (label_for_one_state == 0) {
+                                if (cur_rec->key_value[shift_loop][label_for_one_state] == NULL) {
+                                    cur_rec->key_value[shift_loop][label_for_one_state] = (sclchar*)key;
+                                }
                             }
+                            add_key_string(key);
                         }
-                        add_key_string(key);
                     }
                 }
             }
@@ -1010,8 +1012,10 @@ LayoutParserImpl::parsing_magnifier_label_record_node(
                 for (int shift_loop = 0;shift_loop < SCL_SHIFT_STATE_MAX;shift_loop++) {
                     if ((shift_state == shift_loop || shift_state == -1)) {
                         xmlChar* key = xmlNodeGetContent(child_node);
-                        cur_rec->magnifier_label[shift_loop][label_for_one_state] = (sclchar*)key;
-                        add_key_string(key);
+                        if (key) {
+                            cur_rec->magnifier_label[shift_loop][label_for_one_state] = (sclchar*)key;
+                            add_key_string(key);
+                        }
                     }
                 }
             }
@@ -1039,8 +1043,10 @@ LayoutParserImpl::parsing_hint_string_record_node(
                     for (int shift_loop = 0;shift_loop < SCL_SHIFT_STATE_MAX;shift_loop++) {
                         if ((shift_state == shift_loop || shift_state == -1)) {
                             xmlChar* key = xmlNodeGetContent(child_node);
-                            cur_rec->hint_string[shift_loop][multichar_state] = (sclchar*)key;
-                            add_key_string(key);
+                            if (key) {
+                                cur_rec->hint_string[shift_loop][multichar_state] = (sclchar*)key;
+                                add_key_string(key);
+                            }
                         }
                     }
                 }
@@ -1067,8 +1073,10 @@ LayoutParserImpl::parsing_label_image_record_node(
                     if ((shift_state == shift_loop || shift_state == -1) &&
                         (button_state == button_loop || button_state == -1)) {
                             xmlChar* key = xmlNodeGetContent(child_node);
-                            cur_rec->image_label_path[shift_loop][button_loop] = (sclchar*)key;
-                            add_key_string(key);
+                            if (key) {
+                                cur_rec->image_label_path[shift_loop][button_loop] = (sclchar*)key;
+                                add_key_string(key);
+                            }
                     }
                 }
             }
@@ -1095,8 +1103,10 @@ LayoutParserImpl::parsing_background_image_record_node(
                     if ((shift_state == shift_loop || shift_state == -1) &&
                         (button_state == button_loop || button_state == -1)) {
                             xmlChar* key = xmlNodeGetContent(child_node);
-                            cur_rec->bg_image_path[shift_loop][button_loop] = (sclchar*)key;
-                            add_key_string(key);
+                            if (key) {
+                                cur_rec->bg_image_path[shift_loop][button_loop] = (sclchar*)key;
+                                add_key_string(key);
+                            }
                     }
                 }
             }

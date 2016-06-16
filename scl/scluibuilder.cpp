@@ -849,9 +849,12 @@ CSCLUIBuilder::draw_button_bg_by_layoutimg(const sclwindow window, const scldraw
 
     CSCLContext *context = CSCLContext::get_instance();
     CSCLResourceCache *cache = CSCLResourceCache::get_instance();
+    SclResParserManager *sclres_manager = SclResParserManager::get_instance();
+
+    if (!context || !cache || !sclres_manager) return FALSE;
+
     const SclLayout* layout = cache->get_cur_layout(window);
     const SclLayoutKeyCoordinate* coordinate = cache->get_cur_layout_key_coordinate(window, key_index);
-    SclResParserManager *sclres_manager = SclResParserManager::get_instance();
     PSclModifierDecoration sclres_modifier_decoration = sclres_manager->get_modifier_decoration_table();
     assert(sclres_modifier_decoration != NULL);
 

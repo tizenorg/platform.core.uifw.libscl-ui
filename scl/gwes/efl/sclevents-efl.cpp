@@ -179,17 +179,26 @@ static void gesture_cb(void *data, const Eldbus_Message *msg)
     int g_type;
     static int last_pos_x = -1;
     static int last_pos_y = -1;
+
     if (!msg) {
         LOGD("Incoming message is empty");
         return;
     }
     CSCLController *controller = CSCLController::get_instance();
     CSCLWindows *windows = CSCLWindows::get_instance();
+
     if (!windows || !controller) return;
+
     sclwindow base_window = windows->get_base_window();
     SclWindowContext *window_context = windows->get_window_context(base_window);
-    if (window_context && window_context->hidden) return;
-    LOGD("window_context->geometry.x=%d y=%d w=%d h=%d",window_context->geometry.x, window_context->geometry.y, window_context->geometry.width, window_context->geometry.height);
+
+    if (!window_context) return;
+    if (window_context->hidden) return;
+
+    LOGD("window_context->geometry.x=%d y=%d w=%d h=%d",
+            window_context->geometry.x, window_context->geometry.y,
+            window_context->geometry.width, window_context->geometry.height);
+
     Gesture_Info *info = (Gesture_Info *)calloc(sizeof(Gesture_Info), 1);
     if (!eldbus_message_arguments_get(msg, "iiiiiiu", &g_type, &info->x_beg,
                                       &info->y_beg, &info->x_end, &info->y_end,
@@ -198,9 +207,11 @@ static void gesture_cb(void *data, const Eldbus_Message *msg)
         free(info);
         return;
     }
+
     info->type = (Gesture)g_type;
     LOGD("Incoming gesture name is %d : %d %d %d %d %d", info->type,
          info->x_beg, info->y_beg, info->x_end, info->y_end, info->state);
+
     if (info->type == ONE_FINGER_HOVER || info->type == ONE_FINGER_SINGLE_TAP) {
         if (info->y_beg >= window_context->geometry.y) {
             last_pos_x = info->x_beg;
@@ -208,8 +219,7 @@ static void gesture_cb(void *data, const Eldbus_Message *msg)
             LOGD("hover last_pos_x=%d last_pos_y=%d", last_pos_x, last_pos_y);
             controller->mouse_over(base_window, last_pos_x, last_pos_y);
         }
-    }
-    else if (info->type == ONE_FINGER_DOUBLE_TAP) {
+    } else if (info->type == ONE_FINGER_DOUBLE_TAP) {
         if (info->y_beg >= window_context->geometry.y) {
             last_pos_x = info->x_beg;
             last_pos_y = info->y_beg - window_context->geometry.y;

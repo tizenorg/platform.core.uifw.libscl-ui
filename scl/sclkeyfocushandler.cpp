@@ -508,13 +508,17 @@ CSCLKeyFocusHandler::process_navigation(SCLHighlightNavigationDirection directio
             sclshort base_layout = context->get_base_layout();
             sclshort popup_layout = context->get_popup_layout(popup_window);
 
-            SclLayoutKeyCoordinatePointer base_key =
-                sclres_layout_key_coordinate_pointer_frame[base_layout][base_candidate.candidate];
-            SclLayoutKeyCoordinatePointer popup_key =
-                sclres_layout_key_coordinate_pointer_frame[popup_layout][popup_candidate.candidate];
+            SclLayoutKeyCoordinatePointer base_key = NULL;
+            SclLayoutKeyCoordinatePointer popup_key = NULL;
+            SclWindowContext *base_window_context = NULL;
+            SclWindowContext *popup_window_context = NULL;
 
-            SclWindowContext *base_window_context = windows->get_window_context(windows->get_base_window());
-            SclWindowContext *popup_window_context = windows->get_window_context(popup_window);
+            if (scl_check_arrindex(base_layout, MAX_SCL_LAYOUT) && scl_check_arrindex(popup_layout, MAX_SCL_LAYOUT)) {
+                base_key = sclres_layout_key_coordinate_pointer_frame[base_layout][base_candidate.candidate];
+                popup_key = sclres_layout_key_coordinate_pointer_frame[popup_layout][popup_candidate.candidate];
+                base_window_context = windows->get_window_context(windows->get_base_window());
+                popup_window_context = windows->get_window_context(popup_window);
+            }
 
             SclRectangle base_key_coordinate = {0, 0, 0, 0};
             if (base_window_context) {
