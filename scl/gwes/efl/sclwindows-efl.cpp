@@ -166,12 +166,14 @@ CSCLWindowsImplEfl::create_window(const sclwindow parent, SclWindowContext *wind
     scl16 new_width;
     scl16 new_height;
     CSCLContext *context = CSCLContext::get_instance();
-    if (context->get_rotation() == ROTATION_90_CW || context->get_rotation() == ROTATION_90_CCW) {
-        new_width = height;
-        new_height = width;
-    } else {
-        new_width = width;
-        new_height = height;
+    if (context) {
+        if (context->get_rotation() == ROTATION_90_CW || context->get_rotation() == ROTATION_90_CCW) {
+            new_width = height;
+            new_height = width;
+        } else {
+            new_width = width;
+            new_height = height;
+        }
     }
 
 #ifndef FULL_SCREEN_TEST
@@ -213,7 +215,8 @@ CSCLWindowsImplEfl::create_window(const sclwindow parent, SclWindowContext *wind
     }
 #endif
 
-    set_window_rotation(win, context->get_rotation());
+    if (context)
+        set_window_rotation(win, context->get_rotation());
 
     //elm_win_override_set(win, EINA_TRUE);
     if (utils) {
@@ -289,7 +292,8 @@ CSCLWindowsImplEfl::create_magnifier_window(const sclwindow parent, SclWindowCon
 #endif
 
     CSCLContext *context = CSCLContext::get_instance();
-    set_window_rotation(win, context->get_rotation());
+    if (context)
+        set_window_rotation(win, context->get_rotation());
 
     if (utils) {
         utils->log("WinEfl_createmagwin %p, %d %d\n",
@@ -339,7 +343,8 @@ CSCLWindowsImplEfl::create_dim_window(const sclwindow parent, SclWindowContext *
 #endif
 
     CSCLContext *context = CSCLContext::get_instance();
-    set_window_rotation(win, context->get_rotation());
+    if (context)
+        set_window_rotation(win, context->get_rotation());
 
     /*Evas_Object *bg;
     bg = elm_bg_add(win);
