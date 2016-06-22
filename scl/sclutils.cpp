@@ -316,7 +316,7 @@ CSCLUtils::get_autopopup_window_variables(sclchar * const autopopup_keys[MAX_SIZ
         this->get_screen_resolution(&scrx, &scry);
 
         CSCLContext *context = CSCLContext::get_instance();
-        if (context->get_display_mode() == DISPLAYMODE_LANDSCAPE) {
+        if (context && context->get_display_mode() == DISPLAYMODE_LANDSCAPE) {
             int  swap = scrx;
             scrx = scry;
             scry = swap;
