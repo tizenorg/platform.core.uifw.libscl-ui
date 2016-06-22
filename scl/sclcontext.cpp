@@ -311,9 +311,11 @@ CSCLContext::set_farthest_move_point(scltouchdevice touch_id, sclint x, sclint y
     MultiTouchContext *multi_touch_context = find_multi_touch_context(touch_id);
     if (multi_touch_context) {
         CSCLUtils *utils = CSCLUtils::get_instance();
-        multi_touch_context->farthest_move_dist =
-            utils->get_approximate_distance(x, y,
-            multi_touch_context->cur_pressed_point.x, multi_touch_context->cur_pressed_point.y);
+        if (utils) {
+            multi_touch_context->farthest_move_dist =
+                utils->get_approximate_distance(x, y,
+                multi_touch_context->cur_pressed_point.x, multi_touch_context->cur_pressed_point.y);
+        }
 
         multi_touch_context->farthest_move_point.x = x;
         multi_touch_context->farthest_move_point.y = y;
@@ -537,6 +539,7 @@ CSCLContext::get_multi_touch_event(sclint order, SclUIEventDesc *desc)
 
     CSCLResourceCache *cache = CSCLResourceCache::get_instance();
 
+    if (!cache) return ret;
     for (std::list<scltouchdevice>::iterator list_iter = m_multi_touch_seq.begin();
         !ret && list_iter != m_multi_touch_seq.end();std::advance(list_iter, 1)) {
             if (index == order) {

@@ -121,7 +121,7 @@ CSCLUIImpl::show()
         CSCLContext *context = CSCLContext::get_instance();
         CSCLController *controller = CSCLController::get_instance();
 
-        if (windows && controller && context) {
+        if (utils && windows && controller && context) {
             //if (auto_relocate) {
             if (TRUE) {
                 /* Let's relocate our base window - bottomed center aligned */

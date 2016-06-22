@@ -110,13 +110,16 @@ CSCLUIBuilder::init(sclwindow parent)
         }
 
         CSCLContext *context = CSCLContext::get_instance();
-        context->set_display_mode(display_mode);
-        context->set_input_mode(mode);
-        context->set_base_layout(sclres_manager->get_layout_id(sclres_input_mode_configure[mode].layouts[display_mode]));
+        if (context) {
+            context->set_display_mode(display_mode);
+            context->set_input_mode(mode);
+            context->set_base_layout(sclres_manager->get_layout_id(sclres_input_mode_configure[mode].layouts[display_mode]));
+        }
 
         CSCLResourceCache *cache = CSCLResourceCache::get_instance();
         sclwindow window = m_gwes->m_windows->get_base_window();
-        cache->recompute_layout(window);
+        if (cache)
+            cache->recompute_layout(window);
 
         /* Creates the magnifier window */
         if (default_configure && magnifier_configure) {
@@ -446,7 +449,9 @@ CSCLUIBuilder::draw_button_label(const sclwindow window, const scldrawctx draw_c
     CSCLWindows *windows = CSCLWindows::get_instance();
     CSCLGraphics *graphics = CSCLGraphics::get_instance();
     CSCLResourceCache *cache = CSCLResourceCache::get_instance();
-    const SclLayoutKeyCoordinate* coordinate = cache->get_cur_layout_key_coordinate(window, key_index);
+    const SclLayoutKeyCoordinate* coordinate = NULL;
+    if (cache)
+        coordinate = cache->get_cur_layout_key_coordinate(window, key_index);
 
     scl_assert_return_false(window);
     scl_assert_return_false(draw_ctx);
@@ -574,7 +579,9 @@ CSCLUIBuilder::draw_button_label(const sclwindow window, const scldrawctx draw_c
                     info.is_bold = info.is_italic = true;
 
                     CSCLContext *context = CSCLContext::get_instance();
-                    SCLShiftState shiftstate = context->get_shift_state();
+                    SCLShiftState shiftstate;
+                    if (context)
+                        shiftstate = context->get_shift_state();
                     if (labelproperties->shadow_distance > 0 && labelproperties->shadow_color[shiftstate][state].a != 0) {
                         sclint deltax = 0;
                         sclint deltay = 0;
@@ -742,7 +749,9 @@ CSCLUIBuilder::draw_button_bg_by_img(const sclwindow window, const scldrawctx dr
     CSCLWindows *windows = CSCLWindows::get_instance();
     CSCLGraphics *graphics = CSCLGraphics::get_instance();
     CSCLResourceCache *cache = CSCLResourceCache::get_instance();
-    const SclLayoutKeyCoordinate* coordinate = cache->get_cur_layout_key_coordinate(window, key_index);
+    const SclLayoutKeyCoordinate* coordinate = NULL;
+    if (cache)
+        coordinate = cache->get_cur_layout_key_coordinate(window, key_index);
 
     SclResParserManager *sclres_manager = SclResParserManager::get_instance();
     PSclModifierDecoration sclres_modifier_decoration = sclres_manager->get_modifier_decoration_table();

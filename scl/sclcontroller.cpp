@@ -43,7 +43,7 @@ _play_tts_for_input_mode_name(int mode) {
     SCL_DEBUG();
 
     CSCLContext *context = CSCLContext::get_instance();
-    if (context->get_tts_enabled() == FALSE) {
+    if (context && context->get_tts_enabled() == FALSE) {
         return FALSE;
     }
 
@@ -59,7 +59,8 @@ _play_tts_for_input_mode_name(int mode) {
     }
 
     CSCLUtils *utils = CSCLUtils::get_instance();
-    utils->play_tts(name);
+    if (utils)
+        utils->play_tts(name);
     return TRUE;
 }
 
@@ -68,12 +69,13 @@ _play_tts_for_layout_autopopup_name() {
     SCL_DEBUG();
 
     CSCLContext *context = CSCLContext::get_instance();
-    if (context->get_tts_enabled() == FALSE) {
+    if (context && context->get_tts_enabled() == FALSE) {
         return FALSE;
     }
 
     CSCLUtils *utils = CSCLUtils::get_instance();
-    utils->play_tts(SCL_LAYOUT_AUTOPOPUP_NAME);
+    if (utils)
+        utils->play_tts(SCL_LAYOUT_AUTOPOPUP_NAME);
     return TRUE;
 }
 

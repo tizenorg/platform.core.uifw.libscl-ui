@@ -149,7 +149,8 @@ CSCLEvents::process_key_event(const char *key)
         focus_window = focus_handler->get_current_focus_window();
         key_index = focus_handler->get_current_focus_key();
     } else if ((strcmp(keyname, "Return") == 0) || (strcmp(keyname, "Enter") == 0)) {
-        coordinate = cache->get_cur_layout_key_coordinate(current_focus_window, current_key_index);
+        if (cache)
+            coordinate = cache->get_cur_layout_key_coordinate(current_focus_window, current_key_index);
         //button_context->state = BUTTON_STATE_NORMAL;
         if (coordinate && controller) {
             controller->mouse_press(current_focus_window, coordinate->x, coordinate->y, TRUE);
@@ -169,8 +170,10 @@ CSCLEvents::process_key_event(const char *key)
     }
 
     if (current_key_index != key_index || current_focus_window != focus_window) {
-        prevcoordinate = cache->get_cur_layout_key_coordinate(current_focus_window, current_key_index);
-        coordinate = cache->get_cur_layout_key_coordinate(focus_window, key_index);
+        if (cache) {
+            prevcoordinate = cache->get_cur_layout_key_coordinate(current_focus_window, current_key_index);
+            coordinate = cache->get_cur_layout_key_coordinate(focus_window, key_index);
+        }
         //prev_button_context->state = BUTTON_STATE_NORMAL;
         //button_context->state = BUTTON_STATE_PRESSED;
         if (coordinate && prevcoordinate) {
