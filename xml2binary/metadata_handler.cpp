@@ -141,8 +141,7 @@ parsing_field(const xmlNodePtr node, MetaData_Field& data, const MetaData_Width&
         strncpy(data.m_type, (const char*)type, sizeof(data.m_type));
         data.m_type[sizeof(data.m_type) - 1] = '\0';
         data.m_width = 8;
-    }
-    else {
+    } else {
         ret = -1;
     }
 
@@ -243,8 +242,7 @@ parsing_metadata() {
     while (curNode) {
         if (0 == xmlStrcmp(curNode->name, (const xmlChar*)"metadata_type")) {
             parsing_metadata_type(curNode, metadataWidth);
-        }
-        else if (0 == xmlStrcmp(curNode->name, (const xmlChar*)"record")) {
+        } else if (0 == xmlStrcmp(curNode->name, (const xmlChar*)"record")) {
             MetaData_Record metadataRecord;
             int ret = parsing_record(curNode, metadataRecord, metadataWidth);
             if (ret != -1) {

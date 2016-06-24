@@ -80,51 +80,37 @@ class DefaultConfigureParserImpl {
             while (cur_node != NULL) {
                 if (0 == xmlStrcmp(cur_node->name, (const xmlChar *)"display")) {
                     m_default_configure.display_mode = get_content_display_mode(cur_node);
-                }
-                else if (0 == xmlStrcmp(cur_node->name, (const xmlChar *)"input_mode")) {
+                } else if (0 == xmlStrcmp(cur_node->name, (const xmlChar *)"input_mode")) {
                     xmlChar* temp = xmlNodeGetContent(cur_node);
                     m_default_configure.input_mode = (sclchar *)temp;
-                }
-                else if (0 == xmlStrcmp(cur_node->name, (const xmlChar *)"base_screen_width")) {
+                } else if (0 == xmlStrcmp(cur_node->name, (const xmlChar *)"base_screen_width")) {
                     m_default_configure.target_screen_width = get_content_int(cur_node);
-                }
-                else if (0 == xmlStrcmp(cur_node->name, (const xmlChar *)"base_screen_height")) {
+                } else if (0 == xmlStrcmp(cur_node->name, (const xmlChar *)"base_screen_height")) {
                     m_default_configure.target_screen_height = get_content_int(cur_node);
-                }
-                else if (0 == xmlStrcmp(cur_node->name, (const xmlChar *)"image_file_base_path")) {
+                } else if (0 == xmlStrcmp(cur_node->name, (const xmlChar *)"image_file_base_path")) {
                     xmlChar* temp = xmlNodeGetContent(cur_node);
                     m_default_configure.image_file_base_path = (sclchar *)temp;
-                }
-                else if (0 == xmlStrcmp(cur_node->name, (const xmlChar *)"use_magnifier")) {
+                } else if (0 == xmlStrcmp(cur_node->name, (const xmlChar *)"use_magnifier")) {
                     m_default_configure.use_magnifier_window = get_content_bool(cur_node);
-                }
-                else if (0 == xmlStrcmp(cur_node->name, (const xmlChar *)"use_autopopup")) {
+                } else if (0 == xmlStrcmp(cur_node->name, (const xmlChar *)"use_autopopup")) {
                     m_default_configure.use_auto_popup = get_content_bool(cur_node);
-                }
-                else if (0 == xmlStrcmp(cur_node->name, (const xmlChar *)"use_zoomwindow")) {
+                } else if (0 == xmlStrcmp(cur_node->name, (const xmlChar *)"use_zoomwindow")) {
                     m_default_configure.use_zoom_window = get_content_bool(cur_node);
-                }
-                else if (0 == xmlStrcmp(cur_node->name, (const xmlChar *)"use_error_sound")) {
+                } else if (0 == xmlStrcmp(cur_node->name, (const xmlChar *)"use_error_sound")) {
                     m_default_configure.on_error_noti_send = get_content_bool(cur_node);
-                }
-                else if (0 == xmlStrcmp(cur_node->name, (const xmlChar *)"use_word_deletion")) {
+                } else if (0 == xmlStrcmp(cur_node->name, (const xmlChar *)"use_word_deletion")) {
                     m_default_configure.use_word_deletion = get_content_bool(cur_node);
-                }
-                else if (0 == xmlStrcmp(cur_node->name, (const xmlChar *)"touch_offset_level")) {
+                } else if (0 == xmlStrcmp(cur_node->name, (const xmlChar *)"touch_offset_level")) {
                     // Let's skip this item since it does not seem to be useful anymore
-                }
-                else if (0 == xmlStrcmp(cur_node->name, (const xmlChar *)"touch_offset")) {
+                } else if (0 == xmlStrcmp(cur_node->name, (const xmlChar *)"touch_offset")) {
                     // Let's skip this item since it does not seem to be useful anymore
                     parsing_touch_offset(cur_node);
-                }
-                else if (0 == xmlStrcmp(cur_node->name, (const xmlChar *)"default_sub_layout")) {
+                } else if (0 == xmlStrcmp(cur_node->name, (const xmlChar *)"default_sub_layout")) {
                     xmlChar* temp = xmlNodeGetContent(cur_node);
                     m_default_configure.default_sub_layout = (sclchar *)temp;
-                }
-                else if (0 == xmlStrcmp(cur_node->name, (const xmlChar *)"dim_use_window_flag")) {
+                } else if (0 == xmlStrcmp(cur_node->name, (const xmlChar *)"dim_use_window_flag")) {
                     m_default_configure.use_actual_dim_window = get_content_bool(cur_node);
-                }
-                else if (0 == xmlStrcmp(cur_node->name, (const xmlChar *)"dim_color")) {
+                } else if (0 == xmlStrcmp(cur_node->name, (const xmlChar *)"dim_color")) {
                     parsing_dim_color(cur_node);
                 }
                 cur_node = cur_node->next;
@@ -172,14 +158,11 @@ class DefaultConfigureParserImpl {
             while (child_node != NULL) {
                 if (0 == xmlStrcmp(child_node->name, (const xmlChar *)"r")) {
                     m_default_configure.dim_color.r = get_content_int(child_node);
-                }
-                else if (0 == xmlStrcmp(child_node->name, (const xmlChar *)"g")) {
+                } else if (0 == xmlStrcmp(child_node->name, (const xmlChar *)"g")) {
                     m_default_configure.dim_color.g = get_content_int(child_node);
-                }
-                else if (0 == xmlStrcmp(child_node->name, (const xmlChar *)"b")) {
+                } else if (0 == xmlStrcmp(child_node->name, (const xmlChar *)"b")) {
                     m_default_configure.dim_color.b = get_content_int(child_node);
-                }
-                else if (0 == xmlStrcmp(child_node->name, (const xmlChar *)"a")) {
+                } else if (0 == xmlStrcmp(child_node->name, (const xmlChar *)"a")) {
                     m_default_configure.dim_color.a = get_content_int(child_node);
                 }
 

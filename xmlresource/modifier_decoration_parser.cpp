@@ -168,12 +168,10 @@ class ModifierDecorationParserImpl {
                     xmlChar* temp = xmlNodeGetContent(child_node);
                     cur_rec->name = (sclchar *)temp;
                     cur_rec->valid = TRUE;
-                }
-                else if (0 == xmlStrcmp(child_node->name, (const xmlChar*)"display_part_background")) {
+                } else if (0 == xmlStrcmp(child_node->name, (const xmlChar*)"display_part_background")) {
                     cur_rec->extract_background = get_content_bool(child_node);
                     cur_rec->valid = TRUE;
-                }
-                else if (0 == xmlStrcmp(child_node->name, (const xmlChar*)"background_image_path")) {
+                } else if (0 == xmlStrcmp(child_node->name, (const xmlChar*)"background_image_path")) {
                     parsing_background_image_record_node(child_node, cur_rec);
                     cur_rec->valid = TRUE;
                 }

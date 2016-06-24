@@ -649,14 +649,11 @@ LayoutParserImpl::parsing_grab_area(
     while (child_node != NULL) {
         if (0 == xmlStrcmp(child_node->name, (const xmlChar*)LAYOUT_ADD_GRAB_LEFT_TAG)) {
             cur_rec_layout->add_grab_left = get_content_int(child_node);
-        }
-        else if (0 == xmlStrcmp(child_node->name, (const xmlChar*)LAYOUT_ADD_GRAB_RIGHT_TAG)) {
+        } else if (0 == xmlStrcmp(child_node->name, (const xmlChar*)LAYOUT_ADD_GRAB_RIGHT_TAG)) {
             cur_rec_layout->add_grab_right = get_content_int(child_node);
-        }
-        else if (0 == xmlStrcmp(child_node->name, (const xmlChar*)LAYOUT_ADD_GRAB_TOP_TAG)) {
+        } else if (0 == xmlStrcmp(child_node->name, (const xmlChar*)LAYOUT_ADD_GRAB_TOP_TAG)) {
             cur_rec_layout->add_grab_top = get_content_int(child_node);
-        }
-        else if (0 == xmlStrcmp(child_node->name, (const xmlChar*)LAYOUT_ADD_GRAB_BOTTOM_TAG)) {
+        } else if (0 == xmlStrcmp(child_node->name, (const xmlChar*)LAYOUT_ADD_GRAB_BOTTOM_TAG)) {
             cur_rec_layout->add_grab_bottom = get_content_int(child_node);
         }
         child_node = child_node->next;
@@ -733,11 +730,9 @@ LayoutParserImpl::parsing_layout_node(
 
         if (0 == xmlStrcmp(child_node->name, (const xmlChar*)LAYOUT_BACKGROUND_TAG)) {
             parsing_background(child_node, cur_rec_layout);
-        }
-        else if (0 == xmlStrcmp(child_node->name, (const xmlChar*)LAYOUT_KEY_BACKGROUND_TAG)) {
+        } else if (0 == xmlStrcmp(child_node->name, (const xmlChar*)LAYOUT_KEY_BACKGROUND_TAG)) {
             parsing_key_background(child_node, cur_rec_layout);
-        }
-        else if (0 == xmlStrcmp(cur_node->name, (const xmlChar *)LAYOUT_ADD_GRAB_TAG)) {
+        } else if (0 == xmlStrcmp(cur_node->name, (const xmlChar *)LAYOUT_ADD_GRAB_TAG)) {
             parsing_grab_area(child_node, cur_rec_layout);
         }
 
@@ -1366,36 +1361,28 @@ LayoutParserImpl::parsing_key_coordinate_record_node(
         if (0 == xmlStrcmp(child_node->name, (const xmlChar*)LAYOUT_ROW_KEY_LABEL_TAG)) {
             parsing_label_record_node(child_node, (*cur_rec_coordinate));
             (*cur_rec_coordinate)->valid = TRUE;
-        }
-        else if (0 == xmlStrcmp(child_node->name, (const xmlChar*)LAYOUT_ROW_KEY_IMAGE_LABEL_TAG)) {
+        } else if (0 == xmlStrcmp(child_node->name, (const xmlChar*)LAYOUT_ROW_KEY_IMAGE_LABEL_TAG)) {
             parsing_label_image_record_node(child_node, (*cur_rec_coordinate));
             (*cur_rec_coordinate)->valid = TRUE;
-        }
-        else if (0 == xmlStrcmp(child_node->name, (const xmlChar*)LAYOUT_ROW_KEY_BACKGROUND_IMAGE_TAG)) {
+        } else if (0 == xmlStrcmp(child_node->name, (const xmlChar*)LAYOUT_ROW_KEY_BACKGROUND_IMAGE_TAG)) {
             parsing_background_image_record_node(child_node, (*cur_rec_coordinate));
             (*cur_rec_coordinate)->valid = TRUE;
-        }
-        else if (0 == xmlStrcmp(child_node->name, (const xmlChar*)LAYOUT_ROW_KEY_KEY_VALUE_TAG)) {
+        } else if (0 == xmlStrcmp(child_node->name, (const xmlChar*)LAYOUT_ROW_KEY_KEY_VALUE_TAG)) {
             parsing_key_value_record_node(child_node, (*cur_rec_coordinate));
             (*cur_rec_coordinate)->valid = TRUE;
-        }
-        else if (0 == xmlStrcmp(child_node->name, (const xmlChar*)LAYOUT_ROW_KEY_KEY_EVENT_TAG)) {
+        } else if (0 == xmlStrcmp(child_node->name, (const xmlChar*)LAYOUT_ROW_KEY_KEY_EVENT_TAG)) {
             parsing_key_event_record_node(child_node, (*cur_rec_coordinate));
             (*cur_rec_coordinate)->valid = TRUE;
-        }
-        else if (0 == xmlStrcmp(child_node->name, (const xmlChar*)LAYOUT_ROW_KEY_AUTOPOPUP_KEYS_TAG)) {
+        } else if (0 == xmlStrcmp(child_node->name, (const xmlChar*)LAYOUT_ROW_KEY_AUTOPOPUP_KEYS_TAG)) {
             parsing_auto_popup_keys_record_node(child_node, (*cur_rec_coordinate));
             (*cur_rec_coordinate)->valid = TRUE;
-        }
-        else if (0 == xmlStrcmp(child_node->name, (const xmlChar*)LAYOUT_ROW_KEY_POPUP_INPUTMODE_RECORD_TAG)) {
+        } else if (0 == xmlStrcmp(child_node->name, (const xmlChar*)LAYOUT_ROW_KEY_POPUP_INPUTMODE_RECORD_TAG)) {
             parsing_popup_input_mode_record_node(child_node, (*cur_rec_coordinate));
             (*cur_rec_coordinate)->valid = TRUE;
-        }
-        else if (0 == xmlStrcmp(child_node->name, (const xmlChar*)LAYOUT_ROW_KEY_MAGNIFIER_LABEL_TAG)) {
+        } else if (0 == xmlStrcmp(child_node->name, (const xmlChar*)LAYOUT_ROW_KEY_MAGNIFIER_LABEL_TAG)) {
             parsing_magnifier_label_record_node(child_node, (*cur_rec_coordinate));
             (*cur_rec_coordinate)->valid = TRUE;
-        }
-        else if (0 == xmlStrcmp(child_node->name, (const xmlChar*)LAYOUT_ROW_KEY_HINT_STRING_TAG)) {
+        } else if (0 == xmlStrcmp(child_node->name, (const xmlChar*)LAYOUT_ROW_KEY_HINT_STRING_TAG)) {
             parsing_hint_string_record_node(child_node, (*cur_rec_coordinate));
             (*cur_rec_coordinate)->valid = TRUE;
         }

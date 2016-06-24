@@ -60,8 +60,7 @@ int main(const int argc, char* argv[]) {
             perror(xml_text_dir);
             free(xml_text_dir);
             return -1;
-        }
-        else {
+        } else {
             free(xml_text_dir);
             xml_text_dir = NULL;
         }
@@ -81,8 +80,7 @@ int main(const int argc, char* argv[]) {
             perror(xml_bin_dir);
             free(xml_bin_dir);
             return -1;
-        }
-        else {
+        } else {
             free(xml_bin_dir);
             xml_bin_dir = NULL;
         }

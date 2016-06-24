@@ -449,8 +449,9 @@ put_key_coordinate_frame(int flag, const PSclLayoutKeyCoordinatePointerTable fra
         file_name = "encode_key_coordinate_frame.txt";
     } else if (flag == DECODE) {
         file_name = "decode_key_coordinate_frame.txt";
-    } else
+    } else {
         file_name = "sclres_key_coordinate_frame.txt";
+    }
 
     string path = get_folder() + file_name;
     FILE *fp = fopen(path.c_str(), "w+");
@@ -479,8 +480,9 @@ put_label_properties_frame(int flag, const PSclLabelPropertiesTable frame) {
         file_name = "encode_label_properties_frame.txt";
     } else if (flag == DECODE) {
         file_name = "decode_label_properties_frame.txt";
-    } else
+    } else {
         file_name = "sclres_label_properties_frame.txt";
+    }
 
     string path = get_folder() + file_name;
     FILE *fp = fopen(path.c_str(), "w+");
@@ -504,8 +506,9 @@ put_default_configure(int flag, const SclDefaultConfigure& record) {
         file_name = "encode_default_configure.txt";
     } else if (flag == DECODE) {
         file_name = "decode_default_configure.txt";
-    } else
+    } else {
         file_name = "sclres_default_configure.txt";
+    }
 
     string path = get_folder() + file_name;
     FILE *fp = fopen(path.c_str(), "w+");
@@ -524,8 +527,9 @@ put_autopopup_configure(int flag, const SclAutoPopupConfigure& record) {
         file_name = "encode_autopopup_configure.txt";
     } else if (flag == DECODE) {
         file_name = "decode_autopopup_configure.txt";
-    } else
+    } else {
         file_name = "sclres_autopopup_configure.txt";
+    }
 
     string path = get_folder() + file_name;
     FILE *fp = fopen(path.c_str(), "w+");
@@ -546,8 +550,9 @@ put_nine_patch_info(int flag, const SclNinePatchInfo* table) {
         file_name = "encode_nine_patch_info.txt";
     } else if (flag == DECODE) {
         file_name = "decode_nine_patch_info.txt";
-    } else
+    } else {
         file_name = "sclres_nine_patch_info.txt";
+    }
 
     string path = get_folder() + file_name;
     FILE *fp = fopen(path.c_str(), "w+");
@@ -571,8 +576,9 @@ put_magnifier_wnd_configure(int flag, const SclMagnifierWndConfigure& record) {
         file_name = "encode_magnifier_wnd_configure.txt";
     } else if (flag == DECODE) {
         file_name = "decode_magnifier_wnd_configure.txt";
-    } else
+    } else {
         file_name = "sclres_magnifier_wnd_configure.txt";
+    }
 
     string path = get_folder() + file_name;
     FILE *fp = fopen(path.c_str(), "w+");
@@ -591,8 +597,9 @@ put_modifier_decoration(int flag, const PSclModifierDecoration table) {
         file_name = "encode_modifier_decoration.txt";
     } else if (flag == DECODE) {
         file_name = "decode_modifier_decoration.txt";
-    } else
+    } else {
         file_name = "sclres_modifier_decoration.txt";
+    }
 
     string path = get_folder() + file_name;
     FILE *fp = fopen(path.c_str(), "w+");

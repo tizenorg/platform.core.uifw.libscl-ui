@@ -98,30 +98,22 @@ class MagnifierConfigureParserImpl {
         while (cur_node != NULL) {
             if (0 == xmlStrcmp(cur_node->name, (const xmlChar *)"magnifier_style")) {
                 m_magnifier_configure.style = get_content_magnifier_style(cur_node);
-            }
-            else if (0 == xmlStrcmp(cur_node->name, (const xmlChar *)"width")) {
+            } else if (0 == xmlStrcmp(cur_node->name, (const xmlChar *)"width")) {
                 m_magnifier_configure.width = get_content_int(cur_node);
-            }
-            else if (0 == xmlStrcmp(cur_node->name, (const xmlChar *)"height")) {
+            } else if (0 == xmlStrcmp(cur_node->name, (const xmlChar *)"height")) {
                 m_magnifier_configure.height = get_content_int(cur_node);
-            }
-            else if (0 == xmlStrcmp(cur_node->name, (const xmlChar *)"label_area")) {
+            } else if (0 == xmlStrcmp(cur_node->name, (const xmlChar *)"label_area")) {
                 parsing_label_area(cur_node);
-            }
-            else if (0 == xmlStrcmp(cur_node->name, (const xmlChar *)"background_image_path")) {
+            } else if (0 == xmlStrcmp(cur_node->name, (const xmlChar *)"background_image_path")) {
                 parsing_background_images(cur_node);
-            }
-            else if (0 == xmlStrcmp(cur_node->name, (const xmlChar *)"use_window")) {
+            } else if (0 == xmlStrcmp(cur_node->name, (const xmlChar *)"use_window")) {
                 m_magnifier_configure.use_actual_window = get_content_bool(cur_node);
-            }
-            else if (0 == xmlStrcmp(cur_node->name, (const xmlChar *)"label_type")) {
+            } else if (0 == xmlStrcmp(cur_node->name, (const xmlChar *)"label_type")) {
                 xmlChar* temp = xmlNodeGetContent(cur_node);
                 m_magnifier_configure.label_type = (sclchar*)temp;
-            }
-            else if (0 == xmlStrcmp(cur_node->name, (const xmlChar *)"padding")) {
+            } else if (0 == xmlStrcmp(cur_node->name, (const xmlChar *)"padding")) {
                 parsing_padding_values(cur_node);
-            }
-            else if (0 == xmlStrcmp(cur_node->name, (const xmlChar *)"show_shift_label")) {
+            } else if (0 == xmlStrcmp(cur_node->name, (const xmlChar *)"show_shift_label")) {
                 m_magnifier_configure.show_shift_label = get_content_bool(cur_node);
             }
             cur_node = cur_node->next;
@@ -138,14 +130,11 @@ class MagnifierConfigureParserImpl {
         while (child_node != NULL) {
             if (0 == xmlStrcmp(child_node->name, (const xmlChar *)"left")) {
                 m_magnifier_configure.label_area_rect.left = get_content_int(child_node);
-            }
-            else if (0 == xmlStrcmp(child_node->name, (const xmlChar *)"top")) {
+            } else if (0 == xmlStrcmp(child_node->name, (const xmlChar *)"top")) {
                 m_magnifier_configure.label_area_rect.top = get_content_int(child_node);
-            }
-            else if (0 == xmlStrcmp(child_node->name, (const xmlChar *)"right")) {
+            } else if (0 == xmlStrcmp(child_node->name, (const xmlChar *)"right")) {
                 m_magnifier_configure.label_area_rect.right = get_content_int(child_node);
-            }
-            else if (0 == xmlStrcmp(child_node->name, (const xmlChar *)"bottom")) {
+            } else if (0 == xmlStrcmp(child_node->name, (const xmlChar *)"bottom")) {
                 m_magnifier_configure.label_area_rect.bottom = get_content_int(child_node);
             }
 
@@ -161,16 +150,13 @@ class MagnifierConfigureParserImpl {
                 if (equal_prop(child_node, "state", "normal")) {
                     xmlChar* temp = xmlNodeGetContent(child_node);
                     m_magnifier_configure.bg_image_path = (sclchar *)temp;
-                }
-                else if (equal_prop(child_node, "state", "shift")) {
+                } else if (equal_prop(child_node, "state", "shift")) {
                     xmlChar* temp = xmlNodeGetContent(child_node);
                     m_magnifier_configure.bg_shift_image_path = (sclchar *)temp;
-                }
-                else if (equal_prop(child_node, "state", "lock")) {
+                } else if (equal_prop(child_node, "state", "lock")) {
                     xmlChar* temp = xmlNodeGetContent(child_node);
                     m_magnifier_configure.bg_shift_lock_image_path = (sclchar *)temp;
-                }
-                else if (equal_prop(child_node, "state", "longkey")) {
+                } else if (equal_prop(child_node, "state", "longkey")) {
                     xmlChar* temp = xmlNodeGetContent(child_node);
                     m_magnifier_configure.bg_long_key_image_path = (sclchar *)temp;
                 }
@@ -186,8 +172,7 @@ class MagnifierConfigureParserImpl {
         while (child_node != NULL) {
             if (0 == xmlStrcmp(child_node->name, (const xmlChar *)"x")) {
                 m_magnifier_configure.padding_x = get_content_int(child_node);
-            }
-            else if (0 == xmlStrcmp(child_node->name, (const xmlChar *)"y")) {
+            } else if (0 == xmlStrcmp(child_node->name, (const xmlChar *)"y")) {
                 m_magnifier_configure.padding_y = get_content_int(child_node);
             }
 

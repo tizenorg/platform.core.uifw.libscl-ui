@@ -71,26 +71,19 @@ class MainEntryParserImpl {
             while (node != NULL) {
                 if (0 == xmlStrcmp(node->name, (const xmlChar *)"input-mode-configure")) {
                     m_xml_files.input_mode_configure = (char*)xmlNodeGetContent(node);
-                }
-                else if (0 == xmlStrcmp(node->name, (const xmlChar *)"layout")) {
+                } else if (0 == xmlStrcmp(node->name, (const xmlChar *)"layout")) {
                     m_xml_files.layout = (char*)xmlNodeGetContent(node);
-                }
-                else if (0 == xmlStrcmp(node->name, (const xmlChar *)"key-label-property")) {
+                } else if (0 == xmlStrcmp(node->name, (const xmlChar *)"key-label-property")) {
                     m_xml_files.key_label_property = (char*)xmlNodeGetContent(node);
-                }
-                else if (0 == xmlStrcmp(node->name, (const xmlChar *)"modifier-decoration")) {
+                } else if (0 == xmlStrcmp(node->name, (const xmlChar *)"modifier-decoration")) {
                     m_xml_files.modifier_decoration = (char*)xmlNodeGetContent(node);
-                }
-                else if (0 == xmlStrcmp(node->name, (const xmlChar *)"default-configure")) {
+                } else if (0 == xmlStrcmp(node->name, (const xmlChar *)"default-configure")) {
                     m_xml_files.default_configure = (char*)xmlNodeGetContent(node);
-                }
-                else if (0 == xmlStrcmp(node->name, (const xmlChar *)"autopopup-configure")) {
+                } else if (0 == xmlStrcmp(node->name, (const xmlChar *)"autopopup-configure")) {
                     m_xml_files.autopopup_configure = (char*)xmlNodeGetContent(node);
-                }
-                else if (0 == xmlStrcmp(node->name, (const xmlChar *)"magnifier-configure")) {
+                } else if (0 == xmlStrcmp(node->name, (const xmlChar *)"magnifier-configure")) {
                     m_xml_files.magnifier_configure = (char*)xmlNodeGetContent(node);
-                }
-                else if (0 == xmlStrcmp(node->name, (const xmlChar *)"nine-patch-file-list")) {
+                } else if (0 == xmlStrcmp(node->name, (const xmlChar *)"nine-patch-file-list")) {
                     m_xml_files.nine_patch_file_list = (char*)xmlNodeGetContent(node);
                 }
                 node = node->next;

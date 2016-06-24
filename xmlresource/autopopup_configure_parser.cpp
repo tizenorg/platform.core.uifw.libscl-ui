@@ -91,43 +91,31 @@ class AutoPopupConfigureParserImpl {
                 if (0 == xmlStrcmp(cur_node->name, (const xmlChar *)"background_image_path")) {
                     xmlChar* temp = xmlNodeGetContent(cur_node);
                     m_autopopup_configure.bg_image_path = (sclchar *)temp;
-                }
-                else if (0 == xmlStrcmp(cur_node->name, (const xmlChar *)"background_color")) {
+                } else if (0 == xmlStrcmp(cur_node->name, (const xmlChar *)"background_color")) {
                     parsing_background_color(cur_node);
-                }
-                else if (0 == xmlStrcmp(cur_node->name, (const xmlChar *)"background_line_width")) {
+                } else if (0 == xmlStrcmp(cur_node->name, (const xmlChar *)"background_line_width")) {
                     m_autopopup_configure.bg_line_width = get_content_int(cur_node);
-                }
-                else if (0 == xmlStrcmp(cur_node->name, (const xmlChar *)"background_line_color")) {
+                } else if (0 == xmlStrcmp(cur_node->name, (const xmlChar *)"background_line_color")) {
                     parsing_background_line_color(cur_node);
-                }
-                else if (0 == xmlStrcmp(cur_node->name, (const xmlChar *)"background_padding")) {
+                } else if (0 == xmlStrcmp(cur_node->name, (const xmlChar *)"background_padding")) {
                     m_autopopup_configure.bg_padding = get_content_int(cur_node);
-                }
-                else if (0 == xmlStrcmp(cur_node->name, (const xmlChar *)"button_image_path")) {
+                } else if (0 == xmlStrcmp(cur_node->name, (const xmlChar *)"button_image_path")) {
                     parsing_button_image_path(cur_node);
-                }
-                else if (0 == xmlStrcmp(cur_node->name, (const xmlChar *)"sw_button_style")) {
+                } else if (0 == xmlStrcmp(cur_node->name, (const xmlChar *)"sw_button_style")) {
                     m_autopopup_configure.sw_button_style = get_content_int(cur_node);
-                }
-                else if (0 == xmlStrcmp(cur_node->name, (const xmlChar *)"button_size")) {
+                } else if (0 == xmlStrcmp(cur_node->name, (const xmlChar *)"button_size")) {
                     parsing_button_size(cur_node);
-                }
-                else if (0 == xmlStrcmp(cur_node->name, (const xmlChar *)"button_spacing")) {
+                } else if (0 == xmlStrcmp(cur_node->name, (const xmlChar *)"button_spacing")) {
                     m_autopopup_configure.button_spacing = get_content_int(cur_node);
-                }
-                else if (0 == xmlStrcmp(cur_node->name, (const xmlChar *)"label_type")) {
+                } else if (0 == xmlStrcmp(cur_node->name, (const xmlChar *)"label_type")) {
                     xmlChar* temp = xmlNodeGetContent(cur_node);
                     m_autopopup_configure.label_type = (sclchar *)temp;
-                }
-                else if (0 == xmlStrcmp(cur_node->name, (const xmlChar *)"window_decorator")) {
+                } else if (0 == xmlStrcmp(cur_node->name, (const xmlChar *)"window_decorator")) {
                     get_prop_number(cur_node, "size", &(m_autopopup_configure.decoration_size));
                     parsing_window_decorator_image_path(cur_node);
-                }
-                else if (0 == xmlStrcmp(cur_node->name, (const xmlChar *)"max_column")) {
+                } else if (0 == xmlStrcmp(cur_node->name, (const xmlChar *)"max_column")) {
                     m_autopopup_configure.max_column = get_content_int(cur_node);
-                }
-                else if (0 == xmlStrcmp(cur_node->name, (const xmlChar *)"grab_area")) {
+                } else if (0 == xmlStrcmp(cur_node->name, (const xmlChar *)"grab_area")) {
                     parsing_grab_area(cur_node);
                 }
 
@@ -143,14 +131,11 @@ class AutoPopupConfigureParserImpl {
             while (child_node != NULL) {
                 if (0 == xmlStrcmp(child_node->name, (const xmlChar *)"r")) {
                     m_autopopup_configure.bg_color.r = get_content_int(child_node);
-                }
-                else if (0 == xmlStrcmp(child_node->name, (const xmlChar *)"g")) {
+                } else if (0 == xmlStrcmp(child_node->name, (const xmlChar *)"g")) {
                     m_autopopup_configure.bg_color.g = get_content_int(child_node);
-                }
-                else if (0 == xmlStrcmp(child_node->name, (const xmlChar *)"b")) {
+                } else if (0 == xmlStrcmp(child_node->name, (const xmlChar *)"b")) {
                     m_autopopup_configure.bg_color.b = get_content_int(child_node);
-                }
-                else if (0 == xmlStrcmp(child_node->name, (const xmlChar *)"a")) {
+                } else if (0 == xmlStrcmp(child_node->name, (const xmlChar *)"a")) {
                     m_autopopup_configure.bg_color.a = get_content_int(child_node);
                 }
 
@@ -165,14 +150,11 @@ class AutoPopupConfigureParserImpl {
             while (child_node != NULL) {
                 if (0 == xmlStrcmp(child_node->name, (const xmlChar *)"r")) {
                     m_autopopup_configure.bg_line_color.r = get_content_int(child_node);
-                }
-                else if (0 == xmlStrcmp(child_node->name, (const xmlChar *)"g")) {
+                } else if (0 == xmlStrcmp(child_node->name, (const xmlChar *)"g")) {
                     m_autopopup_configure.bg_line_color.g = get_content_int(child_node);
-                }
-                else if (0 == xmlStrcmp(child_node->name, (const xmlChar *)"b")) {
+                } else if (0 == xmlStrcmp(child_node->name, (const xmlChar *)"b")) {
                     m_autopopup_configure.bg_line_color.b = get_content_int(child_node);
-                }
-                else if (0 == xmlStrcmp(child_node->name, (const xmlChar *)"a")) {
+                } else if (0 == xmlStrcmp(child_node->name, (const xmlChar *)"a")) {
                     m_autopopup_configure.bg_line_color.a = get_content_int(child_node);
                 }
 
@@ -218,26 +200,19 @@ class AutoPopupConfigureParserImpl {
                 if (0 == xmlStrcmp(child_node->name, (const xmlChar*)"image")) {
                     if (equal_prop(cur_node, "direction", "top_left")) {
                         m_autopopup_configure.decoration_image_path[WND_DECORATOR_TOP_LEFT] = (sclchar *)xmlNodeGetContent(cur_node);;
-                    }
-                    else if (equal_prop(cur_node, "direction", "top_center")) {
+                    } else if (equal_prop(cur_node, "direction", "top_center")) {
                         m_autopopup_configure.decoration_image_path[WND_DECORATOR_TOP_CENTER] = (sclchar *)xmlNodeGetContent(cur_node);;
-                    }
-                    else if (equal_prop(cur_node, "direction", "top_right")) {
+                    } else if (equal_prop(cur_node, "direction", "top_right")) {
                         m_autopopup_configure.decoration_image_path[WND_DECORATOR_TOP_RIGHT] = (sclchar *)xmlNodeGetContent(cur_node);;
-                    }
-                    else if (equal_prop(cur_node, "direction", "middle_left")) {
+                    } else if (equal_prop(cur_node, "direction", "middle_left")) {
                         m_autopopup_configure.decoration_image_path[WND_DECORATOR_MIDDLE_LEFT] = (sclchar *)xmlNodeGetContent(cur_node);;
-                    }
-                    else if (equal_prop(cur_node, "direction", "middle_right")) {
+                    } else if (equal_prop(cur_node, "direction", "middle_right")) {
                         m_autopopup_configure.decoration_image_path[WND_DECORATOR_MIDDLE_RIGHT] = (sclchar *)xmlNodeGetContent(cur_node);;
-                    }
-                    else if (equal_prop(cur_node, "direction", "bottom_left")) {
+                    } else if (equal_prop(cur_node, "direction", "bottom_left")) {
                         m_autopopup_configure.decoration_image_path[WND_DECORATOR_BOTTOM_LEFT] = (sclchar *)xmlNodeGetContent(cur_node);;
-                    }
-                    else if (equal_prop(cur_node, "direction", "bottom_center")) {
+                    } else if (equal_prop(cur_node, "direction", "bottom_center")) {
                         m_autopopup_configure.decoration_image_path[WND_DECORATOR_BOTTOM_CENTER] = (sclchar *)xmlNodeGetContent(cur_node);;
-                    }
-                    else if (equal_prop(cur_node, "direction", "bottom_right")) {
+                    } else if (equal_prop(cur_node, "direction", "bottom_right")) {
                         m_autopopup_configure.decoration_image_path[WND_DECORATOR_BOTTOM_RIGHT] = (sclchar *)xmlNodeGetContent(cur_node);;
                     }
                 }
@@ -252,14 +227,11 @@ class AutoPopupConfigureParserImpl {
             while (child_node != NULL) {
                 if (0 == xmlStrcmp(child_node->name, (const xmlChar*)"left")) {
                     m_autopopup_configure.add_grab_left = get_content_int(child_node);
-                }
-                else if (0 == xmlStrcmp(child_node->name, (const xmlChar*)"right")) {
+                } else if (0 == xmlStrcmp(child_node->name, (const xmlChar*)"right")) {
                     m_autopopup_configure.add_grab_right = get_content_int(child_node);
-                }
-                else if (0 == xmlStrcmp(child_node->name, (const xmlChar*)"top")) {
+                } else if (0 == xmlStrcmp(child_node->name, (const xmlChar*)"top")) {
                     m_autopopup_configure.add_grab_top = get_content_int(child_node);
-                }
-                else if (0 == xmlStrcmp(child_node->name, (const xmlChar*)"bottom")) {
+                } else if (0 == xmlStrcmp(child_node->name, (const xmlChar*)"bottom")) {
                     m_autopopup_configure.add_grab_bottom = get_content_int(child_node);
                 }
                 child_node = child_node->next;

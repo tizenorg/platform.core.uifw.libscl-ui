@@ -2701,8 +2701,8 @@ SCLDragState get_drag_state(sclint deltax, sclint deltay)
         } else {
             ret = SCL_DRAG_STATE_LEFT;
         }
-    } /* If tan(theta) is bigger than our predefined value */
-    else if (ratio >= SCL_DRAG_CURVE_4_DIRECTION_ANGLE_VALUE) {
+    } else if (ratio >= SCL_DRAG_CURVE_4_DIRECTION_ANGLE_VALUE) {
+        /* If tan(theta) is bigger than our predefined value */
         if (deltay > 0) {
             ret = SCL_DRAG_STATE_DOWN;
         } else {

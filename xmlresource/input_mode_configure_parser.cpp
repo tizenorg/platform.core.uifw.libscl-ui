@@ -162,8 +162,7 @@ class InputModeConfigureParserImpl {
                 if ( 0 == xmlStrcmp(child_node->name, (const xmlChar *)INPUT_MODE_CONFIGURE_LAYOUT_PORTRAIT_TAG) ) {
                     xmlChar* temp = xmlNodeGetContent(child_node);
                     cur_rec->layouts[DISPLAYMODE_PORTRAIT] = (sclchar*)temp;
-                }
-                else if ( 0 == xmlStrcmp(child_node->name, (const xmlChar *)INPUT_MODE_CONFIGURE_LAYOUT_LANDSCAPE_TAG) ) {
+                } else if ( 0 == xmlStrcmp(child_node->name, (const xmlChar *)INPUT_MODE_CONFIGURE_LAYOUT_LANDSCAPE_TAG) ) {
                     xmlChar* temp = xmlNodeGetContent(child_node);
                     cur_rec->layouts[DISPLAYMODE_LANDSCAPE] = (sclchar*)temp;
                 }

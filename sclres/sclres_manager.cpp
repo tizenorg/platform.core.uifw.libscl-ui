@@ -49,8 +49,7 @@ SclResParserManager::init(const SCLParserType parser_type, const char *entry_fil
         if (parser_type == SCL_PARSER_TYPE_XML) {
             SCLLOG(SclLog::MESSAGE, "Use text xml\n");
             _current_parser = XMLResource::get_instance();
-        }
-        else if (parser_type == SCL_PARSER_TYPE_BINARY_XML) {
+        } else if (parser_type == SCL_PARSER_TYPE_BINARY_XML) {
             SCLLOG(SclLog::MESSAGE, "Use binary xml\n");
             _current_parser = BinResource::get_instance();
         }
