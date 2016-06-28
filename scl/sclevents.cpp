@@ -115,6 +115,9 @@ CSCLEvents::get_touch_event_offset()
 sclboolean
 CSCLEvents::process_key_event(const char *key)
 {
+#ifndef _TV
+    return FALSE;
+#endif
     const char *keyname = key;
     LOGD("=-=-=-=- key_pressed \n");
     CSCLController *controller = CSCLController::get_instance();
