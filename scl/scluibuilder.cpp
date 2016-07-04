@@ -579,7 +579,7 @@ CSCLUIBuilder::draw_button_label(const sclwindow window, const scldrawctx draw_c
                     info.is_bold = info.is_italic = true;
 
                     CSCLContext *context = CSCLContext::get_instance();
-                    SCLShiftState shiftstate;
+                    SCLShiftState shiftstate = SCL_SHIFT_STATE_OFF;
                     if (context)
                         shiftstate = context->get_shift_state();
                     if (labelproperties->shadow_distance > 0 && labelproperties->shadow_color[shiftstate][state].a != 0) {

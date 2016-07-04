@@ -163,8 +163,8 @@ CSCLWindowsImplEfl::create_window(const sclwindow parent, SclWindowContext *wind
     int rots[4] = {0, 90, 180, 270};
     elm_win_wm_rotation_available_rotations_set(win, rots, 4);
 
-    scl16 new_width;
-    scl16 new_height;
+    scl16 new_width = 0;
+    scl16 new_height = 0;
     CSCLContext *context = CSCLContext::get_instance();
     if (context) {
         if (context->get_rotation() == ROTATION_90_CW || context->get_rotation() == ROTATION_90_CCW) {
