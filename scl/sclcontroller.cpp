@@ -3642,6 +3642,8 @@ void CSCLController::handle_engine_signal(SclInternalSignal signal, sclwindow ta
     CSCLImageProxy *proxy = CSCLImageProxy::get_instance();
     CSCLResourceCache *cache = CSCLResourceCache::get_instance();
 
+    if (!events || !windows || !context || !proxy || !cache) return;
+
     switch (signal) {
         case SCL_SIG_SHOW:
             {

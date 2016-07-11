@@ -1626,9 +1626,11 @@ void CSCLResourceCache::enable_button(const sclchar *custom_id, sclboolean enabl
             }
         }
 
-        CSCLWindows *windows = CSCLWindows::get_instance();
         /* Fix me (we should decide by which way we would redraw the button's region - direct or indirect?)*/
-        windows->update_window(windows->get_base_window());
+        CSCLWindows *windows = CSCLWindows::get_instance();
+        if (windows) {
+            windows->update_window(windows->get_base_window());
+        }
 
         sclboolean found = FALSE;
         sclint empty_index = -1;

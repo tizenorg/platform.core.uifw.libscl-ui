@@ -712,8 +712,12 @@ CSCLUIImpl::set_custom_starting_coordinates(sclint x, sclint y)
 {
     if (m_initialized) {
         CSCLResourceCache *cache = CSCLResourceCache::get_instance();
+        CSCLWindows *windows = CSCLWindows::get_instance();
         if (cache) {
             cache->set_custom_starting_coordinates(x, y);
+            if (windows) {
+                cache->recompute_layout(windows->get_base_window());
+            }
         }
     }
 }
