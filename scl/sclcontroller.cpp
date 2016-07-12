@@ -48,6 +48,8 @@ _play_tts_for_input_mode_name(int mode) {
     }
 
     SclResParserManager *sclres_manager = SclResParserManager::get_instance();
+    if (!sclres_manager) return FALSE;
+
     const SclInputModeConfigure *pinput_mode_table = sclres_manager->get_input_mode_configure_table();
     if (NULL == pinput_mode_table) {
         return FALSE;
@@ -200,8 +202,11 @@ CSCLController::process_input_mode_change(const sclbyte mode)
     CSCLWindows *windows = CSCLWindows::get_instance();
     CSCLResourceCache *cache = CSCLResourceCache::get_instance();
     SclResParserManager *sclres_manager = SclResParserManager::get_instance();
+
+    if(!utils || !context || !windows || !cache || !sclres_manager) return FALSE;
+
     PSclInputModeConfigure sclres_input_mode_configure = sclres_manager->get_input_mode_configure_table();
-    assert(sclres_input_mode_configure != NULL);
+    if (!sclres_input_mode_configure) return FALSE;
 
     if (context && windows && cache && utils) {
         if (mode == context->get_input_mode() || mode == (sclbyte)NOT_USED) {
@@ -282,8 +287,11 @@ CSCLController::process_rotation_change(const SCLRotation rotation)
     CSCLContext *context = CSCLContext::get_instance();
     CSCLWindows *windows = CSCLWindows::get_instance();
     SclResParserManager *sclres_manager = SclResParserManager::get_instance();
+
+    if (!sclres_manager) return FALSE;
+
     PSclInputModeConfigure sclres_input_mode_configure = sclres_manager->get_input_mode_configure_table();
-    assert(sclres_input_mode_configure != NULL);
+    if (!sclres_input_mode_configure) return FALSE;
 
     if (context && windows) {
         SCLDisplayMode mode;
@@ -395,10 +403,12 @@ CSCLController::process_button_pressed_event(sclwindow window, sclint x, sclint 
     CSCLFeedback *feedback = CSCLFeedback::get_instance();
     CSCLEventHandler *handler = CSCLEventHandler::get_instance();
     SclResParserManager *sclres_manager = SclResParserManager::get_instance();
+
+    if (!sclres_manager) return FALSE;
+
     PSclInputModeConfigure sclres_input_mode_configure = sclres_manager->get_input_mode_configure_table();
     PSclLayout sclres_layout = sclres_manager->get_layout_table();
-    assert(sclres_input_mode_configure != NULL);
-    assert(sclres_layout != NULL);
+    if (!sclres_input_mode_configure || !sclres_layout) return FALSE;
 
     SclButtonContext *button_context = NULL;
     const SclLayoutKeyCoordinate *coordinate = NULL;
@@ -752,11 +762,14 @@ CSCLController::process_button_long_pressed_event(sclwindow window, sclbyte key_
     CSCLResourceCache *cache = CSCLResourceCache::get_instance();
     CSCLEventHandler *handler = CSCLEventHandler::get_instance();
     SclResParserManager *sclres_manager = SclResParserManager::get_instance();
+
+    if (!sclres_manager) return FALSE;
+
     PSclInputModeConfigure sclres_input_mode_configure = sclres_manager->get_input_mode_configure_table();
     PSclLayout sclres_layout = sclres_manager->get_layout_table();
 
-    assert(sclres_input_mode_configure != NULL);
-    assert(sclres_layout != NULL);
+    if (!sclres_input_mode_configure || !sclres_layout) return FALSE;
+
     if (context && cache && handler && windows && state) {
         const SclLayoutKeyCoordinate* coordinate = cache->get_cur_layout_key_coordinate(window, key_index);
         SclButtonContext *button_context = cache->get_cur_button_context(window, key_index);
@@ -1552,10 +1565,12 @@ CSCLController::process_button_release_event(sclwindow window, sclint x, sclint 
     CSCLResourceCache *cache = CSCLResourceCache::get_instance();
 
     SclResParserManager *sclres_manager = SclResParserManager::get_instance();
+    if (!sclres_manager) return FALSE;
+
     PSclLayout sclres_layout = sclres_manager->get_layout_table();
     PSclInputModeConfigure sclres_input_mode_configure = sclres_manager->get_input_mode_configure_table();
-    assert(sclres_layout != NULL);
-    assert(sclres_input_mode_configure != NULL);
+    if (!sclres_layout || !sclres_input_mode_configure) return FALSE;
+
     SclButtonContext *button_context = NULL;
     const SclLayoutKeyCoordinate *coordinate = NULL;
 
@@ -2736,8 +2751,11 @@ CSCLController::mouse_move(sclwindow window, sclint x, sclint y, scltouchdevice 
     CSCLUtils *utils = CSCLUtils::get_instance();
     CSCLEventHandler *handler = CSCLEventHandler::get_instance();
     SclResParserManager *sclres_manager = SclResParserManager::get_instance();
+
+    if (!sclres_manager) return FALSE;
+
     PSclModifierDecoration sclres_modifier_decoration = sclres_manager->get_modifier_decoration_table();
-    assert(sclres_modifier_decoration != NULL);
+    if (!sclres_modifier_decoration) return FALSE;
 
     if (cache && state && windows && context && utils && adjustment && sclres_manager) {
         const SclLayout *layout = cache->get_cur_layout(window);
@@ -3641,6 +3659,8 @@ void CSCLController::handle_engine_signal(SclInternalSignal signal, sclwindow ta
     CSCLContext *context = CSCLContext::get_instance();
     CSCLImageProxy *proxy = CSCLImageProxy::get_instance();
     CSCLResourceCache *cache = CSCLResourceCache::get_instance();
+
+    if (!events || !windows || !context || !proxy || !cache) return;
 
     switch (signal) {
         case SCL_SIG_SHOW:

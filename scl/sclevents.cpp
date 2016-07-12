@@ -91,6 +91,8 @@ void
 CSCLEvents::connect_window_events(sclwindow wnd, const sclint evt )
 {
     CSCLWindows *windows = CSCLWindows::get_instance();
+    if (!windows) return;
+
     //SclWindowContext *window_context = windows->get_window_context(wnd, FALSE);
     SclWindowContext *window_context = windows->get_window_context(wnd);
     if (window_context) {
@@ -129,6 +131,8 @@ CSCLEvents::process_key_event(const char *key)
 
     CSCLWindows *windows = CSCLWindows::get_instance();
     CSCLKeyFocusHandler* focus_handler = CSCLKeyFocusHandler::get_instance();
+
+    if (!windows || !focus_handler || !cache || !controller) return FALSE;
 
     sclwindow current_focus_window = focus_handler->get_current_focus_window();
     scl8 current_key_index = focus_handler->get_current_focus_key();

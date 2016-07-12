@@ -1011,7 +1011,7 @@ CSCLUIImpl::enable_highlight_ui(sclboolean enabled)
     if (m_initialized) {
         CSCLContext *context = CSCLContext::get_instance();
         CSCLWindows *windows = CSCLWindows::get_instance();
-        if (context) {
+        if (context && windows) {
             context->set_highlight_ui_enabled(enabled);
 
             sclwindow window = windows->get_nth_window_in_Z_order_list(SCL_WINDOW_Z_TOP);
