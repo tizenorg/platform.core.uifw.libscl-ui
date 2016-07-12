@@ -44,10 +44,10 @@ using namespace scl;
 #define E_PROP_TOUCH_INPUT "X_TouchInput"
 
 #ifdef WAYLAND
-#define E_A11Y_SERVICE_BUS_NAME "org.enlightenment.wm-screen-reader"
-#define E_A11Y_SERVICE_NAVI_IFC_NAME "org.tizen.GestureNavigation"
-#define E_A11Y_SERVICE_NAVI_OBJ_PATH "/org/tizen/GestureNavigation"
-
+#define E_KEYBOARD_SERVICE_BUS_NAME "org.tizen.keyboard"
+#define E_KEYBOARD_SERVICE_NAVI_IFC_NAME "org.tizen.KBGestureNavigation"
+#define E_KEYBOARD_SERVICE_NAVI_OBJ_PATH "/org/tizen/KBGestureNavigation"
+static Eldbus_Connection *conn = NULL;
 typedef enum _Gesture {
      ONE_FINGER_HOVER = 0,
      ONE_FINGER_SINGLE_TAP = 15,
@@ -57,11 +57,8 @@ typedef enum _Gesture {
 typedef struct
 {
    Gesture type;         // Type of recognized gesture
-   int x_beg, x_end;     // (x,y) coordinates when gesture begin (screen coords)
-   int y_beg, y_end;     // (x,y) coordinates when gesture ends (screen coords)
-   pid_t pid;            // pid of process on which gesture took place.
-   int state;            // 0 - begin, 1 - ongoing, 2 - ended, 3 - aborted
-   int event_time;
+   int x;
+   int y;
 } Gesture_Info;
 #endif
 
@@ -200,29 +197,27 @@ static void gesture_cb(void *data, const Eldbus_Message *msg)
             window_context->geometry.width, window_context->geometry.height);
 
     Gesture_Info *info = (Gesture_Info *)calloc(sizeof(Gesture_Info), 1);
-    if (!eldbus_message_arguments_get(msg, "iiiiiiu", &g_type, &info->x_beg,
-                                      &info->y_beg, &info->x_end, &info->y_end,
-                                      &info->state, &info->event_time)) {
+    if (!eldbus_message_arguments_get(msg, "iii", &g_type, &info->x,
+                                      &info->y)) {
         LOGD("Getting message arguments failed");
         free(info);
         return;
     }
 
     info->type = (Gesture)g_type;
-    LOGD("Incoming gesture name is %d : %d %d %d %d %d", info->type,
-         info->x_beg, info->y_beg, info->x_end, info->y_end, info->state);
+    LOGD("Incoming gesture name is %d : %d %d", info->type, info->x, info->y);
 
     if (info->type == ONE_FINGER_HOVER || info->type == ONE_FINGER_SINGLE_TAP) {
-        if (info->y_beg >= window_context->geometry.y) {
-            last_pos_x = info->x_beg;
-            last_pos_y = info->y_beg - window_context->geometry.y;
+        if (info->y >= window_context->geometry.y) {
+            last_pos_x = info->x;
+            last_pos_y = info->y - window_context->geometry.y;
             LOGD("hover last_pos_x=%d last_pos_y=%d", last_pos_x, last_pos_y);
             controller->mouse_over(base_window, last_pos_x, last_pos_y);
         }
     } else if (info->type == ONE_FINGER_DOUBLE_TAP) {
-        if (info->y_beg >= window_context->geometry.y) {
-            last_pos_x = info->x_beg;
-            last_pos_y = info->y_beg - window_context->geometry.y;
+        if (info->y >= window_context->geometry.y) {
+            last_pos_x = info->x;
+            last_pos_y = info->y - window_context->geometry.y;
             LOGD("double last_pos_x=%d last_pos_y=%d", last_pos_x, last_pos_y);
             controller->mouse_press(base_window, last_pos_x, last_pos_y);
             controller->mouse_release(base_window, last_pos_x, last_pos_y);
@@ -233,28 +228,34 @@ static void gesture_cb(void *data, const Eldbus_Message *msg)
 
 void gestures_tracker_register()
 {
-        Eldbus_Connection *conn;
         Eldbus_Object *obj;
         Eldbus_Proxy *proxy;
 
         eldbus_init();
         LOGD("Registering callback for GestureDetected signal");
-        if (!(conn = eldbus_connection_get(ELDBUS_CONNECTION_TYPE_SYSTEM))) {
-                LOGD("Error: Unable to get system bus");
+        if (!(conn = eldbus_connection_get(ELDBUS_CONNECTION_TYPE_SESSION))) {
+                LOGD("Error: Unable to get session bus");
                 return;
         }
-        obj = eldbus_object_get(conn, E_A11Y_SERVICE_BUS_NAME, E_A11Y_SERVICE_NAVI_OBJ_PATH);
+        obj = eldbus_object_get(conn, E_KEYBOARD_SERVICE_BUS_NAME, E_KEYBOARD_SERVICE_NAVI_OBJ_PATH);
         if (!obj) LOGD("Error: Getting object failed");
 
-        proxy = eldbus_proxy_get(obj, E_A11Y_SERVICE_NAVI_IFC_NAME);
+        proxy = eldbus_proxy_get(obj, E_KEYBOARD_SERVICE_NAVI_IFC_NAME);
         if (!proxy) LOGD("Error: Getting proxy failed");
-        if (!eldbus_proxy_signal_handler_add(proxy, "GestureDetected", gesture_cb, NULL))
+        if (!eldbus_proxy_signal_handler_add(proxy, "KBGestureDetected", gesture_cb, NULL))
                 LOGD("No signal handler returned");
         LOGD("Callback registration successful");
         return;
 }
-#endif
 
+void gestures_tracker_unregister()
+{
+   if (conn)
+      eldbus_connection_unref(conn);
+
+   eldbus_shutdown();
+}
+#endif
 /**
  * De-constructor
  */
@@ -297,6 +298,11 @@ void CSCLEventsImplEfl::fini()
     if (m_key_pressed_handler) ecore_event_handler_del(m_key_pressed_handler);
 #endif
     m_key_pressed_handler = NULL;
+#ifndef WAYLAND
+    if (m_xclient_msg_handler) ecore_event_handler_del(m_xclient_msg_handler);
+#else
+    gestures_tracker_unregister();
+#endif
 }
 
 /**  Here x and y contains "actual" x and y position relative to portrait root window,
