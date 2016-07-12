@@ -75,7 +75,7 @@ CSCLUIBuilder::init(sclwindow parent)
 
     PSclDefaultConfigure default_configure = NULL;
     PSclMagnifierWndConfigure magnifier_configure = NULL;
-    if (sclres_manager) {
+    if (m_gwes && m_utils && sclres_manager) {
         PSclInputModeConfigure sclres_input_mode_configure = sclres_manager->get_input_mode_configure_table();
         PSclLayout sclres_layout = sclres_manager->get_layout_table();
 
@@ -117,23 +117,29 @@ CSCLUIBuilder::init(sclwindow parent)
         }
 
         CSCLResourceCache *cache = CSCLResourceCache::get_instance();
-        sclwindow window = m_gwes->m_windows->get_base_window();
+        sclwindow window = SCLWINDOW_INVALID;
+        if (m_gwes->m_windows)
+            window = m_gwes->m_windows->get_base_window();
+
         if (cache)
             cache->recompute_layout(window);
 
         /* Creates the magnifier window */
         if (default_configure && magnifier_configure) {
             if (default_configure->use_magnifier_window) {
-                sclwindow magnifier_window = m_gwes->m_windows->create_magnifier_window(parent, 0, 0,
-                    magnifier_configure->width, magnifier_configure->height);
-                m_gwes->m_events->connect_window_events(magnifier_window, SCL_EVENT_EXPOSE | SCL_EVENT_MOUSE);
+                if (m_gwes->m_windows && m_gwes->m_events) {
+                    sclwindow magnifier_window = m_gwes->m_windows->create_magnifier_window(parent, 0, 0,
+                        magnifier_configure->width, magnifier_configure->height);
+                    m_gwes->m_events->connect_window_events(magnifier_window, SCL_EVENT_EXPOSE | SCL_EVENT_MOUSE);
+                }
             }
         }
 
         /* Creates the dim window */
         /* FIXME */
         //if (scl_check_arrindex(defaultLayoutIdx, MAX_LAYOUT)) {
-        m_gwes->m_windows->create_dim_window(window, NULL, sclres_layout[layout].width, sclres_layout[layout].height);
+        if (m_gwes->m_windows)
+            m_gwes->m_windows->create_dim_window(window, NULL, sclres_layout[layout].width, sclres_layout[layout].height);
 
         /* m_gwes->m_events->set_touch_event_offset(scl_default_configure.touch_offset);*/
         /*Moved to Show Layout*/
@@ -450,14 +456,15 @@ CSCLUIBuilder::draw_button_label(const sclwindow window, const scldrawctx draw_c
     CSCLGraphics *graphics = CSCLGraphics::get_instance();
     CSCLResourceCache *cache = CSCLResourceCache::get_instance();
     const SclLayoutKeyCoordinate* coordinate = NULL;
-    if (cache)
-        coordinate = cache->get_cur_layout_key_coordinate(window, key_index);
 
-    scl_assert_return_false(window);
-    scl_assert_return_false(draw_ctx);
-    scl_assert_return_false(coordinate);
+    if (!utils || !windows || !graphics || !cache) return FALSE;
 
-    if (utils && windows && graphics && cache && coordinate) {
+    coordinate = cache->get_cur_layout_key_coordinate(window, key_index);
+    if (coordinate) {
+        scl_assert_return_false(window);
+        scl_assert_return_false(draw_ctx);
+        scl_assert_return_false(coordinate);
+
         /* If the target window is virtual window, let's draw it on the base window */
         sclint targetaddx = 0;
         sclint targetaddy = 0;
@@ -749,11 +756,14 @@ CSCLUIBuilder::draw_button_bg_by_img(const sclwindow window, const scldrawctx dr
     CSCLWindows *windows = CSCLWindows::get_instance();
     CSCLGraphics *graphics = CSCLGraphics::get_instance();
     CSCLResourceCache *cache = CSCLResourceCache::get_instance();
-    const SclLayoutKeyCoordinate* coordinate = NULL;
-    if (cache)
-        coordinate = cache->get_cur_layout_key_coordinate(window, key_index);
-
     SclResParserManager *sclres_manager = SclResParserManager::get_instance();
+
+    const SclLayoutKeyCoordinate* coordinate = NULL;
+
+    if (!context || !windows || !graphics || !cache || !sclres_manager) return FALSE;
+
+    coordinate = cache->get_cur_layout_key_coordinate(window, key_index);
+
     PSclModifierDecoration sclres_modifier_decoration = sclres_manager->get_modifier_decoration_table();
     assert(sclres_modifier_decoration != NULL);
     scl_assert_return_false(window);
@@ -763,7 +773,7 @@ CSCLUIBuilder::draw_button_bg_by_img(const sclwindow window, const scldrawctx dr
 
     sclchar composed_path[_POSIX_PATH_MAX] = {0, };
 
-    if (context && graphics && cache && coordinate) {
+    if (context && windows && graphics && cache && coordinate) {
         sclboolean path_composed = FALSE;
         /* Check if we need to decorate the button's drag state */
         //if (context->get_cur_drag_state(context->get_last_touch_device_id()) != SCL_DRAG_STATE_NONE &&
@@ -857,10 +867,11 @@ CSCLUIBuilder::draw_button_bg_by_layoutimg(const sclwindow window, const scldraw
     SCL_DEBUG();
 
     CSCLContext *context = CSCLContext::get_instance();
+    CSCLWindows *windows = CSCLWindows::get_instance();
     CSCLResourceCache *cache = CSCLResourceCache::get_instance();
     SclResParserManager *sclres_manager = SclResParserManager::get_instance();
 
-    if (!context || !cache || !sclres_manager) return FALSE;
+    if (!context || !windows || !cache || !sclres_manager) return FALSE;
 
     const SclLayout* layout = cache->get_cur_layout(window);
     const SclLayoutKeyCoordinate* coordinate = cache->get_cur_layout_key_coordinate(window, key_index);
@@ -872,7 +883,6 @@ CSCLUIBuilder::draw_button_bg_by_layoutimg(const sclwindow window, const scldraw
 
     scl_assert_return_false(state >= BUTTON_STATE_NORMAL && state < SCL_BUTTON_STATE_MAX);
 
-    CSCLWindows *windows = CSCLWindows::get_instance();
     //SclWindowContext *window_context = windows->get_window_context(window, FALSE);
     SclWindowContext *window_context = windows->get_window_context(window);
 
@@ -973,8 +983,10 @@ CSCLUIBuilder::show_magnifier(const sclwindow window, scldrawctx draw_ctx)
     CSCLUtils *utils = CSCLUtils::get_instance();
     CSCLContext *context = CSCLContext::get_instance();
     CSCLResourceCache *cache = CSCLResourceCache::get_instance();
+    CSCLActionState *state = CSCLActionState::get_instance();
+    CSCLWindows *windows = CSCLWindows::get_instance();
 
-    if (!utils || !context || !cache) return FALSE;
+    if (!utils || !context || !cache || !state || !windows) return FALSE;
 
     sclwindow pressed_window = context->get_cur_pressed_window(context->get_last_touch_device_id());
     scl8 pressed_key = context->get_cur_pressed_key(context->get_last_touch_device_id());
@@ -990,8 +1002,6 @@ CSCLUIBuilder::show_magnifier(const sclwindow window, scldrawctx draw_ctx)
         return TRUE;
     }
 
-    CSCLActionState *state = CSCLActionState::get_instance();
-    CSCLWindows *windows = CSCLWindows::get_instance();
     const SclLayout *layout = cache->get_cur_layout(windows->get_base_window());
     SclLayoutKeyCoordinate* coordinate = cache->get_cur_layout_key_coordinate(pressed_window, pressed_key);
     SclButtonContext* button_context = cache->get_cur_button_context(pressed_window, pressed_key);
@@ -1174,7 +1184,7 @@ CSCLUIBuilder::draw_magnifier_label(const sclwindow window, const scldrawctx dra
         magnifier_configure = sclres_manager->get_magnifier_configure();
     }
 
-    if (utils && windows && cache && context && magnifier_configure) {
+    if (utils && windows && cache && context && graphics && magnifier_configure) {
         const SclLabelProperties *labelproperties = NULL;
         if (scl_check_arrindex(label_index, MAX_SIZE_OF_LABEL_FOR_ONE)) {
             labelproperties = cache->get_label_properties(magnifier_configure->label_type, label_index);

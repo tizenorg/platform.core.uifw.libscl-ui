@@ -808,6 +808,8 @@ CSCLResourceCache::remove_private_key(sclint id)
     sclshort layout =  context->get_base_layout();
 
     SclResParserManager *sclres_manager = SclResParserManager::get_instance();
+    if (!sclres_manager) return FALSE;
+
     PSclLayoutKeyCoordinatePointerTable sclres_layout_key_coordinate_pointer_frame =
         sclres_manager->get_key_coordinate_pointer_frame();
 
@@ -868,17 +870,18 @@ CSCLResourceCache::recompute_layout(sclwindow window)
     CSCLWindows *windows = CSCLWindows::get_instance();
     CSCLContext *context = CSCLContext::get_instance();
     SclResParserManager *sclres_manager = SclResParserManager::get_instance();
+    if (!windows || !context || !utils || !sclres_manager) return FALSE;
+
     const PSclInputModeConfigure sclres_input_mode_configure = sclres_manager->get_input_mode_configure_table();
     const PSclLayout sclres_layout = sclres_manager->get_layout_table();
     const PSclLayoutKeyCoordinatePointerTable sclres_layout_key_coordinate_pointer_frame =
         sclres_manager->get_key_coordinate_pointer_frame();
     const PSclModifierDecoration sclres_modifier_decoration = sclres_manager->get_modifier_decoration_table();
     const PSclLabelPropertiesTable sclres_label_properties = sclres_manager->get_label_properties_frame();
-    assert(sclres_input_mode_configure != NULL);
-    assert(sclres_layout != NULL);
-    assert(sclres_layout_key_coordinate_pointer_frame != NULL);
-    assert(sclres_modifier_decoration != NULL);
-    assert(sclres_label_properties != NULL);
+
+    if (!sclres_input_mode_configure || !sclres_layout || !sclres_layout_key_coordinate_pointer_frame ||
+        !sclres_modifier_decoration || !sclres_label_properties)
+        return FALSE;
 
     /* FIXME */
     scl8 popupindex = NOT_USED;
@@ -1064,6 +1067,8 @@ CSCLResourceCache::get_cur_layout_key_coordinate(sclwindow window, sclbyte key_i
     scl_assert_return_null(key_index < MAX_KEY);
 
     CSCLWindows *windows = CSCLWindows::get_instance();
+    if (!windows) return NULL;
+
     if (windows->get_base_window() == window) {
         if (key_index < MAX_KEY) {
             return &mCurBaseLayoutKeyCoordinates[key_index];
@@ -1089,6 +1094,8 @@ CSCLResourceCache::get_label_properties(sclchar *label_type, sclbyte index) cons
     SCL_DEBUG();
 
     SclResParserManager *sclres_manager = SclResParserManager::get_instance();
+    if (!sclres_manager) return NULL;
+
     PSclLabelPropertiesTable sclres_label_properties = sclres_manager->get_label_properties_frame();
     assert(sclres_label_properties != NULL);
     if (sclres_label_properties && label_type) {
@@ -1125,6 +1132,8 @@ CSCLResourceCache::get_cur_button_context(sclwindow window, sclbyte key_index)
     scl_assert_return_null(key_index < MAX_KEY);
 
     CSCLWindows *windows = CSCLWindows::get_instance();
+    if (!windows) return NULL;
+
     if (windows->get_base_window() == window) {
         if (key_index < MAX_KEY) {
             return &mCurBaseButtonContext[key_index];
@@ -1439,6 +1448,8 @@ void
 CSCLResourceCache::clone_keyproperties(SclPrivateKeyProperties* priv, sclbyte input_mode_index, sclbyte layout_index, sclbyte key_index)
 {
     SclResParserManager *sclres_manager = SclResParserManager::get_instance();
+    if (!sclres_manager) return;
+
     const PSclLayoutKeyCoordinatePointerTable sclres_layout_key_coordinate_pointer_frame = sclres_manager->get_key_coordinate_pointer_frame();
 
     SCL_DEBUG();
@@ -1513,6 +1524,8 @@ CSCLResourceCache::set_private_key(const sclchar* custom_id, sclchar* label, scl
     clear_privatekeyproperties(&privProperties);
 
     SclResParserManager *sclres_manager = SclResParserManager::get_instance();
+    if (!sclres_manager) return NOT_USED;
+
     PSclLayoutKeyCoordinatePointerTable sclres_layout_key_coordinate_pointer_frame = sclres_manager->get_key_coordinate_pointer_frame();
     assert(sclres_layout_key_coordinate_pointer_frame != NULL);
 
@@ -1597,14 +1610,18 @@ void CSCLResourceCache::enable_button(const sclchar *custom_id, sclboolean enabl
 {
     SCL_DEBUG();
 
+    CSCLWindows *windows = CSCLWindows::get_instance();
+    CSCLContext *context = CSCLContext::get_instance();
+    SclResParserManager *sclres_manager = SclResParserManager::get_instance();
+
+    if (!windows || !context || !sclres_manager) return;
+
     sclint loop;
     if (custom_id) {
         sclbyte layout_index = NOT_USED;
-        CSCLContext *context = CSCLContext::get_instance();
-        SclResParserManager *sclres_manager = SclResParserManager::get_instance();
         PSclLayoutKeyCoordinatePointerTable sclres_layout_key_coordinate_pointer_frame =
             sclres_manager->get_key_coordinate_pointer_frame();
-        assert(sclres_layout_key_coordinate_pointer_frame != NULL);
+        if(!sclres_layout_key_coordinate_pointer_frame) return;
 
         if (context) {
             layout_index = context->get_base_layout();
@@ -1626,9 +1643,10 @@ void CSCLResourceCache::enable_button(const sclchar *custom_id, sclboolean enabl
             }
         }
 
-        CSCLWindows *windows = CSCLWindows::get_instance();
         /* Fix me (we should decide by which way we would redraw the button's region - direct or indirect?)*/
-        windows->update_window(windows->get_base_window());
+        if (windows) {
+            windows->update_window(windows->get_base_window());
+        }
 
         sclboolean found = FALSE;
         sclint empty_index = -1;
