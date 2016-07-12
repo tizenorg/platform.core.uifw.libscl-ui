@@ -42,9 +42,6 @@ A devel package of libscl-ui library that helps developing S/W Keyboard
 rm -rf CMakeFiles
 rm -rf CMakeCache.txt
 
-export CFLAGS+=" -DTIZEN_DEBUG_ENABLE -Werror"
-export CXXFLAGS+=" -DTIZEN_DEBUG_ENABLE -Werror"
-
 %if "%{profile}" == "wearable"
 CFLAGS+=" -D_WEARABLE";
 CXXFLAGS+=" -D_WEARABLE";
