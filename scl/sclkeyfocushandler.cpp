@@ -133,7 +133,7 @@ CSCLKeyFocusHandler::popup_closed(sclwindow window)
         sclres_layout_key_coordinate_pointer_frame = sclres_manager->get_key_coordinate_pointer_frame();
         layout = context->get_popup_layout(m_focus_window);
     }
-    if (sclres_layout_key_coordinate_pointer_frame &&
+    if (windows && sclres_layout_key_coordinate_pointer_frame &&
         scl_check_arrindex(layout, MAX_SCL_LAYOUT) && scl_check_arrindex(m_focus_key, MAX_KEY)) {
             SclLayoutKeyCoordinatePointer cur = sclres_layout_key_coordinate_pointer_frame[layout][m_focus_key];
             SclWindowContext *window_context = windows->get_window_context(m_focus_window);
@@ -274,7 +274,8 @@ CSCLKeyFocusHandler::get_next_candidate_key(SCLHighlightNavigationDirection dire
             layout = context->get_popup_layout(window);
         }
     }
-    if (sclres_layout_key_coordinate_pointer_frame && cache && context && scl_check_arrindex(layout, MAX_SCL_LAYOUT)) {
+    if (windows && cache && context &&
+        sclres_layout_key_coordinate_pointer_frame && scl_check_arrindex(layout, MAX_SCL_LAYOUT)) {
         for (sclint loop = 0;loop < MAX_KEY; loop++) {
             SclLayoutKeyCoordinatePointer p = sclres_layout_key_coordinate_pointer_frame[layout][loop];
             if (p && (loop != m_focus_key || window != m_focus_window)) {

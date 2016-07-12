@@ -835,6 +835,7 @@ CSCLGraphicsImplEfl::get_image_size(sclchar* image_path)
     SclSize ret = { 0, 0 };
 
     CSCLWindows *windows = CSCLWindows::get_instance();
+    if (!windows) return ret;
 
     Evas_Object *window_object = (Evas_Object*)(windows->get_base_window());
     Evas_Object *image_object = NULL;

@@ -246,16 +246,18 @@ CSCLWindowsImplEfl::create_magnifier_window(const sclwindow parent, SclWindowCon
 
     set_window_accepts_focus(win, FALSE);
 
-    int rots[4] = {0, 90, 180, 270};
+    int rots[4] = { 0, 90, 180, 270 };
     elm_win_wm_rotation_available_rotations_set(win, rots, 4);
 
 #ifdef DO_NOT_MOVE_MAGNIFIER_WINDOW
     CSCLUtils *utils = CSCLUtils::get_instance();
     CSCLWindows *windows = CSCLWindows::get_instance();
     sclint scrx, scry, winx, winy;
-    utils->get_screen_resolution(&scrx, &scry);
-    SclWindowContext *window_context = windows->get_window_context(windows->get_base_window());
-    evas_object_resize(win, scrx, height + window_context->height);
+    if (windows && utils) {
+        utils->get_screen_resolution(&scrx, &scry);
+        SclWindowContext *window_context = windows->get_window_context(windows->get_base_window());
+        if (window_context) evas_object_resize(win, scrx, height + window_context->height);
+    }
 #endif
 
 #ifdef WAYLAND
@@ -771,6 +773,8 @@ CSCLWindowsImplEfl::resize_window(const sclwindow window, scl16 width, scl16 hei
     CSCLWindows *windows = CSCLWindows::get_instance();
     CSCLUtils *utils = CSCLUtils::get_instance();
 
+    if (!windows || !utils) return;
+
 #ifdef DO_NOT_MOVE_MAGNIFIER_WINDOW
     if (window == windows->get_magnifier_window()) {
         SclWindowContext *window_context = windows->get_window_context(windows->get_base_window());
@@ -1117,6 +1121,8 @@ void release_all(Evas_Object *win)
     //LOGD("HIDE_WINDOW : %p\n", window);
 
     CSCLWindows *windows = CSCLWindows::get_instance();
+    if (!windows) return;
+
     SclWindowContext *window_context = windows->get_window_context(win);
         if (window_context && win) {
             if (window_context->etc_info) {

@@ -97,7 +97,10 @@ CSCLContext::get_popup_layout(sclwindow window) const
     SCL_DEBUG();
 
     sclshort ret = NOT_USED;
+
     CSCLWindows *windows = CSCLWindows::get_instance();
+    if (!windows) return ret;
+
     //SclWindowContext *window_context = windows->get_window_context(window, FALSE);
     SclWindowContext *window_context = windows->get_window_context(window);
 
@@ -114,6 +117,8 @@ CSCLContext::set_popup_layout(sclwindow window, sclshort val)
     SCL_DEBUG();
 
     CSCLWindows *windows = CSCLWindows::get_instance();
+    if (!windows) return;
+
     //SclWindowContext *window_context = windows->get_window_context(window, FALSE);
     SclWindowContext *window_context = windows->get_window_context(window);
 
@@ -126,7 +131,10 @@ void
 CSCLContext::set_base_layout(sclshort val)
 {
     SCL_DEBUG();
+
     CSCLWindows *windows = CSCLWindows::get_instance();
+    if (!windows) return;
+
     //SclWindowContext *window_context = windows->get_window_context(windows->get_base_window(), FALSE);
     SclWindowContext *window_context = windows->get_window_context(windows->get_base_window());
     if (window_context) {
@@ -140,7 +148,10 @@ CSCLContext::get_base_layout() const
     SCL_DEBUG();
 
     sclshort ret = NOT_USED;
+
     CSCLWindows *windows = CSCLWindows::get_instance();
+    if (!windows) return ret;
+
     //SclWindowContext *window_context = windows->get_window_context(windows->get_base_window(), FALSE);
     SclWindowContext *window_context = windows->get_window_context(windows->get_base_window());
     if (window_context) {
