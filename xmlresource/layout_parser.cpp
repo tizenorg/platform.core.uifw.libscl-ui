@@ -966,9 +966,11 @@ LayoutParserImpl::parsing_label_record_node(
                         if (key) {
                             cur_rec->label[shift_loop][label_for_one_state] = (sclchar*)key;
                             if (auto_upper) {
-                                if (xmlStrlen(key) == 1 && shift_loop != SCL_SHIFT_STATE_OFF) {
-                                    /* Let's manipulate the string for auto_upper */
-                                    *key = toupper(*(cur_rec->label[SCL_SHIFT_STATE_OFF][label_for_one_state]));
+                                if (shift_loop != SCL_SHIFT_STATE_OFF) {
+                                    for (int key_loop = 0; key_loop < xmlStrlen(key); key_loop++) {
+                                        /* Let's manipulate the string for auto_upper */
+                                        key[key_loop] = toupper(cur_rec->label[SCL_SHIFT_STATE_OFF][label_for_one_state][key_loop]);
+                                    }
                                 }
                             }
                             /* If current key_value is NULL, let's just consider this label is the default key_value */
@@ -1135,9 +1137,11 @@ LayoutParserImpl::parsing_key_value_record_node(
                         if (key) {
                             cur_rec->key_value[shift_loop][multichar_state] = (sclchar*)key;
                             if (auto_upper) {
-                                if (xmlStrlen(key) == 1 && shift_loop != SCL_SHIFT_STATE_OFF) {
-                                    /* Let's manipulate the string for auto_upper */
-                                    *key = toupper(*(cur_rec->key_value[SCL_SHIFT_STATE_OFF][multichar_state]));
+                                if (shift_loop != SCL_SHIFT_STATE_OFF) {
+                                    for (int key_loop = 0; key_loop < xmlStrlen(key); key_loop++) {
+                                        /* Let's manipulate the string for auto_upper */
+                                        key[key_loop] = toupper(cur_rec->key_value[SCL_SHIFT_STATE_OFF][multichar_state][key_loop]);
+                                    }
                                 }
                             }
                             add_key_string(key);
@@ -1201,9 +1205,11 @@ LayoutParserImpl::parsing_auto_popup_keys_record_node(
                     if (key) {
                         if (0 == xmlStrcmp(child_node->name, (const xmlChar*)"label")) {
                             if (auto_upper) {
-                                if (xmlStrlen(key) == 1 && shift_loop != SCL_SHIFT_STATE_OFF) {
-                                    /* Let's manipulate the string for auto_upper */
-                                    *key = toupper(*(cur_rec->autopopup_key_labels[SCL_SHIFT_STATE_OFF][autopopup_state]));
+                                if (shift_loop != SCL_SHIFT_STATE_OFF) {
+                                    for (int key_loop = 0; key_loop < xmlStrlen(key); key_loop++) {
+                                        /* Let's manipulate the string for auto_upper */
+                                        key[key_loop] = toupper(cur_rec->autopopup_key_labels[SCL_SHIFT_STATE_OFF][autopopup_state][key_loop]);
+                                    }
                                 }
                             }
                             cur_rec->autopopup_key_labels[shift_loop][autopopup_state] = (sclchar*)key;
