@@ -102,6 +102,10 @@ static void handle_shift_state_on_button_click_event(SclUIEventDesc ui_event_des
     if (ui_event_desc.key_type == KEY_TYPE_MODECHANGE) {
         turn_shift_off = FALSE;
     }
+    if (ui_event_desc.key_modifier == KEY_MODIFIER_MULTITAP_START ||
+        ui_event_desc.key_modifier == KEY_MODIFIER_MULTITAP_REPEAT) {
+        turn_shift_off = FALSE;
+    }
     /* If we are in ON_PRESSED or ON_KEY_ENTERED mode of shift multi touch state, do not turn it off now */
     if (context) {
         if (context->get_shift_multi_touch_enabled() && turn_shift_off) {

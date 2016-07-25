@@ -426,6 +426,7 @@ CSCLController::process_button_pressed_event(sclwindow window, sclint x, sclint 
                 sub_layout_match = FALSE;
             }
         }
+
         /* If this button is pressed */
         if ( x >= coordinate->x - coordinate->add_hit_left &&
                 x < coordinate->x + coordinate->width + coordinate->add_hit_right &&
@@ -433,7 +434,30 @@ CSCLController::process_button_pressed_event(sclwindow window, sclint x, sclint 
                 y < coordinate->y + coordinate->height + coordinate->add_hit_bottom &&
                 /* Process the event only if the this item's sublayout id is active one */
                 sub_layout_match ) {
-            //utils->log("process_button_pressed_event___TRUE\n");
+            /* If currently shift mode is ON, and the last key was multitap, this means the shift did not
+               turned off because of multitap button. So we need to turn it off here forcibly */
+            sclwindow last_win = context->get_last_event_fired_window();
+            scl8 last_key = context->get_last_event_fired_key();
+            LOGD("last_win : %p last_key : :%d", last_win, last_key);
+            const SclLayoutKeyCoordinate *last_coordinate = cache->get_cur_layout_key_coordinate(last_win, last_key);
+            if (last_coordinate) {
+                LOGD("last_coordinate->button_type : %d", last_coordinate->button_type);
+                if (last_coordinate->button_type == BUTTON_TYPE_MULTITAP && context->get_shift_state() == SCL_SHIFT_STATE_ON) {
+                    /* And if the multitap button was different from the one we are dealing with... */
+                    LOGD("last_win %p window %p last_key %d key_index %d", last_win, window, last_key, key_index);
+                    if (last_win != window || last_key != key_index) {
+                        SclNotiShiftStateChangeDesc desc;
+                        desc.ui_event_desc = NULL;
+                        desc.shift_state = SCL_SHIFT_STATE_OFF;
+
+                        SCLEventReturnType ret = handler->on_event_notification(SCL_UINOTITYPE_SHIFT_STATE_CHANGE, &desc);
+                        if (ret == SCL_EVENT_PASS_ON) {
+                            context->set_shift_state(SCL_SHIFT_STATE_OFF);
+                            windows->update_window(windows->get_base_window());
+                        }
+                    }
+                }
+            }
 
             /* If newly pressed key has type MULTI_TOUCH_TYPE_EXCLUSIVE, release all existing pressed events */
             if (actual_event) {
@@ -1550,11 +1574,8 @@ CSCLController::process_button_release_event(sclwindow window, sclint x, sclint 
 
     sclboolean ret = FALSE;
     sclboolean redraw = FALSE;
-    sclboolean fireEvt = FALSE;
+    sclboolean fire_event = FALSE;
     SCLKeyModifier key_modifier = KEY_MODIFIER_NONE;
-
-    static sclwindow lastFiredWin = SCLWINDOW_INVALID;
-    static sclbyte lastFiredKey = NOT_USED;
 
     CSCLUtils *utils = CSCLUtils::get_instance();
     CSCLFeedback *feedback = CSCLFeedback::get_instance();
@@ -1704,7 +1725,7 @@ CSCLController::process_button_release_event(sclwindow window, sclint x, sclint 
 
             /* If this button's index is the same as the one initially pressed */
             if (pressed_window == window && pressed_key == key_index) {
-                fireEvt = TRUE;
+                fire_event = TRUE;
                 targetCoordinate = coordinate;
             } else {
                 const SclLayoutKeyCoordinate *pressed_coordinate =
@@ -1712,7 +1733,7 @@ CSCLController::process_button_release_event(sclwindow window, sclint x, sclint 
 
                 if (pressed_coordinate) {
                     if (check_event_transition_enabled(pressed_coordinate, coordinate)) {
-                        fireEvt = TRUE;
+                        fire_event = TRUE;
                         targetCoordinate = pressed_coordinate;
                     } else {
                         ret = FALSE;
@@ -1722,17 +1743,17 @@ CSCLController::process_button_release_event(sclwindow window, sclint x, sclint 
         }
 
         /* In case of mode change buttons, event should be fired only when it was pressed lastly */
-        if (fireEvt) {
+        if (fire_event) {
             if (coordinate->key_type == KEY_TYPE_MODECHANGE) {
                 if (touch_id != context->get_last_touch_device_id()) {
-                    fireEvt = FALSE;
+                    fire_event = FALSE;
                 }
             }
         }
 
         /* If this key's modifier is LONGKEY, this means the event is already fired so skip this one */
         if (context->get_cur_key_modifier(touch_id) == KEY_MODIFIER_LONGKEY) {
-            fireEvt = FALSE;
+            fire_event = FALSE;
         }
 
         /* Don't fire any events if we're in longkey state */
@@ -1741,7 +1762,7 @@ CSCLController::process_button_release_event(sclwindow window, sclint x, sclint 
                 state->get_cur_action_state() != ACTION_STATE_POPUP_LONGKEY &&
                 state->get_cur_action_state() != ACTION_STATE_POPUP_REPEATKEY) {
             /* An event occured? */
-            if (fireEvt) {
+            if (fire_event) {
                 if (targetCoordinate) {
                     SCLShiftState shift_index = context->get_shift_state();
                     if (!scl_check_arrindex(shift_index, SCL_SHIFT_STATE_MAX)) shift_index = SCL_SHIFT_STATE_OFF;
@@ -1780,7 +1801,8 @@ CSCLController::process_button_release_event(sclwindow window, sclint x, sclint 
                     case BUTTON_TYPE_MULTITAP:
                     case BUTTON_TYPE_ROTATION: {
                         if (targetCoordinate->button_type == BUTTON_TYPE_MULTITAP) {
-                            if (window == lastFiredWin && key_index == lastFiredKey) {
+                            if (window == context->get_last_event_fired_window() &&
+                                key_index == context->get_last_event_fired_key()) {
                                 key_modifier = KEY_MODIFIER_MULTITAP_REPEAT;
                             } else {
                                 key_modifier = KEY_MODIFIER_MULTITAP_START;
@@ -1937,8 +1959,8 @@ CSCLController::process_button_release_event(sclwindow window, sclint x, sclint 
                     }
                 }
 
-                lastFiredWin = window;
-                lastFiredKey = key_index;
+                context->set_last_event_fired_window(window);
+                context->set_last_event_fired_key(key_index);
             }
         } else {
             if (targetCoordinate) {

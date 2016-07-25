@@ -197,6 +197,19 @@ public:
         m_last_pressed_window = window;
     }
 
+    scl8 get_last_event_fired_key() {
+        return m_last_event_fired_key;
+    }
+    void set_last_event_fired_key(scl8 val) {
+        m_last_event_fired_key = val;
+    }
+    sclwindow get_last_event_fired_window() {
+        return m_last_event_fired_window;
+    }
+    void set_last_event_fired_window(sclwindow window) {
+        m_last_event_fired_window = window;
+    }
+
     scltouchdevice get_last_touch_device_id() const {
         return m_last_touch_device_id;
     }
@@ -303,6 +316,9 @@ protected:
 
     sclwindow m_last_pressed_window;
     scl8 m_last_pressed_key;
+
+    sclwindow m_last_event_fired_window;
+    scl8 m_last_event_fired_key;
 
     sclboolean m_tts_enabled;
     scl8 m_cur_highlighted_key;
