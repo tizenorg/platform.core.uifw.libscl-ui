@@ -203,7 +203,7 @@ CSCLController::process_input_mode_change(const sclbyte mode)
     CSCLResourceCache *cache = CSCLResourceCache::get_instance();
     SclResParserManager *sclres_manager = SclResParserManager::get_instance();
 
-    if(!utils || !context || !windows || !cache || !sclres_manager) return FALSE;
+    if (!utils || !context || !windows || !cache || !sclres_manager) return FALSE;
 
     PSclInputModeConfigure sclres_input_mode_configure = sclres_manager->get_input_mode_configure_table();
     if (!sclres_input_mode_configure) return FALSE;

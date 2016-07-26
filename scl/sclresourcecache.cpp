@@ -1621,7 +1621,7 @@ void CSCLResourceCache::enable_button(const sclchar *custom_id, sclboolean enabl
         sclbyte layout_index = NOT_USED;
         PSclLayoutKeyCoordinatePointerTable sclres_layout_key_coordinate_pointer_frame =
             sclres_manager->get_key_coordinate_pointer_frame();
-        if(!sclres_layout_key_coordinate_pointer_frame) return;
+        if (!sclres_layout_key_coordinate_pointer_frame) return;
 
         if (context) {
             layout_index = context->get_base_layout();
