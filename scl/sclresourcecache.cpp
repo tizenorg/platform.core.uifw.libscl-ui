@@ -801,8 +801,9 @@ CSCLResourceCache::remove_private_key(sclint id)
     SCL_DEBUG();
     sclint loop;
     CSCLContext *context = CSCLContext::get_instance();
+    CSCLUtils *utils = CSCLUtils::get_instance();
 
-    if (!context) return FALSE;
+    if (!context || !utils) return FALSE;
 
     /* resets the current properties to predefined properties */
     sclshort layout =  context->get_base_layout();
@@ -825,8 +826,29 @@ CSCLResourceCache::remove_private_key(sclint id)
                         continue;
                     }
                     SclLayoutKeyCoordinatePointer the_key = mCurBaseLayoutKeyCoordinates + loop;
-                    assert(the_key != NULL);
-                    memcpy(the_key, p, sizeof(SclLayoutKeyCoordinate));
+                    if (the_key) {
+                        memcpy(the_key, p, sizeof(SclLayoutKeyCoordinate));
+
+                        /* Apply the custom scale rate value */
+                        the_key->x *= utils->get_custom_scale_rate_x();
+                        the_key->y *= utils->get_custom_scale_rate_y();
+                        the_key->width *= utils->get_custom_scale_rate_x();
+                        the_key->height *= utils->get_custom_scale_rate_y();
+                        the_key->add_hit_left *= utils->get_custom_scale_rate_x();
+                        the_key->add_hit_right *= utils->get_custom_scale_rate_x();
+                        the_key->add_hit_top *= utils->get_custom_scale_rate_y();
+                        the_key->add_hit_bottom *= utils->get_custom_scale_rate_y();
+                        the_key->popup_relative_x *= utils->get_custom_scale_rate_x();
+                        the_key->popup_relative_y *= utils->get_custom_scale_rate_y();
+                        the_key->extract_offset_x *= utils->get_custom_scale_rate_x();
+                        the_key->extract_offset_y *= utils->get_custom_scale_rate_y();
+                        the_key->magnifier_offset_x *= utils->get_custom_scale_rate_x();
+                        the_key->magnifier_offset_y *= utils->get_custom_scale_rate_y();
+
+                        /* Apply the custom starting coordinates */
+                        the_key->x += mCurStartingCoordinates.x;
+                        the_key->y += mCurStartingCoordinates.y;
+                    }
                 }
             }
         }
