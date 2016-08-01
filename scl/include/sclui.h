@@ -41,7 +41,7 @@ class CSCLUI
 {
 public:
     CSCLUI();
-    ~CSCLUI();
+    virtual ~CSCLUI();
 
     /*
      * @brief This API initializes SCL library

@@ -38,7 +38,7 @@ private:
     CSCLUIImpl();
 
 public:
-    ~CSCLUIImpl();
+    virtual ~CSCLUIImpl();
     static CSCLUIImpl* get_instance();
 
     sclboolean init(sclwindow parent, SCLParserType parser_type, const char *entry_filepath);

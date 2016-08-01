@@ -88,7 +88,7 @@ typedef struct _SclPopupNavigationInfo {
 class CSCLKeyFocusHandler
 {
 public:
-    ~CSCLKeyFocusHandler();
+    virtual ~CSCLKeyFocusHandler();
 
     static CSCLKeyFocusHandler* get_instance();
 

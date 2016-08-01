@@ -38,7 +38,7 @@ class CSCLActionState
 private:
     CSCLActionState();
 public:
-    ~CSCLActionState();
+    virtual ~CSCLActionState();
 
     /* for singleton */
     static CSCLActionState* get_instance();

@@ -45,7 +45,7 @@ private:
     CSCLResourceCache();
 
 public:
-    ~CSCLResourceCache();
+    virtual ~CSCLResourceCache();
 
     static CSCLResourceCache* get_instance();
 

@@ -69,9 +69,11 @@ typedef struct _SclWindowContext {
 class CSCLWindowsImpl
 {
 public :
+    CSCLWindowsImpl() {}
+    virtual ~CSCLWindowsImpl() {}
+
     virtual void init() = 0;
     virtual void fini() = 0;
-    virtual ~CSCLWindowsImpl() = 0;
 
     virtual sclwindow create_base_window(const sclwindow parent,
         SclWindowContext *window_context, scl16 width, scl16 height) = 0;
@@ -100,7 +102,7 @@ class CSCLWindows
 private:
     CSCLWindows();
 public :
-    ~CSCLWindows();
+    virtual ~CSCLWindows();
 
     static CSCLWindows* get_instance();
 

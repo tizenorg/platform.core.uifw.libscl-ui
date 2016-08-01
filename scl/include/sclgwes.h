@@ -45,7 +45,7 @@ class CSCLGwes
 private:
     CSCLGwes();
 public :
-    ~CSCLGwes();
+    virtual ~CSCLGwes();
 
     static CSCLGwes* get_instance();
 

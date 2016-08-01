@@ -87,7 +87,7 @@ class CSCLContext
 private:
     CSCLContext();
 public:
-    ~CSCLContext();
+    virtual ~CSCLContext();
 
     /* reset to the default context status */
     void reset();

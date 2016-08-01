@@ -27,7 +27,7 @@ class CSCLFontProxy
 private:
     CSCLFontProxy();
 public :
-    ~CSCLFontProxy();
+    virtual ~CSCLFontProxy();
 
     static CSCLFontProxy* get_instance();
 

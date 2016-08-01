@@ -41,7 +41,7 @@ class CSCLUIBuilder
 private:
     CSCLUIBuilder();
 public:
-    ~CSCLUIBuilder();
+    virtual ~CSCLUIBuilder();
 
     static CSCLUIBuilder* get_instance();
 

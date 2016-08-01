@@ -25,7 +25,7 @@ class CSCLImageProxy
 private:
 	CSCLImageProxy();
 public :
-    ~CSCLImageProxy();
+    virtual ~CSCLImageProxy();
     static CSCLImageProxy* get_instance();
 
     sclimage get_image(const sclchar* image_path);

@@ -41,7 +41,7 @@ public:
     CSCLFeedback();
     CSCLFeedback(sclwindow parent);
 
-    ~CSCLFeedback();
+    virtual ~CSCLFeedback();
     static CSCLFeedback* get_instance();
 
 private:

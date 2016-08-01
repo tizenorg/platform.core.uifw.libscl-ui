@@ -39,7 +39,7 @@ public:
     CSCLErrorAdjustment();
     CSCLErrorAdjustment(sclwindow parent);
 
-    ~CSCLErrorAdjustment();
+    virtual ~CSCLErrorAdjustment();
     static CSCLErrorAdjustment* get_instance();
 
 private:

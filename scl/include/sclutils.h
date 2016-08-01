@@ -170,7 +170,7 @@ class CSCLUtils : public _CSCLUtils
 private:
     CSCLUtils();
 public :
-    ~CSCLUtils();
+    virtual ~CSCLUtils();
 
     static CSCLUtils* get_instance();
 

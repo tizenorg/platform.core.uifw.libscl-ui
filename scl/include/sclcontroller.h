@@ -54,7 +54,7 @@ class CSCLController
 private:
     CSCLController();
 public:
-    ~CSCLController();
+    virtual ~CSCLController();
 
     static CSCLController* get_instance();
     void init();

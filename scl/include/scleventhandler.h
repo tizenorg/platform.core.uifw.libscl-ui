@@ -36,7 +36,7 @@ class CSCLEventHandler : public ISCLUIEventCallback
 private:
     CSCLEventHandler();
 public:
-    ~CSCLEventHandler();
+    virtual ~CSCLEventHandler();
 
     static CSCLEventHandler* get_instance();
 
